@@ -156,7 +156,7 @@ public class DateTimeHelper {
      * @return        The given datetime serialized to a string using the given pattern.
      */
     public static String emit(Date input, String pattern) {
-        return emit(input, pattern, (TimeZone)null);
+        return emit(input, pattern, (TimeZone) null);
     }
 
     /**
@@ -360,7 +360,7 @@ public class DateTimeHelper {
      * @throws ParseException If the given string does not adhere to the required pattern.
      */
     public static Calendar parse(String input, String pattern) throws ParseException {
-        return parse(input, pattern, (TimeZone)null);
+        return parse(input, pattern, (TimeZone) null);
     }
 
     /**
@@ -580,5 +580,42 @@ public class DateTimeHelper {
             outputs[i] = parse(inputs[i], patterns, timezone);
         }
         return outputs;
+    }
+
+    /**
+     * Returns the current datetime as an XML datetime string.
+     * @return The current datetime as an XML datetime string.
+     */
+    public static String now() {
+        return now(null);
+    }
+
+    /**
+     * Returns the current datetime as a string formatted according to the given pattern.
+     * @param pattern The serialization pattern to use.
+     * @return        The current datetime as a string formatted according to the given pattern.
+     */
+    public static String now(String pattern) {
+        return now(pattern, (TimeZone)null);
+    }
+
+    /**
+     * Returns the current datetime as a string formatted according to the given pattern.
+     * @param pattern  The serialization pattern to use.
+     * @param timezone The time zone ID identifying the time zone the current datetime should be returned in.
+     * @return         The current datetime as a string formatted according to the given pattern.
+     */
+    public static String now(String pattern, String timezone) {
+        return now(pattern, TimeZoneHelper.get(timezone));
+    }
+
+    /**
+     * Returns the current datetime as a string formatted according to the given pattern.
+     * @param pattern  The serialization pattern to use.
+     * @param timezone The time zone the current datetime should be returned in.
+     * @return         The current datetime as a string formatted according to the given pattern.
+     */
+    public static String now(String pattern, TimeZone timezone) {
+        return emit(java.util.Calendar.getInstance(), pattern, timezone);
     }
 }
