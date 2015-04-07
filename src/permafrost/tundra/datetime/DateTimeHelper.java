@@ -224,23 +224,23 @@ public class DateTimeHelper {
      * @return         The given datetime serialized to a string using the given pattern.
      */
     public static String emit(Calendar input, String pattern, TimeZone timezone) {
+        if (input == null) return null;
         if (pattern == null) pattern = DEFAULT_DATETIME_PATTERN;
+
         String output = null;
 
-        if (input != null) {
-            if (timezone != null) input = TimeZoneHelper.convert(input, timezone);
+        if (timezone != null) input = TimeZoneHelper.convert(input, timezone);
 
-            if (pattern.equals("datetime") || pattern.equals("datetime.xml")) {
-                output = javax.xml.bind.DatatypeConverter.printDateTime(input);
-            } else if (pattern.equals("milliseconds")) {
-                output = "" + input.getTimeInMillis();
-            } else {
-                if (NAMED_PATTERNS.containsKey(pattern)) pattern = NAMED_PATTERNS.get(pattern);
-                java.text.DateFormat formatter = new java.text.SimpleDateFormat(pattern);
-                formatter.setTimeZone(input.getTimeZone());
-                formatter.setLenient(false);
-                output = formatter.format(input.getTime());
-            }
+        if (pattern.equals("datetime") || pattern.equals("datetime.xml")) {
+            output = javax.xml.bind.DatatypeConverter.printDateTime(input);
+        } else if (pattern.equals("milliseconds")) {
+            output = "" + input.getTimeInMillis();
+        } else {
+            if (NAMED_PATTERNS.containsKey(pattern)) pattern = NAMED_PATTERNS.get(pattern);
+            java.text.DateFormat formatter = new java.text.SimpleDateFormat(pattern);
+            formatter.setTimeZone(input.getTimeZone());
+            formatter.setLenient(false);
+            output = formatter.format(input.getTime());
         }
 
         return output;
@@ -385,37 +385,36 @@ public class DateTimeHelper {
      * @throws ParseException If the given string does not adhere to the required pattern.
      */
     public static Calendar parse(String input, String pattern, TimeZone timezone) throws ParseException {
+        if (input == null) return null;
         if (pattern == null) pattern = DEFAULT_DATETIME_PATTERN;
 
         Calendar output = null;
 
-        if (input != null) {
-            try {
-                if (pattern.equals("datetime") || pattern.equals("datetime.xml")) {
-                    output = javax.xml.bind.DatatypeConverter.parseDateTime(input);
-                } else if (pattern.equals("datetime.jdbc")) {
-                    output = Calendar.getInstance();
-                    output.setTime(java.sql.Timestamp.valueOf(input));
-                } else if (pattern.equals("date") || pattern.equals("date.xml")) {
-                    output = javax.xml.bind.DatatypeConverter.parseDate(input);
-                } else if (pattern.equals("time") || pattern.equals("time.xml")) {
-                    output = javax.xml.bind.DatatypeConverter.parseTime(input);
-                } else if (pattern.equals("milliseconds")) {
-                    output = Calendar.getInstance();
-                    output.setTimeInMillis(Long.parseLong(input));
-                } else {
-                    if (NAMED_PATTERNS.containsKey(pattern)) pattern = NAMED_PATTERNS.get(pattern);
+        try {
+            if (pattern.equals("datetime") || pattern.equals("datetime.xml")) {
+                output = javax.xml.bind.DatatypeConverter.parseDateTime(input);
+            } else if (pattern.equals("datetime.jdbc")) {
+                output = Calendar.getInstance();
+                output.setTime(java.sql.Timestamp.valueOf(input));
+            } else if (pattern.equals("date") || pattern.equals("date.xml")) {
+                output = javax.xml.bind.DatatypeConverter.parseDate(input);
+            } else if (pattern.equals("time") || pattern.equals("time.xml")) {
+                output = javax.xml.bind.DatatypeConverter.parseTime(input);
+            } else if (pattern.equals("milliseconds")) {
+                output = Calendar.getInstance();
+                output.setTimeInMillis(Long.parseLong(input));
+            } else {
+                if (NAMED_PATTERNS.containsKey(pattern)) pattern = NAMED_PATTERNS.get(pattern);
 
-                    java.text.DateFormat formatter = new java.text.SimpleDateFormat(pattern);
-                    formatter.setLenient(false);
-                    output = Calendar.getInstance();
-                    output.setTime(formatter.parse(input));
-                }
-
-                if (timezone != null) output = TimeZoneHelper.replace(output, timezone);
-            } catch (java.lang.Exception ex) {
-                throw new ParseException("Unparseable datetime: '" + input + "' does not conform to pattern '" + pattern + "'", ex);
+                java.text.DateFormat formatter = new java.text.SimpleDateFormat(pattern);
+                formatter.setLenient(false);
+                output = Calendar.getInstance();
+                output.setTime(formatter.parse(input));
             }
+
+            if (timezone != null) output = TimeZoneHelper.replace(output, timezone);
+        } catch (java.lang.Exception ex) {
+            throw new ParseException("Unparseable datetime: '" + input + "' does not conform to pattern '" + pattern + "'", ex);
         }
 
         return output;
@@ -457,23 +456,22 @@ public class DateTimeHelper {
      * @throws ParseException If the given string does not adhere to the required pattern.
      */
     public static Calendar parse(String input, String[] patterns, TimeZone timezone) throws ParseException {
-        Calendar output = null;
-
+        if (input == null) return null;
         if (patterns == null) patterns = new String[1];
 
-        if (input != null) {
-            boolean parsed = false;
-            for (String pattern : patterns) {
-                try {
-                    output = parse(input, pattern, timezone);
-                    parsed = true;
-                    break;
-                } catch (ParseException ex) {
-                    // ignore
-                }
+        Calendar output = null;
+
+        boolean parsed = false;
+        for (String pattern : patterns) {
+            try {
+                output = parse(input, pattern, timezone);
+                parsed = true;
+                break;
+            } catch (ParseException ex) {
+                // ignore
             }
-            if (!parsed) throw new ParseException("Unparseable datetime: '" + input + "' does not conform to patterns [" + ArrayHelper.join(patterns, ", ") + "]");
         }
+        if (!parsed) throw new ParseException("Unparseable datetime: '" + input + "' does not conform to patterns [" + ArrayHelper.join(patterns, ", ") + "]");
 
         return output;
     }
@@ -527,12 +525,11 @@ public class DateTimeHelper {
      * @throws ParseException If the given string does not adhere to the required pattern.
      */
     public static Calendar[] parse(String[] inputs, String pattern, TimeZone timezone) throws ParseException {
-        Calendar[] outputs = null;
-        if (inputs != null) {
-            outputs = new Calendar[inputs.length];
-            for (int i = 0; i < inputs.length; i++) {
-                outputs[i] = parse(inputs[i], pattern, timezone);
-            }
+        if (inputs == null) return null;
+
+        Calendar[] outputs = new Calendar[inputs.length];
+        for (int i = 0; i < inputs.length; i++) {
+            outputs[i] = parse(inputs[i], pattern, timezone);
         }
         return outputs;
     }
@@ -576,12 +573,11 @@ public class DateTimeHelper {
      * @throws ParseException If the given string does not adhere to the required pattern.
      */
     public static Calendar[] parse(String[] inputs, String[] patterns, TimeZone timezone) throws ParseException {
-        Calendar[] outputs = null;
-        if (inputs != null) {
-            outputs = new Calendar[inputs.length];
-            for (int i = 0; i < inputs.length; i++) {
-                outputs[i] = parse(inputs[i], patterns, timezone);
-            }
+        if (inputs == null) return null;
+
+        Calendar[] outputs = new Calendar[inputs.length];
+        for (int i = 0; i < inputs.length; i++) {
+            outputs[i] = parse(inputs[i], patterns, timezone);
         }
         return outputs;
     }
