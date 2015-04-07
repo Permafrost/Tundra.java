@@ -101,7 +101,7 @@ public class ExceptionHelper {
      * @return A message describing the given exception.
      */
     public static String getMessage(Throwable exception) {
-        if (exception == null) return null;
+        if (exception == null) return "";
         return exception.getClass().getName() + ": " + exception.getMessage();
     }
 
