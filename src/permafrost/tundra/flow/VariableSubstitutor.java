@@ -1,6 +1,5 @@
 package permafrost.tundra.flow;
 
-import com.sun.org.apache.xpath.internal.operations.Variable;
 import com.wm.data.IData;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
