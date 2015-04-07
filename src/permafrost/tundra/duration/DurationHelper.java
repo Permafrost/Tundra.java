@@ -26,20 +26,21 @@ package permafrost.tundra.duration;
 
 import permafrost.tundra.datetime.DateTimeHelper;
 import permafrost.tundra.exception.BaseException;
-import permafrost.tundra.exception.ExceptionHelper;
+import permafrost.tundra.io.ParseException;
 
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.Duration;
 import javax.xml.datatype.DatatypeConfigurationException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Calendar;
 import java.util.Date;
 
 public class DurationHelper {
     /**
      * The default pattern for a duration string.
      */
-    public static final String DEFAULT_DURATION_PATTERN = "xml";
+    public static final DurationPattern DEFAULT_DURATION_PATTERN = DurationPattern.XML;
 
     private static final long MILLISECONDS_PER_SECOND = 1000;
     private static final long MILLISECONDS_PER_MINUTE =   60 * MILLISECONDS_PER_SECOND;
@@ -47,11 +48,14 @@ public class DurationHelper {
     private static final long MILLISECONDS_PER_DAY    =   24 * MILLISECONDS_PER_HOUR;
     private static final long MILLISECONDS_PER_WEEK   =    7 * MILLISECONDS_PER_DAY;
 
-    private static DatatypeFactory factory = null;
+    private static final BigDecimal DECIMAL_ONE_THOUSAND = new BigDecimal(1000);
+    private static final BigInteger INTEGER_SEVEN = new BigInteger("7");
+
+    private static DatatypeFactory DATATYPE_FACTORY = null;
 
     static {
         try {
-            factory = DatatypeFactory.newInstance();
+            DATATYPE_FACTORY = DatatypeFactory.newInstance();
         } catch (DatatypeConfigurationException ex) {
             throw new RuntimeException(ex);
         }
@@ -68,11 +72,24 @@ public class DurationHelper {
      * @param inPattern  The pattern the duration string adheres to.
      * @param outPattern The pattern the duration will be reformatted to.
      * @return           The duration string reformatted according to the outPattern.
-     * @throws BaseException
+     * @throws BaseException  If the given duration string is unparseable.
      */
     public static String format(String duration, String inPattern, String outPattern) throws BaseException {
         return format(duration, inPattern, outPattern, null);
     }
+
+    /**
+     * Formats a duration string to the desired pattern.
+     * @param duration        The duration string to be formatted.
+     * @param inPattern       The pattern the duration string adheres to.
+     * @param outPattern      The pattern the duration will be reformatted to.
+     * @return                The duration string reformatted according to the outPattern.
+     * @throws BaseException  If the given duration string is unparseable.
+     */
+    public static String format(String duration, DurationPattern inPattern, DurationPattern outPattern) throws BaseException {
+        return format(duration, inPattern, outPattern, (Date)null);
+    }
+
 
     /**
      * Formats a duration string to the desired pattern.
@@ -83,7 +100,7 @@ public class DurationHelper {
      *                   to resolve indeterminate values (such as the number
      *                   of days in a month).
      * @return           The duration string reformatted according to the outPattern.
-     * @throws BaseException
+     * @throws BaseException  If the given duration string is unparseable.
      */
     public static String format(String duration, String inPattern, String outPattern, String datetime) throws BaseException {
         return format(duration, inPattern, outPattern, datetime, null);
@@ -99,10 +116,56 @@ public class DurationHelper {
      *                        of days in a month).
      * @param datetimePattern The pattern the given datetime adheres to.
      * @return                The duration string reformatted according to the outPattern.
-     * @throws BaseException
+     * @throws BaseException  If the given duration string is unparseable.
      */
     public static String format(String duration, String inPattern, String outPattern, String datetime, String datetimePattern) throws BaseException {
-        return emit(parse(duration, inPattern), outPattern, datetime, datetimePattern);
+        return format(duration, DurationPattern.normalize(inPattern), DurationPattern.normalize(outPattern), datetime, datetimePattern);
+    }
+
+    /**
+     * Formats a duration string to the desired pattern.
+     * @param duration        The duration string to be formatted.
+     * @param inPattern       The pattern the duration string adheres to.
+     * @param outPattern      The pattern the duration will be reformatted to.
+     * @param datetime        A datetime string used as a starting instant
+     *                        to resolve indeterminate values (such as the number
+     *                        of days in a month).
+     * @param datetimePattern The pattern the given datetime adheres to.
+     * @return                The duration string reformatted according to the outPattern.
+     * @throws BaseException  If the given duration string is unparseable.
+     */
+    public static String format(String duration, DurationPattern inPattern, DurationPattern outPattern, String datetime, String datetimePattern) throws BaseException {
+        return format(duration, inPattern, outPattern, DateTimeHelper.parse(datetime, datetimePattern));
+    }
+
+    /**
+     * Formats a duration string to the desired pattern.
+     * @param duration        The duration string to be formatted.
+     * @param inPattern       The pattern the duration string adheres to.
+     * @param outPattern      The pattern the duration will be reformatted to.
+     * @param instant         A java.util.Calendar used as a starting instant
+     *                        to resolve indeterminate values (such as the number
+     *                        of days in a month).
+     * @return                The duration string reformatted according to the outPattern.
+     * @throws BaseException  If the given duration string is unparseable.
+     */
+    public static String format(String duration, DurationPattern inPattern, DurationPattern outPattern, Calendar instant) throws BaseException {
+        return format(duration, inPattern, outPattern, instant == null ? null : instant.getTime());
+    }
+
+    /**
+     * Formats a duration string to the desired pattern.
+     * @param duration        The duration string to be formatted.
+     * @param inPattern       The pattern the duration string adheres to.
+     * @param outPattern      The pattern the duration will be reformatted to.
+     * @param instant         A java.util.Date used as a starting instant
+     *                        to resolve indeterminate values (such as the number
+     *                        of days in a month).
+     * @return                The duration string reformatted according to the outPattern.
+     * @throws BaseException  If the given duration string is unparseable.
+     */
+    public static String format(String duration, DurationPattern inPattern, DurationPattern outPattern, Date instant) throws BaseException {
+        return emit(parse(duration, inPattern), outPattern, instant);
     }
 
     /**
@@ -111,7 +174,7 @@ public class DurationHelper {
      * @param inPattern       The pattern the duration strings adhere to.
      * @param outPattern      The pattern the durations will be reformatted to.
      * @return                The duration strings reformatted according to the outPattern.
-     * @throws BaseException
+     * @throws BaseException  If any of the given duration strings are unparseable.
      */
     public static String[] format(String[] durations, String inPattern, String outPattern) throws BaseException {
         return format(durations, inPattern, outPattern, null);
@@ -126,7 +189,7 @@ public class DurationHelper {
      *                        to resolve indeterminate values (such as the number
      *                        of days in a month).
      * @return                The duration strings reformatted according to the outPattern.
-     * @throws BaseException
+     * @throws BaseException  If any of the given duration strings are unparseable.
      */
     public static String[] format(String[] durations, String inPattern, String outPattern, String datetime) throws BaseException {
         return format(durations, inPattern, outPattern, datetime, null);
@@ -142,16 +205,72 @@ public class DurationHelper {
      *                        of days in a month).
      * @param datetimePattern The pattern the given datetime adheres to.
      * @return                The duration strings reformatted according to the outPattern.
-     * @throws BaseException
+     * @throws BaseException  If the given duration strings are unparseable.
      */
     public static String[] format(String[] durations, String inPattern, String outPattern, String datetime, String datetimePattern) throws BaseException {
-        String[] results = null;
-        if (durations != null) {
-            results = new String[durations.length];
+        return format(durations, DurationPattern.normalize(inPattern), DurationPattern.normalize(outPattern), datetime, datetimePattern);
+    }
 
-            for (int i = 0; i < durations.length; i++) {
-                results[i] = format(durations[i], inPattern, outPattern, datetime, datetimePattern);
-            }
+    /**
+     * Formats a list of duration strings to the desired pattern.
+     * @param durations       The duration strings to be formatted.
+     * @param inPattern       The pattern the duration strings adhere to.
+     * @param outPattern      The pattern the durations will be reformatted to.
+     * @return                The duration strings reformatted according to the outPattern.
+     * @throws BaseException  If any of the given duration strings are unparseable.
+     */
+    public static String[] format(String[] durations, DurationPattern inPattern, DurationPattern outPattern) throws BaseException {
+        return format(durations, inPattern, outPattern, (Date)null);
+    }
+
+    /**
+     * Formats a list of duration strings to the desired pattern.
+     * @param durations       The duration strings to be formatted.
+     * @param inPattern       The pattern the duration strings adhere to.
+     * @param outPattern      The pattern the durations will be reformatted to.
+     * @param datetime        A datetime string used as a starting instant
+     *                        to resolve indeterminate values (such as the number
+     *                        of days in a month).
+     * @param datetimePattern The pattern the given datetime adheres to.
+     * @return                The duration strings reformatted according to the outPattern.
+     * @throws BaseException  If any of the given duration strings are unparseable.
+     */
+    public static String[] format(String[] durations, DurationPattern inPattern, DurationPattern outPattern, String datetime, String datetimePattern) throws BaseException {
+        return format(durations, inPattern, outPattern, DateTimeHelper.parse(datetime, datetimePattern));
+    }
+
+    /**
+     * Formats a list of duration strings to the desired pattern.
+     * @param durations       The duration strings to be formatted.
+     * @param inPattern       The pattern the duration strings adhere to.
+     * @param outPattern      The pattern the durations will be reformatted to.
+     * @param instant         A java.util.Calendar used as a starting instant
+     *                        to resolve indeterminate values (such as the number
+     *                        of days in a month).
+     * @return                The duration strings reformatted according to the outPattern.
+     * @throws BaseException  If any of the given duration strings are unparseable.
+     */
+    public static String[] format(String[] durations, DurationPattern inPattern, DurationPattern outPattern, Calendar instant) throws BaseException {
+        return format(durations, inPattern, outPattern, instant == null ? null : instant.getTime());
+    }
+
+    /**
+     * Formats a list of duration strings to the desired pattern.
+     * @param durations       The duration strings to be formatted.
+     * @param inPattern       The pattern the duration strings adhere to.
+     * @param outPattern      The pattern the durations will be reformatted to.
+     * @param instant         A java.util.Date used as a starting instant
+     *                        to resolve indeterminate values (such as the number
+     *                        of days in a month).
+     * @return                The duration strings reformatted according to the outPattern.
+     * @throws BaseException  If any of the given duration strings are unparseable.
+     */
+    public static String[] format(String[] durations, DurationPattern inPattern, DurationPattern outPattern, Date instant) throws BaseException {
+        if (durations == null) return null;
+
+        String[] results = new String[durations.length];
+        for (int i = 0; i < durations.length; i++) {
+            results[i] = format(durations[i], inPattern, outPattern, instant);
         }
         return results;
     }
@@ -161,10 +280,10 @@ public class DurationHelper {
      * @param input    The duration string to be parsed.
      * @return         A Duration object which represents the
      *                 given duration string.
-     * @throws BaseException
+     * @throws BaseException If the given input string is unparseable.
      */
     public static Duration parse(String input) throws BaseException {
-        return parse(input, null);
+        return parse(input, (DurationPattern)null);
     }
 
     /**
@@ -173,47 +292,66 @@ public class DurationHelper {
      * @param pattern The pattern the duration string adheres to.
      * @return        A Duration object which represents the
      *                given duration string.
-     * @throws BaseException
+     * @throws BaseException If the given input string is unparseable.
      */
     public static Duration parse(String input, String pattern) throws BaseException {
+        return parse(input, DurationPattern.normalize(pattern));
+    }
+
+    /**
+     * Parses the given duration string to a Duration object.
+     * @param input   The duration string to be parsed.
+     * @param pattern The pattern the duration string adheres to.
+     * @return        A Duration object which represents the
+     *                given duration string.
+     * @throws BaseException If the given input string is unparseable.
+     */
+    public static Duration parse(String input, DurationPattern pattern) throws BaseException {
+        if (input == null) return null;
         if (pattern == null) pattern = DEFAULT_DURATION_PATTERN;
 
-        BigInteger zero = new BigInteger("0");
-        BigDecimal zero_ = new BigDecimal("0");
-
+        BigInteger integerValue = new BigInteger(input);
+        BigDecimal decimalValue = new BigDecimal(input);
         Duration output = null;
 
-        if (input != null) {
-            if (pattern.equals("milliseconds")) {
-                BigDecimal value = (new BigDecimal(input)).divide(new BigDecimal(1000));
-                output = factory.newDuration(value.compareTo(new BigDecimal(zero)) >= 0, null, null, null, null, null, value.abs());
-            } else if (pattern.equals("seconds")) {
-                BigDecimal value = new BigDecimal(input);
-                output = factory.newDuration(value.compareTo(new BigDecimal(zero)) >= 0, null, null, null, null, null, value.abs());
-            } else if (pattern.equals("minutes")) {
-                BigInteger value = new BigInteger(input);
-                output = factory.newDuration(value.compareTo(zero) >= 0, null, null, null, null, value.abs(), null);
-            } else if (pattern.equals("hours")) {
-                BigInteger value = new BigInteger(input);
-                output = factory.newDuration(value.compareTo(zero) >= 0, null, null, null, value.abs(), null, null);
-            } else if (pattern.equals("days")) {
-                BigInteger value = new BigInteger(input);
-                output = factory.newDuration(value.compareTo(zero) >= 0, null, null, value.abs(), null, null, null);
-            } else if (pattern.equals("weeks")) {
-                // convert weeks to days by multiplying by 7
-                BigInteger value = (new BigInteger(input)).multiply(new BigInteger("7"));
-                output = factory.newDuration(value.compareTo(zero) >= 0, null, null, value.abs(), null, null, null);
-            } else if (pattern.equals("months")) {
-                BigInteger value = new BigInteger(input);
-                output = factory.newDuration(value.compareTo(zero) >= 0, null, value.abs(), null, null, null, null);
-            } else if (pattern.equals("years")) {
-                BigInteger value = new BigInteger(input);
-                output = factory.newDuration(value.compareTo(zero) >= 0, value.abs(), null, null, null, null, null);
-            } else if (pattern.equals("xml")) {
-                output = factory.newDuration(input);
-            } else {
-                ExceptionHelper.raise("Unparseable pattern: " + pattern);
+        try {
+            switch (pattern) {
+                case MILLISECONDS:
+                    // convert milliseconds to fractional seconds
+                    decimalValue = decimalValue.divide(DECIMAL_ONE_THOUSAND);
+                    output = DATATYPE_FACTORY.newDuration(decimalValue.compareTo(BigDecimal.ZERO) >= 0, null, null, null, null, null, decimalValue.abs());
+                    break;
+                case SECONDS:
+                    output = DATATYPE_FACTORY.newDuration(decimalValue.compareTo(BigDecimal.ZERO) >= 0, null, null, null, null, null, decimalValue.abs());
+                    break;
+                case MINUTES:
+                    output = DATATYPE_FACTORY.newDuration(integerValue.compareTo(BigInteger.ZERO) >= 0, null, null, null, null, integerValue.abs(), null);
+                    break;
+                case HOURS:
+                    output = DATATYPE_FACTORY.newDuration(integerValue.compareTo(BigInteger.ZERO) >= 0, null, null, null, integerValue.abs(), null, null);
+                    break;
+                case DAYS:
+                    output = DATATYPE_FACTORY.newDuration(integerValue.compareTo(BigInteger.ZERO) >= 0, null, null, integerValue.abs(), null, null, null);
+                    break;
+                case WEEKS:
+                    // convert weeks to days by multiplying by 7
+                    integerValue = integerValue.multiply(INTEGER_SEVEN);
+                    output = DATATYPE_FACTORY.newDuration(integerValue.compareTo(BigInteger.ZERO) >= 0, null, null, integerValue.abs(), null, null, null);
+                    break;
+                case MONTHS:
+                    output = DATATYPE_FACTORY.newDuration(integerValue.compareTo(BigInteger.ZERO) >= 0, null, integerValue.abs(), null, null, null, null);
+                    break;
+                case YEARS:
+                    output = DATATYPE_FACTORY.newDuration(integerValue.compareTo(BigInteger.ZERO) >= 0, integerValue.abs(), null, null, null, null, null);
+                    break;
+                case XML:
+                    output = DATATYPE_FACTORY.newDuration(input);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unsupported duration pattern: " + pattern);
             }
+        } catch(IllegalArgumentException ex) {
+            throw new ParseException("Unparseable duration: '" + input + "' does not conform to pattern '" + pattern.toString() + "'", ex);
         }
 
         return output;
@@ -223,10 +361,9 @@ public class DurationHelper {
      * Returns the given duration as an XML duration string.
      * @param input The duration to be serialized.
      * @return      An XML duration string representing the given duration.
-     * @throws BaseException
      */
-    public static String emit(Duration input) throws BaseException {
-        return emit(input, null, null);
+    public static String emit(Duration input) {
+        return emit(input, (String)null);
     }
 
     /**
@@ -235,10 +372,25 @@ public class DurationHelper {
      * @param pattern The pattern to use to format the duration string.
      * @return        A duration string formatted according to the pattern representing
      *                the given duration.
-     * @throws BaseException
      */
-    public static String emit(Duration input, String pattern) throws BaseException {
-        return emit(input, pattern, null);
+    public static String emit(Duration input, String pattern) {
+        try {
+            return emit(input, pattern, null);
+        } catch(BaseException ex) {
+            // this should never happen, because no datetime string is required to be parsed
+            throw new RuntimeException(ex);
+        }
+    }
+
+    /**
+     * Returns the given duration as a duration string formatted to the desired pattern.
+     * @param input           The duration to be serialized.
+     * @param pattern         The pattern to use to format the duration string.
+     * @return                A duration string formatted according to the pattern
+     *                        representing the given duration.
+     */
+    public static String emit(Duration input, DurationPattern pattern) {
+        return emit(input, pattern, (Date)null);
     }
 
     /**
@@ -250,7 +402,7 @@ public class DurationHelper {
      *                 of days in a month).
      * @return         A duration string formatted according to the pattern representing
      *                 the given duration.
-     * @throws BaseException
+     * @throws BaseException If the specified datetime string is unparseable.
      */
     public static String emit(Duration input, String pattern, String datetime) throws BaseException {
         return emit(input, pattern, datetime, null);
@@ -266,38 +418,82 @@ public class DurationHelper {
      * @param datetimePattern The pattern the given datetime adheres to.
      * @return                A duration string formatted according to the pattern
      *                        representing the given duration.
-     * @throws BaseException
+     * @throws BaseException  If the specified datetime string is unparseable.
      */
-    private static String emit(Duration input, String pattern, String datetime, String datetimePattern) throws BaseException {
-        if (pattern == null) pattern = DEFAULT_DURATION_PATTERN;
+    public static String emit(Duration input, String pattern, String datetime, String datetimePattern) throws BaseException {
+        return emit(input, DurationPattern.normalize(pattern), datetime, datetimePattern);
+    }
 
-        Date instant = null;
-        if (datetime == null) {
-            instant = new Date();
-        } else {
-            instant = DateTimeHelper.parse(datetime, datetimePattern).getTime();
-        }
+    /**
+     * Returns the given duration as a duration string formatted to the desired pattern.
+     * @param input           The duration to be serialized.
+     * @param pattern         The pattern to use to format the duration string.
+     * @param datetime        A datetime string used as a starting instant
+     *                        to resolve indeterminate values (such as the number
+     *                        of days in a month).
+     * @param datetimePattern The pattern the given datetime adheres to.
+     * @return                A duration string formatted according to the pattern
+     *                        representing the given duration.
+     * @throws BaseException  If the specified datetime string is unparseable.
+     */
+    public static String emit(Duration input, DurationPattern pattern, String datetime, String datetimePattern) throws BaseException {
+        return emit(input, pattern, DateTimeHelper.parse(datetime, datetimePattern));
+    }
+
+    /**
+     * Returns the given duration as a duration string formatted to the desired pattern.
+     * @param input           The duration to be serialized.
+     * @param pattern         The pattern to use to format the duration string.
+     * @param instant         A java.util.Calendar used as a starting instant
+     *                        to resolve indeterminate values (such as the number
+     *                        of days in a month).
+     */
+    public static String emit(Duration input, DurationPattern pattern, Calendar instant) {
+        return emit(input, pattern, instant == null ? null : instant.getTime());
+    }
+
+
+    /**
+     * Returns the given duration as a duration string formatted to the desired pattern.
+     * @param input           The duration to be serialized.
+     * @param pattern         The pattern to use to format the duration string.
+     * @param instant         A java.util.Date used as a starting instant
+     *                        to resolve indeterminate values (such as the number
+     *                        of days in a month).
+     * @return                A duration string formatted according to the pattern
+     *                        representing the given duration.
+     */
+    public static String emit(Duration input, DurationPattern pattern, Date instant) {
+        if (input == null) return null;
+        if (pattern == null) pattern = DEFAULT_DURATION_PATTERN;
+        if (instant == null) instant = new Date();
 
         String output = null;
 
-        if (input != null) {
-            if (pattern.equals("milliseconds")) {
+        switch(pattern) {
+            case MILLISECONDS:
                 output = "" + input.getTimeInMillis(instant);
-            } else if (pattern.equals("seconds")) {
+                break;
+            case SECONDS:
                 output = "" + (input.getTimeInMillis(instant) / MILLISECONDS_PER_SECOND);
-            } else if (pattern.equals("minutes")) {
+                break;
+            case MINUTES:
                 output = "" + (input.getTimeInMillis(instant) / MILLISECONDS_PER_MINUTE);
-            } else if (pattern.equals("hours")) {
+                break;
+            case HOURS:
                 output = "" + (input.getTimeInMillis(instant) / MILLISECONDS_PER_HOUR);
-            } else if (pattern.equals("days")) {
+                break;
+            case DAYS:
                 output = "" + (input.getTimeInMillis(instant) / MILLISECONDS_PER_DAY);
-            } else if (pattern.equals("weeks")) {
+                break;
+            case WEEKS:
                 output = "" + (input.getTimeInMillis(instant) / MILLISECONDS_PER_WEEK);
-            } else if (pattern.equals("xml")) {
+                break;
+            case XML:
                 output = input.toString();
-            } else {
-                ExceptionHelper.raise("Unparseable pattern: " + pattern);
-            }
+                break;
+            default:
+                throw new IllegalArgumentException("Unsupported duration pattern: " + pattern);
         }
 
         return output;
