@@ -26,6 +26,7 @@ package permafrost.tundra.bytes;
 
 import permafrost.tundra.exception.BaseException;
 import permafrost.tundra.exception.ExceptionHelper;
+import permafrost.tundra.io.EncodingException;
 import permafrost.tundra.string.StringHelper;
 import permafrost.tundra.io.StreamHelper;
 
@@ -49,7 +50,7 @@ public class BytesHelper {
      *
      * @param in A String to be converted to a byte[].
      * @return   A byte[] representation of the given String.
-     * @throws BaseException
+     * @throws BaseException If specified encoding is not supported.
      */
     public static byte[] normalize(java.lang.String in) throws BaseException {
         return normalize(in, null);
@@ -60,14 +61,14 @@ public class BytesHelper {
      * @param in    A string to be converted to a byte[].
      * @param encoding The character encoding set to use.
      * @return         A byte[] representation of the given String.
-     * @throws BaseException
+     * @throws BaseException If specified encoding is not supported.
      */
     public static byte[] normalize(java.lang.String in, java.lang.String encoding) throws BaseException {
         byte[] out = null;
         try {
             out = in.getBytes(encoding == null ? StringHelper.DEFAULT_CHARACTER_ENCODING : encoding);
         } catch(java.io.UnsupportedEncodingException ex) {
-            ExceptionHelper.raise(ex);
+            throw new EncodingException(ex);
         }
         return out;
     }
@@ -78,7 +79,7 @@ public class BytesHelper {
      *
      * @param in A java.io.InputStream to be converted to a byte[]
      * @return   A byte[] representation of the given java.io.InputStream.
-     * @throws BaseException
+     * @throws BaseException If there is a problem reading from the java.io.InputStream.
      */
     public static byte[] normalize(java.io.InputStream in) throws BaseException {
         java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
@@ -90,7 +91,8 @@ public class BytesHelper {
      * Normalizes the given String, byte[], or java.io.InputStream object to a byte[].
      * @param object The object to be normalized to a byte[].
      * @return       A byte[] representation of the given object.
-     * @throws BaseException
+     * @throws BaseException If there is a problem reading from the java.io.InputStream, or
+     *                       the specified encoding is unsupported.
      */
     public static byte[] normalize(Object object) throws BaseException {
         return normalize(object, null);
@@ -101,7 +103,8 @@ public class BytesHelper {
      * @param object The object to be normalized to a string.
      * @param encoding  The character set to use.
      * @return       A byte[] representation of the given object.
-     * @throws BaseException
+     * @throws BaseException If there is a problem reading from the java.io.InputStream, or
+     *                       the specified encoding is unsupported.
      */
     public static byte[] normalize(Object object, String encoding) throws BaseException {
         if (object == null) return null;
