@@ -49,7 +49,7 @@ public class BaseException extends ServiceException {
      * @param cause The cause of this BaseException.
      */
     public BaseException(Throwable cause) {
-        super(cause);
+        this(ExceptionHelper.getMessage(cause), cause);
     }
 
     /**
