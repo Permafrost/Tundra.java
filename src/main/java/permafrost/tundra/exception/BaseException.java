@@ -31,7 +31,7 @@ public class BaseException extends ServiceException {
      * Constructs a new BaseException.
      */
     public BaseException() {
-        super();
+        super("");
     }
 
     /**
@@ -61,16 +61,5 @@ public class BaseException extends ServiceException {
     public BaseException(java.lang.String message, Throwable cause) {
         super(message);
         initCause(cause);
-    }
-
-    /**
-     * @return A message describing the reason for this BaseException.
-     */
-    public java.lang.String getMessage() {
-        java.io.StringWriter stringWriter = new java.io.StringWriter();
-        java.io.PrintWriter printWriter = new java.io.PrintWriter(stringWriter);
-        printStackTrace(printWriter);
-        printWriter.close();
-        return stringWriter.toString();
     }
 }

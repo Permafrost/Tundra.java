@@ -61,7 +61,7 @@ public class ExceptionHelper {
      * @throws BaseException Always throws a new BaseException using the given message and cause.
      */
     public static void raise(String message, Throwable cause) throws BaseException {
-        raise(new BaseException(message, cause));
+        throw new BaseException(message, cause);
     }
 
     /**
@@ -72,7 +72,7 @@ public class ExceptionHelper {
      * @throws BaseException Always throws a new BaseException using the given cause.
      */
     public static void raise(Throwable cause) throws BaseException {
-        raise(new BaseException(cause));
+        throw new BaseException(cause);
     }
 
     /**
