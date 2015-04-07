@@ -33,7 +33,10 @@ import com.wm.lang.flow.MalformedExpressionException;
 import permafrost.tundra.exception.ExceptionHelper;
 import permafrost.tundra.exception.BaseException;
 
-public class Condition {
+/**
+ * Performs webMethods Integration Server flow language conditional statement evaluation against a specified scope.
+ */
+public class ConditionEvaluator {
     /**
      * Regular expressions to detect backwards-compatibility mode to support the previous
      * ANTLR-based implementation of the evaluate function, which allowed use of the key
@@ -48,7 +51,7 @@ public class Condition {
     /**
      * Constructs a new flow condition.
      */
-    public Condition(String condition) {
+    public ConditionEvaluator(String condition) {
         this.condition = condition;
     }
 
@@ -108,8 +111,8 @@ public class Condition {
      * @throws BaseException
      */
     public static boolean evaluate(String condition, IData scope) throws BaseException {
-        Condition c = new Condition(condition);
-        return c.evaluate(scope);
+        ConditionEvaluator evaluator = new ConditionEvaluator(condition);
+        return evaluator.evaluate(scope);
     }
 }
 

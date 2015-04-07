@@ -25,7 +25,7 @@
 package permafrost.tundra.uri;
 
 import permafrost.tundra.array.ArrayHelper;
-import permafrost.tundra.flow.Substitutor;
+import permafrost.tundra.flow.VariableSubstitutor;
 
 public class PathHelper {
     private static final java.util.regex.Pattern PATH_PATTERN = java.util.regex.Pattern.compile("/+");
@@ -46,7 +46,7 @@ public class PathHelper {
         if (input.endsWith("/")) input = input.substring(0, input.length() - 1);
 
         java.util.List<String> list = new java.util.ArrayList<String>();
-        java.util.regex.Matcher substitutionMatcher = Substitutor.matcher(input);
+        java.util.regex.Matcher substitutionMatcher = VariableSubstitutor.matcher(input);
 
         int index = 0;
         while(substitutionMatcher.find()) {
