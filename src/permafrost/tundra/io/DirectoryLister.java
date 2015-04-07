@@ -28,6 +28,10 @@ import permafrost.tundra.exception.BaseException;
 import permafrost.tundra.io.filter.*;
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Directory lister which supports file name filtering.
@@ -51,7 +55,6 @@ public class DirectoryLister {
      * Constructs a new DirectoryLister for listing the contents of a given directory.
      * @param directory The directory whose contents are to be listed.
      * @param recurse   If true, all child directories will be recursively listed also.
-     * @throws BaseException
      */
     public DirectoryLister(File directory, boolean recurse) {
         this(directory, recurse, new FilenameFilter[0]);
@@ -75,7 +78,6 @@ public class DirectoryLister {
      * @param recurse   If true, all child directories will be recursively listed also.
      * @param filters   One or more filename filters which will restrict which files
      *                  and directories are returned in the list results.
-     * @throws BaseException
      */
     public DirectoryLister(File directory, boolean recurse, FilenameFilter ...filters) {
         if (directory == null) throw new IllegalArgumentException("directory must not be null");
@@ -150,6 +152,71 @@ public class DirectoryLister {
             }
         }
 
-        return new DirectoryListing(directories, files);
+        return new DirectoryListingImplementation(directory, directories, files);
+    }
+
+    /**
+     * Encapsulates the results of a directory listing.
+     */
+    private static class DirectoryListingImplementation implements DirectoryListing {
+        protected List<File> all, directories, files;
+        protected File directory;
+
+        /**
+         * Constructs a new DirectoryListing given a list of files and directories.
+         * @param directory     The directory which produced this listing.
+         * @param directoryList A list of directories to include in the listing results.
+         * @param fileList      A list of files to include in the listing results.
+         */
+        public DirectoryListingImplementation(File directory, List<File> directoryList, List<File> fileList) {
+            if (directory == null) throw new IllegalArgumentException("directory must not be null");
+            if (directories == null) throw new IllegalArgumentException("directories must not be null");
+            if (files == null) throw new IllegalArgumentException("files must not be null");
+
+            this.directory = directory;
+            this.directories = directories;
+            this.files = files;
+        }
+
+        /**
+         * Returns all the files and directories in this listing.
+         * @return All the files and directories in this listing.
+         */
+        @Override
+        public List<File> listAll() {
+            if (all == null) {
+                all = new ArrayList<File>(directories.size() + files.size());
+                all.addAll(directories);
+                all.addAll(files);
+            }
+            return all;
+        }
+
+        /**
+         * Returns all the directories in this listing.
+         * @return All the directories in this listing.
+         */
+        @Override
+        public List<File> listDirectories() {
+            return directories;
+        }
+
+        /**
+         * Returns all the files in this listing.
+         * @return All the files in this listing.
+         */
+        @Override
+        public List<File> listFiles() {
+            return files;
+        }
+
+        /**
+         * Returns the directory which produced this listing.
+         * @return The directory which produced this listing.
+         */
+        @Override
+        public File getDirectory() {
+            return directory;
+        }
     }
 }

@@ -25,68 +25,33 @@
 package permafrost.tundra.io;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.List;
 
 /**
  * Encapsulates the results of a directory listing.
  */
-public class DirectoryListing {
-    protected Collection<File> all, directories, files;
-
-    /**
-     * Constructs a new DirectoryListing given a list of files and directories.
-     * @param directories A list of directories to include in the listing results.
-     * @param files       A list of files to include in the listing results.
-     */
-    public DirectoryListing(File[] directories, File[] files) {
-        if (directories == null) throw new IllegalArgumentException("directories must not be null");
-        if (files == null) throw new IllegalArgumentException("files must not be null");
-
-        this.directories = Arrays.asList(directories);
-        this.files = Arrays.asList(files);
-    }
-
-    /**
-     * Constructs a new DirectoryListing given a list of files and directories.
-     * @param directories A list of directories to include in the listing results.
-     * @param files       A list of files to include in the listing results.
-     */
-    public DirectoryListing(Collection<File> directories, Collection<File> files) {
-        if (directories == null) throw new IllegalArgumentException("directories must not be null");
-        if (files == null) throw new IllegalArgumentException("files must not be null");
-
-        this.directories = directories;
-        this.files = files;
-    }
-
+public interface DirectoryListing {
     /**
      * Returns all the files and directories in this listing.
      * @return All the files and directories in this listing.
      */
-    public Collection<File> list() {
-        if (all == null) {
-            all = new ArrayList<File>(directories.size() + files.size());
-            all.addAll(directories);
-            all.addAll(files);
-        }
-        return all;
-    }
+    List<File> listAll();
 
     /**
      * Returns all the directories in this listing.
      * @return All the directories in this listing.
      */
-    public Collection<File> listDirectories() {
-        return directories;
-    }
+    List<File> listDirectories();
 
     /**
      * Returns all the files in this listing.
      * @return All the files in this listing.
      */
-    public Collection<File> listFiles() {
-        return files;
-    }
+    List<File> listFiles();
+
+    /**
+     * Returns the directory which produced this listing.
+     * @return The directory which produced this listing.
+     */
+    File getDirectory();
 }
