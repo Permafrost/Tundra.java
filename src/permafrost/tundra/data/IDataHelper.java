@@ -24,12 +24,14 @@
 
 package permafrost.tundra.data;
 
+import com.wm.data.IDataUtil;
 import permafrost.tundra.array.ArrayHelper;
-import permafrost.tundra.exception.ExceptionHelper;
 import permafrost.tundra.object.ObjectHelper;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
 import permafrost.tundra.exception.BaseException;
+
+import java.io.IOException;
 
 public class IDataHelper {
     /**
@@ -117,7 +119,7 @@ public class IDataHelper {
         com.wm.data.IData output = IDataFactory.create();
         if (input != null) {
             for (int i = 0; i < input.length; i++) {
-                com.wm.data.IDataUtil.merge(input[i], output);
+                IDataUtil.merge(input[i], output);
             }
         }
         return output;
@@ -198,7 +200,7 @@ public class IDataHelper {
         int size = 0;
         if (input != null) {
             IDataCursor cursor = input.getCursor();
-            size = com.wm.data.IDataUtil.size(cursor);
+            size = IDataUtil.size(cursor);
             cursor.destroy();
         }
         return size;
@@ -230,12 +232,12 @@ public class IDataHelper {
             IDataCursor cursor = input.getCursor();
             try {
                 if (recurse) {
-                    output = com.wm.data.IDataUtil.deepClone(input);
+                    output = IDataUtil.deepClone(input);
                 } else {
-                    output = com.wm.data.IDataUtil.clone(input);
+                    output = IDataUtil.clone(input);
                 }
-            } catch (java.io.IOException ex) {
-                ExceptionHelper.raise(ex);
+            } catch (IOException ex) {
+                throw new BaseException(ex);
             } finally {
                 cursor.destroy();
             }
@@ -253,7 +255,7 @@ public class IDataHelper {
     public static com.wm.data.IData drop(com.wm.data.IData input, String key) {
         if (input != null && key != null) {
             IDataCursor cursor = input.getCursor();
-            com.wm.data.IDataUtil.remove(cursor, key);
+            IDataUtil.remove(cursor, key);
             cursor.destroy();
 
             if (Key.isFullyQualified(key)) drop(input, Key.parse(key));
@@ -275,17 +277,17 @@ public class IDataHelper {
 
             if (keys.size() > 0) {
                 if (key.hasIndex()) {
-                    com.wm.data.IData[] array = com.wm.data.IDataUtil.getIDataArray(cursor, key.toString());
+                    com.wm.data.IData[] array = IDataUtil.getIDataArray(cursor, key.toString());
                     drop(ArrayHelper.get(array, key.getIndex()), keys);
                 } else {
-                    drop(com.wm.data.IDataUtil.getIData(cursor, key.toString()), keys);
+                    drop(IDataUtil.getIData(cursor, key.toString()), keys);
                 }
             } else {
                 if (key.hasIndex()) {
-                    java.lang.Object[] array = com.wm.data.IDataUtil.getObjectArray(cursor, key.toString());
-                    com.wm.data.IDataUtil.put(cursor, key.toString(), ArrayHelper.drop(array, key.getIndex()));
+                    java.lang.Object[] array = IDataUtil.getObjectArray(cursor, key.toString());
+                    IDataUtil.put(cursor, key.toString(), ArrayHelper.drop(array, key.getIndex()));
                 } else {
-                    com.wm.data.IDataUtil.remove(cursor, key.toString());
+                    IDataUtil.remove(cursor, key.toString());
                 }
             }
             cursor.destroy();
@@ -539,7 +541,7 @@ public class IDataHelper {
         while(cursor.delete());
         cursor.destroy();
 
-        if (keysToBePreserved != null) com.wm.data.IDataUtil.merge(saved, document);
+        if (keysToBePreserved != null) IDataUtil.merge(saved, document);
     }
 
     /**
@@ -577,7 +579,7 @@ public class IDataHelper {
         // try finding a value that matches the literal key
         IDataCursor cursor = input.getCursor();
         try {
-            value = com.wm.data.IDataUtil.get(cursor, key);
+            value = IDataUtil.get(cursor, key);
         } finally {
             cursor.destroy();
         }
@@ -607,7 +609,7 @@ public class IDataHelper {
 
             if (fullyQualifiedKey.size() > 0) {
                 if (key.hasIndex()) {
-                    value = com.wm.data.IDataUtil.get(cursor, key.toString());
+                    value = IDataUtil.get(cursor, key.toString());
                     if (value != null) {
                         if (value instanceof com.wm.data.IData[] || value instanceof com.wm.util.Table) {
                             com.wm.data.IData[] array = value instanceof com.wm.data.IData[] ? (com.wm.data.IData[])value : ((com.wm.util.Table)value).getValues();
@@ -617,11 +619,11 @@ public class IDataHelper {
                         }
                     }
                 } else {
-                    value = get(com.wm.data.IDataUtil.getIData(cursor, key.toString()), fullyQualifiedKey);
+                    value = get(IDataUtil.getIData(cursor, key.toString()), fullyQualifiedKey);
                 }
             } else {
                 if (key.hasIndex()) {
-                    value = com.wm.data.IDataUtil.get(cursor, key.toString());
+                    value = IDataUtil.get(cursor, key.toString());
                     if (value != null) {
                         if (value instanceof java.lang.Object[] || value instanceof com.wm.util.Table) {
                             java.lang.Object[] array = value instanceof java.lang.Object[] ? (java.lang.Object[])value : ((com.wm.util.Table)value).getValues();
@@ -631,7 +633,7 @@ public class IDataHelper {
                         }
                     }
                 } else {
-                    value = com.wm.data.IDataUtil.get(cursor, key.toString());
+                    value = IDataUtil.get(cursor, key.toString());
                 }
             }
 
@@ -691,12 +693,12 @@ public class IDataHelper {
 
             if (fullyQualifiedKey.size() > 0) {
                 if (key.hasIndex()) {
-                    com.wm.data.IData[] array = com.wm.data.IDataUtil.getIDataArray(cursor, key.toString());
+                    com.wm.data.IData[] array = IDataUtil.getIDataArray(cursor, key.toString());
                     com.wm.data.IData child = null;
                     try { child = ArrayHelper.get(array, key.getIndex()); } catch(ArrayIndexOutOfBoundsException ex) { }
                     value = ArrayHelper.put(array, put(child, fullyQualifiedKey, value, includeNull), key.getIndex(), com.wm.data.IData.class);
                 } else {
-                    value = put(com.wm.data.IDataUtil.getIData(cursor, key.toString()), fullyQualifiedKey, value, includeNull);
+                    value = put(IDataUtil.getIData(cursor, key.toString()), fullyQualifiedKey, value, includeNull);
                 }
             } else if (key.hasIndex()) {
                 Class klass = java.lang.Object.class;
@@ -707,9 +709,9 @@ public class IDataHelper {
                         klass = com.wm.data.IData.class;
                     }
                 }
-                value = ArrayHelper.put(com.wm.data.IDataUtil.getObjectArray(cursor, key.toString()), value, key.getIndex(), klass);
+                value = ArrayHelper.put(IDataUtil.getObjectArray(cursor, key.toString()), value, key.getIndex(), klass);
             }
-            com.wm.data.IDataUtil.put(cursor, key.toString(), value);
+            IDataUtil.put(cursor, key.toString(), value);
             cursor.destroy();
         }
 
@@ -726,7 +728,7 @@ public class IDataHelper {
         if (input == null) return null;
 
         IDataCursor cursor = input.getCursor();
-        int size = com.wm.data.IDataUtil.size(cursor);
+        int size = IDataUtil.size(cursor);
         cursor.destroy();
         cursor = input.getCursor();
 

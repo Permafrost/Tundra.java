@@ -27,7 +27,6 @@ package permafrost.tundra.object;
 import com.wm.data.IData;
 import com.wm.data.IDataUtil;
 import permafrost.tundra.exception.BaseException;
-import permafrost.tundra.exception.ExceptionHelper;
 
 public class ObjectHelper {
     /**
@@ -70,7 +69,7 @@ public class ObjectHelper {
         try {
             instance = className != null && instance(object, Class.forName(className));
         } catch(ClassNotFoundException ex) {
-            ExceptionHelper.raise(ex);
+            throw new BaseException(ex);
         }
         return instance;
     }

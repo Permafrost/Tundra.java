@@ -30,8 +30,8 @@ import com.wm.data.IDataFactory;
 import com.wm.data.IDataUtil;
 import com.wm.lang.flow.ExpressionEvaluator;
 import com.wm.lang.flow.MalformedExpressionException;
-import permafrost.tundra.exception.ExceptionHelper;
 import permafrost.tundra.exception.BaseException;
+import permafrost.tundra.io.ParseException;
 
 /**
  * Performs webMethods Integration Server flow language conditional statement evaluation against a specified scope.
@@ -52,6 +52,7 @@ public class ConditionEvaluator {
      * Constructs a new flow condition.
      */
     public ConditionEvaluator(String condition) {
+        if (condition == null) throw new IllegalArgumentException("condition must not be null");
         this.condition = condition;
     }
 
@@ -93,7 +94,7 @@ public class ConditionEvaluator {
             try {
                 result = ExpressionEvaluator.evalToBoolean(condition, scope);
             } catch (MalformedExpressionException ex) {
-                ExceptionHelper.raise(ex);
+                throw new ParseException(ex);
             }
         }
 

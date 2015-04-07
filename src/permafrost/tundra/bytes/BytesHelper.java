@@ -25,7 +25,6 @@
 package permafrost.tundra.bytes;
 
 import permafrost.tundra.exception.BaseException;
-import permafrost.tundra.exception.ExceptionHelper;
 import permafrost.tundra.io.EncodingException;
 import permafrost.tundra.string.StringHelper;
 import permafrost.tundra.io.StreamHelper;
