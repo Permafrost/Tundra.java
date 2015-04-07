@@ -24,6 +24,11 @@
 
 package permafrost.tundra.math;
 
+import permafrost.tundra.exception.BaseException;
+import permafrost.tundra.io.ParseException;
+
+import java.math.BigInteger;
+
 public class IntegerHelper {
     /**
      * Disallow instantiation of this class.
@@ -32,10 +37,11 @@ public class IntegerHelper {
 
     /**
      * Returns a java.math.BigInteger object by parsing the given an integer string.
-     * @param string
-     * @return
+     * @param string A string to be parsed.
+     * @return       A java.math.BigInteger representation of the given string.
+     * @throws BaseException If the given string is unparseable.
      */
-    public static java.math.BigInteger parse(java.lang.String string) {
+    public static BigInteger parse(String string) throws BaseException {
         return parse(string, 10);
     }
 
@@ -43,12 +49,18 @@ public class IntegerHelper {
      * Returns a java.math.BigInteger object by parsing the given an integer string,
      * using the given radix.
      *
-     * @param string
-     * @param radix
-     * @return
-     */    public static java.math.BigInteger parse(java.lang.String string, int radix) {
-        java.math.BigInteger integer = java.math.BigInteger.ZERO;
-        if (string != null) integer = new java.math.BigInteger(string, radix);
-        return integer;
+     * @param string A string to be parsed.
+     * @param radix  The radix to use when interpreting the given string.
+     * @return       A java.math.BigInteger representation of the given string.
+     * @throws BaseException If the given string is unparseable.
+     */
+    public static BigInteger parse(String string, int radix) throws BaseException {
+        if (string == null) return null;
+
+        try {
+            return new BigInteger(string, radix);
+        } catch(IllegalArgumentException ex) {
+            throw new ParseException(ex);
+        }
     }
 }

@@ -102,7 +102,7 @@ public class IDataHelper {
             cursor.destroy();
         }
 
-        Class<?> nearestAncestor = ObjectHelper.nearestAncestor(classes);
+        Class<?> nearestAncestor = ObjectHelper.getNearestAncestor(classes);
         if (nearestAncestor == null) nearestAncestor = java.lang.Object.class;
 
         return values.toArray((java.lang.Object[]) java.lang.reflect.Array.newInstance(nearestAncestor, 0));
@@ -423,7 +423,7 @@ public class IDataHelper {
             values.add(value);
         }
 
-        Class<?> nearestAncestor = ObjectHelper.nearestAncestor(classes);
+        Class<?> nearestAncestor = ObjectHelper.getNearestAncestor(classes);
         if (nearestAncestor == null) nearestAncestor = java.lang.Object.class;
 
         return values.toArray((java.lang.Object[]) java.lang.reflect.Array.newInstance(nearestAncestor, values.size()));
@@ -934,7 +934,7 @@ public class IDataHelper {
             list.add(value);
         }
 
-        Class<?> nearestAncestor = ObjectHelper.nearestAncestor(classes);
+        Class<?> nearestAncestor = ObjectHelper.getNearestAncestor(classes);
         if (nearestAncestor == null) nearestAncestor = java.lang.Object.class;
 
         return list.toArray((java.lang.Object[])java.lang.reflect.Array.newInstance(nearestAncestor, 0));

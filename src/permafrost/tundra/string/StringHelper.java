@@ -57,7 +57,7 @@ public class StringHelper {
      *
      * @param bytes A byte[] to be converted to a string.
      * @return      A string representation of the given byte[].
-     * @throws BaseException
+     * @throws BaseException If the given encoding is unsupported.
      */
     public static String normalize(byte[] bytes) throws BaseException {
         return normalize(bytes, null);
@@ -69,7 +69,7 @@ public class StringHelper {
      * @param bytes     A byte[] to be converted to a string.
      * @param encoding  The character set to use.
      * @return          A string representation of the given byte[].
-     * @throws BaseException
+     * @throws BaseException If the given encoding is unsupported.
      */
     public static String normalize(byte[] bytes, String encoding) throws BaseException {
         String out = null;
@@ -86,7 +86,8 @@ public class StringHelper {
      *
      * @param in A java.io.InputStream to be converted to a string.
      * @return   A string representation of the given java.io.InputStream.
-     * @throws BaseException
+     * @throws BaseException If the given encoding is unsupported, or if
+     *                       there is an error reading from the java.io.InputStream.
      */
     public static String normalize(java.io.InputStream in) throws BaseException {
         return normalize(in, null);
@@ -98,7 +99,8 @@ public class StringHelper {
      * @param in        A java.io.InputStream to be converted to a string.
      * @param encoding  The character set to use.
      * @return          A string representation of the given java.io.InputStream.
-     * @throws BaseException
+     * @throws BaseException If the given encoding is unsupported, or if
+     *                       there is an error reading from the java.io.InputStream.
      */
     public static String normalize(java.io.InputStream in, String encoding) throws BaseException {
         java.io.Writer writer = new java.io.StringWriter();
@@ -114,7 +116,8 @@ public class StringHelper {
      * Normalizes the given String, byte[], or java.io.InputStream object to a String.
      * @param object The object to be normalized to a string.
      * @return       A string representation of the given object.
-     * @throws BaseException
+     * @throws BaseException If the given encoding is unsupported, or if
+     *                       there is an error reading from the java.io.InputStream.
      */
     public static String normalize(Object object) throws BaseException {
         return normalize(object, null);
@@ -125,7 +128,8 @@ public class StringHelper {
      * @param object The object to be normalized to a string.
      * @param encoding  The character set to use.
      * @return       A string representation of the given object.
-     * @throws BaseException
+     * @throws BaseException If the given encoding is unsupported, or if
+     *                       there is an error reading from the java.io.InputStream.
      */
     public static String normalize(Object object, String encoding) throws BaseException {
         if (object == null) return null;

@@ -108,19 +108,27 @@ public class IDataComparator implements java.util.Comparator<com.wm.data.IData> 
             } else {
                 switch(criterion.getType()) {
                     case INTEGER:
-                        firstValue = IntegerHelper.parse(firstValue.toString());
-                        secondValue = IntegerHelper.parse(secondValue.toString());
+                        try {
+                            firstValue = IntegerHelper.parse(firstValue.toString());
+                            secondValue = IntegerHelper.parse(secondValue.toString());
+                        } catch(BaseException ex) {
+                            // ignore the exception and let the comparison continue
+                        }
                         break;
                     case DECIMAL:
-                        firstValue = DecimalHelper.parse(firstValue.toString());
-                        secondValue = DecimalHelper.parse(secondValue.toString());
+                        try {
+                            firstValue = DecimalHelper.parse(firstValue.toString());
+                            secondValue = DecimalHelper.parse(secondValue.toString());
+                        } catch(BaseException ex) {
+                            // ignore the exception and let the comparison continue.
+                        }
                         break;
                     case DATETIME:
                         try {
                             firstValue = DateTimeHelper.parse(firstValue.toString(), criterion.getPattern());
                             secondValue = DateTimeHelper.parse(secondValue.toString(), criterion.getPattern());
                         } catch (BaseException ex) {
-                            throw new RuntimeException(ex);
+                            // ignore the exception and let the comparison continue
                         }
                         break;
                     case DURATION:
@@ -128,7 +136,7 @@ public class IDataComparator implements java.util.Comparator<com.wm.data.IData> 
                             firstValue = IntegerHelper.parse(DurationHelper.format(firstValue.toString(), criterion.getPattern(), "milliseconds"));
                             secondValue = IntegerHelper.parse(DurationHelper.format(secondValue.toString(), criterion.getPattern(), "milliseconds"));
                         } catch (BaseException ex) {
-                            throw new RuntimeException(ex);
+                            // ignore the exception and let the comparison continue
                         }
                         break;
                     case STRING:

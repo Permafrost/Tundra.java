@@ -447,6 +447,8 @@ public class DurationHelper {
      * @param instant         A java.util.Calendar used as a starting instant
      *                        to resolve indeterminate values (such as the number
      *                        of days in a month).
+     * @return                A duration string formatted according to the pattern
+     *                        representing the given duration.
      */
     public static String emit(Duration input, DurationPattern pattern, Calendar instant) {
         return emit(input, pattern, instant == null ? null : instant.getTime());

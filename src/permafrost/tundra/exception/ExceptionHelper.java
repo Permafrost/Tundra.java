@@ -35,7 +35,7 @@ public class ExceptionHelper {
      * list of causes.
      *
      * @param causes The list of exceptions which caused this new BaseException to be thrown.
-     * @throws BaseException
+     * @throws BaseException Always throws a new BaseException using the given list of causes.
      */
     public static void raise(Throwable[] causes) throws BaseException {
         raise(getMessage(causes));
@@ -46,7 +46,7 @@ public class ExceptionHelper {
      * list of causes.
      *
      * @param causes The list of exceptions which caused this new BaseException to be thrown.
-     * @throws BaseException
+     * @throws BaseException Always throws a new BaseException using the given list of causes.
      */
     public static void raise(java.util.Collection<Throwable> causes) throws BaseException {
         raise(getMessage(causes == null ? null : causes.toArray(new Throwable[causes.size()])));
@@ -58,7 +58,7 @@ public class ExceptionHelper {
      *
      * @param message A message describing why this new BaseException was thrown.
      * @param cause The exception which caused this new BaseException to be thrown.
-     * @throws BaseException
+     * @throws BaseException Always throws a new BaseException using the given message and cause.
      */
     public static void raise(String message, Throwable cause) throws BaseException {
         raise(new BaseException(message, cause));
@@ -69,7 +69,7 @@ public class ExceptionHelper {
      * cause.
      *
      * @param cause The exception which caused this new BaseException to be thrown.
-     * @throws BaseException
+     * @throws BaseException Always throws a new BaseException using the given cause.
      */
     public static void raise(Throwable cause) throws BaseException {
         raise(new BaseException(cause));
@@ -79,7 +79,7 @@ public class ExceptionHelper {
      * Throws a new BaseException with the given message.
      *
      * @param message A message describing why this new BaseException was thrown.
-     * @throws BaseException
+     * @throws BaseException Always throws a new BaseException using the given message.
      */
     public static void raise(String message) throws BaseException {
         throw new BaseException(message == null ? "" : message);
@@ -88,7 +88,7 @@ public class ExceptionHelper {
     /**
      * Throws a new BaseException.
      *
-     * @throws BaseException
+     * @throws BaseException Always throws a new BaseException.
      */
     public static void raise() throws BaseException {
         throw new BaseException("");
