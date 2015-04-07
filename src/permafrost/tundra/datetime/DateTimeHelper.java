@@ -618,4 +618,176 @@ public class DateTimeHelper {
     public static String now(String pattern, TimeZone timezone) {
         return emit(java.util.Calendar.getInstance(), pattern, timezone);
     }
+
+    /**
+     * Reformats the given datetime string according to the desired pattern.
+     * @param input      The datetime string to be reformatted.
+     * @param inPattern  The pattern the given input datetime string adheres to.
+     * @param outPattern The pattern the datetime string should be reformatted as.
+     * @return           The given datetime string reformatted according to the given outPattern.
+     * @throws BaseException If the given datetime string is unparseable.
+     */
+    public static String format(String input, String inPattern, String outPattern) throws BaseException {
+        return format(input, inPattern, (TimeZone) null, outPattern, (TimeZone) null);
+    }
+
+    /**
+     * Reformats the given datetime string according to the desired pattern.
+     * @param input       The datetime string to be reformatted.
+     * @param inPattern   The pattern the given input datetime string adheres to.
+     * @param inTimeZone  The time zone ID identifying the time zone the given datetime string should be parsed in.
+     * @param outPattern  The pattern the datetime string should be reformatted as.
+     * @param outTimeZone The time zone ID identifying the time zone the returned datetime string should be in.
+     * @return            The given datetime string reformatted according to the given outPattern.
+     * @throws BaseException If the given datetime string is unparseable.
+     */
+    public static String format(String input, String inPattern, String inTimeZone, String outPattern, String outTimeZone) throws BaseException {
+        return format(input, inPattern, TimeZoneHelper.get(inTimeZone), outPattern, TimeZoneHelper.get(outTimeZone));
+    }
+
+    /**
+     * Reformats the given datetime string according to the desired pattern.
+     * @param input       The datetime string to be reformatted.
+     * @param inPattern   The pattern the given input datetime string adheres to.
+     * @param inTimeZone  The time zone the given datetime string should be parsed in.
+     * @param outPattern  The pattern the datetime string should be reformatted as.
+     * @param outTimeZone The time zone the returned datetime string should be in.
+     * @return            The given datetime string reformatted according to the given outPattern.
+     * @throws BaseException If the given datetime string is unparseable.
+     */
+    public static String format(String input, String inPattern, TimeZone inTimeZone, String outPattern, TimeZone outTimeZone) throws BaseException {
+        return emit(parse(input, inPattern, inTimeZone), outPattern, outTimeZone);
+    }
+
+    /**
+     * Reformats the given datetime string according to the desired pattern.
+     * @param input      The datetime string to be reformatted.
+     * @param inPatterns The list of patterns the given input datetime string might adhere to.
+     * @param outPattern The pattern the datetime string should be reformatted as.
+     * @return           The given datetime string reformatted according to the given outPattern.
+     * @throws BaseException If the given datetime string is unparseable.
+     */
+    public static String format(String input, String[] inPatterns, String outPattern) throws BaseException {
+        return format(input, inPatterns, (TimeZone) null, outPattern, (TimeZone) null);
+    }
+
+    /**
+     * Reformats the given datetime string according to the desired pattern.
+     * @param input      The datetime string to be reformatted.
+     * @param inPatterns The list of patterns the given input datetime string might adhere to.
+     * @param inTimeZone  The time zone ID identifying the time zone the given datetime string should be parsed in.
+     * @param outPattern The pattern the datetime string should be reformatted as.
+     * @param outTimeZone The time zone ID identifying the time zone the returned datetime string should be in.
+     * @return           The given datetime string reformatted according to the given outPattern.
+     * @throws BaseException If the given datetime string is unparseable.
+     */
+    public static String format(String input, String[] inPatterns, String inTimeZone, String outPattern, String outTimeZone) throws BaseException {
+        return format(input, inPatterns, TimeZoneHelper.get(inTimeZone), outPattern, TimeZoneHelper.get(outTimeZone));
+    }
+
+    /**
+     * Reformats the given datetime string according to the desired pattern.
+     * @param input      The datetime string to be reformatted.
+     * @param inPatterns The list of patterns the given input datetime string might adhere to.
+     * @param inTimeZone The time zone the given datetime string should be parsed in.
+     * @param outPattern The pattern the datetime string should be reformatted as.
+     * @param outTimeZone The time zone the returned datetime string should be in.
+     * @return           The given datetime string reformatted according to the given outPattern.
+     * @throws BaseException If the given datetime string is unparseable.
+     */
+    public static String format(String input, String[] inPatterns, TimeZone inTimeZone, String outPattern, TimeZone outTimeZone) throws BaseException {
+        return emit(parse(input, inPatterns, inTimeZone), outPattern, outTimeZone);
+    }
+
+    /**
+     * Reformats the given list of datetime strings according to the desired pattern.
+     * @param inputs     The list of datetime strings to be reformatted.
+     * @param inPattern  The pattern the given input datetime strings adhere to.
+     * @param outPattern The pattern the datetime strings should be reformatted as.
+     * @return           The given datetime strings reformatted according to the given outPattern.
+     * @throws BaseException If any of the given datetime strings are unparseable.
+     */
+    public static String[] format(String[] inputs, String inPattern, String outPattern) throws BaseException {
+        return format(inputs, inPattern, (TimeZone) null, outPattern, (TimeZone) null);
+    }
+
+    /**
+     * Reformats the given list of datetime strings according to the desired pattern.
+     * @param inputs      The list of datetime strings to be reformatted.
+     * @param inPattern   The pattern the given input datetime strings adhere to.
+     * @param inTimeZone  The time zone ID identifying the time zone the given datetime string should be parsed in.
+     * @param outPattern  The pattern the datetime strings should be reformatted as.
+     * @param outTimeZone The time zone ID identifying the time zone the returned datetime string should be in.
+     * @return            The given datetime strings reformatted according to the given outPattern.
+     * @throws BaseException If any of the given datetime strings are unparseable.
+     */
+    public static String[] format(String[] inputs, String inPattern, String inTimeZone, String outPattern, String outTimeZone) throws BaseException {
+        return format(inputs, inPattern, TimeZoneHelper.get(inTimeZone), outPattern, TimeZoneHelper.get(outTimeZone));
+    }
+
+    /**
+     * Reformats the given list of datetime strings according to the desired pattern.
+     * @param inputs      The list of datetime strings to be reformatted.
+     * @param inPattern   The pattern the given input datetime strings adhere to.
+     * @param inTimeZone  The time zone the given datetime string should be parsed in.
+     * @param outPattern  The pattern the datetime strings should be reformatted as.
+     * @param outTimeZone The time zone the returned datetime string should be in.
+     * @return            The given datetime strings reformatted according to the given outPattern.
+     * @throws BaseException If any of the given datetime strings are unparseable.
+     */
+    public static String[] format(String[] inputs, String inPattern, TimeZone inTimeZone, String outPattern, TimeZone outTimeZone) throws BaseException {
+        if (inputs == null) return null;
+
+        String[] outputs = new String[inputs.length];
+        for (int i = 0; i < inputs.length; i++) {
+            outputs[i] = format(inputs[i], inPattern, inTimeZone, outPattern, outTimeZone);
+        }
+        return outputs;
+    }
+
+    /**
+     * Reformats the given datetime string according to the desired pattern.
+     * @param inputs     The list of datetime strings to be reformatted.
+     * @param inPatterns The list of patterns the given input datetime string might adhere to.
+     * @param outPattern The pattern the datetime string should be reformatted as.
+     * @return           The given datetime string reformatted according to the given outPattern.
+     * @throws BaseException If any of the given datetime strings are unparseable.
+     */
+    public static String[] format(String[] inputs, String[] inPatterns, String outPattern) throws BaseException {
+        return format(inputs, inPatterns, (TimeZone)null, outPattern, (TimeZone)null);
+    }
+
+    /**
+     * Reformats the given datetime string according to the desired pattern.
+     * @param inputs         The list of datetime strings to be reformatted.
+     * @param inPatterns     The list of patterns the given input datetime string might adhere to.
+     * @param inTimeZone     The time zone ID identifying the time zone the given datetime string should be parsed in.
+     * @param outPattern     The pattern the datetime string should be reformatted as.
+     * @param outTimeZone    The time zone ID identifying the time zone the returned datetime string should be in.
+     * @return               The given datetime string reformatted according to the given outPattern.
+     * @throws BaseException If any of the given datetime strings are unparseable.
+     */
+    public static String[] format(String[] inputs, String[] inPatterns, String inTimeZone, String outPattern, String outTimeZone) throws BaseException {
+        return format(inputs, inPatterns, TimeZoneHelper.get(inTimeZone), outPattern, TimeZoneHelper.get(outTimeZone));
+    }
+
+    /**
+     * Reformats the given datetime string according to the desired pattern.
+     * @param inputs         The list of datetime strings to be reformatted.
+     * @param inPatterns     The list of patterns the given input datetime string might adhere to.
+     * @param inTimeZone     The time zone the given datetime string should be parsed in.
+     * @param outPattern     The pattern the datetime string should be reformatted as.
+     * @param outTimeZone    The time zone the returned datetime string should be in.
+     * @return               The given datetime string reformatted according to the given outPattern.
+     * @throws BaseException If any of the given datetime strings are unparseable.
+     */
+    public static String[] format(String[] inputs, String[] inPatterns, TimeZone inTimeZone, String outPattern, TimeZone outTimeZone) throws BaseException {
+        if (inputs == null) return null;
+
+        String[] outputs = new String[inputs.length];
+        for (int i = 0; i < inputs.length; i++) {
+            outputs[i] = format(inputs[i], inPatterns, inTimeZone, outPattern, outTimeZone);
+        }
+        return outputs;
+    }
 }
