@@ -1,11 +1,11 @@
 permafrost.tundra.array
 permafrost.tundra.bytes
-permafrost.tundra.data
 permafrost.tundra.datetime
 permafrost.tundra.duration
 permafrost.tundra.exception
 permafrost.tundra.flow
 permafrost.tundra.http
+permafrost.tundra.idata
 permafrost.tundra.io
 permafrost.tundra.io.filter
 permafrost.tundra.locale
