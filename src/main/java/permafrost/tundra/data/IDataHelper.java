@@ -24,7 +24,12 @@
 
 package permafrost.tundra.data;
 
+import com.wm.data.IData;
+import com.wm.data.IDataPortable;
 import com.wm.data.IDataUtil;
+import com.wm.util.Table;
+import com.wm.util.coder.IDataCodable;
+import com.wm.util.coder.ValuesCodable;
 import permafrost.tundra.array.ArrayHelper;
 import permafrost.tundra.object.ObjectHelper;
 import com.wm.data.IDataCursor;
@@ -32,6 +37,8 @@ import com.wm.data.IDataFactory;
 import permafrost.tundra.exception.BaseException;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Map;
 
 public class IDataHelper {
     /**
@@ -45,7 +52,7 @@ public class IDataHelper {
      * @param input An IData document to retrieve the keys from.
      * @return The list of keys present in the given IData document.
      */
-    public static String[] getKeys(com.wm.data.IData input) {
+    public static String[] getKeys(IData input) {
         return getKeys(input, null);
     }
 
@@ -60,7 +67,7 @@ public class IDataHelper {
      *                      document that match the given regular expression
      *                      pattern.
      */
-    public static String[] getKeys(com.wm.data.IData input, String patternString) {
+    public static String[] getKeys(IData input, String patternString) {
         java.util.regex.Pattern pattern = null;
         if (patternString != null) pattern = java.util.regex.Pattern.compile(patternString);
 
@@ -88,14 +95,14 @@ public class IDataHelper {
      * @param input An IData document from which to return all values.
      * @return The list of values present in the given IData document.
      */
-    public static java.lang.Object[] getValues(com.wm.data.IData input) {
+    public static Object[] getValues(IData input) {
         java.util.List values = new java.util.ArrayList();
         java.util.Set<Class<?>> classes = new java.util.LinkedHashSet<Class<?>>();
 
         if (input != null) {
             IDataCursor cursor = input.getCursor();
             while(cursor.next()) {
-                java.lang.Object value = cursor.getValue();
+                Object value = cursor.getValue();
                 if (value != null) classes.add(value.getClass());
                 values.add(value);
             }
@@ -103,9 +110,9 @@ public class IDataHelper {
         }
 
         Class<?> nearestAncestor = ObjectHelper.getNearestAncestor(classes);
-        if (nearestAncestor == null) nearestAncestor = java.lang.Object.class;
+        if (nearestAncestor == null) nearestAncestor = Object.class;
 
-        return values.toArray((java.lang.Object[]) java.lang.reflect.Array.newInstance(nearestAncestor, 0));
+        return values.toArray((Object[]) java.lang.reflect.Array.newInstance(nearestAncestor, 0));
     }
 
     /**
@@ -115,8 +122,8 @@ public class IDataHelper {
      * @return A new IData document containing the keys and values from all
      *         merged input documents.
      */
-    public static com.wm.data.IData merge(com.wm.data.IData... input) {
-        com.wm.data.IData output = IDataFactory.create();
+    public static IData merge(IData... input) {
+        IData output = IDataFactory.create();
         if (input != null) {
             for (int i = 0; i < input.length; i++) {
                 IDataUtil.merge(input[i], output);
@@ -133,7 +140,7 @@ public class IDataHelper {
      *         IData document but with its keys sorted in natural ascending
      *         order.
      */
-    public static com.wm.data.IData sort(com.wm.data.IData input) {
+    public static IData sort(IData input) {
         return sort(input, true);
     }
 
@@ -147,13 +154,13 @@ public class IDataHelper {
      *                  IData document but with its keys sorted in natural ascending
      *                  order.
      */
-    public static com.wm.data.IData sort(com.wm.data.IData input, boolean recurse) {
+    public static IData sort(IData input, boolean recurse) {
         if (input == null) return null;
 
         String[] keys = getKeys(input);
         java.util.Arrays.sort(keys);
 
-        com.wm.data.IData output = IDataFactory.create();
+        IData output = IDataFactory.create();
         IDataCursor ic = input.getCursor();
         IDataCursor oc = output.getCursor();
 
@@ -167,13 +174,13 @@ public class IDataHelper {
             }
 
             if (result) {
-                java.lang.Object value = ic.getValue();
+                Object value = ic.getValue();
 
                 if (value != null && recurse) {
-                    if (value instanceof com.wm.data.IData) {
-                        value = sort((com.wm.data.IData)value, recurse);
-                    } else if (value instanceof com.wm.data.IData[] || value instanceof com.wm.util.Table) {
-                        com.wm.data.IData[] array = value instanceof com.wm.data.IData[] ? (com.wm.data.IData[])value : ((com.wm.util.Table)value).getValues();
+                    if (value instanceof IData) {
+                        value = sort((IData)value, recurse);
+                    } else if (value instanceof IData[] || value instanceof Table) {
+                        IData[] array = value instanceof IData[] ? (IData[])value : ((Table)value).getValues();
                         for (int j = 0; j < array.length; j++) {
                             array[j] = sort(array[j], recurse);
                         }
@@ -196,7 +203,7 @@ public class IDataHelper {
      * @param input An IData document.
      * @return The number of key value pairs in the given IData document.
      */
-    public static int size(com.wm.data.IData input) {
+    public static int size(IData input) {
         int size = 0;
         if (input != null) {
             IDataCursor cursor = input.getCursor();
@@ -213,7 +220,7 @@ public class IDataHelper {
      *  @return         A new IData document which is a copy of the given IData document.
      *  @throws BaseException
      */
-    public static com.wm.data.IData duplicate(com.wm.data.IData input) throws BaseException {
+    public static IData duplicate(IData input) throws BaseException {
         return duplicate(input, true);
     }
 
@@ -226,8 +233,8 @@ public class IDataHelper {
      *  @return         A new IData document which is a copy of the given IData document.
      *  @throws BaseException
      */
-    public static com.wm.data.IData duplicate(com.wm.data.IData input, boolean recurse) throws BaseException {
-        com.wm.data.IData output = null;
+    public static IData duplicate(IData input, boolean recurse) throws BaseException {
+        IData output = null;
         if (input != null) {
             IDataCursor cursor = input.getCursor();
             try {
@@ -252,7 +259,7 @@ public class IDataHelper {
      *  @param key      A simple or fully-qualified key identifying the value to
      *                  be removed from the given IData document.
      */
-    public static com.wm.data.IData drop(com.wm.data.IData input, String key) {
+    public static IData drop(IData input, String key) {
         if (input != null && key != null) {
             IDataCursor cursor = input.getCursor();
             IDataUtil.remove(cursor, key);
@@ -270,21 +277,21 @@ public class IDataHelper {
      *  @param keys     A fully-qualified key identifying the value to
      *                  be removed from the given IData document.
      */
-    private static com.wm.data.IData drop(com.wm.data.IData input, java.util.Queue<Key> keys) {
+    private static IData drop(IData input, java.util.Queue<Key> keys) {
         if (input != null && keys != null && keys.size() > 0) {
             IDataCursor cursor = input.getCursor();
             Key key = keys.remove();
 
             if (keys.size() > 0) {
                 if (key.hasIndex()) {
-                    com.wm.data.IData[] array = IDataUtil.getIDataArray(cursor, key.toString());
+                    IData[] array = IDataUtil.getIDataArray(cursor, key.toString());
                     drop(ArrayHelper.get(array, key.getIndex()), keys);
                 } else {
                     drop(IDataUtil.getIData(cursor, key.toString()), keys);
                 }
             } else {
                 if (key.hasIndex()) {
-                    java.lang.Object[] array = IDataUtil.getObjectArray(cursor, key.toString());
+                    Object[] array = IDataUtil.getObjectArray(cursor, key.toString());
                     IDataUtil.put(cursor, key.toString(), ArrayHelper.drop(array, key.getIndex()));
                 } else {
                     IDataUtil.remove(cursor, key.toString());
@@ -303,7 +310,7 @@ public class IDataHelper {
      *               the given IData document to be renamed.
      * @param target The new simple or fully-qualified key for the renamed value.
      */
-    public static void rename(com.wm.data.IData input, String source, String target) {
+    public static void rename(IData input, String source, String target) {
         if (!source.equals(target)) {
             copy(input, source, target);
             drop(input, source);
@@ -318,7 +325,7 @@ public class IDataHelper {
      *               IData document to be copied.
      * @param target A simple or fully-qualified key the source value will be copied to.
      */
-    public static void copy(com.wm.data.IData input, String source, String target) {
+    public static void copy(IData input, String source, String target) {
         if (!source.equals(target)) {
             put(input, target, get(input, source));
         }
@@ -330,26 +337,30 @@ public class IDataHelper {
      * @param value   An Object to be normalized.
      * @return        A new normalized version of the given Object.
      */
-    private static java.lang.Object normalizeObject(java.lang.Object value) {
+    private static Object normalizeObject(Object value) {
         if (value != null) {
-            if (value instanceof com.wm.util.coder.IDataCodable) {
-                value = normalize((com.wm.util.coder.IDataCodable) value);
-            } else if (value instanceof com.wm.util.coder.ValuesCodable) {
-                value = normalize((com.wm.util.coder.ValuesCodable) value);
-            } else if (value instanceof com.wm.util.coder.IDataCodable[]) {
-                value = normalize((com.wm.util.coder.IDataCodable[]) value);
-            } else if (value instanceof com.wm.util.coder.ValuesCodable[]) {
-                value = normalize((com.wm.util.coder.ValuesCodable[]) value);
-            } else if (value instanceof com.wm.util.Table) {
-                value = normalize((com.wm.util.Table) value);
-            } else if (value instanceof com.wm.data.IData[]) {
-                value = normalize((com.wm.data.IData[]) value);
-            } else if (value instanceof com.wm.data.IData) {
-                value = normalize((com.wm.data.IData) value);
-            } else if (value instanceof java.util.Map) {
-                value = normalize((java.util.Map) value);
-            } else if (value instanceof java.util.Collection) {
-                value = normalize((java.util.Collection) value);
+            if (value instanceof IDataCodable) {
+                value = normalize((IDataCodable) value);
+            } else if (value instanceof IDataPortable) {
+                value = normalize((IDataPortable)value);
+            } else if (value instanceof ValuesCodable) {
+                value = normalize((ValuesCodable) value);
+            } else if (value instanceof IDataCodable[]) {
+                value = normalize((IDataCodable[]) value);
+            } else if (value instanceof IDataPortable[]) {
+                value = normalize((IDataPortable[])value);
+            } else if (value instanceof ValuesCodable[]) {
+                value = normalize((ValuesCodable[]) value);
+            } else if (value instanceof Table) {
+                value = normalize((Table) value);
+            } else if (value instanceof IData[]) {
+                value = normalize((IData[]) value);
+            } else if (value instanceof IData) {
+                value = normalize((IData) value);
+            } else if (value instanceof Map) {
+                value = normalize((Map) value);
+            } else if (value instanceof Collection) {
+                value = normalize((Collection) value);
             }
         }
 
@@ -364,10 +375,10 @@ public class IDataHelper {
      * @param input   An IData document to be normalized.
      * @return        A new normalized version of the given IData document.
      */
-    public static com.wm.data.IData normalize(com.wm.data.IData input) {
+    public static IData normalize(IData input) {
         if (input == null) return null;
 
-        com.wm.data.IData output = IDataFactory.create();
+        IData output = IDataFactory.create();
         IDataCursor inputCursor = input.getCursor();
 
         try {
@@ -388,13 +399,13 @@ public class IDataHelper {
      * @param input A java.util.Map to be converted to an IData object.
      * @return      An IData representation of the given java.util.Map object.
      */
-    public static com.wm.data.IData normalize(java.util.Map input) {
+    public static IData normalize(Map input) {
         if (input == null) return null;
 
-        com.wm.data.IData output = IDataFactory.create();
+        IData output = IDataFactory.create();
         IDataCursor cursor = output.getCursor();
 
-        for (java.lang.Object key : input.keySet()) {
+        for (Object key : input.keySet()) {
             if (key != null) {
                 put(output, key.toString(), normalizeObject(input.get(key)));
             }
@@ -411,22 +422,22 @@ public class IDataHelper {
      * @param input A java.util.List to be converted to an Object[].
      * @return      An Object[] representation of the given java.util.List object.
      */
-    public static java.lang.Object[] normalize(java.util.Collection input) {
+    public static Object[] normalize(Collection input) {
         if (input == null) return null;
 
         java.util.List values = new java.util.ArrayList(input.size());
         java.util.Set<Class<?>> classes = new java.util.LinkedHashSet<Class<?>>();
 
-        for (java.lang.Object value : input) {
+        for (Object value : input) {
             value = normalizeObject(value);
             if (value != null) classes.add(value.getClass());
             values.add(value);
         }
 
         Class<?> nearestAncestor = ObjectHelper.getNearestAncestor(classes);
-        if (nearestAncestor == null) nearestAncestor = java.lang.Object.class;
+        if (nearestAncestor == null) nearestAncestor = Object.class;
 
-        return values.toArray((java.lang.Object[]) java.lang.reflect.Array.newInstance(nearestAncestor, values.size()));
+        return values.toArray((Object[]) java.lang.reflect.Array.newInstance(nearestAncestor, values.size()));
     }
 
     /**
@@ -435,7 +446,7 @@ public class IDataHelper {
      * @param input     An IDataCodable object to be normalized.
      * @return          An IData representation for the given IDataCodable object.
      */
-    public static com.wm.data.IData normalize(com.wm.util.coder.IDataCodable input) {
+    public static IData normalize(IDataCodable input) {
         if (input == null) return null;
         return normalize(input.getIData());
     }
@@ -448,10 +459,40 @@ public class IDataHelper {
      * @param input   An IDataCodable[] list to be normalized.
      * @return        A new normalized IData[] version of the given IDataCodable[] list.
      */
-    public static com.wm.data.IData[] normalize(com.wm.util.coder.IDataCodable[] input) {
+    public static IData[] normalize(IDataCodable[] input) {
         if (input == null) return null;
 
-        com.wm.data.IData[] output = new com.wm.data.IData[input.length];
+        IData[] output = new IData[input.length];
+        for (int i = 0; i < input.length; i++) {
+            output[i] = normalize(input[i]);
+        }
+
+        return output;
+    }
+
+    /**
+     * Normalizes an IDataPortable object to an IData representation.
+     *
+     * @param input     An IDataPortable object to be normalized.
+     * @return          An IData representation for the given IDataPortable object.
+     */
+    public static IData normalize(IDataPortable input) {
+        if (input == null) return null;
+        return normalize(input.getAsData());
+    }
+
+    /**
+     * Normalizes an IDataPortable[] where all items are converted to IData documents
+     * implemented with the same class, and all fully-qualified keys are replaced with
+     * their representative nested structure.
+     *
+     * @param input   An IDataPortable[] list to be normalized.
+     * @return        A new normalized IData[] version of the given IDataPortable[] list.
+     */
+    public static IData[] normalize(IDataPortable[] input) {
+        if (input == null) return null;
+
+        IData[] output = new IData[input.length];
         for (int i = 0; i < input.length; i++) {
             output[i] = normalize(input[i]);
         }
@@ -465,7 +506,7 @@ public class IDataHelper {
      * @param input     An ValuesCodable object to be normalized.
      * @return          An IData representation for the given ValuesCodable object.
      */
-    public static com.wm.data.IData normalize(com.wm.util.coder.ValuesCodable input) {
+    public static IData normalize(ValuesCodable input) {
         if (input == null) return null;
         return normalize(input.getValues());
     }
@@ -478,10 +519,10 @@ public class IDataHelper {
      * @param input   An ValuesCodable[] list to be normalized.
      * @return        A new normalized IData[] version of the given ValuesCodable[] list.
      */
-    public static com.wm.data.IData[] normalize(com.wm.util.coder.ValuesCodable[] input) {
+    public static IData[] normalize(ValuesCodable[] input) {
         if (input == null) return null;
 
-        com.wm.data.IData[] output = new com.wm.data.IData[input.length];
+        IData[] output = new IData[input.length];
         for (int i = 0; i < input.length; i++) {
             output[i] = normalize(input[i]);
         }
@@ -496,10 +537,10 @@ public class IDataHelper {
      * @param input   An IData[] document list to be normalized.
      * @return        A new normalized version of the given IData[] document list.
      */
-    public static com.wm.data.IData[] normalize(com.wm.data.IData[] input) {
+    public static IData[] normalize(IData[] input) {
         if (input == null) return null;
 
-        com.wm.data.IData[] output = new com.wm.data.IData[input.length];
+        IData[] output = new IData[input.length];
         for (int i = 0; i < input.length; i++) {
             output[i] = normalize(input[i]);
         }
@@ -513,7 +554,7 @@ public class IDataHelper {
      * @param input     A com.wm.util.Table object to be normalized.
      * @return          An IData[] representation of the given com.wm.util.Table object.
      */
-    public static com.wm.data.IData[] normalize(com.wm.util.Table input) {
+    public static IData[] normalize(Table input) {
         if (input == null) return null;
         return normalize(input.getValues());
     }
@@ -526,10 +567,10 @@ public class IDataHelper {
      * @param keysToBePreserved List of simple or fully-qualified keys identifying
      *                          items that should not be removed.
      */
-    public static void clear(com.wm.data.IData document, String[] keysToBePreserved) {
+    public static void clear(IData document, String[] keysToBePreserved) {
         if (document == null) return;
 
-        com.wm.data.IData saved = IDataFactory.create();
+        IData saved = IDataFactory.create();
         if (keysToBePreserved != null) {
             for (String key : keysToBePreserved) {
                 put(saved, key, get(document, key), false);
@@ -556,8 +597,8 @@ public class IDataHelper {
      * @return             Either the value associated with the given key in the given IData
      *                     document, or the given defaultValue if null.
      */
-    public static java.lang.Object get(com.wm.data.IData input, String key, java.lang.Object defaultValue) {
-        java.lang.Object value = get(input, key);
+    public static Object get(IData input, String key, Object defaultValue) {
+        Object value = get(input, key);
         if (value == null) value = defaultValue;
 
         return value;
@@ -572,10 +613,10 @@ public class IDataHelper {
      * @return             Either the value associated with the given key in the given IData
      *                     document.
      */
-    public static java.lang.Object get(com.wm.data.IData input, String key) {
+    public static Object get(IData input, String key) {
         if (input == null || key == null) return null;
 
-        java.lang.Object value = null;
+        Object value = null;
         // try finding a value that matches the literal key
         IDataCursor cursor = input.getCursor();
         try {
@@ -600,8 +641,8 @@ public class IDataHelper {
      * @return                  Either the value associated with the given key in the given
      *                          IData document.
      */
-    private static java.lang.Object get(com.wm.data.IData input, java.util.Queue<Key> fullyQualifiedKey) {
-        java.lang.Object value = null;
+    private static Object get(IData input, java.util.Queue<Key> fullyQualifiedKey) {
+        Object value = null;
 
         if (input != null && fullyQualifiedKey != null && fullyQualifiedKey.size() > 0) {
             IDataCursor cursor = input.getCursor();
@@ -611,8 +652,8 @@ public class IDataHelper {
                 if (key.hasIndex()) {
                     value = IDataUtil.get(cursor, key.toString());
                     if (value != null) {
-                        if (value instanceof com.wm.data.IData[] || value instanceof com.wm.util.Table) {
-                            com.wm.data.IData[] array = value instanceof com.wm.data.IData[] ? (com.wm.data.IData[])value : ((com.wm.util.Table)value).getValues();
+                        if (value instanceof IData[] || value instanceof Table) {
+                            IData[] array = value instanceof IData[] ? (IData[])value : ((Table)value).getValues();
                             value = get(ArrayHelper.get(array, key.getIndex()), fullyQualifiedKey);
                         } else {
                             value = null;
@@ -625,8 +666,8 @@ public class IDataHelper {
                 if (key.hasIndex()) {
                     value = IDataUtil.get(cursor, key.toString());
                     if (value != null) {
-                        if (value instanceof java.lang.Object[] || value instanceof com.wm.util.Table) {
-                            java.lang.Object[] array = value instanceof java.lang.Object[] ? (java.lang.Object[])value : ((com.wm.util.Table)value).getValues();
+                        if (value instanceof Object[] || value instanceof Table) {
+                            Object[] array = value instanceof Object[] ? (Object[])value : ((Table)value).getValues();
                             value = ArrayHelper.get(array, key.getIndex());
                         } else {
                             value = null;
@@ -652,7 +693,7 @@ public class IDataHelper {
      * @param value The value to be set.
      * @return      The input IData document with the value set.
      */
-    public static com.wm.data.IData put(com.wm.data.IData input, String key, java.lang.Object value) {
+    public static IData put(IData input, String key, Object value) {
         return put(input, key == null ? null : Key.parse(key), value, true);
     }
 
@@ -667,7 +708,7 @@ public class IDataHelper {
      *                      is only set when it is not null.
      * @return              The input IData document with the value set.
      */
-    public static com.wm.data.IData put(com.wm.data.IData input, String key, java.lang.Object value, boolean includeNull) {
+    public static IData put(IData input, String key, Object value, boolean includeNull) {
         return put(input, key == null ? null : Key.parse(key), value, includeNull);
     }
 
@@ -682,7 +723,7 @@ public class IDataHelper {
      *                          is only set when it is not null.
      * @return                  The input IData document with the value set.
      */
-    private static com.wm.data.IData put(com.wm.data.IData input, java.util.Queue<Key> fullyQualifiedKey, java.lang.Object value, boolean includeNull) {
+    private static IData put(IData input, java.util.Queue<Key> fullyQualifiedKey, Object value, boolean includeNull) {
         if (!includeNull && value == null) return input;
 
         if (fullyQualifiedKey != null && fullyQualifiedKey.size() > 0) {
@@ -693,20 +734,20 @@ public class IDataHelper {
 
             if (fullyQualifiedKey.size() > 0) {
                 if (key.hasIndex()) {
-                    com.wm.data.IData[] array = IDataUtil.getIDataArray(cursor, key.toString());
-                    com.wm.data.IData child = null;
+                    IData[] array = IDataUtil.getIDataArray(cursor, key.toString());
+                    IData child = null;
                     try { child = ArrayHelper.get(array, key.getIndex()); } catch(ArrayIndexOutOfBoundsException ex) { }
-                    value = ArrayHelper.put(array, put(child, fullyQualifiedKey, value, includeNull), key.getIndex(), com.wm.data.IData.class);
+                    value = ArrayHelper.put(array, put(child, fullyQualifiedKey, value, includeNull), key.getIndex(), IData.class);
                 } else {
                     value = put(IDataUtil.getIData(cursor, key.toString()), fullyQualifiedKey, value, includeNull);
                 }
             } else if (key.hasIndex()) {
-                Class klass = java.lang.Object.class;
+                Class klass = Object.class;
                 if (value != null) {
                     if (value instanceof String) {
                         klass = String.class;
-                    } else if (value instanceof com.wm.data.IData) {
-                        klass = com.wm.data.IData.class;
+                    } else if (value instanceof IData) {
+                        klass = IData.class;
                     }
                 }
                 value = ArrayHelper.put(IDataUtil.getObjectArray(cursor, key.toString()), value, key.getIndex(), klass);
@@ -724,7 +765,7 @@ public class IDataHelper {
      * @param input An IData object to be converted.
      * @return      A java.util.Map representation of the given IData object.
      */
-    public static java.util.Map<String, java.lang.Object> toMap(com.wm.data.IData input) {
+    public static java.util.Map<String, Object> toMap(IData input) {
         if (input == null) return null;
 
         IDataCursor cursor = input.getCursor();
@@ -732,16 +773,16 @@ public class IDataHelper {
         cursor.destroy();
         cursor = input.getCursor();
 
-        java.util.Map<String, java.lang.Object> output = new java.util.LinkedHashMap<String, java.lang.Object>(size);
+        java.util.Map<String, Object> output = new java.util.LinkedHashMap<String, Object>(size);
 
         while(cursor.next()) {
             String key = cursor.getKey();
-            java.lang.Object value = cursor.getValue();
+            Object value = cursor.getValue();
             if (value != null) {
-                if (value instanceof com.wm.data.IData) {
-                    value = toMap((com.wm.data.IData)value);
-                } else if (value instanceof com.wm.data.IData[] || value instanceof com.wm.util.Table) {
-                    value = toList(value instanceof com.wm.data.IData[] ? (com.wm.data.IData[])value : ((com.wm.util.Table)value).getValues());
+                if (value instanceof IData) {
+                    value = toMap((IData)value);
+                } else if (value instanceof IData[] || value instanceof Table) {
+                    value = toList(value instanceof IData[] ? (IData[])value : ((Table)value).getValues());
                 }
             }
             output.put(key, value);
@@ -758,12 +799,12 @@ public class IDataHelper {
      * @param input An IData[] object to be converted.
      * @return      A java.util.List representation of the given IData[] object.
      */
-    public static java.util.List<java.util.Map<String, java.lang.Object>> toList(com.wm.data.IData[] input) {
+    public static java.util.List<java.util.Map<String, Object>> toList(IData[] input) {
         if (input == null) return null;
 
-        java.util.List<java.util.Map<String, java.lang.Object>> output = new java.util.ArrayList<java.util.Map<String, java.lang.Object>>(input.length);
+        java.util.List<java.util.Map<String, Object>> output = new java.util.ArrayList<java.util.Map<String, Object>>(input.length);
 
-        for (com.wm.data.IData item : input) {
+        for (IData item : input) {
             output.add(toMap(item));
         }
 
@@ -777,7 +818,7 @@ public class IDataHelper {
      * @param input An IData[] to retrieve the union set of keys from.
      * @return      The union set of keys from the given IData[].
      */
-    public static String[] getKeys(com.wm.data.IData[] input) {
+    public static String[] getKeys(IData[] input) {
         return getKeys(input, (java.util.regex.Pattern)null);
     }
 
@@ -790,7 +831,7 @@ public class IDataHelper {
      *                      must match.
      * @return              The union set of keys from the given IData[].
      */
-    public static String[] getKeys(com.wm.data.IData[] input, String patternString) {
+    public static String[] getKeys(IData[] input, String patternString) {
         return getKeys(input, patternString == null ? null : java.util.regex.Pattern.compile(patternString));
     }
 
@@ -803,11 +844,11 @@ public class IDataHelper {
      *                must match.
      * @return        The union set of keys from the given IData[].
      */
-    public static String[] getKeys(com.wm.data.IData[] input, java.util.regex.Pattern pattern) {
+    public static String[] getKeys(IData[] input, java.util.regex.Pattern pattern) {
         java.util.Set<String> keys = new java.util.LinkedHashSet<String>();
 
         if (input != null) {
-            for (com.wm.data.IData document : input) {
+            for (IData document : input) {
                 if (document != null) {
                     IDataCursor cursor = document.getCursor();
                     while(cursor.next()) {
@@ -835,7 +876,7 @@ public class IDataHelper {
      * @param key   The key to use to sort the array.
      * @return      A new IData[] array sorted by the given key.
      */
-    public static com.wm.data.IData[] sort(com.wm.data.IData[] array, String key) {
+    public static IData[] sort(IData[] array, String key) {
         return sort(array, key, true);
     }
 
@@ -849,7 +890,7 @@ public class IDataHelper {
      *                  otherwise it will be sorted in descending order.
      * @return          A new IData[] array sorted by the given key.
      */
-    public static com.wm.data.IData[] sort(com.wm.data.IData[] array, String key, boolean ascending) {
+    public static IData[] sort(IData[] array, String key, boolean ascending) {
         String[] keys = null;
         if (key != null) {
             keys = new String[1];
@@ -868,7 +909,7 @@ public class IDataHelper {
      *                  the array.
      * @return          A new IData[] array sorted by the given keys.
      */
-    public static com.wm.data.IData[] sort(com.wm.data.IData[] array, String[] keys) {
+    public static IData[] sort(IData[] array, String[] keys) {
         return sort(array, keys, true);
     }
 
@@ -884,7 +925,7 @@ public class IDataHelper {
      *                  otherwise it will be sorted in descending order.
      * @return          A new IData[] array sorted by the given keys.
      */
-    public static com.wm.data.IData[] sort(com.wm.data.IData[] array, String[] keys, boolean ascending) {
+    public static IData[] sort(IData[] array, String[] keys, boolean ascending) {
         if (array == null || array.length < 2 || keys == null || keys.length == 0) return array;
 
         IDataComparisonCriterion[] criteria = new IDataComparisonCriterion[keys.length];
@@ -903,7 +944,7 @@ public class IDataHelper {
      * @param criteria  One or more sort criteria.
      * @return          A new IData[] array sorted by the given criteria.
      */
-    public static com.wm.data.IData[] sort(com.wm.data.IData[] array, IDataComparisonCriterion ... criteria) {
+    public static IData[] sort(IData[] array, IDataComparisonCriterion ... criteria) {
         if (array == null) return null;
 
         array = java.util.Arrays.copyOf(array, array.length);
@@ -922,22 +963,22 @@ public class IDataHelper {
      * @param key   A fully-qualified key identifying the values to return.
      * @param defaultValue
      */
-    public static java.lang.Object[] getValues(com.wm.data.IData[] input, String key, java.lang.Object defaultValue) {
+    public static Object[] getValues(IData[] input, String key, Object defaultValue) {
         if (input == null || key == null) return null;
 
         java.util.Set<Class<?>> classes = new java.util.LinkedHashSet<Class<?>>();
         java.util.List list = new java.util.ArrayList(input.length);
 
         for (int i = 0; i < input.length; i++) {
-            java.lang.Object value = get(input[i], key, defaultValue);
+            Object value = get(input[i], key, defaultValue);
             if (value != null) classes.add(value.getClass());
             list.add(value);
         }
 
         Class<?> nearestAncestor = ObjectHelper.getNearestAncestor(classes);
-        if (nearestAncestor == null) nearestAncestor = java.lang.Object.class;
+        if (nearestAncestor == null) nearestAncestor = Object.class;
 
-        return list.toArray((java.lang.Object[])java.lang.reflect.Array.newInstance(nearestAncestor, 0));
+        return list.toArray((Object[])java.lang.reflect.Array.newInstance(nearestAncestor, 0));
     }
 
     /**
