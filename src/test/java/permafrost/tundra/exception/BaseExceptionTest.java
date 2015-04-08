@@ -30,7 +30,6 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class BaseExceptionTest {
-
     @Test
     public void testGetMessageWithCause() throws Exception {
         String message = "test";

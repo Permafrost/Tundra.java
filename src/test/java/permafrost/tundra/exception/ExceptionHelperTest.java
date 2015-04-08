@@ -31,7 +31,6 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 public class ExceptionHelperTest {
-
     @Test(expected = BaseException.class)
     public void testRaiseNoArguments() throws Exception {
         ExceptionHelper.raise();
