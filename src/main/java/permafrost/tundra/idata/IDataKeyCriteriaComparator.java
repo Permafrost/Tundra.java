@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package permafrost.tundra.data;
+package permafrost.tundra.idata;
 
 import permafrost.tundra.exception.BaseException;
 import permafrost.tundra.math.DecimalHelper;
@@ -34,15 +34,15 @@ import permafrost.tundra.duration.DurationHelper;
  * Compares two IData objects using the values associated with the given
  * list of keys in precedence order.
  */
-public class IDataComparator implements java.util.Comparator<com.wm.data.IData> {
-    protected java.util.List<IDataComparisonCriterion> criteria;
+public class IDataKeyCriteriaComparator implements IDataComparator {
+    protected java.util.List<IDataKeyComparisonCriterion> criteria;
 
     /**
      * Construct a new IDataComparator with one or more comparison criteria.
      *
      * @param criteria The comparison criteria to be used when comparing IData objects.
      */
-    public IDataComparator(IDataComparisonCriterion... criteria) {
+    public IDataKeyCriteriaComparator(IDataKeyComparisonCriterion... criteria) {
         this(java.util.Arrays.asList(criteria));
     }
 
@@ -51,7 +51,7 @@ public class IDataComparator implements java.util.Comparator<com.wm.data.IData> 
      *
      * @param criteria The comparison criteria to be used when comparing IData objects.
      */
-    public IDataComparator(java.util.List<IDataComparisonCriterion> criteria) {
+    public IDataKeyCriteriaComparator(java.util.List<IDataKeyComparisonCriterion> criteria) {
         if (criteria == null || criteria.size() == 0) throw new IllegalArgumentException("At least one comparison criteria is required to construct an IDataComparator object");
         this.criteria = criteria;
     }
@@ -91,7 +91,7 @@ public class IDataComparator implements java.util.Comparator<com.wm.data.IData> 
     public int compare(com.wm.data.IData firstDocument, com.wm.data.IData secondDocument) {
         int result = 0;
 
-        for (IDataComparisonCriterion criterion : criteria) {
+        for (IDataKeyComparisonCriterion criterion : criteria) {
             Object firstValue = IDataHelper.get(firstDocument, criterion.getKey());
             Object secondValue = IDataHelper.get(secondDocument, criterion.getKey());
 

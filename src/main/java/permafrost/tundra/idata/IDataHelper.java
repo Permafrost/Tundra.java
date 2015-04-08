@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package permafrost.tundra.data;
+package permafrost.tundra.idata;
 
 import com.wm.data.IData;
 import com.wm.data.IDataPortable;
@@ -928,9 +928,9 @@ public class IDataHelper {
     public static IData[] sort(IData[] array, String[] keys, boolean ascending) {
         if (array == null || array.length < 2 || keys == null || keys.length == 0) return array;
 
-        IDataComparisonCriterion[] criteria = new IDataComparisonCriterion[keys.length];
+        IDataKeyComparisonCriterion[] criteria = new IDataKeyComparisonCriterion[keys.length];
         for (int i = 0; i < keys.length; i++) {
-            criteria[i] = new IDataComparisonCriterion(keys[i], !ascending);
+            criteria[i] = new IDataKeyComparisonCriterion(keys[i], !ascending);
         }
 
         return sort(array, criteria);
@@ -939,17 +939,17 @@ public class IDataHelper {
     /**
      * Returns a new IData[] array with all elements sorted according
      * to the specified criteria.
-     *
      * @param array     An IData[] array to be sorted.
      * @param criteria  One or more sort criteria.
      * @return          A new IData[] array sorted by the given criteria.
      */
-    public static IData[] sort(IData[] array, IDataComparisonCriterion ... criteria) {
+    public static IData[] sort(IData[] array, IDataKeyComparisonCriterion... criteria) {
         if (array == null) return null;
 
-        array = java.util.Arrays.copyOf(array, array.length);
         if (!(array.length < 2 || criteria == null || criteria.length == 0)) {
-            java.util.Arrays.sort(array, new IDataComparator(criteria));
+            array = ArrayHelper.sort(array, new IDataKeyCriteriaComparator(criteria));
+        } else {
+            array = java.util.Arrays.copyOf(array, array.length);
         }
 
         return array;
@@ -958,10 +958,9 @@ public class IDataHelper {
     /**
      * Returns the values associated with the given key from each item in the
      * given IData[] document list.
-     *
-     * @param input An IData[] array to return values from.
-     * @param key   A fully-qualified key identifying the values to return.
-     * @param defaultValue
+     * @param input         An IData[] array to return values from.
+     * @param key           A fully-qualified key identifying the values to return.
+     * @param defaultValue  The default value returned if the key does not exist.
      */
     public static Object[] getValues(IData[] input, String key, Object defaultValue) {
         if (input == null || key == null) return null;

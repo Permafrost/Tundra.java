@@ -22,28 +22,10 @@
  * SOFTWARE.
  */
 
-package permafrost.tundra.data;
+package permafrost.tundra.idata;
 
-/**
- * The different types of IData value comparison supported by the IDataComparator class.
- */
-public enum IDataComparisonType {
-    OBJECT(0), STRING(1), INTEGER(2), DECIMAL(3), DATETIME(4), DURATION(5);
+import com.wm.data.IData;
+import java.util.Comparator;
 
-    private int value;
-    private static java.util.Map<Integer, IDataComparisonType> map = new java.util.HashMap<Integer, IDataComparisonType>();
-
-    private IDataComparisonType(int value) {
-        this.value = value;
-    }
-
-    static {
-        for (IDataComparisonType type : IDataComparisonType.values()) {
-            map.put(type.value, type);
-        }
-    }
-
-    public static IDataComparisonType valueOf(int value) {
-        return map.get(value);
-    }
+public interface IDataComparator extends Comparator<IData> {
 }

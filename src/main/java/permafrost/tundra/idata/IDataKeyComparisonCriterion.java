@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package permafrost.tundra.data;
+package permafrost.tundra.idata;
 
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;
@@ -33,9 +33,9 @@ import com.wm.util.coder.IDataCodable;
 /**
  * Defines a single criterion used by the IDataComparator class.
  */
-public class IDataComparisonCriterion implements IDataCodable {
+public class IDataKeyComparisonCriterion implements IDataCodable {
     protected String key, pattern;
-    protected IDataComparisonType type;
+    protected IDataKeyComparisonType type;
     protected boolean descending;
 
     /**
@@ -44,7 +44,7 @@ public class IDataComparisonCriterion implements IDataCodable {
      *            the values associated with this key will be compared
      *            in ascending order.
      */
-    public IDataComparisonCriterion(String key) {
+    public IDataKeyComparisonCriterion(String key) {
         this(key, false);
     }
 
@@ -55,8 +55,8 @@ public class IDataComparisonCriterion implements IDataCodable {
      *                   will be compared in descending order, otherwise
      *                   they will be compared in ascending order.
      */
-    public IDataComparisonCriterion(String key, boolean descending) {
-        this(key, IDataComparisonType.OBJECT, null, descending);
+    public IDataKeyComparisonCriterion(String key, boolean descending) {
+        this(key, IDataKeyComparisonType.OBJECT, null, descending);
     }
 
     /**
@@ -68,8 +68,8 @@ public class IDataComparisonCriterion implements IDataCodable {
      *                is the pattern to be used to parse the DATETIME or
      *                DURATION value.
      */
-    public IDataComparisonCriterion(String key, String type, String pattern) {
-        this(key, IDataComparisonType.valueOf(type), pattern);
+    public IDataKeyComparisonCriterion(String key, String type, String pattern) {
+        this(key, IDataKeyComparisonType.valueOf(type), pattern);
     }
 
     /**
@@ -81,7 +81,7 @@ public class IDataComparisonCriterion implements IDataCodable {
      *                is the pattern to be used to parse the DATETIME or
      *                DURATION value.
      */
-    public IDataComparisonCriterion(String key, IDataComparisonType type, String pattern) {
+    public IDataKeyComparisonCriterion(String key, IDataKeyComparisonType type, String pattern) {
         this(key, type, pattern, false);
     }
 
@@ -97,8 +97,8 @@ public class IDataComparisonCriterion implements IDataCodable {
      *                   will be compared in descending order, otherwise
      *                   they will be compared in ascending order.
      */
-    public IDataComparisonCriterion(String key, String type, String pattern, boolean descending) {
-        this(key, IDataComparisonType.valueOf(type), pattern, descending);
+    public IDataKeyComparisonCriterion(String key, String type, String pattern, boolean descending) {
+        this(key, IDataKeyComparisonType.valueOf(type), pattern, descending);
     }
 
     /**
@@ -113,7 +113,7 @@ public class IDataComparisonCriterion implements IDataCodable {
      *                   will be compared in descending order, otherwise
      *                   they will be compared in ascending order.
      */
-    public IDataComparisonCriterion(String key, IDataComparisonType type, String pattern, boolean descending) {
+    public IDataKeyComparisonCriterion(String key, IDataKeyComparisonType type, String pattern, boolean descending) {
         initialize(key, type, pattern, descending);
     }
 
@@ -122,7 +122,7 @@ public class IDataComparisonCriterion implements IDataCodable {
      * @param document  An IData document containing the following keys: key,
      *                  type, pattern, descending?
      */
-    public IDataComparisonCriterion(IData document) {
+    public IDataKeyComparisonCriterion(IData document) {
         setIData(document);
     }
 
@@ -136,7 +136,7 @@ public class IDataComparisonCriterion implements IDataCodable {
     /**
      * @return The type of value being compared.
      */
-    public IDataComparisonType getType() {
+    public IDataKeyComparisonType getType() {
         return type;
     }
 
@@ -205,13 +205,13 @@ public class IDataComparisonCriterion implements IDataCodable {
      * Initializes all the values of this comparison criterion object.
      */
     protected void initialize(String key, String type, String pattern, String descending) {
-        initialize(key, IDataComparisonType.valueOf(type), pattern, Boolean.valueOf(descending));
+        initialize(key, IDataKeyComparisonType.valueOf(type), pattern, Boolean.valueOf(descending));
     }
 
     /**
      * Initializes all the values of this comparison criterion object.
      */
-    protected void initialize(String key, IDataComparisonType type, String pattern, boolean descending) {
+    protected void initialize(String key, IDataKeyComparisonType type, String pattern, boolean descending) {
         this.key = key;
         this.type = type;
         this.pattern = pattern;
