@@ -334,6 +334,16 @@ public class ArrayHelper {
     }
 
     /**
+     * Returns a string representation of the given array.
+     * @param array The array to be stringified.
+     * @param <T>   The class of items stored in the array.
+     * @return      A string representation of the given array.
+     */
+    public static <T> String stringify(T[] array) {
+        return "[" + join(array, ", ") + "]";
+    }
+
+    /**
      * Returns a new array with a new element inserted at the beginning.
      *
      * @param array

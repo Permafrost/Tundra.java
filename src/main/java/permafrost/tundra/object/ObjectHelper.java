@@ -26,6 +26,7 @@ package permafrost.tundra.object;
 
 import com.wm.data.IData;
 import com.wm.data.IDataUtil;
+import permafrost.tundra.array.ArrayHelper;
 import permafrost.tundra.exception.BaseException;
 
 import java.util.Collection;
@@ -45,7 +46,7 @@ public class ObjectHelper {
      * @param secondObject The seconds object in the comparison.
      * @return             True if the two objects are equal, otherwise false.
      */
-    public static boolean equal(java.lang.Object firstObject, java.lang.Object secondObject) {
+    public static boolean equal(Object firstObject, Object secondObject) {
         boolean result = true;
         if (firstObject != null && secondObject != null) {
             if (firstObject instanceof IData && secondObject instanceof IData) {
@@ -68,7 +69,7 @@ public class ObjectHelper {
      * @return          True if the given object is an instance of the given class.
      * @throws BaseException If the given class name is not found.
      */
-    public static boolean instance(java.lang.Object object, java.lang.String className) throws BaseException {
+    public static boolean instance(Object object, String className) throws BaseException {
         boolean instance = false;
         try {
             instance = className != null && instance(object, Class.forName(className));
@@ -85,8 +86,28 @@ public class ObjectHelper {
      * @param klass     The class the given object will be tested against.
      * @return          True if the given object is an instance of the given class.
      */
-    public static boolean instance(java.lang.Object object, Class klass) {
+    public static boolean instance(Object object, Class klass) {
         return object != null && klass != null && klass.isInstance(object);
+    }
+
+    /**
+     * Returns a string representation of the given object.
+     * @param object The object to stringify.
+     * @return       A string representation of the given object.
+     */
+    public static String stringify(Object object) {
+        String output;
+
+        //TODO: add support for IData etc.
+        if (object == null) {
+            output = "";
+        } else if (object instanceof Object[]) {
+            output = ArrayHelper.stringify((Object[]) object);
+        } else {
+            output = object.toString();
+        }
+
+        return output;
     }
 
     /**
@@ -118,7 +139,7 @@ public class ObjectHelper {
      * @return           The nearest ancestor class which is an ancestor to all the classes in the given set.
      * @throws BaseException If any of the class names cannot be found.
      */
-    public static Class<?> getNearestAncestor(java.lang.String... classNames) throws BaseException {
+    public static Class<?> getNearestAncestor(String... classNames) throws BaseException {
         return getNearestAncestor(toClassArray(classNames));
     }
 
