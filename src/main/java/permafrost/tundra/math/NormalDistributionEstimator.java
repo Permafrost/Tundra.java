@@ -29,7 +29,7 @@ package permafrost.tundra.math;
  */
 public class NormalDistributionEstimator {
     protected long count;
-    protected double total, mean, sq, minimum, maximum;
+    protected double mean, sq, minimum, maximum;
     protected String unit = "";
 
     /**
@@ -55,7 +55,7 @@ public class NormalDistributionEstimator {
      */
     public NormalDistributionEstimator(double... samples) {
         this();
-        append(samples);
+        add(samples);
     }
 
     /**
@@ -66,7 +66,7 @@ public class NormalDistributionEstimator {
      */
     public NormalDistributionEstimator(String unit, double... samples) {
         this(unit);
-        append(samples);
+        add(samples);
     }
 
     /**
@@ -77,7 +77,7 @@ public class NormalDistributionEstimator {
      */
     public NormalDistributionEstimator(java.util.Collection<Double> samples) {
         this();
-        append(samples);
+        add(samples);
     }
 
     /**
@@ -89,51 +89,68 @@ public class NormalDistributionEstimator {
      */
     public NormalDistributionEstimator(String unit, java.util.Collection<Double> samples) {
         this(unit);
-        append(samples);
+        add(samples);
     }
 
     /**
-     * Appends the given sample to the list of samples in the estimator.
+     * Adds a new sample to the set of samples used for estimating the standard deviation.
      *
-     * @param sample The sample to be added to the estimator.
-     * @return The Estimator object itself, to support method chaining.
+     * @param sample The sample to be added.
+     * @return The estimator object itself, to support method chaining.
      */
-    public final NormalDistributionEstimator append(double sample) {
-        total += sample;
-        double next = mean + (sample - mean) / ++count;
-        sq += (sample - mean) * (sample - next);
-        mean = next;
-        if (sample < minimum) minimum = sample;
-        if (sample > maximum) maximum = sample;
+    public synchronized final NormalDistributionEstimator add(double sample) {
+        count++;
+        if (count == 1) {
+            mean = minimum = maximum = sample;
+            sq = 0.0;
+        } else {
+            double previousMean = mean;
+            mean = previousMean + ((sample - previousMean) / count);
+            sq = sq + (sample - previousMean) * (sample - mean);
 
+            if (minimum > sample) minimum = sample;
+            if (maximum < sample) maximum = sample;
+        }
         return this;
     }
 
     /**
-     * Adds one or more samples to the estimator.
+     * Adds one or more samples to the set of samples used for estimating the standard deviation.
      *
-     * @param samples One or more samples to be added to the estimator.
-     * @return The Estimator object itself, to support method chaining.
+     * @param samples One or more samples to be added.
+     * @return The estimator object itself, to support method chaining.
      */
-    public final NormalDistributionEstimator append(double... samples) {
+    public final NormalDistributionEstimator add(double... samples) {
         for (double sample : samples) {
-            append(sample);
+            add(sample);
         }
-
         return this;
     }
 
     /**
-     * Adds a collection of samples to the estimator.
+     * Adds a collection of samples to the set of samples used for estimating the standard deviation.
      *
-     * @param samples A collection of samples to be added to the estimator.
+     * @param samples A collection of samples to be added.
+     * @return The estimator object itself, to support method chaining.
+     */
+    public final NormalDistributionEstimator add(java.util.Collection<Double> samples) {
+        for (double sample : samples) {
+            add(sample);
+        }
+        return this;
+    }
+
+    /**
+     * Resets the estimator back to a set of zero samples.
+     *
      * @return The Estimator object itself, to support method chaining.
      */
-    public final NormalDistributionEstimator append(java.util.Collection<Double> samples) {
-        for (double sample : samples) {
-            append(sample);
-        }
-
+    public synchronized NormalDistributionEstimator reset() {
+        count = 0;
+        mean = 0.0;
+        sq = 0.0;
+        minimum = 0.0;
+        maximum = 0.0;
         return this;
     }
 
@@ -142,34 +159,22 @@ public class NormalDistributionEstimator {
      *
      * @return The number of samples seen by this estimator.
      */
-    public long count() {
-        return count;
-    }
-
-    /**
-     * Returns the total of all samples seen by this estimator.
-     *
-     * @return The total of all samples seen by this estimator.
-     */
-    public double total() {
-        return total;
-    }
+    public synchronized long getCount() { return count; }
 
     /**
      * Returns the mean of the samples.
      *
      * @return The mean of the samples.
      */
-    public double mean() {
-        return mean;
-    }
+    public synchronized double getMean() { return mean; }
 
     /**
      * Returns the minimum of the samples.
      *
      * @return The minimum of the samples.
      */
-    public double minimum() {
+    public synchronized double getMinimum() {
+        if (count == 0) throw new IllegalStateException("minimum value is not available when sample count is zero");
         return minimum;
     }
 
@@ -178,52 +183,36 @@ public class NormalDistributionEstimator {
      *
      * @return The maximum of the samples.
      */
-    public double maximum() {
+    public synchronized double getMaximum() {
+        if (count == 0) throw new IllegalStateException("maximum value is not available when sample count is zero");
         return maximum;
     }
 
     /**
-     * Returns the maximum likelihood estimate of the variance of the samples.
+     * Returns the variance estimate for the current set of samples.
      *
-     * @return Maximum likelihood variance estimate.
+     * @return The variance estimate.
      */
-    public double variance() {
-        return count > 1 && mean > 0 ? sq / mean : 0.0;
+    public synchronized double getVariance() {
+        return count > 1 ? sq / (count - 1) : 0.0;
     }
 
     /**
-     * Returns the maximum likelihood estimate of the standard deviation of the
-     * samples.
+     * Returns the standard deviation estimate for the current set of samples.
      *
-     * @return Maximum likelihood standard deviation estimate.
+     * @return The standard deviation estimate.
      */
-    public double standardDeviation() {
-        return Math.sqrt(variance());
+    public double getStandardDeviation() {
+        return Math.sqrt(getVariance());
     }
 
     /**
      * Returns the unit of measure related to the measured samples.
      *
-     * @return Maximum likelihood standard deviation estimate.
+     * @return The unit of measure.
      */
-    public String unit() {
+    public String getUnit() {
         return unit;
-    }
-
-    /**
-     * Resets the estimator back to zero samples.
-     *
-     * @return The Estimator object itself, to support method chaining.
-     */
-    public final NormalDistributionEstimator reset() {
-        count = 0;
-        total = 0.0;
-        mean = 0.0;
-        sq = 0.0;
-        minimum = Double.POSITIVE_INFINITY;
-        maximum = Double.NEGATIVE_INFINITY;
-
-        return this;
     }
 
     /**
@@ -234,6 +223,27 @@ public class NormalDistributionEstimator {
      */
     @Override
     public String toString() {
-        return String.format("average = %.3f %s, standard deviation = %.3f %s, minimum = %.3f %s, maximum = %.3f %s, total = %.3f %s, sample count = %d", mean(), unit(), standardDeviation(), unit(), minimum(), unit(), maximum(), unit(), total(), unit(), count());
+        double mean, stdev, min, max;
+        long count;
+        String unit = getUnit();
+
+        // thread synchronized to make sure all values are consistent
+        synchronized(this) {
+            mean = getMean();
+            stdev = getStandardDeviation();
+            min = getMinimum();
+            max = getMaximum();
+            count = getCount();
+        }
+
+        String output;
+
+        if (unit == null || unit.equals("")) {
+            output = String.format("average = %.3f, standard deviation = %.3f, minimum = %.3f, maximum = %.3f, sample count = %d", mean, stdev, min, max, count);
+        } else {
+            output = String.format("average = %.3f %s, standard deviation = %.3f %s, minimum = %.3f %s, maximum = %.3f %s, sample count = %d", mean, unit, stdev, unit, min, unit, max, unit, count);
+        }
+
+        return output;
     }
 }
