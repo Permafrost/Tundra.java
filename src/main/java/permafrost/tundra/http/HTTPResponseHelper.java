@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package permafrost.tundra.net;
+package permafrost.tundra.http;
 
 public class HTTPResponseHelper {
     private static final java.util.Map<Integer, String> statuses = new java.util.TreeMap<Integer, String>();
