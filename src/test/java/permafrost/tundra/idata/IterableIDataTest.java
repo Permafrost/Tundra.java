@@ -31,13 +31,12 @@ import com.wm.data.IDataUtil;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
 import static org.junit.Assert.*;
 
-public class IDataIteratorFactoryTest {
+public class IterableIDataTest {
     IData document;
 
     @Before
@@ -52,33 +51,37 @@ public class IDataIteratorFactoryTest {
 
     @Test
     public void testHasNext() throws Exception {
-        IDataIterator iterator = new IDataIteratorFactory(document).iterator();
+        IDataIterator iterator = new IterableIData(document).iterator();
         assertTrue(iterator.hasNext());
         iterator.next();
         iterator.next();
         iterator.next();
         assertFalse(iterator.hasNext());
-        iterator = new IDataIteratorFactory(IDataFactory.create()).iterator();
+        iterator = new IterableIData(IDataFactory.create()).iterator();
         assertFalse(iterator.hasNext());
     }
 
     @Test
     public void testIteration() throws Exception {
-        IDataIterator iterator = new IDataIteratorFactory(document).iterator();
+        IDataIterator iterator = new IterableIData(document).iterator();
+        assertTrue(iterator.hasNext());
         Map.Entry<String, Object> pair = iterator.next();
         assertEquals("a", pair.getKey());
         assertEquals("1", pair.getValue());
+        assertTrue(iterator.hasNext());
         pair = iterator.next();
         assertEquals("b", pair.getKey());
         assertEquals("2", pair.getValue());
+        assertTrue(iterator.hasNext());
         pair = iterator.next();
         assertEquals("c", pair.getKey());
         assertEquals("3", pair.getValue());
+        assertFalse(iterator.hasNext());
     }
 
     @Test(expected = NoSuchElementException.class)
     public void testNextAfterNoMoreElements() throws Exception {
-        IDataIterator iterator = new IDataIteratorFactory(document).iterator();
+        IDataIterator iterator = new IterableIData(document).iterator();
         iterator.next();
         iterator.next();
         iterator.next();
@@ -87,13 +90,13 @@ public class IDataIteratorFactoryTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void testRemoveBeforeNext() throws Exception {
-        IDataIterator iterator = new IDataIteratorFactory(document).iterator();
+        IDataIterator iterator = new IterableIData(document).iterator();
         iterator.remove();
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void testRemoveAfterNext() throws Exception {
-        IDataIterator iterator = new IDataIteratorFactory(document).iterator();
+        IDataIterator iterator = new IterableIData(document).iterator();
         iterator.next();
         iterator.remove();
     }

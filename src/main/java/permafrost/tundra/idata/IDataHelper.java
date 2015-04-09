@@ -37,6 +37,7 @@ import com.wm.data.IDataFactory;
 import permafrost.tundra.exception.BaseException;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -69,24 +70,20 @@ public class IDataHelper {
      *                      pattern.
      */
     public static String[] getKeys(IData input, String patternString) {
-        java.util.regex.Pattern pattern = null;
-        if (patternString != null) pattern = java.util.regex.Pattern.compile(patternString);
+        java.util.regex.Pattern pattern = patternString == null ? null : java.util.regex.Pattern.compile(patternString);
 
         java.util.List<String> keys = new java.util.ArrayList<String>();
-        if (input != null) {
-            IDataCursor cursor = input.getCursor();
-            while(cursor.next()) {
-                String key = cursor.getKey();
+        for (Map.Entry<String, Object> entry : new IterableIData(input)) {
+            String key = entry.getKey();
 
-                if (pattern == null) {
-                    keys.add(key);
-                } else {
-                    java.util.regex.Matcher matcher = pattern.matcher(key);
-                    if (matcher.matches()) keys.add(key);
-                }
+            if (pattern == null) {
+                keys.add(key);
+            } else {
+                java.util.regex.Matcher matcher = pattern.matcher(key);
+                if (matcher.matches()) keys.add(key);
             }
-            cursor.destroy();
         }
+
         return keys.toArray(new String[keys.size()]);
     }
 
@@ -97,23 +94,13 @@ public class IDataHelper {
      * @return The list of values present in the given IData document.
      */
     public static Object[] getValues(IData input) {
-        java.util.List values = new java.util.ArrayList();
-        java.util.Set<Class<?>> classes = new java.util.LinkedHashSet<Class<?>>();
+        List values = new ArrayList();
 
-        if (input != null) {
-            IDataCursor cursor = input.getCursor();
-            while(cursor.next()) {
-                Object value = cursor.getValue();
-                if (value != null) classes.add(value.getClass());
-                values.add(value);
-            }
-            cursor.destroy();
+        for(Map.Entry<String, Object> entry : new IterableIData(input)) {
+            values.add(entry.getValue());
         }
 
-        Class<?> nearestAncestor = ObjectHelper.getNearestAncestor(classes);
-        if (nearestAncestor == null) nearestAncestor = Object.class;
-
-        return values.toArray((Object[]) java.lang.reflect.Array.newInstance(nearestAncestor, 0));
+        return ArrayHelper.normalize(values.toArray());
     }
 
     /**
@@ -320,15 +307,10 @@ public class IDataHelper {
         if (input == null) return null;
 
         IData output = IDataFactory.create();
-        IDataCursor inputCursor = input.getCursor();
 
-        try {
-            while(inputCursor.next()) {
-                // normalize fully-qualified keys by using Tundra put rather than IDataUtil put
-                put(output, inputCursor.getKey(), normalize(inputCursor.getValue()));
-            }
-        } finally {
-            inputCursor.destroy();
+        for(Map.Entry<String, Object> entry : new IterableIData(input)) {
+            // normalize fully-qualified keys by using Tundra put rather than IDataUtil put
+            put(output, entry.getKey(), normalize(entry.getValue()));
         }
 
         return output;
@@ -677,13 +659,12 @@ public class IDataHelper {
         IDataCursor cursor = input.getCursor();
         int size = IDataUtil.size(cursor);
         cursor.destroy();
-        cursor = input.getCursor();
 
         Map<String, Object> output = new java.util.LinkedHashMap<String, Object>(size);
 
-        while(cursor.next()) {
-            String key = cursor.getKey();
-            Object value = cursor.getValue();
+        for(Map.Entry<String, Object> entry : new IterableIData(input)) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
             if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
                 value = toMap(value);
             } else if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
@@ -935,7 +916,7 @@ public class IDataHelper {
         if (input == null) return null;
         IData[] output = new IData[input.length];
         for(int i = 0; i < input.length; i++) {
-            if (input[i] != null) output[i] = input[i].getIData();
+            output[i] = toIData(input[i]);
         }
         return output;
     }
@@ -949,7 +930,7 @@ public class IDataHelper {
         if (input == null) return null;
         IData[] output = new IData[input.length];
         for(int i = 0; i < input.length; i++) {
-            if (input[i] != null) output[i] = input[i].getAsData();
+            output[i] = toIData(input[i]);
         }
         return output;
     }
@@ -963,7 +944,7 @@ public class IDataHelper {
         if (input == null) return null;
         IData[] output = new IData[input.length];
         for(int i = 0; i < input.length; i++) {
-            if (input[i] != null) output[i] = input[i].getValues();
+            output[i] = toIData(input[i]);
         }
         return output;
     }
@@ -1007,9 +988,8 @@ public class IDataHelper {
         if (input != null) {
             for (IData document : input) {
                 if (document != null) {
-                    IDataCursor cursor = document.getCursor();
-                    while(cursor.next()) {
-                        String key = cursor.getKey();
+                    for (Map.Entry<String, Object> entry : new IterableIData(document)) {
+                        String key = entry.getKey();
                         if (pattern == null) {
                             keys.add(key);
                         } else {
@@ -1017,7 +997,6 @@ public class IDataHelper {
                             if (matcher.matches()) keys.add(key);
                         }
                     }
-                    cursor.destroy();
                 }
             }
         }
@@ -1198,19 +1177,13 @@ public class IDataHelper {
     public static Object[] getValues(IData[] input, String key, Object defaultValue) {
         if (input == null || key == null) return null;
 
-        java.util.Set<Class<?>> classes = new java.util.LinkedHashSet<Class<?>>();
-        java.util.List list = new java.util.ArrayList(input.length);
+        List list = new ArrayList(input.length);
 
         for (int i = 0; i < input.length; i++) {
-            Object value = get(input[i], key, defaultValue);
-            if (value != null) classes.add(value.getClass());
-            list.add(value);
+            list.add(get(input[i], key, defaultValue));
         }
 
-        Class<?> nearestAncestor = ObjectHelper.getNearestAncestor(classes);
-        if (nearestAncestor == null) nearestAncestor = Object.class;
-
-        return list.toArray((Object[])java.lang.reflect.Array.newInstance(nearestAncestor, 0));
+        return ArrayHelper.normalize(list.toArray());
     }
 
     /**

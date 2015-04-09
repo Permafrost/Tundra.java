@@ -34,15 +34,14 @@ import java.util.NoSuchElementException;
 /**
  * Allows the use of a Java for each loop over an IData document.
  */
-public class IDataIteratorFactory implements Iterable<Map.Entry<String, Object>> {
+public class IterableIData implements Iterable<Map.Entry<String, Object>> {
     protected IData document;
 
     /**
      * Construct a new IDataIterator
      * @param document
      */
-    public IDataIteratorFactory(IData document) {
-        if (document == null) throw new IllegalArgumentException("document must not be null");
+    public IterableIData(IData document) {
         this.document = document;
     }
 
@@ -60,14 +59,15 @@ public class IDataIteratorFactory implements Iterable<Map.Entry<String, Object>>
      */
     private static class IDataIteratorImplementation implements IDataIterator {
         protected IDataCursor cursor;
+        protected boolean nextMethodCalled = false;
+        protected boolean deleteMethodCalled = false;
 
         /**
          * Constructs a new IDataIterator object for iterating over the given IData document.
          * @param document The document to be iterated over.
          */
         public IDataIteratorImplementation(IData document) {
-            if (document == null) throw new IllegalArgumentException("document must not be null");
-            this.cursor = document.getCursor();
+            if (document != null) this.cursor = document.getCursor();
         }
 
         /**
@@ -77,7 +77,7 @@ public class IDataIteratorFactory implements Iterable<Map.Entry<String, Object>>
          */
         @Override
         public boolean hasNext() {
-            return cursor.hasMoreData();
+            return cursor != null && cursor.hasMoreData();
         }
 
         /**
@@ -86,8 +86,9 @@ public class IDataIteratorFactory implements Iterable<Map.Entry<String, Object>>
          * @throws NoSuchElementException If the iteration has no more elements.
          */
         @Override
-        public AbstractMap.SimpleImmutableEntry<String, Object> next() throws NoSuchElementException {
-            if (cursor.next()) {
+        public Map.Entry<String, Object> next() throws NoSuchElementException {
+            if (cursor != null && (deleteMethodCalled || cursor.next())) {
+                nextMethodCalled = true;
                 return new AbstractMap.SimpleImmutableEntry<String, Object>(cursor.getKey(), cursor.getValue());
             } else {
                 throw new NoSuchElementException("No more elements were available for iteration in IData document");
@@ -101,7 +102,7 @@ public class IDataIteratorFactory implements Iterable<Map.Entry<String, Object>>
          */
         @Override
         public void remove() {
-            throw new UnsupportedOperationException("remove is not implemented by this class");
+            throw new UnsupportedOperationException("remove method is not implemented by this iterator class");
         }
     }
 }
