@@ -580,4 +580,36 @@ public class ArrayHelper {
     private static <T> T[] instantiate(Class<T> klass, int length) {
         return (T[])java.lang.reflect.Array.newInstance(klass, length);
     }
+
+    /**
+     * Converts a Collection to an Object[].
+     *
+     * @param input A Collection to be converted to an Object[].
+     * @return      An Object[] representation of the given Collection.
+     */
+    public static Object[] toArray(Collection input) {
+        if (input == null) return null;
+        return normalize(input.toArray());
+    }
+
+    /**
+     * Converts an Object[] to a Collection.
+     *
+     * @param input An Object[] to be converted to a Collection.
+     * @return      An Collection representation of the given Object[].
+     */
+    public static List toList(Object[] input) {
+        if (input == null) return null;
+        return Arrays.asList(input);
+    }
+
+    /**
+     * Returns a new array whose class is the nearest ancestor class of all contained items.
+     * @param input The array to be normalized.
+     * @return      A new copy of the given array whose class is the nearest ancestor of all contained items.
+     */
+    public static Object[] normalize(Object[] input) {
+        if (input == null) return null;
+        return toList(input).toArray((Object[]) instantiate(ObjectHelper.getNearestAncestor(input), input.length));
+    }
 }

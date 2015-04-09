@@ -32,6 +32,7 @@ import permafrost.tundra.exception.BaseException;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 public class ObjectHelper {
     /**
@@ -111,6 +112,15 @@ public class ObjectHelper {
     }
 
     /**
+     * Returns the nearest class which is an ancestor to the classes of the given objects.
+     * @param objects One or more objects to return the nearest ancestor for.
+     * @return        The nearest ancestor class which is an ancestor to the classes of the given objects.
+     */
+    public static Class<?> getNearestAncestor(Object ...objects) {
+        return getNearestAncestor(toClassSet(objects));
+    }
+
+    /**
      * Returns the nearest class which is an ancestor to all the classes in the given set.
      * @param classes A set of classes for which the nearest ancestor will be returned.
      * @return        The nearest ancestor class which is an ancestor to all the classes in the given set.
@@ -119,7 +129,12 @@ public class ObjectHelper {
         Class<?> nearest = null;
 
         Set<Class<?>> ancestors = getAncestors(classes);
-        if (ancestors.size() > 0) nearest = ancestors.iterator().next();
+
+        if (ancestors.size() > 0) {
+            nearest = ancestors.iterator().next();
+        }
+
+        if (nearest == null) nearest = Object.class;
 
         return nearest;
     }
@@ -183,10 +198,28 @@ public class ObjectHelper {
 
     /**
      * Returns all the ancestor classes from nearest to furthest for the given class.
+     * @param object An object to fetch the ancestors classes of.
+     * @return       All the ancestor classes from nearest to furthest for the class of the given object.
+     */
+    public static Set<Class<?>> getAncestors(Object ...objects) {
+        return getAncestors(toClassSet(objects));
+    }
+
+    /**
+     * Returns all the ancestor classes from nearest to furthest for the given class.
+     * @param object An object to fetch the ancestors classes of.
+     * @return       All the ancestor classes from nearest to furthest for the class of the given object.
+     */
+    public static Set<Class<?>> getAncestors(Object object) {
+        return object == null ? new TreeSet<Class<?>>() : getAncestors(object.getClass());
+    }
+
+    /**
+     * Returns all the ancestor classes from nearest to furthest for the given class.
      * @param klass A class to fetch the ancestors of.
      * @return      All the ancestor classes from nearest to furthest for the given class.
      */
-    public static Set<Class<?>> getAncestors(Class<?> klass) {
+    private static Set<Class<?>> getAncestors(Class<?> klass) {
         Set<Class<?>> ancestors = new LinkedHashSet<Class<?>>();
         Set<Class<?>> parents = new LinkedHashSet<Class<?>>();
 
@@ -227,6 +260,21 @@ public class ObjectHelper {
             } catch (ClassNotFoundException ex) {
                 throw new BaseException(ex);
             }
+        }
+
+        return classes;
+    }
+
+    /**
+     * Converts the given list of objects to a set of classes.
+     * @param objects    One or more objects to return a set of classes for.
+     * @return           The set of classes for the given list of objects.
+     */
+    private static Set<Class<?>> toClassSet(Object ...objects) {
+        Set<Class<?>> classes = new TreeSet<Class<?>>();
+
+        for (Object object : objects) {
+            if (object != null) classes.add(object.getClass());
         }
 
         return classes;

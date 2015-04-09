@@ -60,9 +60,9 @@ public class IDataDefaultComparator implements IDataComparator {
             IDataCursor cursor1 = document1.getCursor();
             IDataCursor cursor2 = document2.getCursor();
 
-            boolean next1, next2;
+            boolean next1 = cursor1.next(), next2 = cursor2.next();
 
-            while((next1 = cursor1.next()) && (next2 = cursor2.next())) {
+            while(next1 && next2) {
                 String key1 = cursor1.getKey();
                 String key2 = cursor2.getKey();
 
@@ -108,8 +108,11 @@ public class IDataDefaultComparator implements IDataComparator {
                         //TODO: IData[], Table, etc.
                         //TODO: Object[], Object[][]
 
-                    } else if (value1 instanceof Comparable) {
-                        result = ((Comparable)value1).compareTo(value2);
+                    } else if (value1 instanceof Comparable && value2 instanceof Comparable && value1.getClass().isAssignableFrom(value2.getClass())) {
+                        result = ((Comparable)value1).compareTo((Comparable)value2);
+                    } else if (value1 instanceof Comparable && value2 instanceof Comparable && value2.getClass().isAssignableFrom(value1.getClass())) {
+                        int comparison = ((Comparable)value2).compareTo((Comparable)value1);
+                        result = comparison < 0 ? 1 : comparison > 0 ? -1 : 0;
                     } else if (value1 != value2) {
                         // last ditch effort to compare two uncomparable objects using hash codes?
                         result = Integer.valueOf(value1.hashCode()).compareTo(value2.hashCode());
@@ -120,6 +123,9 @@ public class IDataDefaultComparator implements IDataComparator {
                 if (result != 0) {
                     break;
                 }
+
+                next1 = cursor1.next();
+                next2 = cursor2.next();
             }
 
             if (next1 && !next2) {
