@@ -79,6 +79,24 @@ public class IterableIDataTest {
         assertFalse(iterator.hasNext());
     }
 
+    @Test
+    public void testIteratingOverNullArgument() throws Exception {
+        int count = 0;
+        for (Map.Entry<String, Object> entry : new IterableIData(null)) {
+            count++;
+        }
+        assertEquals(0, count);
+    }
+
+    @Test
+    public void testIteratingOverEmptyArgument() throws Exception {
+        int count = 0;
+        for (Map.Entry<String, Object> entry : new IterableIData(IDataFactory.create())) {
+            count++;
+        }
+        assertEquals(0, count);
+    }
+
     @Test(expected = NoSuchElementException.class)
     public void testNextAfterNoMoreElements() throws Exception {
         IDataIterator iterator = new IterableIData(document).iterator();
