@@ -22,39 +22,21 @@
  * SOFTWARE.
  */
 
-package permafrost.tundra.net;
+package permafrost.tundra.net.uri;
 
-import com.wm.data.IData;
-import com.wm.data.IDataCursor;
-import com.wm.data.IDataFactory;
-import com.wm.data.IDataUtil;
 import org.junit.Test;
-import permafrost.tundra.net.URIQueryHelper;
+import permafrost.tundra.net.uri.URIHelper;
 
 import static org.junit.Assert.*;
 
-public class URIQueryHelperTest {
+public class URIHelperTest {
     @Test
-    public void testParse() throws Exception {
-        String[] c = {"3", "4", "5"};
-        IData query = URIQueryHelper.parse("a=1&b=2&c=3&c=4&c=5", true);
-        IDataCursor cursor = query.getCursor();
-        assertEquals("1", IDataUtil.getString(cursor, "a"));
-        assertEquals("2", IDataUtil.getString(cursor, "b"));
-        assertArrayEquals(c, IDataUtil.getStringArray(cursor, "c"));
-        cursor.destroy();
+    public void testDecode() throws Exception {
+        assertEquals("a test", URIHelper.decode("a%20test"));
     }
 
     @Test
-    public void testEmit() throws Exception {
-        String[] c = {"3", "4", "5"};
-        IData query = IDataFactory.create();
-        IDataCursor cursor = query.getCursor();
-        IDataUtil.put(cursor, "a", "1");
-        IDataUtil.put(cursor, "b", "2");
-        IDataUtil.put(cursor, "c", c);
-        cursor.destroy();
-
-        assertEquals("a=1&b=2&c=3&c=4&c=5", URIQueryHelper.emit(query, true));
+    public void testEncode() throws Exception {
+        assertEquals("a%20test", URIHelper.encode("a test"));
     }
 }

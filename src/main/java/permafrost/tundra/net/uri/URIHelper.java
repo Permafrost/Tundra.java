@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package permafrost.tundra.net;
+package permafrost.tundra.net.uri;
 
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;

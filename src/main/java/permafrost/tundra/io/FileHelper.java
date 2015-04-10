@@ -39,7 +39,7 @@ import permafrost.tundra.lang.BaseException;
 import permafrost.tundra.io.filter.RegularExpressionFilter;
 import permafrost.tundra.io.filter.WildcardFilter;
 import permafrost.tundra.lang.StringHelper;
-import permafrost.tundra.net.URIHelper;
+import permafrost.tundra.net.uri.URIHelper;
 
 public class FileHelper {
     /**

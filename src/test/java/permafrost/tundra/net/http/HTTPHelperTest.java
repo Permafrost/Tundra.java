@@ -22,10 +22,10 @@
  * SOFTWARE.
  */
 
-package permafrost.tundra.net;
+package permafrost.tundra.net.http;
 
 import org.junit.Test;
-import permafrost.tundra.net.HTTPHelper;
+import permafrost.tundra.net.http.HTTPHelper;
 
 import static org.junit.Assert.*;
 

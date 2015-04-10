@@ -22,10 +22,10 @@
  * SOFTWARE.
  */
 
-package permafrost.tundra.net;
+package permafrost.tundra.net.uri;
 
 import org.junit.Test;
-import permafrost.tundra.net.URIPathHelper;
+import permafrost.tundra.net.uri.URIPathHelper;
 
 import static org.junit.Assert.*;
 

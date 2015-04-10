@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package permafrost.tundra.net;
+package permafrost.tundra.net.uri;
 
 import permafrost.tundra.lang.ArrayHelper;
 import permafrost.tundra.flow.VariableSubstitutor;
