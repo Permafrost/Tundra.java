@@ -11,7 +11,7 @@
 *.ear
 
 # External Libraries
-lib/
+/lib/
 
 # Mac Detritus
 .DS_Store
