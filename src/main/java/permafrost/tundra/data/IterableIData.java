@@ -26,15 +26,18 @@ package permafrost.tundra.data;
 
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;
+import com.wm.util.coder.IDataCodable;
 
 import java.util.AbstractMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
 /**
- * Allows the use of a Java for each loop over an IData document.
+ * Wraps an IData document in an implementation of the Iterable interface,
+ * which then allows the use of a standard Java for each loop for iterating
+ * over the elements in the document.
  */
-public class IterableIData implements Iterable<Map.Entry<String, Object>> {
+public class IterableIData implements Iterable<Map.Entry<String, Object>>, IDataCodable {
     protected IData document;
 
     /**
@@ -42,7 +45,7 @@ public class IterableIData implements Iterable<Map.Entry<String, Object>> {
      * @param document The IData document to be iterated over.
      */
     public IterableIData(IData document) {
-        this.document = document;
+        setIData(document);
     }
 
     /**
@@ -52,6 +55,24 @@ public class IterableIData implements Iterable<Map.Entry<String, Object>> {
     @Override
     public IDataIterator iterator() {
         return new IDataIteratorImplementation(document);
+    }
+
+    /**
+     * Returns the IData document that this object iterates over.
+     * @return The IData document this object wraps.
+     */
+    @Override
+    public IData getIData() {
+        return document;
+    }
+
+    /**
+     * Set the IData document this object iterates over.
+     * @param document The IData document to be iterated over.
+     */
+    @Override
+    public void setIData(IData document) {
+        this.document = document;
     }
 
     /**
