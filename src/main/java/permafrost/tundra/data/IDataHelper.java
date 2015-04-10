@@ -34,7 +34,6 @@ import permafrost.tundra.lang.ArrayHelper;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
 import permafrost.tundra.lang.BaseException;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -802,7 +801,7 @@ public class IDataHelper {
      *              is compatible (IData, IDataCodable, IDataPortable,
      *              ValuesCodable), otherwise null.
      */
-    private static IData toIData(Object input) {
+    public static IData toIData(Object input) {
         if (input == null) return null;
 
         IData output = null;
@@ -878,7 +877,7 @@ public class IDataHelper {
      *              IDataCodable[], IDataPortable[], ValuesCodable[]),
      *              otherwise null.
      */
-    private static IData[] toIDataArray(Object input) {
+    public static IData[] toIDataArray(Object input) {
         if (input == null) return null;
 
         IData[] output = null;

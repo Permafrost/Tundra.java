@@ -27,8 +27,11 @@ package permafrost.tundra.data;
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataPortable;
+import com.wm.util.Table;
 import com.wm.util.coder.IDataCodable;
 import com.wm.util.coder.ValuesCodable;
+import permafrost.tundra.lang.ObjectArrayDefaultComparator;
+import permafrost.tundra.lang.ObjectDefaultComparator;
 
 /**
  * Compares two IData objects using all the keys and values in each document.
@@ -61,82 +64,62 @@ public enum IDataDefaultComparator implements IDataComparator {
                 result = -1;
             }
         } else {
-            // compare all keys and values in order
-            IDataCursor cursor1 = document1.getCursor();
-            IDataCursor cursor2 = document2.getCursor();
+            int size1 = IDataHelper.size(document1);
+            int size2 = IDataHelper.size(document2);
 
-            boolean next1 = cursor1.next(), next2 = cursor2.next();
-
-            while(next1 && next2) {
-                String key1 = cursor1.getKey();
-                String key2 = cursor2.getKey();
-
-                result = key1.compareTo(key2);
-
-                if (result == 0) {
-                    Object value1 = cursor1.getValue();
-                    Object value2 = cursor2.getValue();
-
-                    if (value1 == null || value2 == null) {
-                        if (value1 != null) {
-                            result = 1;
-                        } else if (value2 != null) {
-                            result = -1;
-                        }
-                    } else if ((value1 instanceof IData || value1 instanceof IDataCodable || value1 instanceof IDataPortable || value1 instanceof ValuesCodable) &&
-                               (value2 instanceof IData || value2 instanceof IDataCodable || value2 instanceof IDataPortable || value2 instanceof ValuesCodable)) {
-                        IData id1;
-
-                        if (value1 instanceof IData) {
-                            id1 = (IData)value1;
-                        } else if (value1 instanceof IDataCodable) {
-                            id1 = ((IDataCodable)value1).getIData();
-                        } else if (value1 instanceof IDataPortable) {
-                            id1 = ((IDataPortable)value1).getAsData();
-                        } else {
-                            id1 = ((ValuesCodable)value1).getValues();
-                        }
-
-                        IData id2;
-
-                        if (value2 instanceof IData) {
-                            id2 = (IData)value2;
-                        } else if (value2 instanceof IDataCodable) {
-                            id2 = ((IDataCodable)value2).getIData();
-                        } else if (value2 instanceof IDataPortable) {
-                            id2 = ((IDataPortable)value2).getAsData();
-                        } else {
-                            id2 = ((ValuesCodable)value2).getValues();
-                        }
-
-                        result = compare(id1, id2);
-                        //TODO: IData[], Table, etc.
-                        //TODO: Object[], Object[][]
-
-                    } else if (value1 instanceof Comparable && value2 instanceof Comparable && value1.getClass().isAssignableFrom(value2.getClass())) {
-                        result = ((Comparable)value1).compareTo((Comparable)value2);
-                    } else if (value1 instanceof Comparable && value2 instanceof Comparable && value2.getClass().isAssignableFrom(value1.getClass())) {
-                        int comparison = ((Comparable)value2).compareTo((Comparable)value1);
-                        result = comparison < 0 ? 1 : comparison > 0 ? -1 : 0;
-                    } else if (value1 != value2) {
-                        // last ditch effort to compare two uncomparable objects using hash codes?
-                        result = Integer.valueOf(value1.hashCode()).compareTo(value2.hashCode());
-                        if (result == 0) result = 1; // make an arbitrary choice
-                    }
-                }
-
-                if (result != 0) {
-                    break;
-                }
-
-                next1 = cursor1.next();
-                next2 = cursor2.next();
-            }
-
-            if (next1 && !next2) {
-                result = 1;
-            } else if (!next1 && next2) {
+            if (size1 < size2) {
                 result = -1;
+            } else if (size2 > size1) {
+                result = 1;
+            } else {
+                // compare all keys and values in order
+                IDataCursor cursor1 = document1.getCursor();
+                IDataCursor cursor2 = document2.getCursor();
+
+                boolean next1 = cursor1.next(), next2 = cursor2.next();
+
+                while (next1 && next2) {
+                    String key1 = cursor1.getKey();
+                    String key2 = cursor2.getKey();
+
+                    result = key1.compareTo(key2);
+
+                    if (result == 0) {
+                        Object value1 = cursor1.getValue();
+                        Object value2 = cursor2.getValue();
+
+                        if (value1 == null || value2 == null) {
+                            if (value1 != null) {
+                                result = 1;
+                            } else if (value2 != null) {
+                                result = -1;
+                            }
+                        } else if ((value1 instanceof IData || value1 instanceof IDataCodable || value1 instanceof IDataPortable || value1 instanceof ValuesCodable) &&
+                                   (value2 instanceof IData || value2 instanceof IDataCodable || value2 instanceof IDataPortable || value2 instanceof ValuesCodable)) {
+                            result = compare(IDataHelper.toIData(value1), IDataHelper.toIData(value2));
+                        } else if ((value1 instanceof IData[] || value1 instanceof Table || value1 instanceof IDataCodable[] || value1 instanceof IDataPortable[] || value1 instanceof ValuesCodable[]) &&
+                                   (value2 instanceof IData[] || value2 instanceof Table || value2 instanceof IDataCodable[] || value2 instanceof IDataPortable[] || value2 instanceof ValuesCodable[])) {
+                            result = IDataArrayDefaultComparator.INSTANCE.compare(IDataHelper.toIDataArray(value1), IDataHelper.toIDataArray(value2));
+                        } else if (value1 instanceof Object[] && value2 instanceof Object[]) {
+                            result = ObjectArrayDefaultComparator.INSTANCE.compare((Object[]) value1, (Object[]) value2);
+                        } else {
+                            result = ObjectDefaultComparator.INSTANCE.compare(value1, value2);
+                        }
+                    }
+
+                    if (result != 0) {
+                        break;
+                    }
+
+                    next1 = cursor1.next();
+                    next2 = cursor2.next();
+                }
+
+                if (next1 && !next2) {
+                    result = 1;
+                } else if (!next1 && next2) {
+                    result = -1;
+                }
             }
         }
 
