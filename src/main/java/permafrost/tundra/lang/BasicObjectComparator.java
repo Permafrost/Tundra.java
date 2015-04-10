@@ -27,7 +27,7 @@ package permafrost.tundra.lang;
 /**
  * Compares two Objects.
  */
-public enum ObjectDefaultComparator implements ObjectComparator {
+public enum BasicObjectComparator implements ObjectComparator {
     /**
      * The singleton instance of this class.
      */
@@ -45,6 +45,7 @@ public enum ObjectDefaultComparator implements ObjectComparator {
      *                       second object according to the comparison
      *                       of all the keys and values in each document.
      */
+    @SuppressWarnings("unchecked")
     public int compare(Object object1, Object object2) {
         int result = 0;
 
@@ -55,10 +56,10 @@ public enum ObjectDefaultComparator implements ObjectComparator {
                 result = -1;
             }
         } else {
-            if (object1 instanceof Comparable && object2 instanceof Comparable && object1.getClass().isAssignableFrom(object2.getClass())) {
-                result = ((Comparable) object1).compareTo((Comparable) object2);
-            } else if (object1 instanceof Comparable && object2 instanceof Comparable && object2.getClass().isAssignableFrom(object1.getClass())) {
-                int comparison = ((Comparable) object2).compareTo((Comparable) object1);
+            if (object1 instanceof Comparable && object1.getClass().isAssignableFrom(object2.getClass())) {
+                result = ((Comparable) object1).compareTo(object2);
+            } else if (object2 instanceof Comparable && object2.getClass().isAssignableFrom(object1.getClass())) {
+                int comparison = ((Comparable) object2).compareTo(object1);
                 result = comparison < 0 ? 1 : comparison > 0 ? -1 : 0;
             } else if (object1 != object2) {
                 // last ditch effort: compare two incomparable objects using their hash codes

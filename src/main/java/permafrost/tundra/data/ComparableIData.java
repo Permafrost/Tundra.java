@@ -36,7 +36,7 @@ public class ComparableIData implements Comparable<IData>, IDataCodable {
     /**
      * The default comparator used when no other comparator or comparison criteria is specified.
      */
-    public static final IDataComparator DEFAULT_COMPARATOR = IDataDefaultComparator.INSTANCE;
+    public static final IDataComparator DEFAULT_COMPARATOR = BasicIDataComparator.INSTANCE;
 
     protected IData document;
     protected IDataComparator comparator;
@@ -64,8 +64,8 @@ public class ComparableIData implements Comparable<IData>, IDataCodable {
      * @param document The IData document to be wrapped by this ComparableIData.
      * @param criteria One or more comparison criteria to be used in comparisons.
      */
-    public ComparableIData(IData document, IDataKeyComparisonCriterion ...criteria) {
-        this(document, new IDataKeyCriteriaComparator(criteria));
+    public ComparableIData(IData document, IDataComparisonCriterion...criteria) {
+        this(document, new CriteriaBasedIDataComparator(criteria));
     }
 
     /**

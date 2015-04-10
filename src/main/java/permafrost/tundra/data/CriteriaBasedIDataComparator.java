@@ -34,15 +34,15 @@ import permafrost.tundra.time.DurationHelper;
  * Compares two IData objects using the values associated with the given
  * list of keys in precedence order.
  */
-public class IDataKeyCriteriaComparator implements IDataComparator {
-    protected java.util.List<IDataKeyComparisonCriterion> criteria;
+public class CriteriaBasedIDataComparator implements IDataComparator {
+    protected java.util.List<IDataComparisonCriterion> criteria;
 
     /**
      * Construct a new IDataComparator with one or more comparison criteria.
      *
      * @param criteria The comparison criteria to be used when comparing IData objects.
      */
-    public IDataKeyCriteriaComparator(IDataKeyComparisonCriterion... criteria) {
+    public CriteriaBasedIDataComparator(IDataComparisonCriterion... criteria) {
         this(java.util.Arrays.asList(criteria));
     }
 
@@ -51,7 +51,7 @@ public class IDataKeyCriteriaComparator implements IDataComparator {
      *
      * @param criteria The comparison criteria to be used when comparing IData objects.
      */
-    public IDataKeyCriteriaComparator(java.util.List<IDataKeyComparisonCriterion> criteria) {
+    public CriteriaBasedIDataComparator(java.util.List<IDataComparisonCriterion> criteria) {
         if (criteria == null || criteria.size() == 0) throw new IllegalArgumentException("At least one comparison criteria is required to construct an IDataComparator object");
         this.criteria = criteria;
     }
@@ -88,10 +88,11 @@ public class IDataKeyCriteriaComparator implements IDataComparator {
      *                       second document according to the comparison
      *                       criteria the IDataComparator was constructed with.
      */
+    @SuppressWarnings("unchecked")
     public int compare(com.wm.data.IData firstDocument, com.wm.data.IData secondDocument) {
         int result = 0;
 
-        for (IDataKeyComparisonCriterion criterion : criteria) {
+        for (IDataComparisonCriterion criterion : criteria) {
             Object firstValue = IDataHelper.get(firstDocument, criterion.getKey());
             Object secondValue = IDataHelper.get(secondDocument, criterion.getKey());
 
@@ -101,10 +102,8 @@ public class IDataKeyCriteriaComparator implements IDataComparator {
                     break;
                 }
             } else if (secondValue == null) {
-                if (firstValue != null) {
-                    result = normalize(1, criterion.isDescending());
-                    break;
-                }
+                result = normalize(1, criterion.isDescending());
+                break;
             } else {
                 switch(criterion.getType()) {
                     case INTEGER:

@@ -63,7 +63,7 @@ public enum IDataArrayDefaultComparator implements IDataArrayComparator {
                 result = 1;
             } else {
                 for (int i = 0; i < array1.length; i++) {
-                    result = IDataDefaultComparator.INSTANCE.compare(array1[i], array2[i]);
+                    result = BasicIDataComparator.INSTANCE.compare(array1[i], array2[i]);
                     if (result != 0) break;
                 }
             }

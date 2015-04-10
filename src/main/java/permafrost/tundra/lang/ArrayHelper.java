@@ -96,6 +96,7 @@ public class ArrayHelper {
      *              the given array except for the element at the given
      *              index.
      */
+    @SuppressWarnings("unchecked")
     public static <T> T[] drop(T[] array, int index) {
         if (array != null) {
             // support reverse/tail indexing
@@ -333,7 +334,7 @@ public class ArrayHelper {
 
         ArrayList<T> list = new ArrayList<T>(Arrays.asList(array));
 
-        int capacity = 0;
+        int capacity;
         if (index < 0) index += list.size() + 1;
         if (index < 0) {
             capacity = (index * -1) + list.size();
@@ -360,14 +361,15 @@ public class ArrayHelper {
      * @param <T>    The class of the items stored in the arrays.
      * @return       A new array which is a set intersection of the given arrays.
      */
+    @SuppressWarnings("unchecked")
     public static <T> T[] intersect(T[] ... arrays) {
         if (arrays == null || arrays.length == 0) return null;
 
         List<T> intersection = new ArrayList<T>(arrays[0].length);
-        intersection.addAll((List<T>) Arrays.asList(arrays[0]));
+        intersection.addAll(Arrays.asList(arrays[0]));
 
         for (int i = 1; i < arrays.length; i++) {
-            intersection.retainAll((List<T>)Arrays.asList(arrays[i]));
+            intersection.retainAll(Arrays.asList(arrays[i]));
         }
 
         return intersection.toArray(Arrays.copyOf(arrays[0], intersection.size()));
@@ -434,13 +436,15 @@ public class ArrayHelper {
 
         // support reverse/tail indexing
         if (index < 0) index += array.length;
-        int capacity = 0;
+
+        int capacity;
         if (index < 0) {
             capacity = (index * -1) + array.length;
             index = 0;
         } else {
             capacity = index + 1;
         }
+
         if (capacity > array.length) array = Arrays.copyOf(array, capacity);
 
         array[index] = item;
@@ -521,6 +525,7 @@ public class ArrayHelper {
      *              leading and trailing whitespace, all empty string items removed,
      *              and all null items removed.
      */
+    @SuppressWarnings("unchecked")
     public static <T> T[] squeeze(T[] array) {
         if (array == null || array.length == 0) return null;
 
@@ -565,6 +570,7 @@ public class ArrayHelper {
      * @param <T>   The class of items to be stored in the array.
      * @return      A new zero-length array of the given class.
      */
+    @SuppressWarnings("unchecked")
     private static <T> T[] instantiate(Class<T> klass) {
         return instantiate(klass, 0);
     }
@@ -575,6 +581,7 @@ public class ArrayHelper {
      * @param <T>   The class of items to be stored in the array.
      * @return      A new array of the given class with the given length.
      */
+    @SuppressWarnings("unchecked")
     private static <T> T[] instantiate(Class<T> klass, int length) {
         return (T[])java.lang.reflect.Array.newInstance(klass, length);
     }
@@ -606,8 +613,9 @@ public class ArrayHelper {
      * @param input The array to be normalized.
      * @return      A new copy of the given array whose class is the nearest ancestor of all contained items.
      */
+    @SuppressWarnings("all")
     public static Object[] normalize(Object[] input) {
         if (input == null) return null;
-        return toList(input).toArray((Object[]) instantiate(ObjectHelper.getNearestAncestor(input), input.length));
+        return toList(input).toArray(instantiate(ObjectHelper.getNearestAncestor(input), input.length));
     }
 }

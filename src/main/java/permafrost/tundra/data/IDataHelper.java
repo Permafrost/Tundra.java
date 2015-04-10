@@ -1128,9 +1128,9 @@ public class IDataHelper {
     public static IData[] sort(IData[] array, String[] keys, boolean ascending) {
         if (array == null || array.length < 2 || keys == null || keys.length == 0) return array;
 
-        IDataKeyComparisonCriterion[] criteria = new IDataKeyComparisonCriterion[keys.length];
+        IDataComparisonCriterion[] criteria = new IDataComparisonCriterion[keys.length];
         for (int i = 0; i < keys.length; i++) {
-            criteria[i] = new IDataKeyComparisonCriterion(keys[i], !ascending);
+            criteria[i] = new IDataComparisonCriterion(keys[i], !ascending);
         }
 
         return sort(array, criteria);
@@ -1143,11 +1143,11 @@ public class IDataHelper {
      * @param criteria  One or more sort criteria.
      * @return          A new IData[] array sorted by the given criteria.
      */
-    public static IData[] sort(IData[] array, IDataKeyComparisonCriterion... criteria) {
+    public static IData[] sort(IData[] array, IDataComparisonCriterion... criteria) {
         if (array == null) return null;
 
         if (criteria != null && criteria.length > 0) {
-            array = ArrayHelper.sort(array, new IDataKeyCriteriaComparator(criteria));
+            array = ArrayHelper.sort(array, new CriteriaBasedIDataComparator(criteria));
         } else {
             array = java.util.Arrays.copyOf(array, array.length);
         }

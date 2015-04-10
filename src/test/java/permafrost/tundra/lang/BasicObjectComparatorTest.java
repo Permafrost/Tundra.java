@@ -24,6 +24,40 @@
 
 package permafrost.tundra.lang;
 
-import java.util.Comparator;
+import org.junit.Test;
 
-public interface ObjectArrayComparator extends Comparator<Object[]> {}
+import static org.junit.Assert.*;
+
+public class BasicObjectComparatorTest {
+    @Test
+    public void testCompareGreaterThan() throws Exception {
+        Object object1 = "XYZ";
+        Object object2 = "ABC";
+
+        assertTrue(BasicObjectComparator.INSTANCE.compare(object1, object2) > 0);
+    }
+
+    @Test
+    public void testCompareLessThan() throws Exception {
+        Object object1 = "ABC";
+        Object object2 = "XYZ";
+
+        assertTrue(BasicObjectComparator.INSTANCE.compare(object1, object2) < 0);
+    }
+
+    @Test
+    public void testCompareEqual() throws Exception {
+        Object object1 = new Integer(1);
+        Object object2 = new Integer(1);
+
+        assertTrue(BasicObjectComparator.INSTANCE.compare(object1, object2) == 0);
+    }
+
+    @Test
+    public void testCompareIncomparable() throws Exception {
+        Object object1 = new Object();
+        Object object2 = new Object();
+
+        assertTrue(BasicObjectComparator.INSTANCE.compare(object1, object2) != 0);
+    }
+}

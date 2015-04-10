@@ -30,13 +30,13 @@ import com.wm.data.IDataPortable;
 import com.wm.util.Table;
 import com.wm.util.coder.IDataCodable;
 import com.wm.util.coder.ValuesCodable;
-import permafrost.tundra.lang.ObjectArrayDefaultComparator;
-import permafrost.tundra.lang.ObjectDefaultComparator;
+import permafrost.tundra.lang.BasicArrayComparator;
+import permafrost.tundra.lang.BasicObjectComparator;
 
 /**
  * Compares two IData objects using all the keys and values in each document.
  */
-public enum IDataDefaultComparator implements IDataComparator {
+public enum BasicIDataComparator implements IDataComparator {
     /**
      * The singleton instance of this class.
      */
@@ -101,9 +101,9 @@ public enum IDataDefaultComparator implements IDataComparator {
                                    (value2 instanceof IData[] || value2 instanceof Table || value2 instanceof IDataCodable[] || value2 instanceof IDataPortable[] || value2 instanceof ValuesCodable[])) {
                             result = IDataArrayDefaultComparator.INSTANCE.compare(IDataHelper.toIDataArray(value1), IDataHelper.toIDataArray(value2));
                         } else if (value1 instanceof Object[] && value2 instanceof Object[]) {
-                            result = ObjectArrayDefaultComparator.INSTANCE.compare((Object[]) value1, (Object[]) value2);
+                            result = BasicArrayComparator.INSTANCE.compare((Object[]) value1, (Object[]) value2);
                         } else {
-                            result = ObjectDefaultComparator.INSTANCE.compare(value1, value2);
+                            result = BasicObjectComparator.INSTANCE.compare(value1, value2);
                         }
                     }
 

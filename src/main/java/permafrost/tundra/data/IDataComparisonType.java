@@ -27,18 +27,18 @@ package permafrost.tundra.data;
 /**
  * The different types of IData value comparison supported by the IDataComparator class.
  */
-public enum IDataKeyComparisonType {
+public enum IDataComparisonType {
     OBJECT(0), STRING(1), INTEGER(2), DECIMAL(3), DATETIME(4), DURATION(5);
 
     private int value;
-    private static java.util.Map<Integer, IDataKeyComparisonType> map = new java.util.HashMap<Integer, IDataKeyComparisonType>();
+    private static java.util.Map<Integer, IDataComparisonType> map = new java.util.HashMap<Integer, IDataComparisonType>();
 
-    private IDataKeyComparisonType(int value) {
+    private IDataComparisonType(int value) {
         this.value = value;
     }
 
     static {
-        for (IDataKeyComparisonType type : IDataKeyComparisonType.values()) {
+        for (IDataComparisonType type : IDataComparisonType.values()) {
             map.put(type.value, type);
         }
     }
@@ -48,7 +48,7 @@ public enum IDataKeyComparisonType {
      * @param value The value to be converted to an IDataKeyComparisonType.
      * @return      The IDataKeyComparisonType representing the given value.
      */
-    public static IDataKeyComparisonType valueOf(int value) {
+    public static IDataComparisonType valueOf(int value) {
         return map.get(value);
     }
 
@@ -57,7 +57,7 @@ public enum IDataKeyComparisonType {
      * @param value The value to be converted to an IDataKeyComparisonType.
      * @return      The IDataKeyComparisonType representing the given value.
      */
-    public static IDataKeyComparisonType normalize(String value) {
+    public static IDataComparisonType normalize(String value) {
         return value == null ? null : valueOf(value.trim().toUpperCase());
     }
 }
