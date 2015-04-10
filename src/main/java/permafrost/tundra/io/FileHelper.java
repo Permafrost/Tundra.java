@@ -35,11 +35,11 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import permafrost.tundra.exception.BaseException;
+import permafrost.tundra.lang.BaseException;
 import permafrost.tundra.io.filter.RegularExpressionFilter;
 import permafrost.tundra.io.filter.WildcardFilter;
-import permafrost.tundra.string.StringHelper;
-import permafrost.tundra.uri.URIHelper;
+import permafrost.tundra.lang.StringHelper;
+import permafrost.tundra.net.URIHelper;
 
 public class FileHelper {
     /**
@@ -77,6 +77,7 @@ public class FileHelper {
      * Returns the MIME media type that describes the content of the given file.
      * @param filename  The file whose MIME type is to be returned.
      * @return          The MIME media type that describes the content of the given file.
+     * @throws BaseException If the filename is unparseable.
      */
     public static String getMIMEType(String filename) throws BaseException {
         return getMIMEType(construct(filename));
@@ -95,6 +96,7 @@ public class FileHelper {
      * Returns true if the given file exists and is a file.
      * @param filename  The file to check existence of.
      * @return          true if the given file exists and is a file.
+     * @throws BaseException If the filename is unparseable.
      */
     public static boolean exists(String filename) throws BaseException {
         return exists(construct(filename));
@@ -104,7 +106,7 @@ public class FileHelper {
      * Creates a new, empty file; if file is null, a temporary file is created.
      * @param file The file to be created.
      * @return     The file which was created.
-     * @throws BaseException
+     * @throws BaseException If the file already exists.
      */
     public static File create(File file) throws BaseException {
         try {
@@ -125,7 +127,7 @@ public class FileHelper {
      * Creates a new, empty file; if filename is null, a temporary file is created.
      * @param filename  The name of the file to be created.
      * @return          The name of the file which was created.
-     * @throws BaseException
+     * @throws BaseException If the filename is unparseable or the file already exists.
      */
     public static String create(String filename) throws BaseException {
         return normalize(create(construct(filename)));
@@ -134,7 +136,7 @@ public class FileHelper {
     /**
      * Deletes the given file.
      * @param file The file to be deleted.
-     * @throws BaseException
+     * @throws BaseException If the file cannot be deleted.
      */
     public static void remove(File file) throws BaseException {
         if (file != null && exists(file) && !file.delete()) {
@@ -145,7 +147,7 @@ public class FileHelper {
     /**
      * Deletes the given file.
      * @param filename The name of the file to be deleted.
-     * @throws BaseException
+     * @throws BaseException If the filename is unparseable or the file cannot be deleted.
      */
     public static void remove(String filename) throws BaseException {
         remove(construct(filename));
@@ -155,7 +157,7 @@ public class FileHelper {
      * Update the modified time of the given file to the current time,
      * or create it if it does not exist.
      * @param file The file to be touched.
-     * @throws BaseException
+     * @throws BaseException If the file cannot be created.
      */
     public static void touch(File file) throws BaseException {
         if (file.exists()) {
@@ -169,7 +171,7 @@ public class FileHelper {
      * Update the modified time of the given file to the current time,
      * or create it if it does not exist.
      * @param filename The name of the file to be touched.
-     * @throws BaseException
+     * @throws BaseException If the filename is unparseable.
      */
     public static void touch(String filename) throws BaseException {
         touch(construct(filename));
@@ -179,7 +181,7 @@ public class FileHelper {
      * Renames the source file to the target name.
      * @param source The file to be renamed.
      * @param target The new name of the file.
-     * @throws BaseException
+     * @throws BaseException If the file cannot be renamed.
      */
     public static void rename(File source, File target) throws BaseException {
         if (source != null && target != null) {
@@ -193,7 +195,7 @@ public class FileHelper {
      * Renames the source file to the target name.
      * @param source The file to be renamed.
      * @param target The new name of the file.
-     * @throws BaseException
+     * @throws BaseException If the filenames are unparseable or the file cannot be renamed.
      */
     public static void rename(String source, String target) throws BaseException {
         rename(construct(source), construct(target));
@@ -203,7 +205,7 @@ public class FileHelper {
      * Reads the given file completely, returning the file's content as a byte[].
      * @param filename  The name of the file to be read.
      * @return          A byte[] containing the file's content.
-     * @throws BaseException
+     * @throws BaseException If the filename is unparseable or there is a problem reading the file.
      */
     public static byte[] readToBytes(String filename) throws BaseException {
         return readToBytes(construct(filename));
@@ -213,7 +215,7 @@ public class FileHelper {
      * Reads the given file completely, returning the file's content as a byte[].
      * @param file      The file to be read.
      * @return          A byte[] containing the file's content.
-     * @throws BaseException
+     * @throws BaseException If there is a problem reading the file.
      */
     public static byte[] readToBytes(File file) throws BaseException {
         byte[] content = null;
@@ -238,7 +240,7 @@ public class FileHelper {
      * Reads the given file completely, returning the file's content as a String.
      * @param filename  The name of the file to be read.
      * @return          A String containing the file's content.
-     * @throws BaseException
+     * @throws BaseException If the filename is unparseable or there is a problem reading the file.
      */
     public static String readToString(String filename) throws BaseException {
         return readToString(filename, null);
@@ -249,7 +251,7 @@ public class FileHelper {
      * @param filename  The name of the file to be read.
      * @param encoding  The character set the file's content is encoded with.
      * @return          A String containing the file's content.
-     * @throws BaseException
+     * @throws BaseException If the filename is unparseable or there is a problem reading the file.
      */
     public static String readToString(String filename, String encoding) throws BaseException {
         return readToString(construct(filename), encoding);
@@ -259,7 +261,7 @@ public class FileHelper {
      * Reads the given file completely, returning the file's content as a String.
      * @param file      The file to be read.
      * @return          A String containing the file's content.
-     * @throws BaseException
+     * @throws BaseException If there is a problem reading the file.
      */
     public static String readToString(File file) throws BaseException {
         return readToString(file, null);
@@ -270,7 +272,7 @@ public class FileHelper {
      * @param file      The file to be read.
      * @param encoding  The character set the file's content is encoded with.
      * @return          A String containing the file's content.
-     * @throws BaseException
+     * @throws BaseException If there is a problem reading the file.
      */
     public static String readToString(File file, String encoding) throws BaseException {
         return StringHelper.normalize(readToBytes(file), encoding);
@@ -280,7 +282,7 @@ public class FileHelper {
      * Reads the given file completely, returning the file's content as a java.io.InputStream.
      * @param filename  The name of the file to be read.
      * @return          A java.io.InputStream containing the file's content.
-     * @throws BaseException
+     * @throws BaseException If the filename is unparseable or there is a problem reading the file.
      */
     public static InputStream readToStream(String filename) throws BaseException {
         return readToStream(construct(filename));
@@ -290,7 +292,7 @@ public class FileHelper {
      * Reads the given file completely, returning the file's content as a java.io.InputStream.
      * @param file      The file to be read.
      * @return          A java.io.InputStream containing the file's content.
-     * @throws BaseException
+     * @throws BaseException If there is a problem reading the file.
      */
     public static InputStream readToStream(File file) throws BaseException {
         return new ByteArrayInputStream(readToBytes(file));
@@ -306,7 +308,7 @@ public class FileHelper {
      *                  otherwise the content will overwrite any previous
      *                  content in the file.
      * @return          The file which the content was written to.
-     * @throws BaseException
+     * @throws BaseException If there is a problem writing to the file.
      */
     public static File writeFromStream(File file, InputStream content, boolean append) throws BaseException {
         try {
@@ -321,6 +323,23 @@ public class FileHelper {
     }
 
     /**
+     * Writes content to a file; if the given filename is null, a new temporary
+     * file is automatically created.
+     * @param filename  The name of the file to be written to; if null, a new temporary
+     *                  file is automatically created.
+     * @param content   The content to be written.
+     * @param append    If true, the content will be appended to the file,
+     *                  otherwise the content will overwrite any previous
+     *                  content in the file.
+     * @return          The name of the file which the content was written to.
+     * @throws BaseException If the filename is unparseable or there is a problem writing to the file.
+     */
+    public static String writeFromStream(String filename, InputStream content, boolean append) throws BaseException {
+        return normalize(writeFromStream(construct(filename), content, append));
+    }
+
+
+    /**
      * Writes content to a file; if the given file is null, a new temporary
      * file is automatically created.
      * @param file      The file to be written to; if null, a new temporary
@@ -330,10 +349,26 @@ public class FileHelper {
      *                  otherwise the content will overwrite any previous
      *                  content in the file.
      * @return          The file which the content was written to.
-     * @throws BaseException
+     * @throws BaseException If there is a problem writing to the file.
      */
     public static File writeFromBytes(File file, byte[] content, boolean append) throws BaseException {
         return writeFromStream(file, StreamHelper.normalize(content), append);
+    }
+
+    /**
+     * Writes content to a file; if the given filename is null, a new temporary
+     * file is automatically created.
+     * @param filename  The name of the file to be written to; if null, a new temporary
+     *                  file is automatically created.
+     * @param content   The content to be written.
+     * @param append    If true, the content will be appended to the file,
+     *                  otherwise the content will overwrite any previous
+     *                  content in the file.
+     * @return          The name of the file which the content was written to.
+     * @throws BaseException If the filename is unparseable or there is a problem writing to the file.
+     */
+    public static String writeFromBytes(String filename, byte[] content, boolean append) throws BaseException {
+        return normalize(writeFromBytes(construct(filename), content, append));
     }
 
     /**
@@ -347,10 +382,27 @@ public class FileHelper {
      *                  otherwise the content will overwrite any previous
      *                  content in the file.
      * @return          The file which the content was written to.
-     * @throws BaseException
+     * @throws BaseException If there is a problem writing to the file.
      */
     public static File writeFromString(File file, String content, String encoding, boolean append) throws BaseException {
         return writeFromStream(file, StreamHelper.normalize(content, encoding), append);
+    }
+
+    /**
+     * Writes content to a file; if the given filename is null, a new temporary
+     * file is automatically created.
+     * @param filename  The name of the file to be written to; if null, a new temporary
+     *                  file is automatically created.
+     * @param content   The content to be written.
+     * @param encoding  The character set to encode the content with.
+     * @param append    If true, the content will be appended to the file,
+     *                  otherwise the content will overwrite any previous
+     *                  content in the file.
+     * @return          The name of the file which the content was written to.
+     * @throws BaseException If the filename is unparseable or there is a problem writing to the file.
+     */
+    public static String writeFromString(String filename, String content, String encoding, boolean append) throws BaseException {
+        return normalize(writeFromString(construct(filename), content, encoding, append));
     }
 
     /**
@@ -363,10 +415,26 @@ public class FileHelper {
      *                  otherwise the content will overwrite any previous
      *                  content in the file.
      * @return          The file which the content was written to.
-     * @throws BaseException
+     * @throws BaseException If there is a problem writing to the file.
      */
     public static File writeFromString(File file, String content, boolean append) throws BaseException {
         return writeFromString(file, content, null, append);
+    }
+
+    /**
+     * Writes content to a file; if the given filenaem is null, a new temporary
+     * file is automatically created.
+     * @param filename  The name of the file to be written to; if null, a new temporary
+     *                  file is automatically created.
+     * @param content   The content to be written.
+     * @param append    If true, the content will be appended to the file,
+     *                  otherwise the content will overwrite any previous
+     *                  content in the file.
+     * @return          The name of the file which the content was written to.
+     * @throws BaseException If there is a problem writing to the file.
+     */
+    public static String writeFromString(String filename, String content, boolean append) throws BaseException {
+        return normalize(writeFromString(construct(filename), content, append));
     }
 
     /**
@@ -375,7 +443,7 @@ public class FileHelper {
      * @param target The file to which content will be copied.
      * @param append If true, the target content will be appended to,
      *               otherwise any previous content will be overwritten.
-     * @throws BaseException
+     * @throws BaseException If the source file does not exist or there is a problem copying it.
      */
     public static void copy(File source, File target, boolean append) throws BaseException {
         if (source != null && target != null) {
@@ -395,7 +463,8 @@ public class FileHelper {
      * @param target The file to which content will be copied.
      * @param append If true, the target content will be appended to,
      *               otherwise any previous content will be overwritten.
-     * @throws BaseException
+     * @throws BaseException If the filenames are unparseable or the source
+     *                       file does not exist or there is a problem copying it.
      */
     public static void copy(String source, String target, boolean append) throws BaseException {
         copy(construct(source), construct(target), append);
@@ -405,7 +474,7 @@ public class FileHelper {
      * Returns a java.io.File object given a file name.
      * @param filename  The name of the file, specified as a path or file:// URI.
      * @return          The file representing the given name.
-     * @throws BaseException
+     * @throws BaseException If the filename is unparseable.
      */
     public static File construct(String filename) throws BaseException {
         File file = null;
@@ -437,7 +506,7 @@ public class FileHelper {
      * Returns the canonical file:// URI representation of the given file.
      * @param file The file to be normalized.
      * @return     The canonical file:// URI representation of the given file.
-     * @throws BaseException
+     * @throws BaseException If the resulting URI is unparseable.
      */
     public static String normalize(File file) throws BaseException {
         String normalize = null;
@@ -453,7 +522,7 @@ public class FileHelper {
      * Returns the canonical file:// URI representation of the given file.
      * @param filename  The name of the file to be normalized.
      * @return          The canonical file:// URI representation of the given file.
-     * @throws BaseException
+     * @throws BaseException If the filename is unparseable.
      */
     public static String normalize(String filename) throws BaseException {
         return normalize(construct(filename));
@@ -466,7 +535,7 @@ public class FileHelper {
      * @param patternIsRegularExpression Boolean indicating if the given pattern is a
      *                                   regular expression or wildcard pattern.
      * @return                           True if the given file matches the given pattern.
-     * @throws BaseException
+     * @throws BaseException             If the filename is unparesable.
      */
     public static boolean match(String filename, String pattern, boolean patternIsRegularExpression) throws BaseException {
         return match(construct(filename), pattern, patternIsRegularExpression);
@@ -479,9 +548,8 @@ public class FileHelper {
      * @param patternIsRegularExpression Boolean indicating if the given pattern is a
      *                                   regular expression or wildcard pattern.
      * @return                           True if the given file matches the given pattern.
-     * @throws BaseException
      */
-    public static boolean match(File file, String pattern, boolean patternIsRegularExpression) throws BaseException {
+    public static boolean match(File file, String pattern, boolean patternIsRegularExpression) {
         boolean match = false;
 
         if (file != null && pattern != null) {

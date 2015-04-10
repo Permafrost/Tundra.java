@@ -1,6 +1,6 @@
 package permafrost.tundra.io;
 
-import permafrost.tundra.exception.BaseException;
+import permafrost.tundra.lang.BaseException;
 
 public class ParseException extends BaseException {
     /**

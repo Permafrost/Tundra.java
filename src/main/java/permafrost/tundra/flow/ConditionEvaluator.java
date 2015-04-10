@@ -30,7 +30,7 @@ import com.wm.data.IDataFactory;
 import com.wm.data.IDataUtil;
 import com.wm.lang.flow.ExpressionEvaluator;
 import com.wm.lang.flow.MalformedExpressionException;
-import permafrost.tundra.exception.BaseException;
+import permafrost.tundra.lang.BaseException;
 import permafrost.tundra.io.ParseException;
 
 /**
@@ -50,6 +50,7 @@ public class ConditionEvaluator {
 
     /**
      * Constructs a new flow condition.
+     * @param condition The conditional statement to be evaluated.
      */
     public ConditionEvaluator(String condition) {
         if (condition == null) throw new IllegalArgumentException("condition must not be null");
@@ -61,7 +62,7 @@ public class ConditionEvaluator {
      *
      * @param scope The scope against which the conditional statement is evaluated.
      * @return True if the conditional statement evaluates to true, otherwise false
-     * @throws BaseException
+     * @throws BaseException If the conditional statement is unparseable.
      */
     public boolean evaluate(IData scope) throws BaseException {
         boolean result = true;
@@ -109,7 +110,7 @@ public class ConditionEvaluator {
      * @param condition The conditional statement to be evaluated.
      * @param scope     The scope against which the conditional statement is evaluated.
      * @return True if the conditional statement evaluates to true, otherwise false
-     * @throws BaseException
+     * @throws BaseException If the conditional statement is unparseable.
      */
     public static boolean evaluate(String condition, IData scope) throws BaseException {
         ConditionEvaluator evaluator = new ConditionEvaluator(condition);

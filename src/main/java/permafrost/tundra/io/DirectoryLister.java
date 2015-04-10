@@ -24,13 +24,11 @@
 
 package permafrost.tundra.io;
 
-import permafrost.tundra.exception.BaseException;
+import permafrost.tundra.lang.BaseException;
 import permafrost.tundra.io.filter.*;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -45,7 +43,7 @@ public class DirectoryLister {
      * Constructs a new DirectoryLister for listing the contents of a given directory.
      * @param directory The directory whose contents are to be listed.
      * @param recurse   If true, all child directories will be recursively listed also.
-     * @throws BaseException
+     * @throws BaseException If the directory string is unparseable.
      */
     public DirectoryLister(String directory, boolean recurse) throws BaseException {
         this(directory, recurse, new FilenameFilter[0]);
@@ -66,7 +64,7 @@ public class DirectoryLister {
      * @param recurse   If true, all child directories will be recursively listed also.
      * @param filters   One or more filename filters which will restrict which files
      *                  and directories are returned in the list results.
-     * @throws BaseException
+     * @throws BaseException If the directory string is unparseable.
      */
     public DirectoryLister(String directory, boolean recurse, FilenameFilter ...filters) throws BaseException {
         this(FileHelper.construct(directory), recurse, filters);
@@ -113,7 +111,7 @@ public class DirectoryLister {
     /**
      * Lists the directory.
      * @return A list of files and directories that match the specified filters.
-     * @throws BaseException
+     * @throws BaseException If the directory does not exist.
      */
     public DirectoryListing list() throws BaseException {
         return list(directory, recurse);

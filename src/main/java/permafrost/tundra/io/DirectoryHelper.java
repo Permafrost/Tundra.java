@@ -24,8 +24,8 @@
 
 package permafrost.tundra.io;
 
-import permafrost.tundra.exception.BaseException;
-import permafrost.tundra.datetime.DateTimeHelper;
+import permafrost.tundra.lang.BaseException;
+import permafrost.tundra.time.DateTimeHelper;
 
 import javax.xml.datatype.Duration;
 import java.io.File;
@@ -96,6 +96,7 @@ public class DirectoryHelper {
      * Returns true if the given directory exists and is a directory.
      * @param directory The directory to check existence of.
      * @return          True if the directory exists and is a directory.
+     * @throws BaseException If the directory string is unparseable.
      */
     public static boolean exists(String directory) throws BaseException {
         return exists(FileHelper.construct(directory));
@@ -106,7 +107,7 @@ public class DirectoryHelper {
      * @param directory The directory to be deleted.
      * @param recurse   If true, all child directories and files
      *                  will also be recursively deleted.
-     * @throws BaseException
+     * @throws BaseException If the directory cannot be deleted.
      */
     public static void remove(File directory, boolean recurse) throws BaseException {
         if (exists(directory)) {
@@ -125,10 +126,11 @@ public class DirectoryHelper {
 
     /**
      * Deletes the given directory.
-     * @param directory The directory to be deleted.
-     * @param recurse   If true, all child directories and files
-     *                  will also be recursively deleted.
-     * @throws BaseException
+     * @param directory         The directory to be deleted.
+     * @param recurse           If true, all child directories and files
+     *                          will also be recursively deleted.
+     * @throws BaseException    If the directory string is unparseable
+     *                          or if the directory cannot be deleted.
      */
     public static void remove(String directory, boolean recurse) throws BaseException {
         remove(FileHelper.construct(directory), recurse);
@@ -136,9 +138,9 @@ public class DirectoryHelper {
 
     /**
      * Renames a directory.
-     * @param source The directory to be renamed.
-     * @param target The new name for the directory.
-     * @throws BaseException
+     * @param source            The directory to be renamed.
+     * @param target            The new name for the directory.
+     * @throws BaseException    If the directory cannot be renamed.
      */
     public static void rename(File source, File target) throws BaseException {
         if (source != null && target != null) {
@@ -150,9 +152,10 @@ public class DirectoryHelper {
 
     /**
      * Renames a directory.
-     * @param source The directory to be renamed.
-     * @param target The new name for the directory.
-     * @throws BaseException
+     * @param source         The directory to be renamed.
+     * @param target         The new name for the directory.
+     * @throws BaseException If the directory strings are unparseable or if
+     *                       the directory cannot be renamed.
      */
     public static void rename(String source, String target) throws BaseException {
         rename(FileHelper.construct(source), FileHelper.construct(target));
@@ -164,7 +167,7 @@ public class DirectoryHelper {
      * thousands or more files.
      * @param directory The directory to list.
      * @return          The list of item names in the given directory.
-     * @throws BaseException
+     * @throws BaseException If the directory string is unparseable or the directory does not exist.
      */
     public static String[] list(String directory) throws BaseException {
         return list(FileHelper.construct(directory));
@@ -176,7 +179,7 @@ public class DirectoryHelper {
      * thousands or more files.
      * @param directory The directory to list.
      * @return          The list of item names in the given directory.
-     * @throws BaseException
+     * @throws BaseException If the directory does not exist.
      */
     public static String[] list(File directory) throws BaseException {
         if (!exists(directory)) throw new FileException("Unable to list directory as it does not exist: " + FileHelper.normalize(directory));
@@ -191,7 +194,7 @@ public class DirectoryHelper {
      * @param recurse   If true, then child files and directories will also
      *                  be recursively purged.
      * @return          The number of files deleted.
-     * @throws BaseException
+     * @throws BaseException If the directory does not exist.
      */
     public static long purge(File directory, Duration duration, boolean recurse) throws BaseException {
         return purge(directory, DateTimeHelper.earlier(duration), recurse);
@@ -205,7 +208,7 @@ public class DirectoryHelper {
      * @param recurse     If true, then child files and directories will also
      *                    be recursively purged.
      * @return            The number of files deleted.
-     * @throws BaseException
+     * @throws BaseException If the directory does not exist.
      */
     public static long purge(File directory, Calendar olderThan, boolean recurse) throws BaseException {
         long count = 0;

@@ -3,7 +3,7 @@ package permafrost.tundra.flow;
 import com.wm.data.IData;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import permafrost.tundra.idata.IDataHelper;
+import permafrost.tundra.data.IDataHelper;
 
 /**
  * Performs webMethods Integration Server flow language variable substitution on

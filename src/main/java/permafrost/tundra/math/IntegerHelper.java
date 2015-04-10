@@ -24,7 +24,7 @@
 
 package permafrost.tundra.math;
 
-import permafrost.tundra.exception.BaseException;
+import permafrost.tundra.lang.BaseException;
 import permafrost.tundra.io.ParseException;
 
 import java.math.BigInteger;

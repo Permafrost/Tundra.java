@@ -1,0 +1,613 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2015 Lachlan Dowding
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+package permafrost.tundra.lang;
+
+import java.util.*;
+
+public class ArrayHelper {
+    /**
+     * Disallow instantiation of this class.
+     */
+    private ArrayHelper() {}
+
+    /**
+     * Returns a new array, with the given element inserted at the end.
+     * @param array The array to append the item to.
+     * @param item  The item to be appended.
+     * @param klass The class of the item being appended.
+     * @param <T>   The class of the item being appended.
+     * @return      A copy of the given array with the given item appended to the end.
+     */
+    public static <T> T[] append(T[] array, T item, Class<T> klass) {
+        return insert(array, item, -1, klass);
+    }
+
+    /**
+     * Returns a new array with all null elements removed.
+     * @param array The array to be compacted.
+     * @param <T> The class of the items in the array.
+     * @return A copy of the given array with all null items removed.
+     */
+    public static <T> T[] compact(T[] array) {
+        if (array == null) return null;
+
+        List<T> list = new ArrayList<T>(array.length);
+
+        for (T item : array) {
+            if (item != null) list.add(item);
+        }
+
+        return list.toArray(Arrays.copyOf(array, list.size()));
+    }
+
+    /**
+     * Returns a new array which contains all the elements from the given arrays.
+     * @param arrays    One or more arrays to be concatenated together.
+     * @param <T>       The class of item stored in the array.
+     * @return          A new array which contains all the elements from the given arrays.
+     */
+    public static <T> T[] concatenate(T[] ... arrays) {
+        if (arrays == null || arrays.length == 0) return null;
+        if (arrays.length == 1) return Arrays.copyOf(arrays[0], arrays[0].length);
+
+        int length = 0;
+        for (T[] array : arrays) {
+            if (array != null) length += array.length;
+        }
+
+        List<T> list = new ArrayList<T>(length);
+
+        for (T[] array : arrays) {
+            if (array != null) Collections.addAll(list, array);
+        }
+
+        return list.toArray(Arrays.copyOf(arrays[0], length));
+    }
+
+    /**
+     * Removes the element at the given index from the given list.
+     * @param array An array to remove an element from.
+     * @param index The zero-based index of the element to be removed.
+     * @param <T>   The class of the items stored in the array.
+     * @return      A new array whose length is one item less than the
+     *              given array, and which includes all elements from
+     *              the given array except for the element at the given
+     *              index.
+     */
+    public static <T> T[] drop(T[] array, int index) {
+        if (array != null) {
+            // support reverse/tail indexing
+            if (index < 0) index += array.length;
+            if (index < 0 || array.length <= index) throw new ArrayIndexOutOfBoundsException(index);
+
+            T[] head = slice(array, 0, index);
+            T[] tail = slice(array, index + 1, array.length - index);
+
+            array = concatenate(head, tail);
+        }
+
+        return array;
+    }
+
+    /**
+     * Returns true if the given arrays are equal.
+     * @param arrays    One or more arrays to be compared for equality.
+     * @param <T>       The class of item stored in the array.
+     * @return          True if the given arrays are all considered equivalent, otherwise false.
+     */
+    public static <T> boolean equal(T[] ... arrays) {
+        if (arrays == null) return false;
+        if (arrays.length < 2) return false;
+
+        boolean result = true;
+
+        for(int i = 0; i < arrays.length - 1; i++) {
+            for (int j = i + 1; j < arrays.length; j++) {
+                if (arrays[i] != null && arrays[j] != null) {
+                    result = (arrays[i].length == arrays[j].length);
+
+                    if (result) {
+                        for (int k = 0; k < arrays[i].length; k++) {
+                            result = ObjectHelper.equal(arrays[i], arrays[j]);
+                            if (!result) break;
+                        }
+                    }
+                } else {
+                    result = arrays[i] == null && arrays[j] == null;
+                }
+                if (!result) break;
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Returns the element from the given array at the given index (supports
+     * ruby-style reverse indexing).
+     * @param array An array to retrieve an item from.
+     * @param index The zero-based index of the item to be retrieved; supports
+     *              ruby-style reverse indexing where, for example, -1 is the
+     *              last item and -2 is the second last item in the array.
+     * @param <T>   The class of the items stored in the array.
+     * @return      The item stored in the array at the given index.
+     */
+    public static <T> T get(T[] array, int index) {
+        T item = null;
+
+        if (array != null) {
+            // support reverse/tail indexing
+            if (index < 0) index += array.length;
+
+            item = array[index];
+        }
+
+        return item;
+    }
+
+    /**
+     * Resizes the given array to the desired length, and pads with nulls.
+     * @param array     The array to be resized, must not be null.
+     * @param newLength The new length of returned array, which can be less than the
+     *                  given array's length in which case it will be truncated, or
+     *                  more than the given array's length in which case it will be
+     *                  padded to the new size with the given item (or null if no
+     *                  item is specified).
+     * @param <T>       The class of the items stored in the array.
+     * @return          A new array with the items from the given array but with the
+     *                  new desired length.
+     */
+    public static <T> T[] resize(T[] array, int newLength) {
+        return resize(array, newLength, null);
+    }
+
+    /**
+     * Resizes the given array (or instantiates a new array, if null) to the
+     * desired length, and pads with the given item.
+     * @param array     The array to be resized. If null, a new array will be instantiated.
+     * @param newLength The new length of returned array, which can be less than the
+     *                  given array's length in which case it will be truncated, or
+     *                  more than the given array's length in which case it will be
+     *                  padded to the new size with the given item (or null if no
+     *                  item is specified).
+     * @param item      The item to use when padding the array to a larger size.
+     * @param klass     The class of the items stored in the array.
+     * @param <T>       The class of the items stored in the array.
+     * @return          A new array with the items from the given array but with the
+     *                  new desired length.
+     */
+    public static <T> T[] resize(T[] array, int newLength, T item, Class<T> klass) {
+        if (array == null) {
+            array = instantiate(klass, newLength);
+            if (item != null) fill(array, item, 0, newLength);
+        } else {
+            array = resize(array, newLength, item);
+        }
+        return array;
+    }
+
+    /**
+     * Resizes the given array to the desired length, and pads with the given item.
+     * @param array     The array to be resized, must not be null.
+     * @param newLength The new length of returned array, which can be less than the
+     *                  given array's length in which case it will be truncated, or
+     *                  more than the given array's length in which case it will be
+     *                  padded to the new size with the given item (or null if no
+     *                  item is specified).
+     * @param item      The item to use when padding the array to a larger size.
+     * @param <T>       The class of the items stored in the array.
+     * @return          A new array with the items from the given array but with the
+     *                  new desired length.
+     */
+    public static <T> T[] resize(T[] array, int newLength, T item) {
+        if (array == null) throw new IllegalArgumentException("array must not be null");
+
+        if (newLength < 0) newLength = array.length + newLength;
+        if (newLength < 0) newLength = 0;
+
+        int originalLength = array.length;
+        if (newLength == originalLength) return array;
+
+        array = Arrays.copyOf(array, newLength);
+        if (item != null) {
+            fill(array, item, originalLength, newLength - originalLength);
+        }
+        return array;
+    }
+
+    /**
+     * Fills the given array with the given item for the given range.
+     * @param array         The array to be filled.
+     * @param item          The item to fill the array with.
+     * @param index         The zero-based index from which the fill should start; supports
+     *                      ruby-style reverse indexing where, for example, -1 is the
+     *                      last item and -2 is the second last item in the array.
+     * @param length        The number of items from the given index to be filled.
+     * @param <T>           The class of item stored in the array.
+     * @return              The given array filled with the given item for the given range.
+     */
+    public static <T> T[] fill(T[] array, T item, int index, int length) {
+        if (array == null) return null;
+        if (length <= 0) return array;
+        if (index > array.length - 1) return array;
+        if (index < 0) index += array.length;
+
+        for (int i = index; i < array.length; i++) {
+            array[i] = item;
+            if ((i - index) >= (length - 1)) break;
+        }
+
+        return array;
+    }
+
+    /**
+     * Grows the size of the given array by the given count, and pads
+     * with the given item.
+     * @param array     The array to be resized, must not be null.
+     * @param count     The number of additional items to be appended to the end of
+     *                  the array.
+     * @param item      The item to use to pad the array.
+     * @param klass     The class of the items stored in the array.
+     * @param <T>       The class of the items stored in the array.
+     * @return          A new array with the items from the given array but with
+     *                  a new length equal to the old length + count.
+     */
+    public static <T> T[] grow(T[] array, int count, T item, Class<T> klass) {
+        return resize(array, array == null ? count : array.length + count, item, klass);
+    }
+
+    /**
+     * Shrinks the size of the given array by the given count.
+     * @param array The array to be shrunk.
+     * @param count The number of items to shrink the array by.
+     * @param <T>   The class of the items stored in the array.
+     * @return      A new array with the items from the given array but with
+     *              a new length equal to the old length - count.
+     */
+    public static <T> T[] shrink(T[] array, int count) {
+        if (array == null) return null;
+
+        return resize(array, array.length - count);
+    }
+
+    /**
+     * Returns true if the given item is found in the given array.
+     * @param array The array to be searched for the given item.
+     * @param item  The item to be searched for in the given array.
+     * @param <T>   The class of the items stored in the array.
+     * @return      True if the given item was found in the given array,
+     *              otherwise false.
+     */
+    public static <T> boolean include(T[] array, T item) {
+        boolean found = false;
+
+        // TODO: change this to Arrays.binarySearch with a custom comparator that supports IData etc.
+        if (array != null) {
+            for (T value : array) {
+                found = ObjectHelper.equal(value, item);
+                if (found) break;
+            }
+        }
+
+        return found;
+    }
+
+    /**
+     * Returns a new array with the given item inserted at the given index.
+     * @param array The array which is to be copied to a new array.
+     * @param item  The item to be inserted.
+     * @param index The zero-based index at which the item is to be inserted; supports
+     *              ruby-style reverse indexing where, for example, -1 is the
+     *              last item and -2 is the second last item in the array.
+     * @param klass The class of the items stored in the array.
+     * @param <T>   The class of the items stored in the array.
+     * @return      A new array which includes all the items from the given array,
+     *              with the given item inserted at the given index, and existing
+     *              items at and after the given index shifted to the right (by
+     *              adding one to their indices).
+     */
+    public static <T> T[] insert(T[] array, T item, int index, Class<T> klass) {
+        if (array == null) array = instantiate(klass);
+
+        ArrayList<T> list = new ArrayList<T>(Arrays.asList(array));
+
+        int capacity = 0;
+        if (index < 0) index += list.size() + 1;
+        if (index < 0) {
+            capacity = (index * -1) + list.size();
+            index = 0;
+        } else {
+            capacity = index;
+        }
+
+        list.ensureCapacity(capacity);
+        if (capacity >= list.size()) {
+            // fill the list with nulls if it needs to be extended
+            for (int i = list.size(); i < capacity; i++) {
+                list.add(i, null);
+            }
+        }
+        list.add(index, item);
+
+        return list.toArray(array);
+    }
+
+    /**
+     * Returns a new array that contains only the items present in all the given arrays.
+     * @param arrays One or more arrays to be intersected.
+     * @param <T>    The class of the items stored in the arrays.
+     * @return       A new array which is a set intersection of the given arrays.
+     */
+    public static <T> T[] intersect(T[] ... arrays) {
+        if (arrays == null || arrays.length == 0) return null;
+
+        List<T> intersection = new ArrayList<T>(arrays[0].length);
+        intersection.addAll((List<T>) Arrays.asList(arrays[0]));
+
+        for (int i = 1; i < arrays.length; i++) {
+            intersection.retainAll((List<T>)Arrays.asList(arrays[i]));
+        }
+
+        return intersection.toArray(Arrays.copyOf(arrays[0], intersection.size()));
+    }
+
+    /**
+     * Returns a string created by concatenating each element of the given array,
+     * separated by the given separator string.
+     * @param array     The array whose contents are to be joined.
+     * @param separator An optional separator string to be used between items of the array.
+     * @param <T>       The class of items stored in the array.
+     * @return          A string representation of the given array created by concatenating
+     *                  together the string representation of each item in order, optionally
+     *                  separated by the given separator string.
+     */
+    public static <T> String join(T[] array, String separator) {
+        if (array == null) return "";
+
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < array.length; i++) {
+            builder.append(ObjectHelper.stringify(array[i]));
+            if (separator != null && i < array.length - 1) builder.append(separator);
+        }
+        return builder.toString();
+    }
+
+    /**
+     * Returns a string representation of the given array.
+     * @param array The array to be stringified.
+     * @param <T>   The class of items stored in the array.
+     * @return      A string representation of the given array.
+     */
+    public static <T> String stringify(T[] array) {
+        return "[" + join(array, ", ") + "]";
+    }
+
+    /**
+     * Returns a new array with a new element inserted at the beginning.
+     * @param array The array to be prepended.
+     * @param item  The item to prepend to the array.
+     * @param klass The class of the items stored in the array.
+     * @param <T>   The class of the items stored in the array.
+     * @return      A new copy of the given array with the given item prepended
+     *              to the start of the array.
+     */
+    public static <T> T[] prepend(T[] array, T item, Class<T> klass) {
+        return insert(array, item, 0, klass);
+    }
+
+    /**
+     * Sets the element from the given array at the given index (supports ruby-style reverse
+     * indexing).
+     * @param array The array in which to set the item at the given index.
+     * @param item  The item to be set at the given index in the array.
+     * @param index The zero-based index of the array item whose value is to be set; supports
+     *              ruby-style reverse indexing where, for example, -1 is the
+     *              last item and -2 is the second last item in the array.
+     * @param klass The class of the items stored in the array.
+     * @param <T>   The class of the items stored in the array.
+     * @return      The given array with the item at the given index set to the given value.
+     */
+    public static <T> T[] put(T[] array, T item, int index, Class<T> klass) {
+        if (array == null) array = instantiate(klass);
+
+        // support reverse/tail indexing
+        if (index < 0) index += array.length;
+        int capacity = 0;
+        if (index < 0) {
+            capacity = (index * -1) + array.length;
+            index = 0;
+        } else {
+            capacity = index + 1;
+        }
+        if (capacity > array.length) array = Arrays.copyOf(array, capacity);
+
+        array[index] = item;
+
+        return array;
+    }
+
+    /**
+     * Returns a new array with all elements from the given array but in reverse order.
+     * @param array The array to be reversed.
+     * @param <T>   The class of the items stored in the array.
+     * @return      A copy of the given array but with all item orders reversed.
+     */
+    public static <T> T[] reverse(T[] array) {
+        if (array == null) return null;
+
+        List<T> list = Arrays.asList(Arrays.copyOf(array, array.length));
+        Collections.reverse(list);
+
+        return list.toArray(Arrays.copyOf(array, list.size()));
+    }
+
+    /**
+     * Returns a new array which is a subset of elements from the given array.
+     * @param array     The array to be sliced.
+     * @param index     The zero-based start index of the subset; supports
+     *                  ruby-style reverse indexing where, for example, -1 is the
+     *                  last item and -2 is the second last item in the array.
+     * @param length    The desired length of the slice; supports negative lengths
+     *                  for slicing backwards from the end of the array.
+     * @param <T>       The class of the items stored in the array.
+     * @return          A new array which is a subset of the given array taken
+     *                  at the desired index for the desired length.
+     */
+    public static <T> T[] slice(T[] array, int index, int length) {
+        if (array == null || array.length == 0) return array;
+        // support reverse/tail length
+        if (length < 0) length = array.length + length;
+        // support reverse/tail indexing
+        if (index < 0) index += array.length;
+        // don't slice past the end of the array
+        if ((length += index) > array.length) length = array.length;
+
+        return Arrays.copyOfRange(array, index, length);
+    }
+
+    /**
+     * Returns a new array with all elements sorted.
+     * @param array The array to be sorted.
+     * @param <T>   The class of items stored in the array.
+     * @return      A new copy of the given array but with the items sorted in their natural order.
+     */
+    public static <T> T[] sort(T[] array) {
+        return sort(array, null);
+    }
+
+    /**
+     * Returns a new array with all elements sorted according to the given comparator.
+     * @param array         The array to be sorted.
+     * @param comparator    The comparator used to determine element ordering.
+     * @param <T>           The class of items stored in the array.
+     * @return              A new copy of the given array but with the items sorted in their natural order.
+     */
+    public static <T> T[] sort(T[] array, Comparator<T> comparator) {
+        if (array == null) return null;
+
+        T[] copy = Arrays.copyOf(array, array.length);
+        Arrays.sort(copy, comparator);
+        return copy;
+    }
+
+    /**
+     * Returns a new array with all string items trimmed, all empty string
+     * items removed, and all null items removed.
+     * @param array The array to be squeezed.
+     * @param <T>   The class of items stored in the array.
+     * @return      A new copy of the given array with all string items trimmed of
+     *              leading and trailing whitespace, all empty string items removed,
+     *              and all null items removed.
+     */
+    public static <T> T[] squeeze(T[] array) {
+        if (array == null || array.length == 0) return null;
+
+        List<T> list = new ArrayList<T>(array.length);
+
+        for (int i = 0; i < array.length; i++) {
+            if (array[i] != null && array[i] instanceof String) {
+                String item = ((String)array[i]).trim();
+                if (item.equals("")) {
+                    array[i] = null;
+                } else {
+                    array[i] = (T)item;
+                }
+            }
+            if (array[i] != null) list.add(array[i]);
+        }
+
+        if (list.size() == 0) {
+            array = null;
+        } else {
+            array = list.toArray(Arrays.copyOf(array, list.size()));
+        }
+
+        return array;
+    }
+
+    /**
+     * Returns a new array with all duplicate elements removed.
+     * @param array The array to remove duplicates from.
+     * @param <T>   The class of items stored in the array.
+     * @return      A new copy of the given array with all duplicate elements removed.
+     */
+    public static <T> T[] unique(T[] array) {
+        if (array == null) return null;
+        java.util.Set<T> set = new java.util.TreeSet<T>(Arrays.asList(array));
+        return set.toArray(Arrays.copyOf(array, set.size()));
+    }
+
+    /**
+     * Dynamically instantiates a new zero-length array of the given class.
+     * @param klass The class of items to be stored in the array.
+     * @param <T>   The class of items to be stored in the array.
+     * @return      A new zero-length array of the given class.
+     */
+    private static <T> T[] instantiate(Class<T> klass) {
+        return instantiate(klass, 0);
+    }
+
+    /**
+     * Dynamically instantiates a new array of the given class with the given length.
+     * @param klass The class of items to be stored in the array.
+     * @param <T>   The class of items to be stored in the array.
+     * @return      A new array of the given class with the given length.
+     */
+    private static <T> T[] instantiate(Class<T> klass, int length) {
+        return (T[])java.lang.reflect.Array.newInstance(klass, length);
+    }
+
+    /**
+     * Converts a Collection to an Object[].
+     *
+     * @param input A Collection to be converted to an Object[].
+     * @return      An Object[] representation of the given Collection.
+     */
+    public static Object[] toArray(Collection input) {
+        if (input == null) return null;
+        return normalize(input.toArray());
+    }
+
+    /**
+     * Converts an Object[] to a Collection.
+     *
+     * @param input An Object[] to be converted to a Collection.
+     * @return      An Collection representation of the given Object[].
+     */
+    public static List toList(Object[] input) {
+        if (input == null) return null;
+        return Arrays.asList(input);
+    }
+
+    /**
+     * Returns a new array whose class is the nearest ancestor class of all contained items.
+     * @param input The array to be normalized.
+     * @return      A new copy of the given array whose class is the nearest ancestor of all contained items.
+     */
+    public static Object[] normalize(Object[] input) {
+        if (input == null) return null;
+        return toList(input).toArray((Object[]) instantiate(ObjectHelper.getNearestAncestor(input), input.length));
+    }
+}
