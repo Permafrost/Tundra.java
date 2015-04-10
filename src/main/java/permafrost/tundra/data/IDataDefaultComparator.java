@@ -33,7 +33,12 @@ import com.wm.util.coder.ValuesCodable;
 /**
  * Compares two IData objects using all the keys and values in each document.
  */
-public class IDataDefaultComparator implements IDataComparator {
+public enum IDataDefaultComparator implements IDataComparator {
+    /**
+     * The singleton instance of this class.
+     */
+    INSTANCE;
+
     /**
      * Compares two IData documents.
      *
