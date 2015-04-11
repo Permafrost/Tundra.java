@@ -42,6 +42,21 @@ import java.nio.charset.Charset;
 import java.util.Map;
 
 public class IDataHTMLCoder extends IDataStringCoder {
+    private static final IDataHTMLCoder INSTANCE = new IDataHTMLCoder();
+
+    /**
+     * Disallow instantiation of this class;
+     */
+    private IDataHTMLCoder() {}
+
+    /**
+     * Returns the singleton instance of this class.
+     * @return The singleton instance of this class.
+     */
+    public static IDataHTMLCoder getInstance() {
+        return INSTANCE;
+    }
+
     /**
      * Encodes the given IData document as HTML to the given output stream.
      * @param outputStream  The stream to write the encoded IData to.

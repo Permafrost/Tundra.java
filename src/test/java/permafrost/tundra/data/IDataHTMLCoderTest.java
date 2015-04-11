@@ -48,8 +48,7 @@ public class IDataHTMLCoderTest {
 
     @Test
     public void testEncodeToString() throws Exception {
-        IDataHTMLCoder coder = new IDataHTMLCoder();
-        String html = coder.encodeToString(document);
+        String html = IDataHTMLCoder.getInstance().encodeToString(document);
         assertTrue(html.contains("abc"));
         assertTrue(html.contains("def"));
         assertTrue(html.contains("ghi"));
@@ -60,7 +59,6 @@ public class IDataHTMLCoderTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void testDecodeToString() throws Exception {
-        IDataHTMLCoder coder = new IDataHTMLCoder();
-        coder.decodeFromString("test");
+        IDataHTMLCoder.getInstance().decodeFromString("test");
     }
 }
