@@ -577,9 +577,10 @@ public class ArrayHelper {
 
     /**
      * Dynamically instantiates a new array of the given class with the given length.
-     * @param klass The class of items to be stored in the array.
-     * @param <T>   The class of items to be stored in the array.
-     * @return      A new array of the given class with the given length.
+     * @param klass     The class of items to be stored in the array.
+     * @param length    The desired length of the returned array.
+     * @param <T>       The class of items to be stored in the array.
+     * @return          A new array of the given class with the given length.
      */
     @SuppressWarnings("unchecked")
     public static <T> T[] instantiate(Class<T> klass, int length) {
