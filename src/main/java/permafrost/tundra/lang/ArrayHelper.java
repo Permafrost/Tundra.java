@@ -571,7 +571,7 @@ public class ArrayHelper {
      * @return      A new zero-length array of the given class.
      */
     @SuppressWarnings("unchecked")
-    private static <T> T[] instantiate(Class<T> klass) {
+    public static <T> T[] instantiate(Class<T> klass) {
         return instantiate(klass, 0);
     }
 
@@ -582,7 +582,7 @@ public class ArrayHelper {
      * @return      A new array of the given class with the given length.
      */
     @SuppressWarnings("unchecked")
-    private static <T> T[] instantiate(Class<T> klass, int length) {
+    public static <T> T[] instantiate(Class<T> klass, int length) {
         return (T[])java.lang.reflect.Array.newInstance(klass, length);
     }
 
