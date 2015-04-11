@@ -48,6 +48,21 @@ import java.util.Iterator;
 import java.util.List;
 
 public class IDataJSONCoder extends IDataStringCoder {
+    private static final IDataJSONCoder INSTANCE = new IDataJSONCoder();
+
+    /**
+     * Disallow instantiation of this class.
+     */
+    private IDataJSONCoder() {}
+
+    /**
+     * Returns the singleton instance of this class.
+     * @return The singleton instance of this class.
+     */
+    public static IDataJSONCoder getInstance() {
+        return INSTANCE;
+    }
+
     /**
      * Encodes the given IData document as YAML to the given output stream.
      * @param outputStream  The stream to write the encoded IData to.
