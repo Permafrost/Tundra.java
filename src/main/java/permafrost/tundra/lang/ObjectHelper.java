@@ -66,16 +66,10 @@ public class ObjectHelper {
      * @param object    The object to be checked against the given class.
      * @param className The name of the class the given object will be tested against.
      * @return          True if the given object is an instance of the given class.
-     * @throws BaseException If the given class name is not found.
+     * @throws ClassNotFoundException If the given class name is not found.
      */
-    public static boolean instance(Object object, String className) throws BaseException {
-        boolean instance = false;
-        try {
-            instance = className != null && instance(object, Class.forName(className));
-        } catch(ClassNotFoundException ex) {
-            throw new BaseException(ex);
-        }
-        return instance;
+    public static boolean instance(Object object, String className) throws ClassNotFoundException {
+        return className != null && instance(object, Class.forName(className));
     }
 
     /**
@@ -150,9 +144,9 @@ public class ObjectHelper {
      * Returns the nearest class which is an ancestor to all the classes in the given set.
      * @param classNames A set of class names for which the nearest ancestor will be returned.
      * @return           The nearest ancestor class which is an ancestor to all the classes in the given set.
-     * @throws BaseException If any of the class names cannot be found.
+     * @throws ClassNotFoundException If any of the class names cannot be found.
      */
-    public static Class<?> getNearestAncestor(String... classNames) throws BaseException {
+    public static Class<?> getNearestAncestor(String... classNames) throws ClassNotFoundException {
         return getNearestAncestor(toClassArray(classNames));
     }
 
@@ -181,16 +175,17 @@ public class ObjectHelper {
      * @return           All the common ancestor classes from the given set of class names.
      */
     public static Class<?>[] getAncestors(Class<?>... classes) {
-        return getAncestors(java.util.Arrays.asList(classes)).toArray(new Class<?>[0]);
+        Set<Class<?>> ancestors = getAncestors(java.util.Arrays.asList(classes));
+        return ancestors.toArray(new Class<?>[ancestors.size()]);
     }
 
     /**
      * Returns all the common ancestor classes from the given set of class names.
      * @param classNames A list of class names.
      * @return           All the common ancestor classes from the given set of class names.
-     * @throws BaseException If a class name cannot be found.
+     * @throws ClassNotFoundException If a class name cannot be found.
      */
-    public static Class<?>[] getAncestors(String... classNames) throws BaseException {
+    public static Class<?>[] getAncestors(String... classNames) throws ClassNotFoundException {
         return getAncestors(toClassArray(classNames));
     }
 
@@ -245,19 +240,15 @@ public class ObjectHelper {
      * Converts the given list of class names to a list of classes.
      * @param classNames A list of class names.
      * @return           A list of classes that correspond to the given names.
-     * @throws BaseException If a class name cannot be not found.
+     * @throws ClassNotFoundException If a class name cannot be not found.
      */
-    private static Class<?>[] toClassArray(String[] classNames) throws BaseException {
+    private static Class<?>[] toClassArray(String[] classNames) throws ClassNotFoundException {
         if (classNames == null) return null;
 
         Class<?>[] classes = new Class<?>[classNames.length];
 
         for (int i = 0; i < classes.length; i++) {
-            try {
-                classes[i] = Class.forName(classNames[i]);
-            } catch (ClassNotFoundException ex) {
-                throw new BaseException(ex);
-            }
+            classes[i] = Class.forName(classNames[i]);
         }
 
         return classes;

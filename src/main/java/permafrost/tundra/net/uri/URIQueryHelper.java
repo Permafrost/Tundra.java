@@ -29,31 +29,31 @@ import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
 import com.wm.data.IDataUtil;
 import permafrost.tundra.lang.ArrayHelper;
-import permafrost.tundra.lang.BaseException;
+
+import java.io.IOException;
+import java.nio.charset.Charset;
 
 public class URIQueryHelper {
     /**
      * Parses a query string.
-     * @param input     The query string to be parsed.
-     * @param decode    Whether to URI decode the values in the query string.
-     * @return          An IData representation of the parsed query string.
-     * @throws BaseException If the default encoding if not supported.
+     * @param input         The query string to be parsed.
+     * @param decode        Whether to URI decode the values in the query string.
+     * @return              An IData representation of the parsed query string.
      */
-    public static IData parse(String input, boolean decode) throws BaseException {
+    public static IData parse(String input, boolean decode) {
         return parse(input, null, decode);
     }
 
     /**
      * Parses a query string.
-     * @param input     The query string to be parsed.
-     * @param encoding  The character set to use when decoding URI encoded values.
-     * @param decode    Whether to URI decode the values in the query string.
-     * @return          An IData representation of the parsed query string.
-     * @throws BaseException If the specified encoding if not supported.
+     * @param input         The query string to be parsed.
+     * @param encoding      The character set to use when decoding URI encoded values.
+     * @param decode        Whether to URI decode the values in the query string.
+     * @return              An IData representation of the parsed query string.
      */
-    public static IData parse(String input, String encoding, boolean decode) throws BaseException {
+    public static IData parse(String input, String encoding, boolean decode) {
         if (input == null) return null;
-        if (encoding == null) encoding = URIHelper.DEFAULT_CHARACTER_ENCODING;
+        if (encoding == null) encoding = URIHelper.DEFAULT_CHARSET_NAME;
 
         IData output = IDataFactory.create();
         IDataCursor cursor = output.getCursor();
@@ -92,61 +92,67 @@ public class URIQueryHelper {
 
     /**
      * Emits a query string given a name and value.
-     * @param name      The query string parameter's name.
-     * @param value     The query string parameter's value.
-     * @param encoding  The character set to use when URI encoding the parameter's value.
-     * @param encode    True if the parameter's value should be URI encoded.
-     * @return          A query string containing the specified parameter.
-     * @throws BaseException If the specified encoding is not supported.
+     * @param name          The query string parameter's name.
+     * @param value         The query string parameter's value.
+     * @param charset       The character set to use when URI encoding the parameter's value.
+     * @param encode        True if the parameter's value should be URI encoded.
+     * @return              A query string containing the specified parameter.
      */
-    private static String emit(String name, Object value, String encoding, boolean encode) throws BaseException {
+    private static String emit(String name, Object value, Charset charset, boolean encode) {
         if (encode) {
-            name = URIHelper.encode(name, encoding);
-            value = URIHelper.encode(value.toString(), encoding);
+            name = URIHelper.encode(name, charset);
+            value = URIHelper.encode(value.toString(), charset);
         }
         return name + "=" + value;
     }
 
     /**
      * Emits a query string given a name and array of values.
-     * @param name      The query string parameter's name.
-     * @param values    A list of values for the query string parameter.
-     * @param encoding  The character set to use when URI encoding the parameter's value.
-     * @param encode    True if the parameter's value should be URI encoded.
-     * @return          A query string containing the specified parameter.
-     * @throws BaseException If the specified encoding is not supported.
+     * @param name          The query string parameter's name.
+     * @param values        A list of values for the query string parameter.
+     * @param charset       The character set to use when URI encoding the parameter's value.
+     * @param encode        True if the parameter's value should be URI encoded.
+     * @return              A query string containing the specified parameter.
      */
-    private static String emit(String name, Object[] values, String encoding, boolean encode) throws BaseException {
+    private static String emit(String name, Object[] values, Charset charset, boolean encode) {
         StringBuilder output = new StringBuilder();
         for(Object value : values) {
             if (output.length() > 0) output.append("&");
-            output.append(emit(name, value, encoding, encode));
+            output.append(emit(name, value, charset, encode));
         }
         return output.toString();
     }
 
     /**
      * Emits a query string given an IData containing name value pairs.
-     * @param input     An IData containing keys and values to serialized as a query string.
-     * @param encode    True if the query string parameters should be URI encoded.
-     * @return          A query string containing the parameters in the given IData.
-     * @throws BaseException If the default encoding is not supported.
+     * @param input         An IData containing keys and values to serialized as a query string.
+     * @param encode        True if the query string parameters should be URI encoded.
+     * @return              A query string containing the parameters in the given IData.
      */
-    public static String emit(IData input, boolean encode) throws BaseException {
-        return emit(input, null, encode);
+    public static String emit(IData input, boolean encode) {
+        return emit(input, URIHelper.DEFAULT_CHARSET_NAME, encode);
     }
 
     /**
      * Emits a query string given an IData containing name value pairs.
-     * @param input     An IData containing keys and values to serialized as a query string.
-     * @param encoding  The character set to use when URI encoding the parameters.
-     * @param encode    True if the query string parameters should be URI encoded.
-     * @return          A query string containing the parameters in the given IData.
-     * @throws BaseException If the specified encoding is not supported.
+     * @param input         An IData containing keys and values to serialized as a query string.
+     * @param charsetName   The character set to use when URI encoding the parameters.
+     * @param encode        True if the query string parameters should be URI encoded.
+     * @return              A query string containing the parameters in the given IData.
      */
-    public static String emit(IData input, String encoding, boolean encode) throws BaseException {
+    public static String emit(IData input, String charsetName, boolean encode) {
+        return emit(input, Charset.forName(charsetName), encode);
+    }
+
+    /**
+     * Emits a query string given an IData containing name value pairs.
+     * @param input         An IData containing keys and values to serialized as a query string.
+     * @param charset       The character set to use when URI encoding the parameters.
+     * @param encode        True if the query string parameters should be URI encoded.
+     * @return              A query string containing the parameters in the given IData.
+     */
+    public static String emit(IData input, Charset charset, boolean encode) {
         if (input == null) return null;
-        if (encoding == null) encoding = URIHelper.DEFAULT_CHARACTER_ENCODING;
 
         StringBuilder output = new StringBuilder();
 
@@ -158,9 +164,9 @@ public class URIQueryHelper {
             if (value != null) {
                 if (output.length() > 0) output.append("&");
                 if (value instanceof Object[]) {
-                    output.append(emit(key, (Object[])value, encoding, encode));
+                    output.append(emit(key, (Object[])value, charset, encode));
                 } else {
-                    output.append(emit(key, value, encoding, encode));
+                    output.append(emit(key, value, charset, encode));
                 }
             }
         }

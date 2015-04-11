@@ -25,9 +25,8 @@
 package permafrost.tundra.time;
 
 import permafrost.tundra.lang.ArrayHelper;
-import permafrost.tundra.lang.BaseException;
-import permafrost.tundra.io.ParseException;
 
+import java.text.ParseException;
 import java.util.Calendar;
 import java.util.TimeZone;
 import java.util.Date;
@@ -344,9 +343,8 @@ public class DateTimeHelper {
      * Parses an XML datetime string and returns a Calendar object.
      * @param input The XML datetime string to be parsed.
      * @return      A Calendar object representing the parsed XML datetime string.
-     * @throws ParseException If the given string does not adhere to the required pattern.
      */
-    public static Calendar parse(String input) throws ParseException {
+    public static Calendar parse(String input) {
         return parse(input, (String)null);
     }
 
@@ -355,9 +353,8 @@ public class DateTimeHelper {
      * @param input   The datetime string to be parsed.
      * @param pattern The datetime pattern the given string adheres to.
      * @return        A Calendar object representing the parsed datetime string.
-     * @throws ParseException If the given string does not adhere to the required pattern.
      */
-    public static Calendar parse(String input, String pattern) throws ParseException {
+    public static Calendar parse(String input, String pattern) {
         return parse(input, pattern, (TimeZone) null);
     }
 
@@ -368,9 +365,8 @@ public class DateTimeHelper {
      * @param timezone The time zone ID identifying the time zone into which the
      *                 parsed string will be forced.
      * @return         A Calendar object representing the parsed datetime string.
-     * @throws ParseException If the given string does not adhere to the required pattern.
      */
-    public static Calendar parse(String input, String pattern, String timezone) throws ParseException {
+    public static Calendar parse(String input, String pattern, String timezone) {
         return parse(input, pattern, TimeZoneHelper.get(timezone));
     }
 
@@ -380,9 +376,8 @@ public class DateTimeHelper {
      * @param pattern  The datetime pattern the given string adheres to.
      * @param timezone The time zone into which the parsed string will be forced.
      * @return         A Calendar object representing the parsed datetime string.
-     * @throws ParseException If the given string does not adhere to the required pattern.
      */
-    public static Calendar parse(String input, String pattern, TimeZone timezone) throws ParseException {
+    public static Calendar parse(String input, String pattern, TimeZone timezone) {
         if (input == null) return null;
         if (pattern == null) pattern = DEFAULT_DATETIME_PATTERN;
 
@@ -411,8 +406,8 @@ public class DateTimeHelper {
             }
 
             if (timezone != null) output = TimeZoneHelper.replace(output, timezone);
-        } catch (java.lang.Exception ex) {
-            throw new ParseException("Unparseable datetime: '" + input + "' does not conform to pattern '" + pattern + "'", ex);
+        } catch (Exception ex) {
+            throw new IllegalArgumentException("Unparseable datetime: '" + input + "' does not conform to pattern '" + pattern + "'", ex);
         }
 
         return output;
@@ -424,9 +419,8 @@ public class DateTimeHelper {
      * @param input    The datetime string to be parsed.
      * @param patterns A list of datetime patterns the given string might adhere to.
      * @return         A Calendar object representing the parsed datetime string.
-     * @throws ParseException If the given string does not adhere to the required pattern.
      */
-    public static Calendar parse(String input, String[] patterns) throws ParseException {
+    public static Calendar parse(String input, String[] patterns) {
         return parse(input, patterns, (String)null);
     }
 
@@ -438,9 +432,8 @@ public class DateTimeHelper {
      * @param timezone The time zone ID identifying the time zone into which the
      *                 parsed string will be forced.
      * @return         A Calendar object representing the parsed datetime string.
-     * @throws ParseException If the given string does not adhere to the required pattern.
      */
-    public static Calendar parse(String input, String[] patterns, String timezone) throws ParseException {
+    public static Calendar parse(String input, String[] patterns, String timezone) {
         return parse(input, patterns, TimeZoneHelper.get(timezone));
     }
 
@@ -451,9 +444,8 @@ public class DateTimeHelper {
      * @param patterns A list of datetime patterns the given string might adhere to.
      * @param timezone The time zone into which the parsed string will be forced.
      * @return         A Calendar object representing the parsed datetime string.
-     * @throws ParseException If the given string does not adhere to the required pattern.
      */
-    public static Calendar parse(String input, String[] patterns, TimeZone timezone) throws ParseException {
+    public static Calendar parse(String input, String[] patterns, TimeZone timezone) {
         if (input == null) return null;
         if (patterns == null) patterns = new String[1];
 
@@ -465,11 +457,11 @@ public class DateTimeHelper {
                 output = parse(input, pattern, timezone);
                 parsed = true;
                 break;
-            } catch (ParseException ex) {
+            } catch (IllegalArgumentException ex) {
                 // ignore
             }
         }
-        if (!parsed) throw new ParseException("Unparseable datetime: '" + input + "' does not conform to patterns [" + ArrayHelper.join(patterns, ", ") + "]");
+        if (!parsed) throw new IllegalArgumentException("Unparseable datetime: '" + input + "' does not conform to patterns [" + ArrayHelper.join(patterns, ", ") + "]");
 
         return output;
     }
@@ -478,9 +470,8 @@ public class DateTimeHelper {
      * Parses a list of XML datetime strings and returns a list of Calendar objects.
      * @param inputs The list of XML datetime strings to be parsed.
      * @return       A list of Calendar objects representing the parsed XML datetime strings.
-     * @throws ParseException If the given string does not adhere to the required pattern.
      */
-    public static Calendar[] parse(String[] inputs) throws ParseException {
+    public static Calendar[] parse(String[] inputs) {
         return parse(inputs, (String)null);
     }
 
@@ -491,9 +482,8 @@ public class DateTimeHelper {
      * @param pattern The datetime pattern the given string adheres to.
      * @return        A list of Calendar objects representing the parsed
      *                datetime strings.
-     * @throws ParseException If the given string does not adhere to the required pattern.
      */
-    public static Calendar[] parse(String[] inputs, String pattern) throws ParseException {
+    public static Calendar[] parse(String[] inputs, String pattern) {
         return parse(inputs, pattern, (TimeZone)null);
     }
 
@@ -506,9 +496,8 @@ public class DateTimeHelper {
      *                 parsed string will be forced.
      * @return         A list of Calendar objects representing the parsed
      *                 datetime strings.
-     * @throws ParseException If the given string does not adhere to the required pattern.
      */
-    public static Calendar[] parse(String[] inputs, String pattern, String timezone) throws ParseException {
+    public static Calendar[] parse(String[] inputs, String pattern, String timezone) {
         return parse(inputs, pattern, TimeZoneHelper.get(timezone));
     }
 
@@ -520,9 +509,8 @@ public class DateTimeHelper {
      * @param timezone The time zone into which the parsed string will be forced.
      * @return         A list of Calendar objects representing the parsed
      *                 datetime strings.
-     * @throws ParseException If the given string does not adhere to the required pattern.
      */
-    public static Calendar[] parse(String[] inputs, String pattern, TimeZone timezone) throws ParseException {
+    public static Calendar[] parse(String[] inputs, String pattern, TimeZone timezone) {
         if (inputs == null) return null;
 
         Calendar[] outputs = new Calendar[inputs.length];
@@ -539,9 +527,8 @@ public class DateTimeHelper {
      * @param patterns The list of datetime patterns the given strings might adhere to.
      * @return         A list of Calendar objects representing the parsed
      *                 datetime strings.
-     * @throws ParseException If the given string does not adhere to the required pattern.
      */
-    public static Calendar[] parse(String[] inputs, String[] patterns) throws ParseException {
+    public static Calendar[] parse(String[] inputs, String[] patterns) {
         return parse(inputs, patterns, (TimeZone)null);
     }
 
@@ -554,9 +541,8 @@ public class DateTimeHelper {
      *                 parsed string will be forced.
      * @return         A list of Calendar objects representing the parsed
      *                 datetime strings.
-     * @throws ParseException If the given string does not adhere to the required pattern.
      */
-    public static Calendar[] parse(String[] inputs, String[] patterns, String timezone) throws ParseException {
+    public static Calendar[] parse(String[] inputs, String[] patterns, String timezone) {
         return parse(inputs, patterns, TimeZoneHelper.get(timezone));
     }
 
@@ -568,9 +554,8 @@ public class DateTimeHelper {
      * @param timezone The time zone into which the parsed string will be forced.
      * @return         A list of Calendar objects representing the parsed
      *                 datetime strings.
-     * @throws ParseException If the given string does not adhere to the required pattern.
      */
-    public static Calendar[] parse(String[] inputs, String[] patterns, TimeZone timezone) throws ParseException {
+    public static Calendar[] parse(String[] inputs, String[] patterns, TimeZone timezone) {
         if (inputs == null) return null;
 
         Calendar[] outputs = new Calendar[inputs.length];
@@ -623,9 +608,8 @@ public class DateTimeHelper {
      * @param inPattern  The pattern the given input datetime string adheres to.
      * @param outPattern The pattern the datetime string should be reformatted as.
      * @return           The given datetime string reformatted according to the given outPattern.
-     * @throws BaseException If the given datetime string is unparseable.
      */
-    public static String format(String input, String inPattern, String outPattern) throws BaseException {
+    public static String format(String input, String inPattern, String outPattern) {
         return format(input, inPattern, (TimeZone) null, outPattern, (TimeZone) null);
     }
 
@@ -637,9 +621,8 @@ public class DateTimeHelper {
      * @param outPattern  The pattern the datetime string should be reformatted as.
      * @param outTimeZone The time zone ID identifying the time zone the returned datetime string should be in.
      * @return            The given datetime string reformatted according to the given outPattern.
-     * @throws BaseException If the given datetime string is unparseable.
      */
-    public static String format(String input, String inPattern, String inTimeZone, String outPattern, String outTimeZone) throws BaseException {
+    public static String format(String input, String inPattern, String inTimeZone, String outPattern, String outTimeZone) {
         return format(input, inPattern, TimeZoneHelper.get(inTimeZone), outPattern, TimeZoneHelper.get(outTimeZone));
     }
 
@@ -651,9 +634,8 @@ public class DateTimeHelper {
      * @param outPattern  The pattern the datetime string should be reformatted as.
      * @param outTimeZone The time zone the returned datetime string should be in.
      * @return            The given datetime string reformatted according to the given outPattern.
-     * @throws BaseException If the given datetime string is unparseable.
      */
-    public static String format(String input, String inPattern, TimeZone inTimeZone, String outPattern, TimeZone outTimeZone) throws BaseException {
+    public static String format(String input, String inPattern, TimeZone inTimeZone, String outPattern, TimeZone outTimeZone) {
         return emit(parse(input, inPattern, inTimeZone), outPattern, outTimeZone);
     }
 
@@ -663,9 +645,8 @@ public class DateTimeHelper {
      * @param inPatterns The list of patterns the given input datetime string might adhere to.
      * @param outPattern The pattern the datetime string should be reformatted as.
      * @return           The given datetime string reformatted according to the given outPattern.
-     * @throws BaseException If the given datetime string is unparseable.
      */
-    public static String format(String input, String[] inPatterns, String outPattern) throws BaseException {
+    public static String format(String input, String[] inPatterns, String outPattern) {
         return format(input, inPatterns, (TimeZone) null, outPattern, (TimeZone) null);
     }
 
@@ -677,9 +658,8 @@ public class DateTimeHelper {
      * @param outPattern The pattern the datetime string should be reformatted as.
      * @param outTimeZone The time zone ID identifying the time zone the returned datetime string should be in.
      * @return           The given datetime string reformatted according to the given outPattern.
-     * @throws BaseException If the given datetime string is unparseable.
      */
-    public static String format(String input, String[] inPatterns, String inTimeZone, String outPattern, String outTimeZone) throws BaseException {
+    public static String format(String input, String[] inPatterns, String inTimeZone, String outPattern, String outTimeZone) {
         return format(input, inPatterns, TimeZoneHelper.get(inTimeZone), outPattern, TimeZoneHelper.get(outTimeZone));
     }
 
@@ -691,9 +671,8 @@ public class DateTimeHelper {
      * @param outPattern The pattern the datetime string should be reformatted as.
      * @param outTimeZone The time zone the returned datetime string should be in.
      * @return           The given datetime string reformatted according to the given outPattern.
-     * @throws BaseException If the given datetime string is unparseable.
      */
-    public static String format(String input, String[] inPatterns, TimeZone inTimeZone, String outPattern, TimeZone outTimeZone) throws BaseException {
+    public static String format(String input, String[] inPatterns, TimeZone inTimeZone, String outPattern, TimeZone outTimeZone) {
         return emit(parse(input, inPatterns, inTimeZone), outPattern, outTimeZone);
     }
 
@@ -703,9 +682,8 @@ public class DateTimeHelper {
      * @param inPattern  The pattern the given input datetime strings adhere to.
      * @param outPattern The pattern the datetime strings should be reformatted as.
      * @return           The given datetime strings reformatted according to the given outPattern.
-     * @throws BaseException If any of the given datetime strings are unparseable.
      */
-    public static String[] format(String[] inputs, String inPattern, String outPattern) throws BaseException {
+    public static String[] format(String[] inputs, String inPattern, String outPattern) {
         return format(inputs, inPattern, (TimeZone) null, outPattern, (TimeZone) null);
     }
 
@@ -717,9 +695,8 @@ public class DateTimeHelper {
      * @param outPattern  The pattern the datetime strings should be reformatted as.
      * @param outTimeZone The time zone ID identifying the time zone the returned datetime string should be in.
      * @return            The given datetime strings reformatted according to the given outPattern.
-     * @throws BaseException If any of the given datetime strings are unparseable.
      */
-    public static String[] format(String[] inputs, String inPattern, String inTimeZone, String outPattern, String outTimeZone) throws BaseException {
+    public static String[] format(String[] inputs, String inPattern, String inTimeZone, String outPattern, String outTimeZone) {
         return format(inputs, inPattern, TimeZoneHelper.get(inTimeZone), outPattern, TimeZoneHelper.get(outTimeZone));
     }
 
@@ -731,9 +708,8 @@ public class DateTimeHelper {
      * @param outPattern  The pattern the datetime strings should be reformatted as.
      * @param outTimeZone The time zone the returned datetime string should be in.
      * @return            The given datetime strings reformatted according to the given outPattern.
-     * @throws BaseException If any of the given datetime strings are unparseable.
      */
-    public static String[] format(String[] inputs, String inPattern, TimeZone inTimeZone, String outPattern, TimeZone outTimeZone) throws BaseException {
+    public static String[] format(String[] inputs, String inPattern, TimeZone inTimeZone, String outPattern, TimeZone outTimeZone) {
         if (inputs == null) return null;
 
         String[] outputs = new String[inputs.length];
@@ -749,9 +725,8 @@ public class DateTimeHelper {
      * @param inPatterns The list of patterns the given input datetime string might adhere to.
      * @param outPattern The pattern the datetime string should be reformatted as.
      * @return           The given datetime string reformatted according to the given outPattern.
-     * @throws BaseException If any of the given datetime strings are unparseable.
      */
-    public static String[] format(String[] inputs, String[] inPatterns, String outPattern) throws BaseException {
+    public static String[] format(String[] inputs, String[] inPatterns, String outPattern) {
         return format(inputs, inPatterns, (TimeZone)null, outPattern, (TimeZone)null);
     }
 
@@ -763,9 +738,8 @@ public class DateTimeHelper {
      * @param outPattern     The pattern the datetime string should be reformatted as.
      * @param outTimeZone    The time zone ID identifying the time zone the returned datetime string should be in.
      * @return               The given datetime string reformatted according to the given outPattern.
-     * @throws BaseException If any of the given datetime strings are unparseable.
      */
-    public static String[] format(String[] inputs, String[] inPatterns, String inTimeZone, String outPattern, String outTimeZone) throws BaseException {
+    public static String[] format(String[] inputs, String[] inPatterns, String inTimeZone, String outPattern, String outTimeZone) {
         return format(inputs, inPatterns, TimeZoneHelper.get(inTimeZone), outPattern, TimeZoneHelper.get(outTimeZone));
     }
 
@@ -777,9 +751,8 @@ public class DateTimeHelper {
      * @param outPattern     The pattern the datetime string should be reformatted as.
      * @param outTimeZone    The time zone the returned datetime string should be in.
      * @return               The given datetime string reformatted according to the given outPattern.
-     * @throws BaseException If any of the given datetime strings are unparseable.
      */
-    public static String[] format(String[] inputs, String[] inPatterns, TimeZone inTimeZone, String outPattern, TimeZone outTimeZone) throws BaseException {
+    public static String[] format(String[] inputs, String[] inPatterns, TimeZone inTimeZone, String outPattern, TimeZone outTimeZone) {
         if (inputs == null) return null;
 
         String[] outputs = new String[inputs.length];

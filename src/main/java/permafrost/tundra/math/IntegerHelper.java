@@ -24,9 +24,6 @@
 
 package permafrost.tundra.math;
 
-import permafrost.tundra.lang.BaseException;
-import permafrost.tundra.io.ParseException;
-
 import java.math.BigInteger;
 
 public class IntegerHelper {
@@ -39,9 +36,8 @@ public class IntegerHelper {
      * Returns a java.math.BigInteger object by parsing the given an integer string.
      * @param string A string to be parsed.
      * @return       A java.math.BigInteger representation of the given string.
-     * @throws BaseException If the given string is unparseable.
      */
-    public static BigInteger parse(String string) throws BaseException {
+    public static BigInteger parse(String string) {
         return parse(string, 10);
     }
 
@@ -52,15 +48,9 @@ public class IntegerHelper {
      * @param string A string to be parsed.
      * @param radix  The radix to use when interpreting the given string.
      * @return       A java.math.BigInteger representation of the given string.
-     * @throws BaseException If the given string is unparseable.
      */
-    public static BigInteger parse(String string, int radix) throws BaseException {
+    public static BigInteger parse(String string, int radix) {
         if (string == null) return null;
-
-        try {
-            return new BigInteger(string, radix);
-        } catch(IllegalArgumentException ex) {
-            throw new ParseException(ex);
-        }
+        return new BigInteger(string, radix);
     }
 }

@@ -25,8 +25,6 @@
 package permafrost.tundra.lang;
 
 import org.junit.Test;
-import permafrost.tundra.lang.BaseException;
-import permafrost.tundra.lang.ExceptionHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,22 +32,22 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 public class ExceptionHelperTest {
-    @Test(expected = BaseException.class)
+    @Test(expected = ChainableServiceException.class)
     public void testRaiseNoArguments() throws Exception {
         ExceptionHelper.raise();
     }
 
-    @Test(expected = BaseException.class)
+    @Test(expected = ChainableServiceException.class)
     public void testRaiseWithMessage() throws Exception {
         ExceptionHelper.raise("test");
     }
 
-    @Test(expected = BaseException.class)
+    @Test(expected = ChainableServiceException.class)
     public void testRaiseWithCause() throws Exception {
         ExceptionHelper.raise(new IllegalArgumentException("test"));
     }
 
-    @Test(expected = BaseException.class)
+    @Test(expected = ChainableServiceException.class)
     public void testRaiseWithCauseArray() throws Exception {
         Throwable[] throwables = new Throwable[2];
 
@@ -60,7 +58,7 @@ public class ExceptionHelperTest {
         ExceptionHelper.raise(throwables);
     }
 
-    @Test(expected = BaseException.class)
+    @Test(expected = ChainableServiceException.class)
     public void testRaiseWithCauseCollection() throws Exception {
         List<Throwable> throwables = new ArrayList<Throwable>(2);
 

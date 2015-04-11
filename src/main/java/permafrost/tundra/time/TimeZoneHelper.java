@@ -24,9 +24,6 @@
 
 package permafrost.tundra.time;
 
-import permafrost.tundra.time.DurationHelper;
-import permafrost.tundra.lang.BaseException;
-
 public class TimeZoneHelper {
     private static java.util.SortedSet<String> ZONES = new java.util.TreeSet(java.util.Arrays.asList(java.util.TimeZone.getAvailableIDs()));
     private static java.util.regex.Pattern OFFSET_HHMM_PATTERN = java.util.regex.Pattern.compile("([\\+-])?(\\d?\\d):(\\d\\d)");
@@ -72,8 +69,6 @@ public class TimeZoneHelper {
                             String candidate = get(Integer.parseInt(DurationHelper.format(id, "xml", "milliseconds")));
                             if (candidate != null) id = candidate;
                         } catch (NumberFormatException ex) {
-                            // ignore
-                        } catch (BaseException ex) {
                             // ignore
                         }
                     } else {

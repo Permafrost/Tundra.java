@@ -22,25 +22,45 @@
  * SOFTWARE.
  */
 
-package permafrost.tundra.math;
+package permafrost.tundra.data;
 
+import com.wm.data.IData;
+import com.wm.data.IDataCursor;
+import com.wm.data.IDataFactory;
+import com.wm.data.IDataUtil;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class DecimalHelperTest {
-    @Test
-    public void testParseNullArgument() throws Exception {
-        assertNull(DecimalHelper.parse(null));
+public class IDataHTMLCoderTest {
+    IData document;
+
+    @Before
+    public void setUp() throws Exception {
+        document = IDataFactory.create();
+        IDataCursor cursor = document.getCursor();
+        IDataUtil.put(cursor, "abc", "123");
+        IDataUtil.put(cursor, "def", "456");
+        IDataUtil.put(cursor, "ghi", "789");
+        cursor.destroy();
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testParseUnparseableArgument() throws Exception {
-        assertNull(DecimalHelper.parse("test"));
+    @Test
+    public void testEncodeToString() throws Exception {
+        IDataHTMLCoder coder = new IDataHTMLCoder();
+        String html = coder.encodeToString(document);
+        assertTrue(html.contains("abc"));
+        assertTrue(html.contains("def"));
+        assertTrue(html.contains("ghi"));
+        assertTrue(html.contains("123"));
+        assertTrue(html.contains("456"));
+        assertTrue(html.contains("789"));
     }
 
-    @Test
-    public void testParseParseableArgument() throws Exception {
-        assertEquals(123.456, DecimalHelper.parse("123.456").doubleValue(), 0.001);
+    @Test(expected = UnsupportedOperationException.class)
+    public void testDecodeToString() throws Exception {
+        IDataHTMLCoder coder = new IDataHTMLCoder();
+        coder.decodeFromString("test");
     }
 }

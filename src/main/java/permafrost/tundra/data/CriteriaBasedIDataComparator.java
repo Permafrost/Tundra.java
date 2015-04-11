@@ -24,7 +24,6 @@
 
 package permafrost.tundra.data;
 
-import permafrost.tundra.lang.BaseException;
 import permafrost.tundra.math.DecimalHelper;
 import permafrost.tundra.math.IntegerHelper;
 import permafrost.tundra.time.DateTimeHelper;
@@ -107,36 +106,20 @@ public class CriteriaBasedIDataComparator implements IDataComparator {
             } else {
                 switch(criterion.getType()) {
                     case INTEGER:
-                        try {
-                            firstValue = IntegerHelper.parse(firstValue.toString());
-                            secondValue = IntegerHelper.parse(secondValue.toString());
-                        } catch(BaseException ex) {
-                            // ignore the exception and let the comparison continue
-                        }
+                        firstValue = IntegerHelper.parse(firstValue.toString());
+                        secondValue = IntegerHelper.parse(secondValue.toString());
                         break;
                     case DECIMAL:
-                        try {
-                            firstValue = DecimalHelper.parse(firstValue.toString());
-                            secondValue = DecimalHelper.parse(secondValue.toString());
-                        } catch(BaseException ex) {
-                            // ignore the exception and let the comparison continue.
-                        }
+                        firstValue = DecimalHelper.parse(firstValue.toString());
+                        secondValue = DecimalHelper.parse(secondValue.toString());
                         break;
                     case DATETIME:
-                        try {
-                            firstValue = DateTimeHelper.parse(firstValue.toString(), criterion.getPattern());
-                            secondValue = DateTimeHelper.parse(secondValue.toString(), criterion.getPattern());
-                        } catch (BaseException ex) {
-                            // ignore the exception and let the comparison continue
-                        }
+                        firstValue = DateTimeHelper.parse(firstValue.toString(), criterion.getPattern());
+                        secondValue = DateTimeHelper.parse(secondValue.toString(), criterion.getPattern());
                         break;
                     case DURATION:
-                        try {
-                            firstValue = IntegerHelper.parse(DurationHelper.format(firstValue.toString(), criterion.getPattern(), "milliseconds"));
-                            secondValue = IntegerHelper.parse(DurationHelper.format(secondValue.toString(), criterion.getPattern(), "milliseconds"));
-                        } catch (BaseException ex) {
-                            // ignore the exception and let the comparison continue
-                        }
+                        firstValue = IntegerHelper.parse(DurationHelper.format(firstValue.toString(), criterion.getPattern(), "milliseconds"));
+                        secondValue = IntegerHelper.parse(DurationHelper.format(secondValue.toString(), criterion.getPattern(), "milliseconds"));
                         break;
                     case STRING:
                         firstValue = firstValue.toString();

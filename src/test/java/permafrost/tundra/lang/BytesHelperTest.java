@@ -25,8 +25,6 @@
 package permafrost.tundra.lang;
 
 import org.junit.Test;
-import permafrost.tundra.lang.BytesHelper;
-import permafrost.tundra.lang.StringHelper;
 
 import static org.junit.Assert.*;
 
@@ -39,7 +37,7 @@ public class BytesHelperTest {
     @Test
     public void testNormalizeWithString() throws Exception {
         String message = "test";
-        assertArrayEquals(message.getBytes(StringHelper.DEFAULT_CHARACTER_ENCODING), BytesHelper.normalize(message));
+        assertArrayEquals(message.getBytes(StringHelper.DEFAULT_CHARSET_NAME), BytesHelper.normalize(message));
     }
 
     @Test
@@ -52,14 +50,14 @@ public class BytesHelperTest {
     @Test
     public void testNormalizeWithInputStream() throws Exception {
         String message = "test";
-        java.io.InputStream in = new java.io.ByteArrayInputStream(message.getBytes(StringHelper.DEFAULT_CHARACTER_ENCODING));
-        assertArrayEquals(message.getBytes(StringHelper.DEFAULT_CHARACTER_ENCODING), BytesHelper.normalize(in));
+        java.io.InputStream in = new java.io.ByteArrayInputStream(message.getBytes(StringHelper.DEFAULT_CHARSET_NAME));
+        assertArrayEquals(message.getBytes(StringHelper.DEFAULT_CHARSET_NAME), BytesHelper.normalize(in));
     }
 
     @Test
     public void testNormalizeWithBytes() throws Exception {
         String message = "test";
-        assertArrayEquals(message.getBytes(StringHelper.DEFAULT_CHARACTER_ENCODING), BytesHelper.normalize(message.getBytes(StringHelper.DEFAULT_CHARACTER_ENCODING)));
+        assertArrayEquals(message.getBytes(StringHelper.DEFAULT_CHARSET_NAME), BytesHelper.normalize(message.getBytes(StringHelper.DEFAULT_CHARSET_NAME)));
     }
 
     @Test

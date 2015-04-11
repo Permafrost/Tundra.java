@@ -25,9 +25,10 @@
 package permafrost.tundra.io;
 
 import java.io.*;
+import java.nio.charset.Charset;
 
 import permafrost.tundra.lang.BytesHelper;
-import permafrost.tundra.lang.BaseException;
+import permafrost.tundra.lang.StringHelper;
 
 public class StreamHelper {
     /**
@@ -43,7 +44,6 @@ public class StreamHelper {
     /**
      * Closes all given closeable objects, suppressing any encountered
      * java.io.IOExceptions.
-     *
      * @param closeables One or more java.io.Closeable object to be closed.
      */
     public static void close(Closeable ... closeables) {
@@ -59,43 +59,40 @@ public class StreamHelper {
     /**
      * Normalizes the given java.io.InputStream, by wrapping it in a
      * java.io.BufferedInputStream where appropriate.
-     *
-     * @param in A java.io.InputStream to be normalized.
-     * @return   The normalized java.io.InputStream.
+     * @param inputStream   A java.io.InputStream to be normalized.
+     * @return              The normalized java.io.InputStream.
      */
-    public static InputStream normalize(InputStream in) {
-        if (in == null) return null;
+    public static InputStream normalize(InputStream inputStream) {
+        if (inputStream == null) return null;
 
-        if (!(in instanceof BufferedInputStream)) {
-            in = new BufferedInputStream(in, DEFAULT_BUFFER_SIZE);
+        if (!(inputStream instanceof BufferedInputStream)) {
+            inputStream = new BufferedInputStream(inputStream, DEFAULT_BUFFER_SIZE);
         }
 
-        return in;
+        return inputStream;
     }
 
     /**
      * Normalizes the given java.io.OutputStream, by wrapping it in a
      * java.io.BufferedOutputStream where appropriate.
-     *
-     * @param out A java.io.OutputStream to be normalized.
-     * @return   The normalized java.io.OutputStream.
+     * @param outputStream  A java.io.OutputStream to be normalized.
+     * @return              The normalized java.io.OutputStream.
      */
-    public static OutputStream normalize(OutputStream out) {
-        if (out == null) return null;
+    public static OutputStream normalize(OutputStream outputStream) {
+        if (outputStream == null) return null;
 
-        if (!(out instanceof BufferedOutputStream)) {
-            out = new BufferedOutputStream(out, DEFAULT_BUFFER_SIZE);
+        if (!(outputStream instanceof BufferedOutputStream)) {
+            outputStream = new BufferedOutputStream(outputStream, DEFAULT_BUFFER_SIZE);
         }
 
-        return out;
+        return outputStream;
     }
 
     /**
      * Normalizes the given java.io.Reader, by wrapping it in a
      * java.io.BufferedReader where appropriate.
-     *
-     * @param reader A java.io.Reader to be normalized.
-     * @return   The normalized java.io.Reader.
+     * @param reader    A java.io.Reader to be normalized.
+     * @return          The normalized java.io.Reader.
      */
     public static Reader normalize(Reader reader) {
         if (reader == null) return null;
@@ -110,9 +107,8 @@ public class StreamHelper {
     /**
      * Normalizes the given java.io.Writer, by wrapping it in a
      * java.io.BufferedWriter where appropriate.
-     *
-     * @param writer A java.io.Writer to be normalized.
-     * @return   The normalized java.io.Writer.
+     * @param writer    A java.io.Writer to be normalized.
+     * @return          The normalized java.io.Writer.
      */
     public static Writer normalize(Writer writer) {
         if (writer == null) return null;
@@ -127,24 +123,33 @@ public class StreamHelper {
     /**
      * Converts the given string to a java.io.InputStream.
      *
-     * @param in A string to be converted.
-     * @return   A java.io.InputStream representation of the given string.
-     * @throws BaseException If the default encoding is not supported.
+     * @param string    A string to be converted.
+     * @return          A java.io.InputStream representation of the given string.
      */
-    public static InputStream normalize(String in) throws BaseException {
-        return normalize(in, null);
+    public static InputStream normalize(String string) {
+        return normalize(string, StringHelper.DEFAULT_CHARSET);
     }
 
     /**
      * Converts the given string to a java.io.InputStream.
      *
-     * @param in        A string to be converted.
-     * @param encoding  The character encoding set to use.
-     * @return          A java.io.InputStream representation of the given string.
-     * @throws BaseException If the encoding is not supported.
+     * @param string        A string to be converted.
+     * @param charsetName   The character encoding set to use.
+     * @return              A java.io.InputStream representation of the given string.
      */
-    public static InputStream normalize(String in, String encoding) throws BaseException {
-        return normalize(BytesHelper.normalize(in, encoding));
+    public static InputStream normalize(String string, String charsetName) {
+        return normalize(string, Charset.forName(charsetName));
+    }
+
+    /**
+     * Converts the given string to a java.io.InputStream.
+     *
+     * @param string    A string to be converted.
+     * @param charset   The character encoding set to use.
+     * @return          A java.io.InputStream representation of the given string.
+     */
+    public static InputStream normalize(String string, Charset charset) {
+        return normalize(BytesHelper.normalize(string, charset));
     }
 
     /**
@@ -163,21 +168,30 @@ public class StreamHelper {
      *
      * @param object    A String, byte[], or java.io.InputStream object to be converted.
      * @return          A java.io.InputStream representation of the given object.
-     * @throws BaseException If the default encoding is not supported.
      */
-    public static InputStream normalize(Object object) throws BaseException {
-        return normalize(object, null);
+    public static InputStream normalize(Object object) {
+        return normalize(object, StringHelper.DEFAULT_CHARSET);
+    }
+
+    /**
+     * Converts the given Object to a java.io.InputStream.
+     *
+     * @param object        A String, byte[], or java.io.InputStream object to be converted.
+     * @param charsetName   The character encoding set to use.
+     * @return              A java.io.InputStream representation of the given object.
+     */
+    public static InputStream normalize(Object object, String charsetName) {
+        return normalize(object, Charset.forName(charsetName));
     }
 
     /**
      * Converts the given Object to a java.io.InputStream.
      *
      * @param object    A String, byte[], or java.io.InputStream object to be converted.
-     * @param encoding  The character encoding set to use.
+     * @param charset   The character encoding set to use.
      * @return          A java.io.InputStream representation of the given object.
-     * @throws BaseException If the encoding is not supported.
      */
-    public static InputStream normalize(Object object, String encoding) throws BaseException {
+    public static InputStream normalize(Object object, Charset charset) {
         if (object == null) return null;
 
         InputStream output;
@@ -185,7 +199,7 @@ public class StreamHelper {
         if (object instanceof byte[]) {
             output = normalize((byte[])object);
         } else if (object instanceof String) {
-            output = normalize((String)object, encoding);
+            output = normalize((String)object, charset);
         } else if (object instanceof InputStream) {
             output = normalize((InputStream)object);
         } else {
@@ -199,28 +213,26 @@ public class StreamHelper {
      * Copies all data from the given input stream to the given output stream, and optionally
      * closes both streams.
      *
-     * @param in    An input stream containing data to be copied.
-     * @param out   An output stream to where the copied data will be written.
-     * @param close When true, both the input and output streams will be closed when done.
-     * @throws BaseException If there is a problem reading from or writing to the streams.
+     * @param inputStream       An input stream containing data to be copied.
+     * @param outputStream      An output stream to where the copied data will be written.
+     * @param close             When true, both the input and output streams will be closed when done.
+     * @throws IOException      If there is a problem reading from or writing to the streams.
      */
-    public static void copy(InputStream in, OutputStream out, boolean close) throws BaseException {
-        if (in == null || out == null) return;
+    public static void copy(InputStream inputStream, OutputStream outputStream, boolean close) throws IOException {
+        if (inputStream == null || outputStream == null) return;
 
         try {
             byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
             int length;
 
-            in = normalize(in);
-            out = normalize(out);
+            inputStream = normalize(inputStream);
+            outputStream = normalize(outputStream);
 
-            while ((length = in.read(buffer)) > 0) {
-                out.write(buffer, 0, length);
+            while ((length = inputStream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, length);
             }
-        } catch(IOException ex) {
-            throw new StreamException(ex);
         } finally {
-            if (close) close(in, out);
+            if (close) close(inputStream, outputStream);
         }
     }
 
@@ -228,22 +240,22 @@ public class StreamHelper {
      * Copies all data from the given input stream to the given output stream, and then
      * closes both streams.
      *
-     * @param in    An input stream containing data to be copied.
-     * @param out   An output stream to where the copied data will be written.
-     * @throws BaseException If there is a problem reading from or writing to the streams.
+     * @param inputStream    An input stream containing data to be copied.
+     * @param outputStream   An output stream to where the copied data will be written.
+     * @throws IOException   If there is a problem reading from or writing to the streams.
      */
-    public static void copy(InputStream in, OutputStream out) throws BaseException {
-        copy(in, out, true);
+    public static void copy(InputStream inputStream, OutputStream outputStream) throws IOException {
+        copy(inputStream, outputStream, true);
     }
 
     /**
      * Copies all the data from the given reader to the given writer, then closes both.
      *
-     * @param reader The reader to copy data from.
-     * @param writer The writer to copy data to.
-     * @throws BaseException If there is a problem reading from the reader or writing to the writer.
+     * @param reader            The reader to copy data from.
+     * @param writer            The writer to copy data to.
+     * @throws IOException     If there is a problem reading from the reader or writing to the writer.
      */
-    public static void copy(java.io.Reader reader, java.io.Writer writer) throws BaseException {
+    public static void copy(Reader reader, Writer writer) throws IOException {
         if (reader == null || writer == null) return;
 
         try {
@@ -256,8 +268,6 @@ public class StreamHelper {
             while ((length = reader.read(buffer)) > 0) {
                 writer.write(buffer, 0, length);
             }
-        } catch(IOException ex) {
-            throw new StreamException(ex);
         } finally {
             close(reader, writer);
         }

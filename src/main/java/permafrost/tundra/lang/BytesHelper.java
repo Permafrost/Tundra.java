@@ -24,8 +24,11 @@
 
 package permafrost.tundra.lang;
 
-import permafrost.tundra.io.EncodingException;
 import permafrost.tundra.io.StreamHelper;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
 
 public class BytesHelper {
     /**
@@ -34,86 +37,87 @@ public class BytesHelper {
     private BytesHelper() {}
 
     /**
-     * Normalizes the given byte[].
-     *
-     * @param in A byte[] to be normalized.
-     * @return   The given byte[] returned unchanged.
-     */
-    public static byte[] normalize(byte[] in) {
-        return in;
-    }
-    /**
      * Converts the given String to an byte[].
-     *
-     * @param in A String to be converted to a byte[].
-     * @return   A byte[] representation of the given String.
-     * @throws BaseException If specified encoding is not supported.
+     * @param string        A String to be converted to a byte[].
+     * @return              A byte[] representation of the given String.
      */
-    public static byte[] normalize(java.lang.String in) throws BaseException {
-        return normalize(in, null);
+    public static byte[] normalize(String string) {
+        return normalize(string, StringHelper.DEFAULT_CHARSET);
     }
 
     /**
      * Converts the given String to an byte[] using the given character encoding set.
-     * @param in    A string to be converted to a byte[].
-     * @param encoding The character encoding set to use.
-     * @return         A byte[] representation of the given String.
-     * @throws BaseException If specified encoding is not supported.
+     * @param string        A string to be converted to a byte[].
+     * @param charsetName   The character encoding set to use.
+     * @return              A byte[] representation of the given String.
      */
-    public static byte[] normalize(java.lang.String in, java.lang.String encoding) throws BaseException {
-        byte[] out = null;
-        try {
-            out = in.getBytes(encoding == null ? StringHelper.DEFAULT_CHARACTER_ENCODING : encoding);
-        } catch(java.io.UnsupportedEncodingException ex) {
-            throw new EncodingException(ex);
-        }
-        return out;
+    public static byte[] normalize(String string, String charsetName) {
+        return normalize(string, Charset.forName(charsetName));
+    }
+
+    /**
+     * Converts the given String to an byte[] using the given character encoding set.
+     * @param string        A string to be converted to a byte[].
+     * @param charset       The character encoding set to use.
+     * @return              A byte[] representation of the given String.
+     */
+    public static byte[] normalize(String string, Charset charset) {
+        if (string == null) return null;
+        return string.getBytes(charset);
     }
 
     /**
      * Converts the given java.io.InputStream to a byte[] by reading all
      * data from the stream and then closing the stream.
-     *
-     * @param in A java.io.InputStream to be converted to a byte[]
-     * @return   A byte[] representation of the given java.io.InputStream.
-     * @throws BaseException If there is a problem reading from the java.io.InputStream.
+     * @param inputStream       A java.io.InputStream to be converted to a byte[]
+     * @return                  A byte[] representation of the given java.io.InputStream.
+     * @throws IOException      If there is a problem reading from the java.io.InputStream.
      */
-    public static byte[] normalize(java.io.InputStream in) throws BaseException {
-        java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
-        StreamHelper.copy(in, out);
+    public static byte[] normalize(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        StreamHelper.copy(inputStream, out);
         return out.toByteArray();
     }
 
     /**
      * Normalizes the given String, byte[], or java.io.InputStream object to a byte[].
-     * @param object The object to be normalized to a byte[].
-     * @return       A byte[] representation of the given object.
-     * @throws BaseException If there is a problem reading from the java.io.InputStream, or
-     *                       the specified encoding is unsupported.
+     * @param object            The object to be normalized to a byte[].
+     * @return                  A byte[] representation of the given object.
+     * @throws IOException      If there is a problem reading from the java.io.InputStream.
      */
-    public static byte[] normalize(Object object) throws BaseException {
-        return normalize(object, null);
+    public static byte[] normalize(Object object) throws IOException {
+        return normalize(object, StringHelper.DEFAULT_CHARSET);
     }
 
     /**
      * Normalizes the given String, byte[], or java.io.InputStream object to a byte[].
-     * @param object The object to be normalized to a string.
-     * @param encoding  The character set to use.
-     * @return       A byte[] representation of the given object.
-     * @throws BaseException If there is a problem reading from the java.io.InputStream, or
-     *                       the specified encoding is unsupported.
+     * @param object            The object to be normalized to a string.
+     * @param charsetName       The character set to use.
+     * @return                  A byte[] representation of the given object.
+     * @throws IOException      If there is a problem reading from the java.io.InputStream.
      */
-    public static byte[] normalize(Object object, String encoding) throws BaseException {
+    public static byte[] normalize(Object object, String charsetName) throws IOException {
+        return normalize(object, Charset.forName(charsetName));
+    }
+
+    /**
+     * Normalizes the given String, byte[], or java.io.InputStream object to a byte[].
+     * @param object            The object to be normalized to a string.
+     * @param charset           The character set to use.
+     * @return                  A byte[] representation of the given object.
+     * @throws IOException      If there is a problem reading from the java.io.InputStream.
+     */
+    public static byte[] normalize(Object object, Charset charset) throws IOException {
         if (object == null) return null;
 
         byte[] output;
 
         if (object instanceof byte[]) {
-            output = normalize((byte[])object);
+            output = (byte[])object;
         } else if (object instanceof String) {
-            output = normalize((String)object, encoding);
-        } else if (object instanceof java.io.InputStream) {
-            output = normalize((java.io.InputStream)object);
+            output = normalize((String)object, charset);
+        } else if (object instanceof InputStream) {
+            output = normalize((InputStream)object);
         } else {
             throw new IllegalArgumentException("object must be a String, byte[], or java.io.InputStream");
         }

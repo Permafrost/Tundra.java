@@ -25,41 +25,40 @@
 package permafrost.tundra.lang;
 
 import com.wm.app.b2b.server.ServiceException;
-import permafrost.tundra.lang.ExceptionHelper;
 
-public class BaseException extends ServiceException {
+public class ChainableServiceException extends ServiceException {
     /**
-     * Constructs a new BaseException.
+     * Constructs a new ChainableServiceException.
      */
-    public BaseException() {
+    public ChainableServiceException() {
         super("");
     }
 
     /**
-     * Constructs a new BaseException with the given message.
+     * Constructs a new ChainableServiceException with the given message.
      *
-     * @param message A message describing why the BaseException was thrown.
+     * @param message A message describing why the ChainableServiceException was thrown.
      */
-    public BaseException(java.lang.String message) {
+    public ChainableServiceException(String message) {
         super(message);
     }
 
     /**
-     * Constructs a new BaseException with the given cause.
+     * Constructs a new ChainableServiceException with the given cause.
      *
-     * @param cause The cause of this BaseException.
+     * @param cause The cause of this ChainableServiceException.
      */
-    public BaseException(Throwable cause) {
+    public ChainableServiceException(Throwable cause) {
         this(ExceptionHelper.getMessage(cause), cause);
     }
 
     /**
-     * Constructs a new BaseException with the given message and cause.
+     * Constructs a new ChainableServiceException with the given message and cause.
      *
-     * @param message A message describing why the BaseException was thrown.
+     * @param message A message describing why the ChainableServiceException was thrown.
      * @param cause The cause of this Exception.
      */
-    public BaseException(java.lang.String message, Throwable cause) {
+    public ChainableServiceException(String message, Throwable cause) {
         super(message);
         initCause(cause);
     }

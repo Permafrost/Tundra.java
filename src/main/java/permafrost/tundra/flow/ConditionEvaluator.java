@@ -30,8 +30,6 @@ import com.wm.data.IDataFactory;
 import com.wm.data.IDataUtil;
 import com.wm.lang.flow.ExpressionEvaluator;
 import com.wm.lang.flow.MalformedExpressionException;
-import permafrost.tundra.lang.BaseException;
-import permafrost.tundra.io.ParseException;
 
 /**
  * Performs webMethods Integration Server flow language conditional statement evaluation against a specified scope.
@@ -62,9 +60,8 @@ public class ConditionEvaluator {
      *
      * @param scope The scope against which the conditional statement is evaluated.
      * @return True if the conditional statement evaluates to true, otherwise false
-     * @throws BaseException If the conditional statement is unparseable.
      */
-    public boolean evaluate(IData scope) throws BaseException {
+    public boolean evaluate(IData scope) {
         boolean result = true;
 
         if (condition != null) {
@@ -95,7 +92,7 @@ public class ConditionEvaluator {
             try {
                 result = ExpressionEvaluator.evalToBoolean(condition, scope);
             } catch (MalformedExpressionException ex) {
-                throw new ParseException(ex);
+                throw new IllegalArgumentException(ex);
             }
         }
 
@@ -110,9 +107,8 @@ public class ConditionEvaluator {
      * @param condition The conditional statement to be evaluated.
      * @param scope     The scope against which the conditional statement is evaluated.
      * @return True if the conditional statement evaluates to true, otherwise false
-     * @throws BaseException If the conditional statement is unparseable.
      */
-    public static boolean evaluate(String condition, IData scope) throws BaseException {
+    public static boolean evaluate(String condition, IData scope) {
         ConditionEvaluator evaluator = new ConditionEvaluator(condition);
         return evaluator.evaluate(scope);
     }

@@ -24,9 +24,6 @@
 
 package permafrost.tundra.math;
 
-import permafrost.tundra.lang.BaseException;
-import permafrost.tundra.io.ParseException;
-
 import java.math.BigDecimal;
 
 public class DecimalHelper {
@@ -40,15 +37,9 @@ public class DecimalHelper {
      *
      * @param string A string to be parsed as a decimal.
      * @return       A decimal representation of the given string.
-     * @throws BaseException If the given string is unparseable.
      */
-    public static BigDecimal parse(String string) throws BaseException {
+    public static BigDecimal parse(String string) {
         if (string == null) return null;
-
-        try {
-            return new BigDecimal(string);
-        } catch(IllegalArgumentException ex) {
-            throw new ParseException(ex);
-        }
+        return new BigDecimal(string);
     }
 }

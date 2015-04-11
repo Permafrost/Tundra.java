@@ -24,9 +24,9 @@
 
 package permafrost.tundra.io;
 
-import permafrost.tundra.lang.BaseException;
 import permafrost.tundra.io.filter.*;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,9 +43,8 @@ public class DirectoryLister {
      * Constructs a new DirectoryLister for listing the contents of a given directory.
      * @param directory The directory whose contents are to be listed.
      * @param recurse   If true, all child directories will be recursively listed also.
-     * @throws BaseException If the directory string is unparseable.
      */
-    public DirectoryLister(String directory, boolean recurse) throws BaseException {
+    public DirectoryLister(String directory, boolean recurse) {
         this(directory, recurse, new FilenameFilter[0]);
     }
 
@@ -64,9 +63,8 @@ public class DirectoryLister {
      * @param recurse   If true, all child directories will be recursively listed also.
      * @param filters   One or more filename filters which will restrict which files
      *                  and directories are returned in the list results.
-     * @throws BaseException If the directory string is unparseable.
      */
-    public DirectoryLister(String directory, boolean recurse, FilenameFilter ...filters) throws BaseException {
+    public DirectoryLister(String directory, boolean recurse, FilenameFilter ...filters) {
         this(FileHelper.construct(directory), recurse, filters);
     }
 
@@ -110,22 +108,22 @@ public class DirectoryLister {
 
     /**
      * Lists the directory.
-     * @return A list of files and directories that match the specified filters.
-     * @throws BaseException If the directory does not exist.
+     * @return                          A list of files and directories that match the specified filters.
+     * @throws FileNotFoundException    If the directory does not exist.
      */
-    public DirectoryListing list() throws BaseException {
+    public DirectoryListing list() throws FileNotFoundException {
         return list(directory, recurse);
     }
 
     /**
      * Lists the given directory.
-     * @param directory The directory to be listed.
-     * @param recurse   If true, child directories will be recursively listed also.
-     * @return          A list of files and directories that match the specified filters.
-     * @throws BaseException
+     * @param directory                 The directory to be listed.
+     * @param recurse                   If true, child directories will be recursively listed also.
+     * @return                          A list of files and directories that match the specified filters.
+     * @throws FileNotFoundException    If the directory does not exist.
      */
-    protected DirectoryListing list(File directory, boolean recurse) throws BaseException {
-        if (!DirectoryHelper.exists(directory)) throw new FileException("Unable to list directory as it does not exist: " + FileHelper.normalize(directory));
+    protected DirectoryListing list(File directory, boolean recurse) throws FileNotFoundException {
+        if (!DirectoryHelper.exists(directory)) throw new FileNotFoundException("Unable to list directory as it does not exist: " + FileHelper.normalize(directory));
 
         String[] listing = directory.list();
 
@@ -168,12 +166,12 @@ public class DirectoryLister {
          */
         public DirectoryListingImplementation(File directory, List<File> directoryList, List<File> fileList) {
             if (directory == null) throw new IllegalArgumentException("directory must not be null");
-            if (directories == null) throw new IllegalArgumentException("directories must not be null");
-            if (files == null) throw new IllegalArgumentException("files must not be null");
+            if (directories == null) throw new IllegalArgumentException("directoryList must not be null");
+            if (files == null) throw new IllegalArgumentException("fileList must not be null");
 
             this.directory = directory;
-            this.directories = directories;
-            this.files = files;
+            this.directories = directoryList;
+            this.files = fileList;
         }
 
         /**

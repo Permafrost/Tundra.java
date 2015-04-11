@@ -25,7 +25,6 @@
 package permafrost.tundra.math;
 
 import org.junit.Test;
-import permafrost.tundra.io.ParseException;
 
 import static org.junit.Assert.*;
 
@@ -35,7 +34,7 @@ public class IntegerHelperTest {
         assertNull(IntegerHelper.parse(null));
     }
 
-    @Test(expected = ParseException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testParseUnparseableArgument() throws Exception {
         IntegerHelper.parse("test");
     }

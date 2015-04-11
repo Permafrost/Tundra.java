@@ -26,41 +26,40 @@ package permafrost.tundra.lang;
 
 import com.wm.app.b2b.server.ServiceException;
 import org.junit.Test;
-import permafrost.tundra.lang.BaseException;
 
 import static org.junit.Assert.*;
 
-public class BaseExceptionTest {
+public class ChainableServiceExceptionTest {
     @Test
     public void testGetMessageWithCause() throws Exception {
         String message = "test";
-        BaseException ex = new BaseException(new IllegalArgumentException(message));
+        ChainableServiceException ex = new ChainableServiceException(new IllegalArgumentException(message));
         assertEquals("Message should be prefixed with cause's class name", IllegalArgumentException.class.getName() + ": " + message, ex.getMessage());
     }
 
     @Test
     public void testGetMessageWithMessageAndCause() throws Exception {
         String message = "test";
-        BaseException ex = new BaseException(message, new IllegalArgumentException(message));
+        ChainableServiceException ex = new ChainableServiceException(message, new IllegalArgumentException(message));
         assertEquals("Message should be a literal match", message, ex.getMessage());
     }
 
     @Test
     public void testGetMessageWithMessage() throws Exception {
         String message = "test";
-        BaseException ex = new BaseException(message);
+        ChainableServiceException ex = new ChainableServiceException(message);
         assertEquals("Message should be a literal match", message, ex.getMessage());
     }
 
     @Test
     public void testGetMessageNoArguments() throws Exception {
-        BaseException ex = new BaseException();
+        ChainableServiceException ex = new ChainableServiceException();
         assertEquals("Message should be empty string", "", ex.getMessage());
     }
 
     @Test
     public void testBaseExceptionInstanceOfServiceException() throws Exception {
-        BaseException ex = new BaseException();
+        ChainableServiceException ex = new ChainableServiceException();
         assertTrue(ex instanceof ServiceException);
     }
 }

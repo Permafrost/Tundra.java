@@ -33,7 +33,7 @@ import com.wm.util.coder.ValuesCodable;
 import permafrost.tundra.lang.ArrayHelper;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
-import permafrost.tundra.lang.BaseException;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -139,9 +139,9 @@ public class IDataHelper {
      *
      *  @param input    An IData document to be duplicated.
      *  @return         A new IData document which is a copy of the given IData document.
-     *  @throws BaseException If a problem writing to the serialization stream is encountered.
+     *  @throws IOException If a problem writing to the serialization stream is encountered.
      */
-    public static IData duplicate(IData input) throws BaseException {
+    public static IData duplicate(IData input) throws IOException {
         return duplicate(input, true);
     }
 
@@ -152,9 +152,9 @@ public class IDataHelper {
      *  @param recurse  When true, nested IData documents and IData[] document lists will
      *                  also be duplicated.
      *  @return         A new IData document which is a copy of the given IData document.
-     *  @throws BaseException If a problem writing to the serialization stream is encountered.
+     *  @throws IOException If a problem writing to the serialization stream is encountered.
      */
-    public static IData duplicate(IData input, boolean recurse) throws BaseException {
+    public static IData duplicate(IData input, boolean recurse) throws IOException {
         IData output = null;
         if (input != null) {
             IDataCursor cursor = input.getCursor();
@@ -164,8 +164,6 @@ public class IDataHelper {
                 } else {
                     output = IDataUtil.clone(input);
                 }
-            } catch (IOException ex) {
-                throw new BaseException(ex);
             } finally {
                 cursor.destroy();
             }
@@ -957,7 +955,7 @@ public class IDataHelper {
      * @return      The union set of keys from the given IData[].
      */
     public static String[] getKeys(IData[] input) {
-        return getKeys(input, (java.util.regex.Pattern)null);
+        return getKeys(input, (java.util.regex.Pattern) null);
     }
 
     /**

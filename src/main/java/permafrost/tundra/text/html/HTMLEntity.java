@@ -22,44 +22,27 @@
  * SOFTWARE.
  */
 
-package permafrost.tundra.io;
+package permafrost.tundra.text.html;
 
-import permafrost.tundra.io.ParseException;
+public enum HTMLEntity {
+    NULL("&#x2400;"), EMPTY("&empty");
 
-public class EncodingException extends ParseException {
+    private String value;
+
     /**
-     * Constructs a new EncodingException.
+     * Construct a new HTMLEntity.
+     * @param value The HTML value of the entity.
      */
-    public EncodingException() {
-        super();
+    HTMLEntity(String value) {
+        this.value=value;
     }
 
     /**
-     * Constructs a new EncodingException with the given message.
-     *
-     * @param message A message describing why the EncodingException was thrown.
+     * Returns string representation of the object.
+     * @return The string representation of the object.
      */
-    public EncodingException(String message) {
-        super(message);
-    }
-
-    /**
-     * Constructs a new EncodingException with the given cause.
-     *
-     * @param cause The cause of this EncodingException.
-     */
-    public EncodingException(Throwable cause) {
-        super(cause);
-    }
-
-    /**
-     * Constructs a new EncodingException with the given message and cause.
-     *
-     * @param message A message describing why the EncodingException was thrown.
-     * @param cause The cause of this EncodingException.
-     */
-    public EncodingException(String message, Throwable cause) {
-        super(message);
-        initCause(cause);
+    @Override
+    public String toString() {
+        return value;
     }
 }
