@@ -32,7 +32,7 @@ import com.wm.util.coder.IDataCodable;
  * which then allows the use of a standard Java for each loop for iterating
  * over the elements in the document.
  */
-public class ComparableIData implements Comparable<IData>, IDataCodable {
+public class ComparableIData extends IterableIData implements Comparable<IData> {
     /**
      * The default comparator used when no other comparator or comparison criteria is specified.
      */
@@ -55,7 +55,7 @@ public class ComparableIData implements Comparable<IData>, IDataCodable {
      * @param comparator The IDataComparator to be used to compare IData objects.
      */
     public ComparableIData(IData document, IDataComparator comparator) {
-        setIData(document);
+        super(document);
         setComparator(comparator);
     }
 
@@ -94,23 +94,5 @@ public class ComparableIData implements Comparable<IData>, IDataCodable {
     public void setComparator(IDataComparator comparator) {
         if (comparator == null) throw new IllegalArgumentException("comparator must not be null");
         this.comparator = comparator;
-    }
-
-    /**
-     * Returns the IData document wrapped by this ComparableIData.
-     * @return The IData document wrapped by this ComparableIData.
-     */
-    @Override
-    public IData getIData() {
-        return document;
-    }
-
-    /**
-     * Sets the IData document to be wrapped by this ComparableIData.
-     */
-    @Override
-    public void setIData(IData document) {
-        if (document == null) throw new IllegalArgumentException("document must not be null");
-        this.document = document;
     }
 }

@@ -24,7 +24,6 @@
 
 package permafrost.tundra.data;
 
-import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
 import com.wm.data.IDataUtil;
@@ -37,11 +36,11 @@ import java.util.NoSuchElementException;
 import static org.junit.Assert.*;
 
 public class IterableIDataTest {
-    IData document;
+    IterableIData document;
 
     @Before
     public void setUp() throws Exception {
-        document = IDataFactory.create();
+        document = new IterableIData();
         IDataCursor cursor = document.getCursor();
         IDataUtil.put(cursor, "a", "1");
         IDataUtil.put(cursor, "b", "2");
@@ -51,7 +50,7 @@ public class IterableIDataTest {
 
     @Test
     public void testHasNext() throws Exception {
-        IDataIterator iterator = new IterableIData(document).iterator();
+        IDataIterator iterator = document.iterator();
         assertTrue(iterator.hasNext());
         iterator.next();
         iterator.next();
@@ -63,7 +62,7 @@ public class IterableIDataTest {
 
     @Test
     public void testIteration() throws Exception {
-        IDataIterator iterator = new IterableIData(document).iterator();
+        IDataIterator iterator = document.iterator();
         assertTrue(iterator.hasNext());
         Map.Entry<String, Object> pair = iterator.next();
         assertEquals("a", pair.getKey());
@@ -91,7 +90,7 @@ public class IterableIDataTest {
     @Test
     public void testIteratingOverEmptyArgument() throws Exception {
         int count = 0;
-        for (Map.Entry<String, Object> entry : new IterableIData(IDataFactory.create())) {
+        for (Map.Entry<String, Object> entry : new IterableIData()) {
             count++;
         }
         assertEquals(0, count);

@@ -24,9 +24,7 @@
 
 package permafrost.tundra.data;
 
-import com.wm.data.IData;
-import com.wm.data.IDataCursor;
-import com.wm.util.coder.IDataCodable;
+import com.wm.data.*;
 
 import java.util.AbstractMap;
 import java.util.Map;
@@ -37,15 +35,20 @@ import java.util.NoSuchElementException;
  * which then allows the use of a standard Java for each loop for iterating
  * over the elements in the document.
  */
-public class IterableIData implements Iterable<Map.Entry<String, Object>>, IDataCodable {
-    protected IData document;
+public class IterableIData extends WrappedIData implements Iterable<Map.Entry<String, Object>> {
+    /**
+     * Construct a new IDataIterator object.
+     */
+    public IterableIData() {
+        super();
+    }
 
     /**
-     * Construct a new IDataIterator
+     * Construct a new IDataIterator object.
      * @param document The IData document to be iterated over.
      */
     public IterableIData(IData document) {
-        setIData(document);
+        super(document);
     }
 
     /**
@@ -54,25 +57,7 @@ public class IterableIData implements Iterable<Map.Entry<String, Object>>, IData
      */
     @Override
     public IDataIterator iterator() {
-        return new IDataIteratorImplementation(document);
-    }
-
-    /**
-     * Returns the IData document that this object iterates over.
-     * @return The IData document this object wraps.
-     */
-    @Override
-    public IData getIData() {
-        return document;
-    }
-
-    /**
-     * Set the IData document this object iterates over.
-     * @param document The IData document to be iterated over.
-     */
-    @Override
-    public void setIData(IData document) {
-        this.document = document;
+        return new IDataIteratorImplementation(getIData());
     }
 
     /**
@@ -80,8 +65,6 @@ public class IterableIData implements Iterable<Map.Entry<String, Object>>, IData
      */
     private static class IDataIteratorImplementation implements IDataIterator {
         protected IDataCursor cursor;
-        protected boolean nextMethodCalled = false;
-        protected boolean deleteMethodCalled = false;
 
         /**
          * Constructs a new IDataIterator object for iterating over the given IData document.
@@ -108,8 +91,7 @@ public class IterableIData implements Iterable<Map.Entry<String, Object>>, IData
          */
         @Override
         public Map.Entry<String, Object> next() throws NoSuchElementException {
-            if (cursor != null && (deleteMethodCalled || cursor.next())) {
-                nextMethodCalled = true;
+            if (cursor != null && cursor.next()) {
                 return new AbstractMap.SimpleImmutableEntry<String, Object>(cursor.getKey(), cursor.getValue());
             } else {
                 throw new NoSuchElementException("No more elements were available for iteration in IData document");
