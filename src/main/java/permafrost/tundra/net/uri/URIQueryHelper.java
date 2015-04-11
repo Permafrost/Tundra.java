@@ -30,7 +30,6 @@ import com.wm.data.IDataFactory;
 import com.wm.data.IDataUtil;
 import permafrost.tundra.lang.ArrayHelper;
 
-import java.io.IOException;
 import java.nio.charset.Charset;
 
 public class URIQueryHelper {

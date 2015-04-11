@@ -25,7 +25,6 @@
 package permafrost.tundra.data;
 
 import com.wm.data.IData;
-import com.wm.util.coder.IDataCodable;
 
 /**
  * Wraps an IData document in an implementation of the Comparable interface,

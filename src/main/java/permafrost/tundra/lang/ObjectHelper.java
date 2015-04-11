@@ -27,10 +27,7 @@ package permafrost.tundra.lang;
 import com.wm.data.IData;
 import com.wm.data.IDataUtil;
 
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 public class ObjectHelper {
     /**
@@ -227,9 +224,7 @@ public class ObjectHelper {
             for (Class<?> child : children) {
                 Class<?> parent = child.getSuperclass();
                 if (parent != null) parents.add(parent);
-                for (Class<?> parentInterface : child.getInterfaces()) {
-                    parents.add(parentInterface);
-                }
+                Collections.addAll(parents, child.getInterfaces());
             }
         } while (!parents.isEmpty());
 

@@ -26,7 +26,6 @@ package permafrost.tundra.time;
 
 import permafrost.tundra.lang.ArrayHelper;
 
-import java.text.ParseException;
 import java.util.Calendar;
 import java.util.TimeZone;
 import java.util.Date;
@@ -120,8 +119,8 @@ public class DateTimeHelper {
      */
     public static int compare(Calendar firstCalendar, Calendar secondCalendar) {
         if (firstCalendar == null && secondCalendar == null) return 0;
-        if (firstCalendar == null && secondCalendar != null) return -1;
-        if (firstCalendar != null && secondCalendar == null) return 1;
+        if (firstCalendar == null) return -1;
+        if (secondCalendar == null) return 1;
 
         return firstCalendar.compareTo(secondCalendar);
     }
