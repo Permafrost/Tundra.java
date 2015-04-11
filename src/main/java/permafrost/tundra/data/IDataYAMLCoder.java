@@ -41,6 +41,21 @@ import java.util.List;
 import java.util.Map;
 
 public class IDataYAMLCoder extends IDataStringCoder {
+    private static final IDataYAMLCoder INSTANCE = new IDataYAMLCoder();
+
+    /**
+     * Disallow instantiation of this class.
+     */
+    private IDataYAMLCoder() {}
+
+    /**
+     * Returns the singleton instance of this class.
+     * @return The singleton instance of this class.
+     */
+    public static IDataYAMLCoder getInstance() {
+        return INSTANCE;
+    }
+
     /**
      * Encodes the given IData document as YAML to the given output stream.
      * @param outputStream  The stream to write the encoded IData to.
