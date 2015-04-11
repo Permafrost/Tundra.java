@@ -26,7 +26,10 @@ package permafrost.tundra.lang;
 
 import com.wm.data.IData;
 import com.wm.data.IDataUtil;
+import permafrost.tundra.io.StreamHelper;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.*;
 
 public class ObjectHelper {
@@ -262,5 +265,90 @@ public class ObjectHelper {
         }
 
         return classes;
+    }
+
+    /**
+     * The supported return types for the convert method.
+     */
+    public enum ConvertMode {
+        STREAM(0), BYTES(1), STRING(2);
+
+        private int value;
+
+        private static java.util.Map<Integer, ConvertMode> map = new java.util.HashMap<Integer, ConvertMode>();
+
+        ConvertMode(int value) {
+            this.value = value;
+        }
+
+        static {
+            for (ConvertMode type : ConvertMode.values()) {
+                map.put(type.value, type);
+            }
+        }
+
+        /**
+         * Returns an ConvertMode for the given integer value.
+         * @param value The value to be converted to an ConvertMode.
+         * @return      The ConvertMode representing the given value.
+         */
+        public static ConvertMode valueOf(int value) {
+            return map.get(value);
+        }
+
+        /**
+         * Returns an ConvertMode for the given string value.
+         * @param value The value to be converted to an ConvertMode.
+         * @return      The ConvertMode representing the given value.
+         */
+        public static ConvertMode normalize(String value) {
+            return value == null ? null : valueOf(value.trim().toUpperCase());
+        }
+    }
+
+    /**
+     * Converts a string, byte array or stream to a string, byte array or stream.
+     * @param object        The object to be converted.
+     * @param charsetName   The character set to use.
+     * @param mode          The desired return type of the object.
+     * @return              The converted object.
+     * @throws IOException  If an I/O problem occurs.
+     */
+    public static Object convert(Object object, String charsetName, String mode) throws IOException {
+        return convert(object, Charset.forName(charsetName), mode);
+    }
+
+    /**
+     * Converts a string, byte array or stream to a string, byte array or stream.
+     * @param object        The object to be converted.
+     * @param charset       The character set to use.
+     * @param mode          The desired return type of the object.
+     * @return              The converted object.
+     * @throws IOException  If an I/O problem occurs.
+     */
+    public static Object convert(Object object, Charset charset, String mode) throws IOException {
+        return convert(object, charset, ConvertMode.normalize(mode));
+    }
+
+    /**
+     * Converts a string, byte array or stream to a string, byte array or stream.
+     * @param object        The object to be converted.
+     * @param charset       The character set to use.
+     * @param mode          The desired return type of the object.
+     * @return              The converted object.
+     * @throws IOException  If an I/O problem occurs.
+     */
+    public static Object convert(Object object, Charset charset, ConvertMode mode) throws IOException {
+        if (mode == null) mode = ConvertMode.STREAM;
+
+        if (mode == ConvertMode.BYTES) {
+            object = BytesHelper.normalize(object, charset);
+        } else if (mode == ConvertMode.STRING) {
+            object = StringHelper.normalize(object, charset);
+        } else {
+            object = StreamHelper.normalize(object, charset);
+        }
+
+        return object;
     }
 }
