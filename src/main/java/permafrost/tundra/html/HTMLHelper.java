@@ -22,27 +22,31 @@
  * SOFTWARE.
  */
 
-package permafrost.tundra.text.html;
+package permafrost.tundra.html;
 
-public enum HTMLEntity {
-    NULL("&#x2400;"), EMPTY("&empty");
-
-    private String value;
+public class HTMLHelper {
+    /**
+     * Disallow instantiation of this class.
+     */
+    private HTMLHelper() {}
 
     /**
-     * Construct a new HTMLEntity.
-     * @param value The HTML value of the entity.
+     * HTML decodes the given string.
+     * @param input The string to be decoded.
+     * @return      The decoded string.
      */
-    HTMLEntity(String value) {
-        this.value=value;
+    public static String decode(String input) {
+        if (input == null) return null;
+        return org.springframework.web.util.HtmlUtils.htmlUnescape(input);
     }
 
     /**
-     * Returns string representation of the object.
-     * @return The string representation of the object.
+     * HTML encodes the given string.
+     * @param input The string to be encoded.
+     * @return      The encoded string.
      */
-    @Override
-    public String toString() {
-        return value;
+    public static String encode(String input) {
+        if (input == null) return null;
+        return org.springframework.web.util.HtmlUtils.htmlEscape(input);
     }
 }

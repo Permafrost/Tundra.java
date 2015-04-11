@@ -32,8 +32,8 @@ import com.wm.util.Table;
 import com.wm.util.coder.IDataCodable;
 import com.wm.util.coder.ValuesCodable;
 import permafrost.tundra.io.StreamHelper;
-import permafrost.tundra.text.html.HTMLEntity;
-import permafrost.tundra.text.html.HTMLHelper;
+import permafrost.tundra.html.HTMLEntity;
+import permafrost.tundra.html.HTMLHelper;
 
 import java.io.IOException;
 import java.io.InputStream;

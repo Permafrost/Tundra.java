@@ -22,31 +22,23 @@
  * SOFTWARE.
  */
 
-package permafrost.tundra.text.html;
+package permafrost.tundra.html;
 
-public class HTMLHelper {
-    /**
-     * Disallow instantiation of this class.
-     */
-    private HTMLHelper() {}
+import org.junit.Test;
 
-    /**
-     * HTML decodes the given string.
-     * @param input The string to be decoded.
-     * @return      The decoded string.
-     */
-    public static String decode(String input) {
-        if (input == null) return null;
-        return org.springframework.web.util.HtmlUtils.htmlUnescape(input);
+import static org.junit.Assert.*;
+
+public class HTMLHelperTest {
+
+    @Test
+    public void testDecode() throws Exception {
+        String s = "&amp;";
+        assertEquals("&", HTMLHelper.decode(s));
     }
 
-    /**
-     * HTML encodes the given string.
-     * @param input The string to be encoded.
-     * @return      The encoded string.
-     */
-    public static String encode(String input) {
-        if (input == null) return null;
-        return org.springframework.web.util.HtmlUtils.htmlEscape(input);
+    @Test
+    public void testEncode() throws Exception {
+        String s = "&";
+        assertEquals("&amp;", HTMLHelper.encode(s));
     }
 }

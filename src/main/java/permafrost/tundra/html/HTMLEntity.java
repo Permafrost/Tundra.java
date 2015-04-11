@@ -22,23 +22,27 @@
  * SOFTWARE.
  */
 
-package permafrost.tundra.text.html;
+package permafrost.tundra.html;
 
-import org.junit.Test;
+public enum HTMLEntity {
+    NULL("&#x2400;"), EMPTY("&empty");
 
-import static org.junit.Assert.*;
+    private String value;
 
-public class HTMLHelperTest {
-
-    @Test
-    public void testDecode() throws Exception {
-        String s = "&amp;";
-        assertEquals("&", HTMLHelper.decode(s));
+    /**
+     * Construct a new HTMLEntity.
+     * @param value The HTML value of the entity.
+     */
+    HTMLEntity(String value) {
+        this.value=value;
     }
 
-    @Test
-    public void testEncode() throws Exception {
-        String s = "&";
-        assertEquals("&amp;", HTMLHelper.encode(s));
+    /**
+     * Returns string representation of the object.
+     * @return The string representation of the object.
+     */
+    @Override
+    public String toString() {
+        return value;
     }
 }
