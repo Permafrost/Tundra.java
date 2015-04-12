@@ -196,13 +196,6 @@ public class WrappedIData implements IData, IDataCodable, IDataPortable, ValuesC
      */
     @Override
     public String toString() {
-        String output;
-
-        try {
-            output = IDataJSONCoder.getInstance().encodeToString(document);
-        } catch (IOException ex) {
-            output = document.toString();
-        }
-        return output;
+        return document.toString();
     }
 }
