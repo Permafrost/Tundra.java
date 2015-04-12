@@ -2,9 +2,11 @@
 
 This is the pure Java layer that underlies [Tundra], a package of cool services for [webMethods Integration Server] 7.1 and higher.
 
+Please peruse the [API Documentation] for details on the classes and methods provided by [Tundra.java].
+
 ## Related
 
-See [Tundra] and [TundraTN], both packages of cool services for [webMethods Integration Server] and [webMethods Trading
+See [Tundra] and [TundraTN], packages of cool services for [webMethods Integration Server] and [webMethods Trading
 Networks] 7.1 and higher respectively.
 
 ## Dependencies
@@ -35,6 +37,7 @@ around.
 
 Copyright &copy; 2015 Lachlan Dowding. See the [LICENSE] file for further details.
 
+[API Documentation]: <http://permafrost.github.io/Tundra.java/docs/javadoc/>
 [JAR]: <http://en.wikipedia.org/wiki/JAR_(file_format)>
 [LICENSE]: <https://github.com/Permafrost/Tundra.java/blob/master/LICENSE>
 [Tundra]: <https://github.com/Permafrost/Tundra>
