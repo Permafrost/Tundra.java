@@ -49,7 +49,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class IDataJSONCoder extends IDataStringCoder {
-    private static final IDataJSONCoder INSTANCE = new IDataJSONCoder();
+    protected static IDataJSONCoder INSTANCE = new IDataJSONCoder();
 
     /**
      * Disallow instantiation of this class.

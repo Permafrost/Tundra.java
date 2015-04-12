@@ -41,7 +41,7 @@ import java.util.List;
 import java.util.Map;
 
 public class IDataYAMLCoder extends IDataStringCoder {
-    private static final IDataYAMLCoder INSTANCE = new IDataYAMLCoder();
+    protected static IDataYAMLCoder INSTANCE = new IDataYAMLCoder();
 
     /**
      * Disallow instantiation of this class.
