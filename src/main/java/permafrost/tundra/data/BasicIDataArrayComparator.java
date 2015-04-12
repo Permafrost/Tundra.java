@@ -29,7 +29,7 @@ import com.wm.data.IData;
 /**
  * Compares two IData[] objects using by comparing each item's keys and values.
  */
-public enum IDataArrayDefaultComparator implements IDataArrayComparator {
+public enum BasicIDataArrayComparator implements IDataArrayComparator {
     /**
      * The singleton instance of this class.
      */

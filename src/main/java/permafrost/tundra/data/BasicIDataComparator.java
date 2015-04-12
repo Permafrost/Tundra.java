@@ -99,7 +99,7 @@ public enum BasicIDataComparator implements IDataComparator {
                             result = compare(IDataHelper.toIData(value1), IDataHelper.toIData(value2));
                         } else if ((value1 instanceof IData[] || value1 instanceof Table || value1 instanceof IDataCodable[] || value1 instanceof IDataPortable[] || value1 instanceof ValuesCodable[]) &&
                                    (value2 instanceof IData[] || value2 instanceof Table || value2 instanceof IDataCodable[] || value2 instanceof IDataPortable[] || value2 instanceof ValuesCodable[])) {
-                            result = IDataArrayDefaultComparator.INSTANCE.compare(IDataHelper.toIDataArray(value1), IDataHelper.toIDataArray(value2));
+                            result = BasicIDataArrayComparator.INSTANCE.compare(IDataHelper.toIDataArray(value1), IDataHelper.toIDataArray(value2));
                         } else if (value1 instanceof Object[] && value2 instanceof Object[]) {
                             result = BasicArrayComparator.INSTANCE.compare((Object[]) value1, (Object[]) value2);
                         } else {
