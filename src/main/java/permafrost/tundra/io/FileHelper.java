@@ -27,9 +27,11 @@ package permafrost.tundra.io;
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.Charset;
 
 import permafrost.tundra.io.filter.RegularExpressionFilter;
 import permafrost.tundra.io.filter.WildcardFilter;
+import permafrost.tundra.lang.CharsetHelper;
 import permafrost.tundra.lang.StringHelper;
 import permafrost.tundra.net.uri.URIHelper;
 
@@ -231,18 +233,29 @@ public class FileHelper {
      * @throws IOException  If there is a problem reading the file.
      */
     public static String readToString(String filename) throws IOException {
-        return readToString(filename, null);
+        return readToString(filename, CharsetHelper.DEFAULT_CHARSET);
     }
 
     /**
      * Reads the given file completely, returning the file's content as a String.
      * @param filename      The name of the file to be read.
-     * @param encoding      The character set the file's content is encoded with.
+     * @param charsetName      The character set the file's content is encoded with.
      * @return              A String containing the file's content.
      * @throws IOException  If there is a problem reading the file.
      */
-    public static String readToString(String filename, String encoding) throws IOException {
-        return readToString(construct(filename), encoding);
+    public static String readToString(String filename, String charsetName) throws IOException {
+        return readToString(filename, CharsetHelper.normalize(charsetName));
+    }
+
+    /**
+     * Reads the given file completely, returning the file's content as a String.
+     * @param filename      The name of the file to be read.
+     * @param charset       The character set the file's content is encoded with.
+     * @return              A String containing the file's content.
+     * @throws IOException  If there is a problem reading the file.
+     */
+    public static String readToString(String filename, Charset charset) throws IOException {
+        return readToString(construct(filename), CharsetHelper.normalize(charset));
     }
 
     /**
@@ -252,18 +265,29 @@ public class FileHelper {
      * @throws IOException  If there is a problem reading the file.
      */
     public static String readToString(File file) throws IOException {
-        return readToString(file, null);
+        return readToString(file, CharsetHelper.DEFAULT_CHARSET);
     }
 
     /**
      * Reads the given file completely, returning the file's content as a String.
      * @param file          The file to be read.
-     * @param encoding      The character set the file's content is encoded with.
+     * @param charsetName   The character set the file's content is encoded with.
      * @return              A String containing the file's content.
      * @throws IOException  If there is a problem reading the file.
      */
-    public static String readToString(File file, String encoding) throws IOException {
-        return StringHelper.normalize(readToBytes(file), encoding);
+    public static String readToString(File file, String charsetName) throws IOException {
+        return readToString(file, CharsetHelper.normalize(charsetName));
+    }
+
+    /**
+     * Reads the given file completely, returning the file's content as a String.
+     * @param file          The file to be read.
+     * @param charset       The character set the file's content is encoded with.
+     * @return              A String containing the file's content.
+     * @throws IOException  If there is a problem reading the file.
+     */
+    public static String readToString(File file, Charset charset) throws IOException {
+        return StringHelper.normalize(readToBytes(file), CharsetHelper.normalize(charset));
     }
 
     /**
@@ -360,15 +384,32 @@ public class FileHelper {
      * @param file          The file to be written to; if null, a new temporary
      *                      file is automatically created.
      * @param content       The content to be written.
-     * @param encoding      The character set to encode the content with.
+     * @param charsetName   The character set to encode the content with.
      * @param append        If true, the content will be appended to the file,
      *                      otherwise the content will overwrite any previous
      *                      content in the file.
      * @return              The file which the content was written to.
      * @throws IOException  If there is a problem writing to the file.
      */
-    public static File writeFromString(File file, String content, String encoding, boolean append) throws IOException {
-        return writeFromStream(file, StreamHelper.normalize(content, encoding), append);
+    public static File writeFromString(File file, String content, String charsetName, boolean append) throws IOException {
+        return writeFromString(file, content, CharsetHelper.normalize(charsetName), append);
+    }
+
+    /**
+     * Writes content to a file; if the given file is null, a new temporary
+     * file is automatically created.
+     * @param file          The file to be written to; if null, a new temporary
+     *                      file is automatically created.
+     * @param content       The content to be written.
+     * @param charset       The character set to encode the content with.
+     * @param append        If true, the content will be appended to the file,
+     *                      otherwise the content will overwrite any previous
+     *                      content in the file.
+     * @return              The file which the content was written to.
+     * @throws IOException  If there is a problem writing to the file.
+     */
+    public static File writeFromString(File file, String content, Charset charset, boolean append) throws IOException {
+        return writeFromStream(file, StreamHelper.normalize(content, charset), append);
     }
 
     /**
@@ -377,15 +418,32 @@ public class FileHelper {
      * @param filename      The name of the file to be written to; if null, a new temporary
      *                      file is automatically created.
      * @param content       The content to be written.
-     * @param encoding      The character set to encode the content with.
+     * @param charsetName   The character set to encode the content with.
      * @param append        If true, the content will be appended to the file,
      *                      otherwise the content will overwrite any previous
      *                      content in the file.
      * @return              The name of the file which the content was written to.
      * @throws IOException  If the filename is unparseable or there is a problem writing to the file.
      */
-    public static String writeFromString(String filename, String content, String encoding, boolean append) throws IOException {
-        return normalize(writeFromString(construct(filename), content, encoding, append));
+    public static String writeFromString(String filename, String content, String charsetName, boolean append) throws IOException {
+        return writeFromString(filename, content, CharsetHelper.normalize(charsetName), append);
+    }
+
+    /**
+     * Writes content to a file; if the given filename is null, a new temporary
+     * file is automatically created.
+     * @param filename      The name of the file to be written to; if null, a new temporary
+     *                      file is automatically created.
+     * @param content       The content to be written.
+     * @param charset       The character set to encode the content with.
+     * @param append        If true, the content will be appended to the file,
+     *                      otherwise the content will overwrite any previous
+     *                      content in the file.
+     * @return              The name of the file which the content was written to.
+     * @throws IOException  If the filename is unparseable or there is a problem writing to the file.
+     */
+    public static String writeFromString(String filename, String content, Charset charset, boolean append) throws IOException {
+        return normalize(writeFromString(construct(filename), content, charset, append));
     }
 
     /**
@@ -401,7 +459,7 @@ public class FileHelper {
      * @throws IOException  If there is a problem writing to the file.
      */
     public static File writeFromString(File file, String content, boolean append) throws IOException {
-        return writeFromString(file, content, null, append);
+        return writeFromString(file, content, CharsetHelper.DEFAULT_CHARSET, append);
     }
 
     /**

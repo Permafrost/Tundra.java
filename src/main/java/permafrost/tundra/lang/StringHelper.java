@@ -28,17 +28,12 @@ import permafrost.tundra.io.StreamHelper;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.nio.charset.Charset;
 
 public class StringHelper {
-    /**
-     * The default character set used by Tundra.
-     */
-    public static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
-    /**
-     * The default character set name used by Tundra.
-     */
-    public static final String DEFAULT_CHARSET_NAME = DEFAULT_CHARSET.name();
 
     /**
      * Disallow instantiation of this class.
@@ -51,7 +46,7 @@ public class StringHelper {
      * @return               A string representation of the given byte[].
      */
     public static String normalize(byte[] bytes) {
-        return normalize(bytes, DEFAULT_CHARSET);
+        return normalize(bytes, CharsetHelper.DEFAULT_CHARSET);
     }
 
     /**
@@ -61,7 +56,7 @@ public class StringHelper {
      * @return            A string representation of the given byte[].
      */
     public static String normalize(byte[] bytes, String charsetName) {
-        return normalize(bytes, Charset.forName(charsetName));
+        return normalize(bytes, CharsetHelper.normalize(charsetName));
     }
 
     /**
@@ -71,7 +66,7 @@ public class StringHelper {
      * @return          A string representation of the given byte[].
      */
     public static String normalize(byte[] bytes, Charset charset) {
-        return new String(bytes, charset);
+        return bytes == null ? null : new String(bytes, CharsetHelper.normalize(charset));
     }
 
     /**
@@ -82,7 +77,7 @@ public class StringHelper {
      *                          there is an error reading from the java.io.InputStream.
      */
     public static String normalize(InputStream inputStream) throws IOException {
-        return normalize(inputStream, DEFAULT_CHARSET);
+        return normalize(inputStream, CharsetHelper.DEFAULT_CHARSET);
     }
 
     /**
@@ -94,7 +89,7 @@ public class StringHelper {
      *                          there is an error reading from the java.io.InputStream.
      */
     public static String normalize(InputStream inputStream, String charsetName) throws IOException {
-        return normalize(inputStream, charsetName);
+        return normalize(inputStream, CharsetHelper.normalize(charsetName));
     }
 
     /**
@@ -105,8 +100,10 @@ public class StringHelper {
      * @throws IOException      If there is an error reading from the java.io.InputStream.
      */
     public static String normalize(InputStream inputStream, Charset charset) throws IOException {
-        java.io.Writer writer = new java.io.StringWriter();
-        StreamHelper.copy(new java.io.InputStreamReader(StreamHelper.normalize(inputStream), charset), writer);
+        if (inputStream == null) return null;
+
+        Writer writer = new StringWriter();
+        StreamHelper.copy(new InputStreamReader(StreamHelper.normalize(inputStream), CharsetHelper.normalize(charset)), writer);
         return writer.toString();
     }
 
@@ -118,7 +115,7 @@ public class StringHelper {
      *                          there is an error reading from the java.io.InputStream.
      */
     public static String normalize(Object object) throws IOException {
-        return normalize(object, DEFAULT_CHARSET);
+        return normalize(object, CharsetHelper.DEFAULT_CHARSET);
     }
 
     /**
@@ -130,7 +127,7 @@ public class StringHelper {
      *                          there is an error reading from the java.io.InputStream.
      */
     public static String normalize(Object object, String charsetName) throws IOException {
-        return normalize(object, Charset.forName(charsetName));
+        return normalize(object, CharsetHelper.normalize(charsetName));
     }
 
     /**

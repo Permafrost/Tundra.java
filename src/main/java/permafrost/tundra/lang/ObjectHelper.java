@@ -315,7 +315,7 @@ public class ObjectHelper {
      * @throws IOException  If an I/O problem occurs.
      */
     public static Object convert(Object object, String charsetName, String mode) throws IOException {
-        return convert(object, Charset.forName(charsetName), mode);
+        return convert(object, CharsetHelper.normalize(charsetName), mode);
     }
 
     /**

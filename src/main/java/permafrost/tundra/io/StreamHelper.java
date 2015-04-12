@@ -28,7 +28,7 @@ import java.io.*;
 import java.nio.charset.Charset;
 
 import permafrost.tundra.lang.BytesHelper;
-import permafrost.tundra.lang.StringHelper;
+import permafrost.tundra.lang.CharsetHelper;
 
 public class StreamHelper {
     /**
@@ -127,7 +127,7 @@ public class StreamHelper {
      * @return          A java.io.InputStream representation of the given string.
      */
     public static InputStream normalize(String string) {
-        return normalize(string, StringHelper.DEFAULT_CHARSET);
+        return normalize(string, CharsetHelper.DEFAULT_CHARSET);
     }
 
     /**
@@ -138,7 +138,7 @@ public class StreamHelper {
      * @return              A java.io.InputStream representation of the given string.
      */
     public static InputStream normalize(String string, String charsetName) {
-        return normalize(string, Charset.forName(charsetName));
+        return normalize(string, CharsetHelper.normalize(charsetName));
     }
 
     /**
@@ -149,7 +149,7 @@ public class StreamHelper {
      * @return          A java.io.InputStream representation of the given string.
      */
     public static InputStream normalize(String string, Charset charset) {
-        return normalize(BytesHelper.normalize(string, charset));
+        return normalize(BytesHelper.normalize(string, CharsetHelper.normalize(charset)));
     }
 
     /**
@@ -159,8 +159,7 @@ public class StreamHelper {
      * @return      A java.io.InputStream representation of the given byte[].
      */
     public static InputStream normalize(byte[] bytes) {
-        if (bytes == null) return null;
-        return new ByteArrayInputStream(bytes);
+        return bytes == null ? null : new ByteArrayInputStream(bytes);
     }
 
     /**
@@ -170,7 +169,7 @@ public class StreamHelper {
      * @return          A java.io.InputStream representation of the given object.
      */
     public static InputStream normalize(Object object) {
-        return normalize(object, StringHelper.DEFAULT_CHARSET);
+        return normalize(object, CharsetHelper.DEFAULT_CHARSET);
     }
 
     /**
@@ -181,7 +180,7 @@ public class StreamHelper {
      * @return              A java.io.InputStream representation of the given object.
      */
     public static InputStream normalize(Object object, String charsetName) {
-        return normalize(object, Charset.forName(charsetName));
+        return normalize(object, CharsetHelper.normalize(charsetName));
     }
 
     /**

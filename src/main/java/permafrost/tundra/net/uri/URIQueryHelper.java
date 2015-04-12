@@ -29,6 +29,7 @@ import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
 import com.wm.data.IDataUtil;
 import permafrost.tundra.lang.ArrayHelper;
+import permafrost.tundra.lang.CharsetHelper;
 
 import java.nio.charset.Charset;
 
@@ -40,19 +41,29 @@ public class URIQueryHelper {
      * @return              An IData representation of the parsed query string.
      */
     public static IData parse(String input, boolean decode) {
-        return parse(input, null, decode);
+        return parse(input, URIHelper.DEFAULT_CHARSET, decode);
     }
 
     /**
      * Parses a query string.
      * @param input         The query string to be parsed.
-     * @param encoding      The character set to use when decoding URI encoded values.
+     * @param charsetName   The character set to use when decoding URI encoded values.
      * @param decode        Whether to URI decode the values in the query string.
      * @return              An IData representation of the parsed query string.
      */
-    public static IData parse(String input, String encoding, boolean decode) {
+    public static IData parse(String input, String charsetName, boolean decode) {
+        return parse(input, CharsetHelper.normalize(charsetName, URIHelper.DEFAULT_CHARSET), decode);
+    }
+
+    /**
+     * Parses a query string.
+     * @param input         The query string to be parsed.
+     * @param charset       The character set to use when decoding URI encoded values.
+     * @param decode        Whether to URI decode the values in the query string.
+     * @return              An IData representation of the parsed query string.
+     */
+    public static IData parse(String input, Charset charset, boolean decode) {
         if (input == null) return null;
-        if (encoding == null) encoding = URIHelper.DEFAULT_CHARSET_NAME;
 
         IData output = IDataFactory.create();
         IDataCursor cursor = output.getCursor();
@@ -63,8 +74,8 @@ public class URIQueryHelper {
             String value = tokens.length > 1 ? tokens[1] : "";
 
             if (decode) {
-                name = URIHelper.decode(name, encoding);
-                value = URIHelper.decode(value, encoding);
+                name = URIHelper.decode(name, charset);
+                value = URIHelper.decode(value, charset);
             }
 
             Object existing = IDataUtil.get(cursor, name);
@@ -140,7 +151,7 @@ public class URIQueryHelper {
      * @return              A query string containing the parameters in the given IData.
      */
     public static String emit(IData input, String charsetName, boolean encode) {
-        return emit(input, Charset.forName(charsetName), encode);
+        return emit(input, CharsetHelper.normalize(charsetName, URIHelper.DEFAULT_CHARSET), encode);
     }
 
     /**

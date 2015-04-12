@@ -42,7 +42,7 @@ public class BytesHelper {
      * @return              A byte[] representation of the given String.
      */
     public static byte[] normalize(String string) {
-        return normalize(string, StringHelper.DEFAULT_CHARSET);
+        return normalize(string, CharsetHelper.DEFAULT_CHARSET);
     }
 
     /**
@@ -52,7 +52,7 @@ public class BytesHelper {
      * @return              A byte[] representation of the given String.
      */
     public static byte[] normalize(String string, String charsetName) {
-        return normalize(string, Charset.forName(charsetName));
+        return normalize(string, CharsetHelper.normalize(charsetName));
     }
 
     /**
@@ -62,8 +62,7 @@ public class BytesHelper {
      * @return              A byte[] representation of the given String.
      */
     public static byte[] normalize(String string, Charset charset) {
-        if (string == null) return null;
-        return string.getBytes(charset);
+        return string == null ? null : string.getBytes(charset);
     }
 
     /**
@@ -86,7 +85,7 @@ public class BytesHelper {
      * @throws IOException      If there is a problem reading from the java.io.InputStream.
      */
     public static byte[] normalize(Object object) throws IOException {
-        return normalize(object, StringHelper.DEFAULT_CHARSET);
+        return normalize(object, CharsetHelper.DEFAULT_CHARSET);
     }
 
     /**
@@ -97,7 +96,7 @@ public class BytesHelper {
      * @throws IOException      If there is a problem reading from the java.io.InputStream.
      */
     public static byte[] normalize(Object object, String charsetName) throws IOException {
-        return normalize(object, Charset.forName(charsetName));
+        return normalize(object, CharsetHelper.normalize(charsetName));
     }
 
     /**
@@ -109,6 +108,8 @@ public class BytesHelper {
      */
     public static byte[] normalize(Object object, Charset charset) throws IOException {
         if (object == null) return null;
+
+        charset = CharsetHelper.normalize(charset);
 
         byte[] output;
 

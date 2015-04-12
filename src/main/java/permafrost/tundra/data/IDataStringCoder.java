@@ -26,7 +26,7 @@ package permafrost.tundra.data;
 
 import com.wm.data.IData;
 import com.wm.util.coder.IDataCoder;
-import permafrost.tundra.lang.StringHelper;
+import permafrost.tundra.lang.CharsetHelper;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -56,7 +56,7 @@ public abstract class IDataStringCoder extends IDataCoder {
      * @throws IOException  If there is a problem writing to the stream.
      */
     public void encode(OutputStream outputStream, IData document, String charsetName) throws IOException {
-        encode(outputStream, document, Charset.forName(charsetName));
+        encode(outputStream, document, CharsetHelper.normalize(charsetName));
     }
 
     /**
@@ -66,7 +66,7 @@ public abstract class IDataStringCoder extends IDataCoder {
      * @throws IOException  If there is a problem writing to the stream.
      */
     public void encode(OutputStream outputStream, IData document) throws IOException {
-        encode(outputStream, document, StringHelper.DEFAULT_CHARSET);
+        encode(outputStream, document, CharsetHelper.DEFAULT_CHARSET);
     }
 
     /**
@@ -78,7 +78,7 @@ public abstract class IDataStringCoder extends IDataCoder {
      */
     public byte[] encodeToBytes(IData document, Charset charset) throws IOException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        this.encode(outputStream, document, charset);
+        this.encode(outputStream, document, CharsetHelper.normalize(charset));
         return outputStream.toByteArray();
     }
 
@@ -90,7 +90,7 @@ public abstract class IDataStringCoder extends IDataCoder {
      * @throws IOException  If there is a problem writing to the stream.
      */
     public byte[] encodeToBytes(IData document, String charsetName) throws IOException {
-        return encodeToBytes(document, Charset.forName(charsetName));
+        return encodeToBytes(document, CharsetHelper.normalize(charsetName));
     }
 
     /**
@@ -100,7 +100,7 @@ public abstract class IDataStringCoder extends IDataCoder {
      * @throws IOException  If there is a problem writing to the stream.
      */
     public byte[] encodeToBytes(IData document) throws IOException {
-        return encodeToBytes(document, StringHelper.DEFAULT_CHARSET);
+        return encodeToBytes(document, CharsetHelper.DEFAULT_CHARSET);
     }
 
     /**
@@ -110,7 +110,7 @@ public abstract class IDataStringCoder extends IDataCoder {
      * @throws IOException  If there is an I/O problem.
      */
     public String encodeToString(IData document) throws IOException {
-        return new String(encodeToBytes(document, StringHelper.DEFAULT_CHARSET), StringHelper.DEFAULT_CHARSET);
+        return new String(encodeToBytes(document, CharsetHelper.DEFAULT_CHARSET), CharsetHelper.DEFAULT_CHARSET);
     }
 
     /**
@@ -130,7 +130,7 @@ public abstract class IDataStringCoder extends IDataCoder {
      * @throws IOException  If there is a problem reading from the stream.
      */
     public IData decode(InputStream inputStream, String charsetName) throws IOException {
-        return decode(inputStream, Charset.forName(charsetName));
+        return decode(inputStream, CharsetHelper.normalize(charsetName));
     }
 
     /**
@@ -140,7 +140,7 @@ public abstract class IDataStringCoder extends IDataCoder {
      * @throws IOException  If there is a problem reading from the stream.
      */
     public IData decode(InputStream inputStream) throws IOException {
-        return decode(inputStream, StringHelper.DEFAULT_CHARSET);
+        return decode(inputStream, CharsetHelper.DEFAULT_CHARSET);
     }
 
     /**
@@ -151,7 +151,7 @@ public abstract class IDataStringCoder extends IDataCoder {
      * @throws IOException  If there is a problem reading from the stream.
      */
     public IData decodeFromBytes(byte[] bytes, Charset charset) throws IOException {
-        return decode(new ByteArrayInputStream(bytes), charset);
+        return decode(new ByteArrayInputStream(bytes), CharsetHelper.normalize(charset));
     }
 
     /**
@@ -162,7 +162,7 @@ public abstract class IDataStringCoder extends IDataCoder {
      * @throws IOException  If there is a problem reading from the stream.
      */
     public IData decodeFromBytes(byte[] bytes, String charsetName) throws IOException {
-        return decodeFromBytes(bytes, Charset.forName(charsetName));
+        return decodeFromBytes(bytes, CharsetHelper.normalize(charsetName));
     }
 
     /**
@@ -172,7 +172,7 @@ public abstract class IDataStringCoder extends IDataCoder {
      * @throws IOException  If there is a problem reading from the stream.
      */
     public IData decodeFromBytes(byte[] bytes) throws IOException {
-        return decodeFromBytes(bytes, StringHelper.DEFAULT_CHARSET);
+        return decodeFromBytes(bytes, CharsetHelper.DEFAULT_CHARSET);
     }
 
     /**
@@ -182,6 +182,6 @@ public abstract class IDataStringCoder extends IDataCoder {
      * @throws IOException  If there is an I/O problem.
      */
     public IData decodeFromString(String string) throws IOException {
-        return decodeFromBytes(string.getBytes(StringHelper.DEFAULT_CHARSET), StringHelper.DEFAULT_CHARSET);
+        return decodeFromBytes(string.getBytes(CharsetHelper.DEFAULT_CHARSET), CharsetHelper.DEFAULT_CHARSET);
     }
 }

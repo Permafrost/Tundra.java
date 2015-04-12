@@ -43,7 +43,7 @@ public class IDataJSONCoderTest {
         cursor.destroy();
 
         String json = IDataJSONCoder.getInstance().encodeToString(document);
-        
+
         assertTrue(json.contains("abc"));
         assertTrue(json.contains("123"));
         assertTrue(json.contains("def"));

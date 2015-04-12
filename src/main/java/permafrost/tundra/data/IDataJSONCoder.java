@@ -30,6 +30,7 @@ import com.wm.data.IDataFactory;
 import com.wm.data.IDataUtil;
 import permafrost.tundra.io.StreamHelper;
 import permafrost.tundra.lang.ArrayHelper;
+import permafrost.tundra.lang.CharsetHelper;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -83,7 +84,7 @@ public class IDataJSONCoder extends IDataStringCoder {
      */
     public IData decode(InputStream inputStream, Charset charset) throws IOException {
         JsonReaderFactory factory = Json.createReaderFactory(null);
-        JsonReader reader = factory.createReader(inputStream, charset);
+        JsonReader reader = factory.createReader(inputStream, CharsetHelper.normalize(charset));
         JsonStructure structure = reader.read();
         reader.close();
 

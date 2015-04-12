@@ -29,6 +29,7 @@ import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
 import com.wm.data.IDataUtil;
 import permafrost.tundra.lang.ArrayHelper;
+import permafrost.tundra.lang.CharsetHelper;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
@@ -271,7 +272,7 @@ public class URIHelper {
      * @return              The string after being URI encoded.
      */
     public static String encode(String input, String charsetName) {
-        return encode(input, Charset.forName(charsetName));
+        return encode(input, CharsetHelper.normalize(charsetName, DEFAULT_CHARSET));
     }
 
     /**
@@ -286,7 +287,7 @@ public class URIHelper {
         String output = null;
 
         try {
-            output = java.net.URLEncoder.encode(input, charset.name()).replace("+", "%20");
+            output = java.net.URLEncoder.encode(input, CharsetHelper.normalize(charset, DEFAULT_CHARSET).name()).replace("+", "%20");
         } catch (UnsupportedEncodingException ex) {
             throw new IllegalArgumentException(ex); // this should never happen
         }
@@ -310,7 +311,7 @@ public class URIHelper {
      * @return              The new copy of the list of strings after being URI encoded.
      */
     public static String[] encode(String[] input, String charsetName) {
-        return encode(input, Charset.forName(charsetName));
+        return encode(input, CharsetHelper.normalize(charsetName, DEFAULT_CHARSET));
     }
 
     /**
@@ -347,8 +348,7 @@ public class URIHelper {
      * @return              The string after it has been URI decoded.
      */
     public static String decode(String input, String charsetName) {
-        if (input == null) return null;
-        return decode(input, Charset.forName(charsetName));
+        return decode(input, CharsetHelper.normalize(charsetName, DEFAULT_CHARSET));
     }
 
     /**
@@ -363,7 +363,7 @@ public class URIHelper {
         String output = null;
 
         try {
-            output = java.net.URLDecoder.decode(input, charset.name());
+            output = java.net.URLDecoder.decode(input, CharsetHelper.normalize(charset, DEFAULT_CHARSET).name());
         } catch(UnsupportedEncodingException ex) {
             throw new IllegalArgumentException(ex); // this should never happen
         }
@@ -387,7 +387,7 @@ public class URIHelper {
      * @return              A new copy of the list of strings after being URI decoded.
      */
     public static String[] decode(String[] input, String charsetName) {
-        return decode(input, Charset.forName(charsetName));
+        return decode(input, CharsetHelper.normalize(charsetName, DEFAULT_CHARSET));
     }
 
 
