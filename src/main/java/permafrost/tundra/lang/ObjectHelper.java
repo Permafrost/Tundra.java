@@ -258,7 +258,7 @@ public class ObjectHelper {
      * @return           The set of classes for the given list of objects.
      */
     private static Set<Class<?>> toClassSet(Object ...objects) {
-        Set<Class<?>> classes = new TreeSet<Class<?>>();
+        Set<Class<?>> classes = new LinkedHashSet<Class<?>>();
 
         for (Object object : objects) {
             if (object != null) classes.add(object.getClass());
