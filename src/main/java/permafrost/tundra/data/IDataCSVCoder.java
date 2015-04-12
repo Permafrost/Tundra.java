@@ -77,7 +77,7 @@ public class IDataCSVCoder extends IDataStringCoder {
     }
 
     /**
-     * Encodes the given IData document as YAML to the given output stream.
+     * Encodes the given IData document as CSV to the given output stream.
      * @param outputStream  The stream to write the encoded IData to.
      * @param document      The IData document to be encoded.
      * @param charset       The character set to use.
@@ -88,8 +88,8 @@ public class IDataCSVCoder extends IDataStringCoder {
     }
 
     /**
-     * The MIME media type for YAML.
-     * @return YAML MIME media type.
+     * The MIME media type for CSV.
+     * @return CSV MIME media type.
      */
     public String getContentType() {
         return contentType;

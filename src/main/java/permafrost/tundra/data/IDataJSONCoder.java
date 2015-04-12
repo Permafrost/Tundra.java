@@ -65,7 +65,7 @@ public class IDataJSONCoder extends IDataStringCoder {
     }
 
     /**
-     * Encodes the given IData document as YAML to the given output stream.
+     * Encodes the given IData document as JSON to the given output stream.
      * @param outputStream  The stream to write the encoded IData to.
      * @param document      The IData document to be encoded.
      * @param charset       The character set to use.
@@ -76,7 +76,7 @@ public class IDataJSONCoder extends IDataStringCoder {
     }
 
     /**
-     * Returns an IData representation of the YAML data in the given input stream.
+     * Returns an IData representation of the JSON data in the given input stream.
      * @param inputStream                       The input stream to be decoded.
      * @param charset                           The character set to use.
      * @return                                  An IData representation of the given input stream data.
@@ -103,8 +103,8 @@ public class IDataJSONCoder extends IDataStringCoder {
     }
 
     /**
-     * The MIME media type for YAML.
-     * @return YAML MIME media type.
+     * The MIME media type for JSON.
+     * @return JSON MIME media type.
      */
     public String getContentType() {
         return "application/json";
