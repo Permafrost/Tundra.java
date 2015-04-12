@@ -58,7 +58,7 @@ public class IDataCSVCoder extends IDataStringCoder {
     public IDataCSVCoder() {}
 
     /**
-     * Construct a new IDataCSVCoder, using the given delimiter ',' and
+     * Construct a new IDataCSVCoder, using the given delimiter and
      * given content type.
      * @param delimiter     The delimiter character to use.
      * @param contentType   The content type to use.
