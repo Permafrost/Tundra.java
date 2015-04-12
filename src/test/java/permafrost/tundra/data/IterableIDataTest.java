@@ -79,15 +79,6 @@ public class IterableIDataTest {
     }
 
     @Test
-    public void testIteratingOverNullArgument() throws Exception {
-        int count = 0;
-        for (Map.Entry<String, Object> entry : new IterableIData(null)) {
-            count++;
-        }
-        assertEquals(0, count);
-    }
-
-    @Test
     public void testIteratingOverEmptyArgument() throws Exception {
         int count = 0;
         for (Map.Entry<String, Object> entry : new IterableIData()) {
@@ -98,7 +89,7 @@ public class IterableIDataTest {
 
     @Test(expected = NoSuchElementException.class)
     public void testNextAfterNoMoreElements() throws Exception {
-        IDataIterator iterator = new IterableIData(document).iterator();
+        IDataIterator iterator = document.iterator();
         iterator.next();
         iterator.next();
         iterator.next();
@@ -107,13 +98,13 @@ public class IterableIDataTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void testRemoveBeforeNext() throws Exception {
-        IDataIterator iterator = new IterableIData(document).iterator();
+        IDataIterator iterator = document.iterator();
         iterator.remove();
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void testRemoveAfterNext() throws Exception {
-        IDataIterator iterator = new IterableIData(document).iterator();
+        IDataIterator iterator = document.iterator();
         iterator.next();
         iterator.remove();
     }
