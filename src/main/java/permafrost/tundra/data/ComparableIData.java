@@ -25,6 +25,9 @@
 package permafrost.tundra.data;
 
 import com.wm.data.IData;
+import com.wm.data.IDataPortable;
+import com.wm.util.coder.IDataCodable;
+import com.wm.util.coder.ValuesCodable;
 
 /**
  * Wraps an IData document in an implementation of the Comparable interface,
@@ -39,6 +42,13 @@ public class ComparableIData extends IterableIData implements Comparable<IData> 
 
     protected IData document;
     protected IDataComparator comparator;
+
+    /**
+     * Constructs a new ComparableIData using the default comparator.
+     */
+    public ComparableIData() {
+        this(null, DEFAULT_COMPARATOR);
+    }
 
     /**
      * Constructs a new ComparableIData using the default comparator.

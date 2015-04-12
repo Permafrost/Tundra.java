@@ -25,6 +25,8 @@
 package permafrost.tundra.data;
 
 import com.wm.data.*;
+import com.wm.util.coder.IDataCodable;
+import com.wm.util.coder.ValuesCodable;
 
 import java.util.AbstractMap;
 import java.util.Map;
@@ -49,6 +51,30 @@ public class IterableIData extends WrappedIData implements Iterable<Map.Entry<St
      */
     public IterableIData(IData document) {
         super(document);
+    }
+
+    /**
+     * Constructs a new IterableIData wrapping the given IDataCodable object.
+     * @param codable The IDataCodable object to be wrapped.
+     */
+    public IterableIData(IDataCodable codable) {
+        super(codable);
+    }
+
+    /**
+     * Constructs a new IterableIData wrapping the given IDataPortable object.
+     * @param portable The IDataPortable object to be wrapped.
+     */
+    public IterableIData(IDataPortable portable) {
+        super(portable);
+    }
+
+    /**
+     * Constructs a new IterableIData wrapping the given ValuesCodable object.
+     * @param codable The ValuesCodable object to be wrapped.
+     */
+    public IterableIData(ValuesCodable codable) {
+        super(codable);
     }
 
     /**

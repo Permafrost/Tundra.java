@@ -57,6 +57,30 @@ public class WrappedIData implements IData, IDataCodable, IDataPortable, ValuesC
     }
 
     /**
+     * Constructs a new WrappedIData wrapping the given IDataCodable object.
+     * @param codable The IDataCodable object to be wrapped.
+     */
+    public WrappedIData(IDataCodable codable) {
+        this(codable == null ? null : codable.getIData());
+    }
+
+    /**
+     * Constructs a new WrappedIData wrapping the given IDataPortable object.
+     * @param portable The IDataPortable object to be wrapped.
+     */
+    public WrappedIData(IDataPortable portable) {
+        this(portable == null ? null : portable.getAsData());
+    }
+
+    /**
+     * Constructs a new WrappedIData wrapping the given ValuesCodable object.
+     * @param codable The ValuesCodable object to be wrapped.
+     */
+    public WrappedIData(ValuesCodable codable) {
+        this(codable == null ? null : codable.getValues());
+    }
+
+    /**
      * Returns an IDataCursor for this IData object. An IDataCursor contains the basic
      * methods you use to traverse an IData object and get or set elements within it.
      * @return An IDataCursor for this object.
