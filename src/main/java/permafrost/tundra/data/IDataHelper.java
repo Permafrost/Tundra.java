@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class IDataHelper {
     /**
@@ -53,7 +54,7 @@ public class IDataHelper {
      * @return The list of keys present in the given IData document.
      */
     public static String[] getKeys(IData input) {
-        return getKeys(input, null);
+        return getKeys(input, (Pattern)null);
     }
 
     /**
@@ -68,8 +69,21 @@ public class IDataHelper {
      *                      pattern.
      */
     public static String[] getKeys(IData input, String patternString) {
-        java.util.regex.Pattern pattern = patternString == null ? null : java.util.regex.Pattern.compile(patternString);
+        return getKeys(input, patternString == null ? null : Pattern.compile(patternString));
+    }
 
+    /**
+     * Returns the keys that match the given regular expression pattern
+     * in the given IData document.
+     *
+     * @param input         An IData document to retrieve the keys from.
+     * @param pattern       A regular expression pattern which the returned
+     *                      set of keys must match.
+     * @return              The list of keys present in the given IData
+     *                      document that match the given regular expression
+     *                      pattern.
+     */
+    public static String[] getKeys(IData input, Pattern pattern) {
         java.util.List<String> keys = new java.util.ArrayList<String>();
         for (Map.Entry<String, Object> entry : new IterableIData(input)) {
             String key = entry.getKey();
@@ -955,7 +969,7 @@ public class IDataHelper {
      * @return      The union set of keys from the given IData[].
      */
     public static String[] getKeys(IData[] input) {
-        return getKeys(input, (java.util.regex.Pattern) null);
+        return getKeys(input, (Pattern) null);
     }
 
     /**
@@ -968,7 +982,7 @@ public class IDataHelper {
      * @return              The union set of keys from the given IData[].
      */
     public static String[] getKeys(IData[] input, String patternString) {
-        return getKeys(input, patternString == null ? null : java.util.regex.Pattern.compile(patternString));
+        return getKeys(input, patternString == null ? null : Pattern.compile(patternString));
     }
 
     /**
@@ -980,7 +994,7 @@ public class IDataHelper {
      *                must match.
      * @return        The union set of keys from the given IData[].
      */
-    public static String[] getKeys(IData[] input, java.util.regex.Pattern pattern) {
+    public static String[] getKeys(IData[] input, Pattern pattern) {
         java.util.Set<String> keys = new java.util.LinkedHashSet<String>();
 
         if (input != null) {
@@ -1191,7 +1205,7 @@ public class IDataHelper {
      */
     private static class Key {
         public static final String SEPARATOR = "/";
-        public static final java.util.regex.Pattern INDEX_PATTERN = java.util.regex.Pattern.compile("\\[(-?\\d+?)\\]$");
+        public static final Pattern INDEX_PATTERN = Pattern.compile("\\[(-?\\d+?)\\]$");
 
         protected boolean hasIndex = false;
         protected int index = 0;
