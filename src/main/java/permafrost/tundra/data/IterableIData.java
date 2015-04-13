@@ -37,7 +37,13 @@ import java.util.NoSuchElementException;
  * which then allows the use of a standard Java for each loop for iterating
  * over the elements in the document.
  */
-public class IterableIData extends WrappedIData implements Iterable<Map.Entry<String, Object>> {
+public class IterableIData extends WrappedIData implements Iterable<Map.Entry<String, Object>>, Comparable<IData> {
+    /**
+     * The default comparator used when no other comparator or comparison criteria is specified.
+     */
+    public static final IDataComparator DEFAULT_COMPARATOR = BasicIDataComparator.INSTANCE;
+    protected IDataComparator comparator = DEFAULT_COMPARATOR;
+
     /**
      * Construct a new IDataIterator object.
      */
@@ -54,11 +60,33 @@ public class IterableIData extends WrappedIData implements Iterable<Map.Entry<St
     }
 
     /**
+     * Construct a new IDataIterator object.
+     * @param document The IData document to be iterated over.
+     * @param comparator The IDataComparator to be used to compare IData objects.
+     *
+     */
+    public IterableIData(IData document, IDataComparator comparator) {
+        this(document);
+        setComparator(comparator);
+    }
+
+    /**
      * Constructs a new IterableIData wrapping the given IDataCodable object.
      * @param codable The IDataCodable object to be wrapped.
      */
     public IterableIData(IDataCodable codable) {
         super(codable);
+    }
+
+    /**
+     * Constructs a new IterableIData wrapping the given IDataCodable object.
+     * @param codable The IDataCodable object to be wrapped.
+     * @param comparator The IDataComparator to be used to compare IData objects.
+     *
+     */
+    public IterableIData(IDataCodable codable, IDataComparator comparator) {
+        this(codable);
+        setComparator(comparator);
     }
 
     /**
@@ -70,11 +98,30 @@ public class IterableIData extends WrappedIData implements Iterable<Map.Entry<St
     }
 
     /**
+     * Constructs a new IterableIData wrapping the given IDataPortable object.
+     * @param portable The IDataPortable object to be wrapped.
+     * @param comparator The IDataComparator to be used to compare IData objects.
+     */
+    public IterableIData(IDataPortable portable, IDataComparator comparator) {
+        this(portable);
+        setComparator(comparator);
+    }
+
+    /**
      * Constructs a new IterableIData wrapping the given ValuesCodable object.
      * @param codable The ValuesCodable object to be wrapped.
      */
     public IterableIData(ValuesCodable codable) {
         super(codable);
+    }
+
+    /**
+     * Constructs a new IterableIData wrapping the given ValuesCodable object.
+     * @param codable The ValuesCodable object to be wrapped.
+     */
+    public IterableIData(ValuesCodable codable, IDataComparator comparator) {
+        this(codable);
+        setComparator(comparator);
     }
 
     /**
@@ -84,6 +131,45 @@ public class IterableIData extends WrappedIData implements Iterable<Map.Entry<St
     @Override
     public IDataIterator iterator() {
         return new IDataIteratorImplementation(getIData());
+    }
+
+    /**
+     * Compares this object with the specified object for order.
+     * @param other The object to be compared with this object.
+     * @return      A negative integer, zero, or a positive integer as this object is
+     *              less than, equal to, or greater than the specified object.
+     */
+    @Override
+    public int compareTo(IData other) {
+        return comparator.compare(document, other);
+    }
+
+    /**
+     * Returns true if this object is equal to the given object.
+     * @param other The object to compare to.
+     * @return      True if this object is equal to the given object.
+     */
+    @Override
+    public boolean equals(Object other) {
+        if (!(other instanceof IData)) return false;
+        return this == other || DEFAULT_COMPARATOR.compare(document, (IData)other) == 0;
+    }
+
+    /**
+     * Returns the IDataComparator used to compare IData objects.
+     * @return The IDataComparator used to compare IData objects.
+     */
+    public IDataComparator getComparator() {
+        return comparator;
+    }
+
+    /**
+     * Sets the IDataComparator to be used when comparing IData objects.
+     * @param comparator The IDataComparator to be used when comparing IData objects.
+     */
+    public void setComparator(IDataComparator comparator) {
+        if (comparator == null) throw new IllegalArgumentException("comparator must not be null");
+        this.comparator = comparator;
     }
 
     /**
