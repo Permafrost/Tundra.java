@@ -118,6 +118,7 @@ public class IterableIData extends WrappedIData implements Iterable<Map.Entry<St
     /**
      * Constructs a new IterableIData wrapping the given ValuesCodable object.
      * @param codable The ValuesCodable object to be wrapped.
+     * @param comparator The IDataComparator to be used to compare IData objects.
      */
     public IterableIData(ValuesCodable codable, IDataComparator comparator) {
         this(codable);
