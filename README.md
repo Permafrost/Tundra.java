@@ -17,6 +17,14 @@ Networks] 7.1 and higher respectively.
 * `wm-isclient.jar`
 * `wm-isserver.jar`
 
+It is also dependent on the following open source libraries:
+
+* `commons-csv-1.0.jar` - https://commons.apache.org/proper/commons-csv/
+* `javax.json-1.0.4.jar` - https://jsonp.java.net
+* `snakeyaml-1.15.jar` - http://www.snakeyaml.org
+* `spring-core-4.1.2.RELEASE.jar` - http://projects.spring.io/spring-framework/
+* `spring-web-4.1.2.RELEASE.jar` - http://projects.spring.io/spring-framework/
+
 ## Contributions
 
 1. Check out the latest master to make sure the feature hasn't been
