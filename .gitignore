@@ -13,9 +13,6 @@
 # External Libraries
 /lib/
 
-# Javadoc
-/docs/javadoc/
-
 # Mac Detritus
 .DS_Store
 
