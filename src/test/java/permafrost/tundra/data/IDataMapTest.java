@@ -35,12 +35,12 @@ import java.util.NoSuchElementException;
 
 import static org.junit.Assert.*;
 
-public class IterableIDataTest {
-    IterableIData document;
+public class IDataMapTest {
+    IDataMap document;
 
     @Before
     public void setUp() throws Exception {
-        document = new IterableIData();
+        document = new IDataMap();
         IDataCursor cursor = document.getCursor();
         IDataUtil.put(cursor, "a", "1");
         IDataUtil.put(cursor, "b", "2");
@@ -56,7 +56,7 @@ public class IterableIDataTest {
         iterator.next();
         iterator.next();
         assertFalse(iterator.hasNext());
-        iterator = new IterableIData(IDataFactory.create()).iterator();
+        iterator = new IDataMap(IDataFactory.create()).iterator();
         assertFalse(iterator.hasNext());
     }
 
@@ -81,7 +81,7 @@ public class IterableIDataTest {
     @Test
     public void testIteratingOverEmptyArgument() throws Exception {
         int count = 0;
-        for (Map.Entry<String, Object> entry : new IterableIData()) {
+        for (Map.Entry<String, Object> entry : new IDataMap()) {
             count++;
         }
         assertEquals(0, count);

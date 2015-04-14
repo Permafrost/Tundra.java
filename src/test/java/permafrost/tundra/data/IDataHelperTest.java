@@ -89,7 +89,7 @@ public class IDataHelperTest {
     public void testMergeWithOneArgument() throws Exception {
         IData merge = IDataHelper.merge(document);
         assertNotNull(merge);
-        assertEquals(new IterableIData(document), new IterableIData(merge));
+        assertEquals(new IDataMap(document), new IDataMap(merge));
     }
 
     @Test

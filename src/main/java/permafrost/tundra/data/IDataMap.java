@@ -28,16 +28,13 @@ import com.wm.data.*;
 import com.wm.util.coder.IDataCodable;
 import com.wm.util.coder.ValuesCodable;
 
-import java.util.AbstractMap;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 /**
- * Wraps an IData document in an implementation of the Iterable interface,
- * which then allows the use of a standard Java for each loop for iterating
- * over the elements in the document.
+ * Wraps an IData document in an implementation of the Iterable, Comparable,
+ * and Map interfaces.
  */
-public class IterableIData extends WrappedIData implements Iterable<Map.Entry<String, Object>>, Comparable<IData> {
+public class IDataMap extends WrappedIData implements Iterable<Map.Entry<String, Object>>, Comparable<IData>, Map<String, Object> {
     /**
      * The default comparator used when no other comparator or comparison criteria is specified.
      */
@@ -45,84 +42,228 @@ public class IterableIData extends WrappedIData implements Iterable<Map.Entry<St
     protected IDataComparator comparator = DEFAULT_COMPARATOR;
 
     /**
-     * Construct a new IDataIterator object.
+     * Construct a new IDataMap object.
      */
-    public IterableIData() {
+    public IDataMap() {
         super();
     }
 
     /**
-     * Construct a new IDataIterator object.
-     * @param document The IData document to be iterated over.
+     * Construct a new IDataMap object.
+     * @param document The IData document to be wrapped.
      */
-    public IterableIData(IData document) {
+    public IDataMap(IData document) {
         super(document);
     }
 
     /**
-     * Construct a new IDataIterator object.
-     * @param document The IData document to be iterated over.
+     * Construct a new IDataMap object.
+     * @param document The IData document to be wrapped.
      * @param comparator The IDataComparator to be used to compare IData objects.
      *
      */
-    public IterableIData(IData document, IDataComparator comparator) {
+    public IDataMap(IData document, IDataComparator comparator) {
         this(document);
         setComparator(comparator);
     }
 
     /**
-     * Constructs a new IterableIData wrapping the given IDataCodable object.
+     * Constructs a new IDataMap wrapping the given IDataCodable object.
      * @param codable The IDataCodable object to be wrapped.
      */
-    public IterableIData(IDataCodable codable) {
+    public IDataMap(IDataCodable codable) {
         super(codable);
     }
 
     /**
-     * Constructs a new IterableIData wrapping the given IDataCodable object.
+     * Constructs a new IDataMap wrapping the given IDataCodable object.
      * @param codable The IDataCodable object to be wrapped.
      * @param comparator The IDataComparator to be used to compare IData objects.
      *
      */
-    public IterableIData(IDataCodable codable, IDataComparator comparator) {
+    public IDataMap(IDataCodable codable, IDataComparator comparator) {
         this(codable);
         setComparator(comparator);
     }
 
     /**
-     * Constructs a new IterableIData wrapping the given IDataPortable object.
+     * Constructs a new IDataMap wrapping the given IDataPortable object.
      * @param portable The IDataPortable object to be wrapped.
      */
-    public IterableIData(IDataPortable portable) {
+    public IDataMap(IDataPortable portable) {
         super(portable);
     }
 
     /**
-     * Constructs a new IterableIData wrapping the given IDataPortable object.
+     * Constructs a new IDataMap wrapping the given IDataPortable object.
      * @param portable The IDataPortable object to be wrapped.
      * @param comparator The IDataComparator to be used to compare IData objects.
      */
-    public IterableIData(IDataPortable portable, IDataComparator comparator) {
+    public IDataMap(IDataPortable portable, IDataComparator comparator) {
         this(portable);
         setComparator(comparator);
     }
 
     /**
-     * Constructs a new IterableIData wrapping the given ValuesCodable object.
+     * Constructs a new IDataMap wrapping the given ValuesCodable object.
      * @param codable The ValuesCodable object to be wrapped.
      */
-    public IterableIData(ValuesCodable codable) {
+    public IDataMap(ValuesCodable codable) {
         super(codable);
     }
 
     /**
-     * Constructs a new IterableIData wrapping the given ValuesCodable object.
+     * Constructs a new IDataMap wrapping the given ValuesCodable object.
      * @param codable The ValuesCodable object to be wrapped.
      * @param comparator The IDataComparator to be used to compare IData objects.
      */
-    public IterableIData(ValuesCodable codable, IDataComparator comparator) {
+    public IDataMap(ValuesCodable codable, IDataComparator comparator) {
         this(codable);
         setComparator(comparator);
+    }
+
+    /**
+     * Returns a Collection view of the values contained in this map.
+     * @return A collection view of the values contained in this map.
+     */
+    @Override
+    public Collection<Object> values() {
+        return Arrays.asList(IDataHelper.getValues(this));
+    }
+
+    /**
+     * Returns a Set view of the keys contained in this map.
+     * @return A set view of the keys contained in this map.
+     */
+    @Override
+    public Set<String> keySet() {
+        String[] keys = IDataHelper.getKeys(this);
+        Set<String> keySet = new LinkedHashSet<String>(keys.length);
+        keySet.addAll(Arrays.asList(keys));
+
+        return keySet;
+    }
+
+    /**
+     * Returns true if this map contains a mapping for the specified key.
+     * @param key A key whose presence in this map is to be tested.
+     * @return    True if this map contains a mapping for the specified key.
+     */
+    @Override
+    public boolean containsKey(Object key) {
+        IDataCursor cursor = this.getCursor();
+        boolean contains = cursor.next((String)key);
+        cursor.destroy();
+
+        return contains;
+    }
+
+    /**
+     * Returns true if this map maps one or more keys to the specified value.
+     * @param value The value whose presence in this map is to be tested.
+     * @return      True if this map maps one or more keys to the specified value.
+     */
+    @Override
+    public boolean containsValue(Object value) {
+        return Arrays.binarySearch(IDataHelper.getValues(this), value) >= 0;
+    }
+
+    /**
+     * Removes the mapping for a key from this map if it is present (optional operation).
+     * @param key A key whose mapping is to be removed from the map.
+     * @return    The previous value associated with key, or null if there was no mapping for key.
+     */
+    @Override
+    public Object remove(Object key) {
+        IDataCursor cursor = this.getCursor();
+        Object value = get(key);
+        IDataUtil.remove(cursor, (String) key);
+        return value;
+    }
+
+    /**
+     * Returns true if this map contains no key-value mappings.
+     * @return True if this map contains no key-value mappings.
+     */
+    @Override
+    public boolean isEmpty() {
+        return size() == 0;
+    }
+
+    /**
+     * Returns the number of key-value mappings in this map.
+     * @return The number of key-value mappings in this map.
+     */
+    @Override
+    public int size() {
+        return IDataHelper.size(this);
+    }
+
+    /**
+     * Returns a Set view of the mappings contained in this map.
+     * @return A set view of the mappings contained in this map.
+     */
+    @Override
+    public Set<Map.Entry<String, Object>> entrySet() {
+        Set<Map.Entry<String, Object>> set = new LinkedHashSet<Map.Entry<String, Object>>(size());
+
+        for (Map.Entry<String, Object> entry : this) {
+            set.add(entry);
+        }
+
+        return set;
+    }
+
+    /**
+     * Associates the specified value with the specified key in this map.
+     * @param key   Key with which the specified value is to be associated.
+     * @param value Value to be associated with the specified key.
+     * @return      The previous value associated with key, or null if there was no mapping for key.
+     */
+    @Override
+    public Object put(String key, Object value) {
+        Object previousValue = get(key);
+        IDataCursor cursor = this.getCursor();
+        IDataUtil.put(cursor, key, value);
+        cursor.destroy();
+
+        return previousValue;
+    }
+
+    /**
+     * Copies all of the mappings from the specified map to this map.
+     * @param map Mappings to be stored in this map.
+     */
+    @Override
+    public void putAll(Map<? extends String,? extends Object> map) {
+        for (Map.Entry<? extends String, ? extends Object> entry : map.entrySet()) {
+            put(entry.getKey(), entry.getValue());
+        }
+    }
+
+    /**
+     * Returns the value to which the specified key is mapped, or null if this
+     * map contains no mapping for the key.
+     * @param key The key whose associated value is to be returned.
+     * @return    The value to which the specified key is mapped, or null if
+     *            this map contains no mapping for the key
+     */
+    @Override
+    public Object get(Object key) {
+        IDataCursor cursor = this.getCursor();
+        Object value = IDataUtil.get(cursor, (String) key);
+        cursor.destroy();
+
+        return value;
+    }
+
+    /**
+     * Removes all of the mappings from this map. The map will be empty after
+     * this call returns.
+     */
+    @Override
+    public void clear() {
+        IDataHelper.clear(this);
     }
 
     /**

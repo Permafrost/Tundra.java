@@ -58,7 +58,7 @@ public class IDataCSVCoderTest {
         IDataUtil.put(cursor, "email", "bill@example.org");
         cursor.destroy();
 
-        IterableIData document = new IterableIData();
+        IDataMap document = new IDataMap();
         cursor = document.getCursor();
         IDataUtil.put(cursor, "recordWithNoID", records);
         cursor.destroy();

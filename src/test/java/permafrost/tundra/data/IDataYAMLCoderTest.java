@@ -47,7 +47,7 @@ public class IDataYAMLCoderTest {
 
     @Test
     public void testEncodeToString() throws Exception {
-        IterableIData document = new IterableIData();
+        IDataMap document = new IDataMap();
         IDataCursor cursor = document.getCursor();
         IDataUtil.put(cursor, "abc", "123");
         IDataUtil.put(cursor, "def", "456");

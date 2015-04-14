@@ -41,6 +41,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+/**
+ * A collection of convenience methods for working with IData objects.
+ */
 public class IDataHelper {
     /**
      * Do not allow this class to be instantiated.
@@ -85,7 +88,7 @@ public class IDataHelper {
      */
     public static String[] getKeys(IData input, Pattern pattern) {
         java.util.List<String> keys = new java.util.ArrayList<String>();
-        for (Map.Entry<String, Object> entry : new IterableIData(input)) {
+        for (Map.Entry<String, Object> entry : new IDataMap(input)) {
             String key = entry.getKey();
 
             if (pattern == null) {
@@ -108,7 +111,7 @@ public class IDataHelper {
     public static Object[] getValues(IData input) {
         List values = new ArrayList();
 
-        for(Map.Entry<String, Object> entry : new IterableIData(input)) {
+        for(Map.Entry<String, Object> entry : new IDataMap(input)) {
             values.add(entry.getValue());
         }
 
@@ -146,6 +149,20 @@ public class IDataHelper {
             cursor.destroy();
         }
         return size;
+    }
+
+    /**
+     * Returns the given key from the given IData document, returning the associated
+     * value if one exists.
+     * @param document  The document to remove the key from.
+     * @param key       The key to remove.
+     * @return          The value that was associated with the given key.
+     */
+    public Object remove(IData document, String key) {
+        IDataCursor cursor = document.getCursor();
+        Object value = IDataUtil.get(cursor, key);
+        IDataUtil.remove(cursor, key);
+        return value;
     }
 
     /**
@@ -320,7 +337,7 @@ public class IDataHelper {
 
         IData output = IDataFactory.create();
 
-        for(Map.Entry<String, Object> entry : new IterableIData(input)) {
+        for(Map.Entry<String, Object> entry : new IDataMap(input)) {
             // normalize fully-qualified keys by using Tundra put rather than IDataUtil put
             put(output, entry.getKey(), normalize(entry.getValue()));
         }
@@ -443,6 +460,15 @@ public class IDataHelper {
     }
 
     /**
+     * Removes all key value pairs from the given IData document.
+     *
+     * @param document          An IData document to be cleared.
+     */
+    public static void clear(IData document) {
+        clear(document, (String) null);
+    }
+
+    /**
      * Removes all key value pairs from the given IData document except those with
      * a specified key.
      *
@@ -450,13 +476,13 @@ public class IDataHelper {
      * @param keysToBePreserved List of simple or fully-qualified keys identifying
      *                          items that should not be removed.
      */
-    public static void clear(IData document, String[] keysToBePreserved) {
+    public static void clear(IData document, String ... keysToBePreserved) {
         if (document == null) return;
 
         IData saved = IDataFactory.create();
         if (keysToBePreserved != null) {
             for (String key : keysToBePreserved) {
-                put(saved, key, get(document, key), false);
+                if (key != null) put(saved, key, get(document, key), false);
             }
         }
 
@@ -674,7 +700,7 @@ public class IDataHelper {
 
         Map<String, Object> output = new java.util.LinkedHashMap<String, Object>(size);
 
-        for(Map.Entry<String, Object> entry : new IterableIData(input)) {
+        for(Map.Entry<String, Object> entry : new IDataMap(input)) {
             String key = entry.getKey();
             Object value = entry.getValue();
             if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
@@ -1000,7 +1026,7 @@ public class IDataHelper {
         if (input != null) {
             for (IData document : input) {
                 if (document != null) {
-                    for (Map.Entry<String, Object> entry : new IterableIData(document)) {
+                    for (Map.Entry<String, Object> entry : new IDataMap(document)) {
                         String key = entry.getKey();
                         if (pattern == null) {
                             keys.add(key);

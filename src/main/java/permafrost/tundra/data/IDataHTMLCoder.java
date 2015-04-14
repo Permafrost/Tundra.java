@@ -41,6 +41,9 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.Map;
 
+/**
+ * Encodes IData objects to HTML.
+ */
 public class IDataHTMLCoder extends IDataStringCoder {
     protected static IDataHTMLCoder INSTANCE = new IDataHTMLCoder();
 
@@ -117,7 +120,7 @@ public class IDataHTMLCoder extends IDataStringCoder {
 
             // tbody
             buffer.append("<tbody>");
-            for (Map.Entry<String, Object> entry : new IterableIData(input)) {
+            for (Map.Entry<String, Object> entry : new IDataMap(input)) {
                 String key = entry.getKey();
                 Object value = entry.getValue();
 
