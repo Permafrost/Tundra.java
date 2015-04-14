@@ -40,10 +40,13 @@ public class ConditionEvaluator {
      * ANTLR-based implementation of the evaluate function, which allowed use of the key
      * words: null, true and false
      */
-    protected static final java.util.regex.Pattern nullPattern = java.util.regex.Pattern.compile("((=|==|!=|<>|>|>=|<|<=)\\s*null(\\s|$))|((^|\\s)null\\s*(=|==|!=|<>|>|>=|<|<=))");
-    protected static final java.util.regex.Pattern truePattern = java.util.regex.Pattern.compile("((=|==|!=|<>|>|>=|<|<=)\\s*true(\\s|$))|((^|\\s)true\\s*(=|==|!=|<>|>|>=|<|<=))");
-    protected static final java.util.regex.Pattern falsePattern = java.util.regex.Pattern.compile("((=|==|!=|<>|>|>=|<|<=)\\s*false(\\s|$))|((^|\\s)false\\s*(=|==|!=|<>|>|>=|<|<=))");
+    protected static final java.util.regex.Pattern NULL_PATTERN = java.util.regex.Pattern.compile("((=|==|!=|<>|>|>=|<|<=)\\s*null(\\s|$))|((^|\\s)null\\s*(=|==|!=|<>|>|>=|<|<=))");
+    protected static final java.util.regex.Pattern TRUE_PATTERN = java.util.regex.Pattern.compile("((=|==|!=|<>|>|>=|<|<=)\\s*true(\\s|$))|((^|\\s)true\\s*(=|==|!=|<>|>|>=|<|<=))");
+    protected static final java.util.regex.Pattern FALSE_PATTERN = java.util.regex.Pattern.compile("((=|==|!=|<>|>|>=|<|<=)\\s*false(\\s|$))|((^|\\s)false\\s*(=|==|!=|<>|>|>=|<|<=))");
 
+    /**
+     * The conditional statement to be evaluated by this object.
+     */
     protected String condition;
 
     /**
@@ -59,15 +62,15 @@ public class ConditionEvaluator {
      * Evaluates the conditional statement against the given scope.
      *
      * @param scope The scope against which the conditional statement is evaluated.
-     * @return True if the conditional statement evaluates to true, otherwise false
+     * @return      True if the conditional statement evaluates to true, otherwise false.
      */
     public boolean evaluate(IData scope) {
         boolean result = true;
 
         if (condition != null) {
-            java.util.regex.Matcher nullMatcher = nullPattern.matcher(condition);
-            java.util.regex.Matcher trueMatcher = truePattern.matcher(condition);
-            java.util.regex.Matcher falseMatcher = falsePattern.matcher(condition);
+            java.util.regex.Matcher nullMatcher = NULL_PATTERN.matcher(condition);
+            java.util.regex.Matcher trueMatcher = TRUE_PATTERN.matcher(condition);
+            java.util.regex.Matcher falseMatcher = FALSE_PATTERN.matcher(condition);
 
             boolean nullFound = nullMatcher.find();
             boolean trueFound = trueMatcher.find();
@@ -106,7 +109,7 @@ public class ConditionEvaluator {
      *
      * @param condition The conditional statement to be evaluated.
      * @param scope     The scope against which the conditional statement is evaluated.
-     * @return True if the conditional statement evaluates to true, otherwise false
+     * @return          True if the conditional statement evaluates to true, otherwise false.
      */
     public static boolean evaluate(String condition, IData scope) {
         ConditionEvaluator evaluator = new ConditionEvaluator(condition);
