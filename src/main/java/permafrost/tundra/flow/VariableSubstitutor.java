@@ -81,7 +81,8 @@ public class VariableSubstitutor {
      * Returns a regular expression matcher which matches percent-delimited variable substitution statements
      * in the given string.
      * @param substitutionString The string to match against.
-     * @return A regular expression matcher which returns match results for variable substitution statements.
+     * @return                   A regular expression matcher which returns match results for variable
+     *                           substitution statements.
      */
     public static Matcher matcher(String substitutionString) {
         return SUBSTITUTION_PATTERN.matcher(substitutionString);
