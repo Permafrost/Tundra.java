@@ -123,6 +123,29 @@ public class IDataMap extends WrappedIData implements Iterable<Map.Entry<String,
     }
 
     /**
+     * Constructs a new IDataMap seeded with the given Map of key value entries.
+     * @param map The map to see this new object with.
+     */
+    public IDataMap(Map<? extends String, ? extends Object> map) {
+        super();
+        if (map != null) {
+            for (Map.Entry<? extends String, ? extends Object> entry : map.entrySet()) {
+                this.put(entry.getKey(), entry.getValue());
+            }
+        }
+    }
+
+    /**
+     * Constructs a new IDataMap seeded with the given Map of key value entries.
+     * @param map           The map to see this new object with.
+     * @param comparator    The IDataComparator to be used to compare IData objects.
+     */
+    public IDataMap(Map<? extends String, ? extends Object> map, IDataComparator comparator) {
+        this(map);
+        setComparator(comparator);
+    }
+
+    /**
      * Returns a Collection view of the values contained in this map.
      * @return A collection view of the values contained in this map.
      */
