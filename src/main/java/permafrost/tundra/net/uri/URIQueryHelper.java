@@ -33,6 +33,9 @@ import permafrost.tundra.lang.CharsetHelper;
 
 import java.nio.charset.Charset;
 
+/**
+ * A collection of convenience methods for working with URI query strings.
+ */
 public class URIQueryHelper {
     /**
      * Parses a query string.

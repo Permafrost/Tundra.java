@@ -26,6 +26,9 @@ package permafrost.tundra.lang;
 
 import java.util.*;
 
+/**
+ * A collection of convenience methods for working with arrays.
+ */
 public class ArrayHelper {
     /**
      * Disallow instantiation of this class.

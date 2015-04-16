@@ -24,6 +24,9 @@
 
 package permafrost.tundra.time;
 
+/**
+ * A collection of convenience methods for working with time zones.
+ */
 public class TimeZoneHelper {
     private static java.util.SortedSet<String> ZONES = new java.util.TreeSet(java.util.Arrays.asList(java.util.TimeZone.getAvailableIDs()));
     private static java.util.regex.Pattern OFFSET_HHMM_PATTERN = java.util.regex.Pattern.compile("([\\+-])?(\\d?\\d):(\\d\\d)");

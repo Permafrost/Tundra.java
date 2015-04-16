@@ -26,6 +26,9 @@ package permafrost.tundra.math;
 
 import java.math.BigDecimal;
 
+/**
+ * A collection of convenience methods for working with decimals.
+ */
 public class DecimalHelper {
     /**
      * Disallow instantiation of this class.

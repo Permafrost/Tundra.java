@@ -27,6 +27,9 @@ package permafrost.tundra.net.uri;
 import permafrost.tundra.lang.ArrayHelper;
 import permafrost.tundra.flow.VariableSubstitutor;
 
+/**
+ * A collection of convenience methods for working with URI paths.
+ */
 public class URIPathHelper {
     private static final java.util.regex.Pattern PATH_PATTERN = java.util.regex.Pattern.compile("/+");
 

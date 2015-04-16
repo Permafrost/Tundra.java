@@ -30,6 +30,9 @@ import java.nio.charset.Charset;
 import permafrost.tundra.lang.BytesHelper;
 import permafrost.tundra.lang.CharsetHelper;
 
+/**
+ * A collection of convenience methods for working with streams.
+ */
 public class StreamHelper {
     /**
      * The default buffer size used by Tundra.

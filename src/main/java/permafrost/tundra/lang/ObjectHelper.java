@@ -32,6 +32,9 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.*;
 
+/**
+ * A collection of convenience methods for working with Objects.
+ */
 public class ObjectHelper {
     /**
      * Disallow instantiation of this class.

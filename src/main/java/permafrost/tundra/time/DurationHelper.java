@@ -32,6 +32,9 @@ import java.math.BigInteger;
 import java.util.Calendar;
 import java.util.Date;
 
+/**
+ * A collection of convenience methods for working with durations.
+ */
 public class DurationHelper {
     /**
      * The default pattern for a duration string.

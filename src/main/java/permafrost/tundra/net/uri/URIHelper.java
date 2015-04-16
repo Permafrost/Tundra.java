@@ -36,6 +36,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 
+/**
+ * A collection of convenience methods for working with URIs.
+ */
 public class URIHelper {
     /**
      * The default character set used for URI strings.

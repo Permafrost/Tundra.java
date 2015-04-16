@@ -24,6 +24,9 @@
 
 package permafrost.tundra.html;
 
+/**
+ * A collection of convenience methods for working with HTML.
+ */
 public class HTMLHelper {
     /**
      * Disallow instantiation of this class.

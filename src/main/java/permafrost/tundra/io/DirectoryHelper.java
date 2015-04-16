@@ -32,6 +32,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Calendar;
 
+/**
+ * A collection of convenience methods for working with file system directories.
+ */
 public class DirectoryHelper {
     /**
      * Disallow instantiation of this class;

@@ -31,6 +31,9 @@ import java.util.TimeZone;
 import java.util.Date;
 import javax.xml.datatype.Duration;
 
+/**
+ * A collection of convenience methods for working with datetimes.
+ */
 public class DateTimeHelper {
     public static final String DEFAULT_DATETIME_PATTERN = "datetime";
     private static final java.util.Map<String, String> NAMED_PATTERNS = new java.util.TreeMap<String, String>();

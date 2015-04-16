@@ -28,6 +28,9 @@ import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataUtil;
 
+/**
+ * A collection of convenience methods for working with Locale objects.
+ */
 public class LocaleHelper {
     /**
      * Disallow instantiation of this class.

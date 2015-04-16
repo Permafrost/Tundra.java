@@ -30,6 +30,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 
+/**
+ * A collection of convenience methods for working with byte[] objects.
+ */
 public class BytesHelper {
     /**
      * Disallow instantiation of this class.

@@ -26,6 +26,9 @@ package permafrost.tundra.lang;
 
 import java.nio.charset.Charset;
 
+/**
+ * A collection of convenience methods for working with Charset objects.
+ */
 public class CharsetHelper {
     /**
      * The default character set used by Tundra.

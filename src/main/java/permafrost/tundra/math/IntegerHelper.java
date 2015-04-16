@@ -26,6 +26,9 @@ package permafrost.tundra.math;
 
 import java.math.BigInteger;
 
+/**
+ * A collection of convenience methods for working with integers.
+ */
 public class IntegerHelper {
     /**
      * Disallow instantiation of this class.

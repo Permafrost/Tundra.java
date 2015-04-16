@@ -35,6 +35,9 @@ import permafrost.tundra.lang.CharsetHelper;
 import permafrost.tundra.lang.StringHelper;
 import permafrost.tundra.net.uri.URIHelper;
 
+/**
+ * A collection of convenience methods for working with files.
+ */
 public class FileHelper {
     /**
      * Disallow instantiation of this class.

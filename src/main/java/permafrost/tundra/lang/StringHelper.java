@@ -33,8 +33,10 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
 
+/**
+ * A collection of convenience methods for working with String objects.
+ */
 public class StringHelper {
-
     /**
      * Disallow instantiation of this class.
      */

@@ -29,6 +29,9 @@ import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
 import com.wm.data.IDataUtil;
 
+/**
+ * A collection of convenience methods for working with exceptions.
+ */
 public class ExceptionHelper {
     /**
      * Throws a new BaseException whose message is constructed from the given
