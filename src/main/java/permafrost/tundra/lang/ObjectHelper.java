@@ -336,6 +336,28 @@ public class ObjectHelper {
     /**
      * Converts a string, byte array or stream to a string, byte array or stream.
      * @param object        The object to be converted.
+     * @param mode          The desired return type of the object.
+     * @return              The converted object.
+     * @throws IOException  If an I/O problem occurs.
+     */
+    public static Object convert(Object object, String mode) throws IOException {
+        return convert(object, ConvertMode.normalize(mode));
+    }
+
+    /**
+     * Converts a string, byte array or stream to a string, byte array or stream.
+     * @param object        The object to be converted.
+     * @param mode          The desired return type of the object.
+     * @return              The converted object.
+     * @throws IOException  If an I/O problem occurs.
+     */
+    public static Object convert(Object object, ConvertMode mode) throws IOException {
+        return convert(object, CharsetHelper.DEFAULT_CHARSET, mode);
+    }
+
+    /**
+     * Converts a string, byte array or stream to a string, byte array or stream.
+     * @param object        The object to be converted.
      * @param charset       The character set to use.
      * @param mode          The desired return type of the object.
      * @return              The converted object.

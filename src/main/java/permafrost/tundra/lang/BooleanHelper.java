@@ -54,7 +54,7 @@ public class BooleanHelper {
     public static String normalize(String string) {
         return emit(parse(string));
     }
-    
+
     /**
      * Parses a string that can contain "true" (ignoring case) or "1" to represent
      * true, and "false" (ignoring case) or "0" to represent false.
