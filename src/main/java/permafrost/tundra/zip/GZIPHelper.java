@@ -57,6 +57,16 @@ public class GZIPHelper {
     }
 
     /**
+     * GZIP compresses the given data.
+     * @param bytes         The data to be compressed.
+     * @return              The compressed data.
+     * @throws IOException  If an I/O problem occurs when reading from the stream.
+     */
+    public static InputStream compress(byte[] bytes) throws IOException {
+        return compress(StreamHelper.normalize(bytes));
+    }
+
+    /**
      * GZIP decompresses the given data.
      * @param inputStream   The compressed data to be decompressed.
      * @return              The decompressed data.
@@ -71,4 +81,13 @@ public class GZIPHelper {
         return StreamHelper.normalize(byteArrayOutputStream.toByteArray());
     }
 
+    /**
+     * GZIP decompresses the given data.
+     * @param bytes         The compressed data to be decompressed.
+     * @return              The decompressed data.
+     * @throws IOException  If an I/O problem occurs when reading from the stream.
+     */
+    public static InputStream decompress(byte[] bytes) throws IOException {
+        return decompress(StreamHelper.normalize(bytes));
+    }
 }
