@@ -25,6 +25,7 @@
 package permafrost.tundra.zip;
 
 import permafrost.tundra.io.StreamHelper;
+import permafrost.tundra.lang.BytesHelper;
 import permafrost.tundra.lang.ObjectHelper;
 
 import java.io.ByteArrayOutputStream;
@@ -51,7 +52,7 @@ public class ZIPHelper {
      * @return              The zip archive containing the compressed contents.
      * @throws IOException  If an I/O exception occurs reading from the streams.
      */
-    public static InputStream compress(NamedContent... contents) throws IOException {
+    public static InputStream compress(ZipEntryWithData... contents) throws IOException {
         if (contents == null) return null;
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -60,21 +61,22 @@ public class ZIPHelper {
         try {
             zipOutputStream = new ZipOutputStream(byteArrayOutputStream);
 
-            int i = 0;
-            for (NamedContent content : contents) {
-                String name = content.getName();
-                InputStream inputStream = content.getData();
+            for (int i = 0; i < contents.length; i++) {
+                if (contents[i] != null) {
+                    String name = contents[i].getName();
+                    if (name == null) name = "Untitled " + (i + 1);
+                    InputStream inputStream = StreamHelper.normalize(contents[i].getData());
 
-                try {
-                    zipOutputStream.putNextEntry(name == null ? new ZipEntry("Untitled " + (i + 1)) : new ZipEntry(name));
-                    StreamHelper.copy(inputStream, zipOutputStream, false);
-                } finally {
-                    zipOutputStream.closeEntry();
-                    StreamHelper.close(inputStream);
+                    try {
+                        zipOutputStream.putNextEntry(new ZipEntry(name));
+                        StreamHelper.copy(inputStream, zipOutputStream, false);
+                    } finally {
+                        StreamHelper.close(inputStream);
+                    }
                 }
-                i++;
             }
         } finally {
+            if (zipOutputStream != null) zipOutputStream.closeEntry();
             StreamHelper.close(zipOutputStream);
         }
 
@@ -87,24 +89,52 @@ public class ZIPHelper {
      * @return             The decompressed contents of the zip archive.
      * @throws IOException If an I/O problem occurs while reading from the stream.
      */
-    public static NamedContent[] decompress(InputStream inputStream) throws IOException {
+    public static ZipEntryWithData[] decompress(InputStream inputStream) throws IOException {
         if (inputStream == null) return null;
 
         ZipInputStream zipInputStream = null;
-        List<NamedContent> contents = new LinkedList<NamedContent>();
+        List<ZipEntryWithData> contents = new LinkedList<ZipEntryWithData>();
+        byte[] buffer = new byte[StreamHelper.DEFAULT_BUFFER_SIZE];
 
         try {
-            zipInputStream = new ZipInputStream(inputStream);
+            zipInputStream = new ZipInputStream(StreamHelper.normalize(inputStream));
             ZipEntry zipEntry;
             while((zipEntry = zipInputStream.getNextEntry()) != null) {
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                StreamHelper.copy(zipInputStream, byteArrayOutputStream, false);
-                contents.add(new NamedContent(zipEntry.getName(), byteArrayOutputStream.toByteArray()));
+                //StreamHelper.copy(zipInputStream, byteArrayOutputStream, false);
+
+                int count;
+                while((count = zipInputStream.read(buffer)) > 0) {
+                    byteArrayOutputStream.write(buffer, 0, count);
+                }
+                byteArrayOutputStream.close();
+
+                contents.add(new ZipEntryWithData(zipEntry.getName(), byteArrayOutputStream.toByteArray()));
             }
         } finally {
             StreamHelper.close(zipInputStream);
         }
 
-        return contents.toArray(new NamedContent[contents.size()]);
+        return contents.toArray(new ZipEntryWithData[contents.size()]);
+    }
+
+    /**
+     * Decompresses the given zip archive.
+     * @param bytes        The zip archive to decompress.
+     * @return             The decompressed contents of the zip archive.
+     * @throws IOException If an I/O problem occurs while reading from the stream.
+     */
+    public static ZipEntryWithData[] decompress(byte[] bytes) throws IOException {
+        return decompress(StreamHelper.normalize(bytes));
+    }
+
+    /**
+     * Decompresses the given zip archive.
+     * @param base64       The zip archive as a base64-encoded string.
+     * @return             The decompressed contents of the zip archive.
+     * @throws IOException If an I/O problem occurs while reading from the stream.
+     */
+    public static ZipEntryWithData[] decompress(String base64) throws IOException {
+        return decompress(BytesHelper.base64Decode(base64));
     }
 }

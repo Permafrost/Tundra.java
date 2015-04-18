@@ -68,7 +68,7 @@ public class StreamHelper {
     public static InputStream normalize(InputStream inputStream) {
         if (inputStream == null) return null;
 
-        if (!(inputStream instanceof BufferedInputStream)) {
+        if (!(inputStream instanceof FilterInputStream)) {
             inputStream = new BufferedInputStream(inputStream, DEFAULT_BUFFER_SIZE);
         }
 
@@ -84,7 +84,7 @@ public class StreamHelper {
     public static OutputStream normalize(OutputStream outputStream) {
         if (outputStream == null) return null;
 
-        if (!(outputStream instanceof BufferedOutputStream)) {
+        if (!(outputStream instanceof FilterOutputStream)) {
             outputStream = new BufferedOutputStream(outputStream, DEFAULT_BUFFER_SIZE);
         }
 
