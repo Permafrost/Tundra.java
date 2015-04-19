@@ -158,10 +158,9 @@ public class IDataHelper {
      * @param key       The key to remove.
      * @return          The value that was associated with the given key.
      */
-    public Object remove(IData document, String key) {
-        IDataCursor cursor = document.getCursor();
-        Object value = IDataUtil.get(cursor, key);
-        IDataUtil.remove(cursor, key);
+    public static Object remove(IData document, String key) {
+        Object value = get(document, key);
+        drop(document, key);
         return value;
     }
 

@@ -110,4 +110,51 @@ public class IDataHelperTest {
         assertEquals("4", IDataUtil.getString(cursor, "d"));
         cursor.destroy();
     }
+
+    @Test
+    public void testSizeWithNullArgument() throws Exception {
+        assertEquals(0, IDataHelper.size(null));
+    }
+
+    @Test
+    public void testSizeWithEmptyArgument() throws Exception {
+        assertEquals(0, IDataHelper.size(new IDataMap()));
+    }
+
+    @Test
+    public void testSizeWithIDataContainingOneElement() throws Exception {
+        IDataMap map = new IDataMap();
+        map.put("1", "a");
+        assertEquals(1, IDataHelper.size(map));
+    }
+
+    @Test
+    public void testSizeWithIDataContainingMultipleElements() throws Exception {
+        IDataMap map = new IDataMap();
+        map.put("1", "a");
+        map.put("2", "b");
+        map.put("3", "c");
+        map.put("4", "d");
+        assertEquals(4, IDataHelper.size(map));
+    }
+
+    @Test
+    public void testRemoveElementThatDoesNotExist() throws Exception {
+        Object value = IDataHelper.remove(new IDataMap(), "1");
+        assertTrue(value == null);
+    }
+
+    @Test
+    public void testRemoveFromNullIData() throws Exception {
+        Object value = IDataHelper.remove(null, "1");
+        assertTrue(value == null);
+    }
+
+    @Test
+    public void testRemoveElementThatExists() throws Exception {
+        Object value = IDataHelper.remove(document, "a");
+        assertEquals("1", value);
+        assertEquals(2, IDataHelper.size(document));
+        assertTrue(IDataHelper.get(document, "a") == null);
+    }
 }
