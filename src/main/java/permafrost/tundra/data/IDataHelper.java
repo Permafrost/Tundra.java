@@ -642,7 +642,7 @@ public class IDataHelper {
      * @return      The input IData document with the value set.
      */
     public static IData put(IData input, String key, Object value) {
-        return put(input, key == null ? null : Key.parse(key), value, true);
+        return put(input, key, value, true);
     }
 
     /**
