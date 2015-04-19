@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -57,7 +58,7 @@ public class IDataHelper {
      * @return The list of keys present in the given IData document.
      */
     public static String[] getKeys(IData input) {
-        return getKeys(input, (Pattern)null);
+        return getKeys(input, (Pattern) null);
     }
 
     /**
@@ -94,7 +95,7 @@ public class IDataHelper {
             if (pattern == null) {
                 keys.add(key);
             } else {
-                java.util.regex.Matcher matcher = pattern.matcher(key);
+                Matcher matcher = pattern.matcher(key);
                 if (matcher.matches()) keys.add(key);
             }
         }
@@ -234,21 +235,43 @@ public class IDataHelper {
             Key key = keys.remove();
 
             if (keys.size() > 0) {
-                if (key.hasIndex()) {
-                    drop(ArrayHelper.get(toIDataArray(IDataUtil.get(cursor, key.toString())), key.getIndex()), keys);
+                if (key.hasArrayIndex()) {
+                    drop(ArrayHelper.get(toIDataArray(IDataUtil.get(cursor, key.getKey())), key.getIndex()), keys);
+                } else if (key.hasKeyIndex()) {
+                    drop(toIData(get(input, key.getKey(), key.getIndex())), keys);
                 } else {
-                    drop(toIData(IDataUtil.get(cursor, key.toString())), keys);
+                    drop(toIData(IDataUtil.get(cursor, key.getKey())), keys);
                 }
             } else {
-                if (key.hasIndex()) {
-                    IDataUtil.put(cursor, key.toString(), ArrayHelper.drop(IDataUtil.getObjectArray(cursor, key.toString()), key.getIndex()));
+                if (key.hasArrayIndex()) {
+                    IDataUtil.put(cursor, key.getKey(), ArrayHelper.drop(IDataUtil.getObjectArray(cursor, key.getKey()), key.getIndex()));
+                } else if (key.hasKeyIndex()) {
+                    drop(input, key.getKey(), key.getIndex());
                 } else {
-                    IDataUtil.remove(cursor, key.toString());
+                    IDataUtil.remove(cursor, key.getKey());
                 }
             }
             cursor.destroy();
         }
         return input;
+    }
+
+    /**
+     * Removes the element with the given nth key from the given IData document.
+     * @param document The IData document to remove the key value pair from.
+     * @param key      The key to be removed.
+     * @param n        Determines which occurrence of the key to remove.
+     */
+    private static void drop(IData document, String key, int n) {
+        if (document == null || key == null || n < 0) return;
+
+        Object value = null;
+        int i = 0;
+
+        IDataCursor cursor = document.getCursor();
+        while(cursor.next(key) && i++ < n);
+        if (i > n) cursor.delete();
+        cursor.destroy();
     }
 
     /**
@@ -557,29 +580,54 @@ public class IDataHelper {
             Key key = fullyQualifiedKey.remove();
 
             if (fullyQualifiedKey.size() > 0) {
-                if (key.hasIndex()) {
-                    value = get(ArrayHelper.get(toIDataArray(IDataUtil.get(cursor, key.toString())), key.getIndex()), fullyQualifiedKey);
+                if (key.hasArrayIndex()) {
+                    value = get(ArrayHelper.get(toIDataArray(IDataUtil.get(cursor, key.getKey())), key.getIndex()), fullyQualifiedKey);
+                } else if (key.hasKeyIndex()) {
+                    value = get(toIData(get(input, key.getKey(), key.getIndex())), fullyQualifiedKey);
                 } else {
-                    value = get(IDataUtil.getIData(cursor, key.toString()), fullyQualifiedKey);
+                    value = get(IDataUtil.getIData(cursor, key.getKey()), fullyQualifiedKey);
                 }
             } else {
-                if (key.hasIndex()) {
-                    value = IDataUtil.get(cursor, key.toString());
+                if (key.hasArrayIndex()) {
+                    value = IDataUtil.get(cursor, key.getKey());
                     if (value != null) {
                         if (value instanceof Object[] || value instanceof Table) {
-                            Object[] array = value instanceof Object[] ? (Object[])value : ((Table)value).getValues();
+                            Object[] array = value instanceof Object[] ? (Object[]) value : ((Table) value).getValues();
                             value = ArrayHelper.get(array, key.getIndex());
                         } else {
                             value = null;
                         }
                     }
+                } else if (key.hasKeyIndex()) {
+                    value = get(input, key.getKey(), key.getIndex());
                 } else {
-                    value = IDataUtil.get(cursor, key.toString());
+                    value = IDataUtil.get(cursor, key.getKey());
                 }
             }
 
             cursor.destroy();
         }
+
+        return value;
+    }
+
+    /**
+     * Returns the nth value associated with the given key.
+     * @param document The IData document to return the value from.
+     * @param key      The key whose associated value is to be returned.
+     * @param n        Determines which occurrence of the key to return the value for.
+     * @return         The value associated with the nth occurrence of the given key in the given IData document.
+     */
+    private static Object get(IData document, String key, int n) {
+        if (document == null || key == null || n < 0) return null;
+
+        Object value = null;
+        int i = 0;
+
+        IDataCursor cursor = document.getCursor();
+        while(cursor.next(key) && i++ < n);
+        if (i > n) value = cursor.getValue();
+        cursor.destroy();
 
         return value;
     }
@@ -633,15 +681,17 @@ public class IDataHelper {
             Key key = fullyQualifiedKey.remove();
 
             if (fullyQualifiedKey.size() > 0) {
-                if (key.hasIndex()) {
-                    IData[] array = IDataUtil.getIDataArray(cursor, key.toString());
+                if (key.hasArrayIndex()) {
+                    IData[] array = IDataUtil.getIDataArray(cursor, key.getKey());
                     IData child = null;
                     try { child = ArrayHelper.get(array, key.getIndex()); } catch(ArrayIndexOutOfBoundsException ex) { }
                     value = ArrayHelper.put(array, put(child, fullyQualifiedKey, value, includeNull), key.getIndex(), IData.class);
+                } else if (key.hasKeyIndex()) {
+                    value = put(toIData(get(input, key.getKey(), key.getIndex())), fullyQualifiedKey, value, includeNull);
                 } else {
-                    value = put(IDataUtil.getIData(cursor, key.toString()), fullyQualifiedKey, value, includeNull);
+                    value = put(IDataUtil.getIData(cursor, key.getKey()), fullyQualifiedKey, value, includeNull);
                 }
-            } else if (key.hasIndex()) {
+            } else if (key.hasArrayIndex()) {
                 Class klass = Object.class;
                 if (value != null) {
                     if (value instanceof String) {
@@ -650,13 +700,40 @@ public class IDataHelper {
                         klass = IData.class;
                     }
                 }
-                value = ArrayHelper.put(IDataUtil.getObjectArray(cursor, key.toString()), value, key.getIndex(), klass);
+                value = ArrayHelper.put(IDataUtil.getObjectArray(cursor, key.getKey()), value, key.getIndex(), klass);
             }
-            IDataUtil.put(cursor, key.toString(), value);
+
+            if (key.hasKeyIndex()) {
+                put(input, key.getKey(), key.getIndex(), value);
+            } else {
+                IDataUtil.put(cursor, key.getKey(), value);
+            }
             cursor.destroy();
         }
 
         return input;
+    }
+
+    /**
+     * Sets the value associated with the given nth key in the given IData document. Note
+     * that this method mutates the given IData document in place.
+     * @param document The IData document to set the key's associated value in.
+     * @param key      The key whose value is to be set.
+     * @param n        Determines which occurrence of the key to set the value for.
+     * @param value    The value to be set.
+     * @return         The IData document with the given nth key set to the given value.
+     */
+    private static IData put(IData document, String key, int n, Object value) {
+        if (document == null || key == null || n < 0) return null;
+
+        IDataCursor cursor = document.getCursor();
+        for(int i = 0; i < n; i++) {
+            if (!cursor.next(key)) cursor.insertAfter(key, null);
+        }
+        cursor.insertAfter(key, value);
+        cursor.destroy();
+
+        return document;
     }
 
     /**
@@ -1030,7 +1107,7 @@ public class IDataHelper {
                         if (pattern == null) {
                             keys.add(key);
                         } else {
-                            java.util.regex.Matcher matcher = pattern.matcher(key);
+                            Matcher matcher = pattern.matcher(key);
                             if (matcher.matches()) keys.add(key);
                         }
                     }
@@ -1230,9 +1307,9 @@ public class IDataHelper {
      */
     private static class Key {
         public static final String SEPARATOR = "/";
-        public static final Pattern INDEX_PATTERN = Pattern.compile("\\[(-?\\d+?)\\]$");
+        public static final Pattern INDEX_PATTERN = Pattern.compile("(\\[(-?\\d+?)\\]|\\((\\d+?)\\))$");
 
-        protected boolean hasIndex = false;
+        protected boolean hasArrayIndex = false, hasKeyIndex = false;
         protected int index = 0;
         protected String key = null;
 
@@ -1242,36 +1319,75 @@ public class IDataHelper {
          * @param key An IData key as a string.
          */
         public Key(String key) {
-            java.util.regex.Matcher matcher = INDEX_PATTERN.matcher(key);
+            if (key == null) throw new NullPointerException("key must not be null");
+
             StringBuffer buffer = new StringBuffer();
+
+            Matcher matcher = INDEX_PATTERN.matcher(key);
             while(matcher.find()) {
-                hasIndex = true;
-                index = Integer.parseInt(matcher.group(1));
+                String arrayIndexString = matcher.group(2);
+                String keyIndexString = matcher.group(3);
+
+                if (arrayIndexString != null) {
+                    hasArrayIndex = true;
+                    index = Integer.parseInt(arrayIndexString);
+                } else {
+                    hasKeyIndex = true;
+                    index = Integer.parseInt(keyIndexString);
+                }
                 matcher.appendReplacement(buffer, "");
             }
             matcher.appendTail(buffer);
+
             this.key = buffer.toString();
         }
 
         /**
+         * Returns true if this key includes an array index.
          * @return true if this key includes an array index.
          */
-        public boolean hasIndex() {
-            return hasIndex;
+        public boolean hasArrayIndex() {
+            return hasArrayIndex;
         }
 
         /**
-         * @return This key's array index value.
+         * Returns true if this key includes an key index.
+         * @return true if this key includes an key index.
+         */
+        public boolean hasKeyIndex() {
+            return hasKeyIndex;
+        }
+
+        /**
+         * Returns this key's index value.
+         * @return This key's index value.
          */
         public int getIndex() {
             return index;
         }
 
         /**
+         * Returns the key-only component of this Key (with no array or key indexing).
+         * @return The key-only component of this Key (with no array or key indexing).
+         */
+        public String getKey() {
+            return key;
+        }
+
+        /**
+         * Returns a string representation of this key.
          * @return A string representation of this key.
          */
         public String toString() {
-            return key;
+            String output;
+            if (hasKeyIndex()) {
+                output = key + "(" + index + ")";
+            } else if (hasArrayIndex()) {
+                output = key + "[" + index + "]";
+            } else {
+                output = key;
+            }
+            return output;
         }
 
         /**
@@ -1290,7 +1406,7 @@ public class IDataHelper {
 
         /**
          * Returns true if the given IData key is considered fully-qualified (because
-         * it contains either an array index or path separated components).
+         * it contains either an array index, key index, or path separated components).
          *
          * @param key An IData key string.
          * @return    True if the given key is considered fully-qualified.
