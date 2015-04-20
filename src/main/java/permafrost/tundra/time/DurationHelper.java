@@ -87,6 +87,15 @@ public class DurationHelper {
         return format(duration, inPattern, outPattern, (Date)null);
     }
 
+    /**
+     * Formats a duration string to the desired pattern.
+     * @param milliseconds    The duration to be formatted, specified as milliseconds.
+     * @param pattern         The pattern the duration will be reformatted to.
+     * @return                The duration string reformatted according to the outPattern.
+     */
+    public static String format(long milliseconds, DurationPattern pattern) {
+        return emit(parse(milliseconds), pattern);
+    }
 
     /**
      * Formats a duration string to the desired pattern.
