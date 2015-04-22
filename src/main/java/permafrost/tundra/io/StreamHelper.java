@@ -66,9 +66,7 @@ public class StreamHelper {
      * @return              The normalized java.io.InputStream.
      */
     public static InputStream normalize(InputStream inputStream) {
-        if (inputStream == null) return null;
-
-        if (!(inputStream instanceof FilterInputStream)) {
+        if (!(inputStream instanceof FilterInputStream || inputStream instanceof ByteArrayInputStream)) {
             inputStream = new BufferedInputStream(inputStream, DEFAULT_BUFFER_SIZE);
         }
 
@@ -82,9 +80,7 @@ public class StreamHelper {
      * @return              The normalized java.io.OutputStream.
      */
     public static OutputStream normalize(OutputStream outputStream) {
-        if (outputStream == null) return null;
-
-        if (!(outputStream instanceof FilterOutputStream)) {
+        if (!(outputStream instanceof FilterOutputStream || outputStream instanceof ByteArrayOutputStream)) {
             outputStream = new BufferedOutputStream(outputStream, DEFAULT_BUFFER_SIZE);
         }
 
@@ -98,8 +94,6 @@ public class StreamHelper {
      * @return          The normalized java.io.Reader.
      */
     public static Reader normalize(Reader reader) {
-        if (reader == null) return null;
-
         if (!(reader instanceof BufferedReader)) {
             reader = new BufferedReader(reader, DEFAULT_BUFFER_SIZE);
         }
@@ -114,8 +108,6 @@ public class StreamHelper {
      * @return          The normalized java.io.Writer.
      */
     public static Writer normalize(Writer writer) {
-        if (writer == null) return null;
-
         if (!(writer instanceof BufferedWriter)) {
             writer = new BufferedWriter(writer, DEFAULT_BUFFER_SIZE);
         }
