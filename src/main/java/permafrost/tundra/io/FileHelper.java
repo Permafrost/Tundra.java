@@ -98,6 +98,15 @@ public class FileHelper {
     }
 
     /**
+     * Creates a new, empty temporary file.
+     * @return              The file which was created.
+     * @throws IOException  If the file already exists.
+     */
+    public static File create() throws IOException {
+        return create((File) null);
+    }
+
+    /**
      * Creates a new, empty file; if file is null, a temporary file is created.
      * @param file          The file to be created.
      * @return              The file which was created.
@@ -327,9 +336,7 @@ public class FileHelper {
      */
     public static File writeFromStream(File file, InputStream content, boolean append) throws IOException {
         if (file == null || !exists(file)) file = create(file);
-        InputStream input = StreamHelper.normalize(content);
-        OutputStream output = new FileOutputStream(file, append);
-        if (input != null) StreamHelper.copy(input, output);
+        if (content != null) StreamHelper.copy(content, new FileOutputStream(file, append));
         return file;
     }
 
