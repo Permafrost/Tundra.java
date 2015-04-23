@@ -76,9 +76,7 @@ public class BytesHelper {
      * @throws IOException      If there is a problem reading from the java.io.InputStream.
      */
     public static byte[] normalize(InputStream inputStream) throws IOException {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        StreamHelper.copy(inputStream, out);
-        return out.toByteArray();
+        return StreamHelper.readToBytes(inputStream);
     }
 
     /**
