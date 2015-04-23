@@ -33,7 +33,7 @@ public enum IDataComparisonType {
     private int value;
     private static java.util.Map<Integer, IDataComparisonType> map = new java.util.HashMap<Integer, IDataComparisonType>();
 
-    private IDataComparisonType(int value) {
+    IDataComparisonType(int value) {
         this.value = value;
     }
 
@@ -58,6 +58,6 @@ public enum IDataComparisonType {
      * @return      The IDataKeyComparisonType representing the given value.
      */
     public static IDataComparisonType normalize(String value) {
-        return value == null ? null : valueOf(value.trim().toUpperCase());
+        return value == null ? OBJECT : valueOf(value.trim().toUpperCase());
     }
 }
