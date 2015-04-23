@@ -71,4 +71,12 @@ public class AutoDeleteFileInputStream extends FileInputStream {
         // automatically delete the file after closing the stream
         if (file != null && !file.delete()) throw new IOException("File could not be deleted: " +  FileHelper.normalize(file));
     }
+
+    /**
+     * Returns the file this input stream reads from.
+     * @return The file this input stream reads from.
+     */
+    public File getFile() {
+        return file;
+    }
 }
