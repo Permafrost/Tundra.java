@@ -26,6 +26,9 @@ package permafrost.tundra.io;
 
 import java.io.*;
 
+/**
+ * A filter input stream which supports the mark and reset methods.
+ */
 public class MarkableInputStream extends FilterInputStream {
     /**
      * Creates a new MarkableInputStream, which wraps the given input stream
