@@ -25,15 +25,14 @@
 package permafrost.tundra.io;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**
  * Automatically deletes the underlying file when the close method is called on the input stream.
  */
-public class AutoDeleteFileInputStream extends FileInputStream {
-    protected File file = null;
+public class DeleteOnCloseFileInputStream extends MarkableFileInputStream {
+    private File file = null;
 
     /**
      * Constructs a new AutoDeleteFileInputStream by opening a connection to an actual file, the file
@@ -42,7 +41,7 @@ public class AutoDeleteFileInputStream extends FileInputStream {
      * @throws FileNotFoundException    If the file does not exist, is a directory rather than a regular
      *                                  file, or for some other reason cannot be opened for reading.
      */
-    public AutoDeleteFileInputStream(File file) throws FileNotFoundException {
+    public DeleteOnCloseFileInputStream(File file) throws FileNotFoundException {
         super(file);
         this.file = file;
     }
@@ -54,7 +53,7 @@ public class AutoDeleteFileInputStream extends FileInputStream {
      * @throws FileNotFoundException    If the file does not exist, is a directory rather than a regular
      *                                  file, or for some other reason cannot be opened for reading.
      */
-    public AutoDeleteFileInputStream(String name) throws FileNotFoundException {
+    public DeleteOnCloseFileInputStream(String name) throws FileNotFoundException {
         super(name);
         if (name != null) file = new File(name);
     }
