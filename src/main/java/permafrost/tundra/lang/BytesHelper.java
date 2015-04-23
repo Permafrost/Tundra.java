@@ -65,7 +65,7 @@ public class BytesHelper {
      * @return              A byte[] representation of the given String.
      */
     public static byte[] normalize(String string, Charset charset) {
-        return string == null ? null : string.getBytes(charset);
+        return string == null ? null : string.getBytes(CharsetHelper.normalize(charset));
     }
 
     /**
