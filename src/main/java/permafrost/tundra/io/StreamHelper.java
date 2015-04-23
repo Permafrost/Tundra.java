@@ -266,4 +266,29 @@ public class StreamHelper {
             close(reader, writer);
         }
     }
+
+    /**
+     * Reads all data from the given input stream, and optionally closes it when done.
+     *
+     * @param inputStream       An input stream containing data to be read.
+     * @param close             When true the input stream will be closed when done.
+     * @throws IOException      If there is a problem reading from the stream.
+     */
+    public static byte[] readToBytes(InputStream inputStream, boolean close) throws IOException {
+        if (inputStream == null) return null;
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        StreamHelper.copy(inputStream, out, close);
+        return out.toByteArray();
+    }
+
+    /**
+     * Reads all data from the given input stream, and optionally closes it when done.
+     *
+     * @param inputStream       An input stream containing data to be read.
+     * @throws IOException      If there is a problem reading from the stream.
+     */
+    public static byte[] readToBytes(InputStream inputStream) throws IOException {
+        return readToBytes(inputStream, true);
+    }
 }
