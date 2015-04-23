@@ -26,9 +26,12 @@ package permafrost.tundra.io;
 
 import java.io.*;
 
+/**
+ * A file input stream which supports the mark and reset methods.
+ */
 public class MarkableFileInputStream extends FileInputStream {
     /**
-     * The marked position that will be returned to upon calling the reset() method.
+     * The marked position that will be returned to upon calling the reset method.
      */
     private long mark = 0;
 
