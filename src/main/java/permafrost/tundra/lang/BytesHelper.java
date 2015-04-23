@@ -146,4 +146,24 @@ public class BytesHelper {
     public static byte[] base64Decode(String input) {
         return input == null ? null : javax.xml.bind.DatatypeConverter.parseBase64Binary(input);
     }
+
+    /**
+     * Encodes binary data as a hex-encoded string.
+     *
+     * @param input Binary data to be hex-encoded.
+     * @return The given data as a hex-encoded string.
+     */
+    public static String hexEncode(byte[] input) {
+        return input == null ? null : javax.xml.bind.DatatypeConverter.printHexBinary(input);
+    }
+
+    /**
+     * Decodes a hex-encoded string to binary data.
+     *
+     * @param input A hex-encoded string.
+     * @return The hex-encoded string decoded to binary data.
+     */
+    public static byte[] hexDecode(String input) {
+        return input == null ? null : javax.xml.bind.DatatypeConverter.parseHexBinary(input);
+    }
 }
