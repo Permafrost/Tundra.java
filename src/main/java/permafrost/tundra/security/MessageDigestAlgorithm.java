@@ -53,6 +53,16 @@ public enum MessageDigestAlgorithm {
         if (name != null) {
             algorithm = map.get(name);
         }
+        return normalize(algorithm);
+    }
+
+    /**
+     * Returns a normalized MessageDigestAlgorithm.
+     * @param algorithm The algorithm to normalize.
+     * @return          If the given algorithm is null then SHA_256 is returned,
+     *                  otherwise the given algorithm is returned.
+     */
+    public static MessageDigestAlgorithm normalize(MessageDigestAlgorithm algorithm) {
         return algorithm == null ? SHA_256 : algorithm;
     }
 

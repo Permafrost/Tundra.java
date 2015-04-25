@@ -59,7 +59,7 @@ public class MessageDigestHelper {
      */
     private static MessageDigest getInstance(MessageDigestAlgorithm algorithm) {
         try {
-            return MessageDigest.getInstance(algorithm.toString());
+            return MessageDigest.getInstance(MessageDigestAlgorithm.normalize(algorithm).toString());
         } catch(NoSuchAlgorithmException ex) {
             throw new RuntimeException(ex);
         }
@@ -84,6 +84,8 @@ public class MessageDigestHelper {
      * @throws IOException  If an I/O exception occurs reading from the stream.
      */
     public static Map.Entry<InputStream, byte[]> getDigest(MessageDigestAlgorithm algorithm, InputStream data) throws IOException {
+        if (data == null) return null;
+
         DigestInputStream digestInputStream = new DigestInputStream(data, getInstance(algorithm));
         MarkableInputStream markableInputStream = new MarkableInputStream(digestInputStream);
         byte[] digest = digestInputStream.getMessageDigest().digest();
@@ -109,7 +111,7 @@ public class MessageDigestHelper {
      * @return              The message digest calculated for the given data using the given algorithm.
      */
     public static byte[] getDigest(MessageDigestAlgorithm algorithm, byte[] data) {
-        return getInstance(algorithm).digest(data);
+        return data == null ? null : getInstance(algorithm).digest(data);
     }
 
     /**
