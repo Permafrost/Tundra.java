@@ -35,7 +35,7 @@ public enum MessageDigestAlgorithm {
 
     static {
         for (MessageDigestAlgorithm algorithm : MessageDigestAlgorithm.values()) {
-            map.put(algorithm.name, algorithm);
+            map.put(algorithm.name.toLowerCase(), algorithm);
         }
     }
 
@@ -51,7 +51,7 @@ public enum MessageDigestAlgorithm {
     public static MessageDigestAlgorithm normalize(String name) {
         MessageDigestAlgorithm algorithm = null;
         if (name != null) {
-            algorithm = map.get(name);
+            algorithm = map.get(name.toLowerCase());
         }
         return normalize(algorithm);
     }
@@ -63,7 +63,7 @@ public enum MessageDigestAlgorithm {
      *                  otherwise the given algorithm is returned.
      */
     public static MessageDigestAlgorithm normalize(MessageDigestAlgorithm algorithm) {
-        return algorithm == null ? SHA_256 : algorithm;
+        return algorithm == null ? getDefault() : algorithm;
     }
 
     /**
@@ -73,5 +73,13 @@ public enum MessageDigestAlgorithm {
     @Override
     public String toString() {
         return name;
+    }
+
+    /**
+     * Returns the default MessageDigestAlgorithm.
+     * @return The default MessageDigestAlgorithm.
+     */
+    public static MessageDigestAlgorithm getDefault() {
+        return SHA_256;
     }
 }
