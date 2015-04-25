@@ -25,9 +25,11 @@
 package permafrost.tundra.security;
 
 import permafrost.tundra.io.MarkableInputStream;
+import permafrost.tundra.io.StreamHelper;
 import permafrost.tundra.lang.ByteHelper;
 import permafrost.tundra.lang.CharsetHelper;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -86,12 +88,21 @@ public class MessageDigestHelper {
     public static Map.Entry<InputStream, byte[]> getDigest(MessageDigestAlgorithm algorithm, InputStream data) throws IOException {
         if (data == null) return null;
 
-        DigestInputStream digestInputStream = new DigestInputStream(data, getInstance(algorithm));
-        MarkableInputStream markableInputStream = new MarkableInputStream(digestInputStream);
-        byte[] digest = digestInputStream.getMessageDigest().digest();
-        digestInputStream.on(false);
+        byte[] digest;
 
-        return new AbstractMap.SimpleImmutableEntry<InputStream, byte[]>(markableInputStream, digest);
+        if (data instanceof ByteArrayInputStream) {
+            byte[] bytes = StreamHelper.readToBytes(data, false);
+            data.reset();
+            digest = getDigest(algorithm, bytes);
+        } else {
+            DigestInputStream digestInputStream = new DigestInputStream(data, getInstance(algorithm));
+            data = new MarkableInputStream(digestInputStream);
+            // generating the digest relies on the fact that the MarkableInputStream constructor reads the entire stream
+            digest = digestInputStream.getMessageDigest().digest();
+            digestInputStream.on(false);
+        }
+
+        return new AbstractMap.SimpleImmutableEntry<InputStream, byte[]>(data, digest);
     }
 
     /**
