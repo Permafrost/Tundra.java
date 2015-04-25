@@ -367,7 +367,7 @@ public class ObjectHelper {
         if (mode == null) mode = ConvertMode.STREAM;
 
         if (mode == ConvertMode.BYTES) {
-            object = BytesHelper.normalize(object, charset);
+            object = ByteHelper.normalize(object, charset);
         } else if (mode == ConvertMode.STRING) {
             object = StringHelper.normalize(object, charset);
         } else {

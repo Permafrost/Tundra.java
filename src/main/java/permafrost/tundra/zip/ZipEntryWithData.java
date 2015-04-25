@@ -28,7 +28,7 @@ import com.wm.data.IData;
 import com.wm.util.coder.IDataCodable;
 import permafrost.tundra.data.IDataMap;
 import permafrost.tundra.io.StreamHelper;
-import permafrost.tundra.lang.BytesHelper;
+import permafrost.tundra.lang.ByteHelper;
 import permafrost.tundra.lang.CharsetHelper;
 import permafrost.tundra.lang.ObjectHelper;
 
@@ -50,7 +50,7 @@ public class ZipEntryWithData extends ZipEntry implements IDataCodable {
      * @throws IOException  If an I/O problem occurs reading from the stream.
      */
     public ZipEntryWithData(String name, InputStream data) throws IOException {
-        this(name, BytesHelper.normalize(data));
+        this(name, ByteHelper.normalize(data));
     }
 
     /**
@@ -70,7 +70,7 @@ public class ZipEntryWithData extends ZipEntry implements IDataCodable {
      * @param charsetName   The character set used to encode the string as binary data.
      */
     public ZipEntryWithData(String name, String data, String charsetName) {
-        this(name, BytesHelper.normalize(data, charsetName));
+        this(name, ByteHelper.normalize(data, charsetName));
     }
 
     /**
@@ -80,7 +80,7 @@ public class ZipEntryWithData extends ZipEntry implements IDataCodable {
      * @param charset       The character set used to encode the string as binary data.
      */
     public ZipEntryWithData(String name, String data, Charset charset) {
-        this(name, BytesHelper.normalize(data, charset));
+        this(name, ByteHelper.normalize(data, charset));
     }
 
     /**
@@ -89,7 +89,7 @@ public class ZipEntryWithData extends ZipEntry implements IDataCodable {
      * @param data          The data associated with the content.
      */
     public ZipEntryWithData(String name, String data) {
-        this(name, BytesHelper.normalize(data));
+        this(name, ByteHelper.normalize(data));
     }
 
     /**

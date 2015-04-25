@@ -33,11 +33,11 @@ import java.nio.charset.Charset;
 /**
  * A collection of convenience methods for working with byte[] objects.
  */
-public class BytesHelper {
+public class ByteHelper {
     /**
      * Disallow instantiation of this class.
      */
-    private BytesHelper() {}
+    private ByteHelper() {}
 
     /**
      * Converts the given String to an byte[].

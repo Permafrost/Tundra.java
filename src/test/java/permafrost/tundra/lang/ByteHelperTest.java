@@ -28,45 +28,45 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class BytesHelperTest {
+public class ByteHelperTest {
     @Test(expected = IllegalArgumentException.class)
     public void testNormalizeWithObject() throws Exception {
-        BytesHelper.normalize(new Object());
+        ByteHelper.normalize(new Object());
     }
 
     @Test
     public void testNormalizeWithString() throws Exception {
         String message = "test";
-        assertArrayEquals(message.getBytes(CharsetHelper.DEFAULT_CHARSET_NAME), BytesHelper.normalize(message));
+        assertArrayEquals(message.getBytes(CharsetHelper.DEFAULT_CHARSET_NAME), ByteHelper.normalize(message));
     }
 
     @Test
     public void testNormalizeWithStringAndEncoding() throws Exception {
         String message = "test";
         String encoding = "UTF-16";
-        assertArrayEquals(message.getBytes(encoding), BytesHelper.normalize(message, encoding));
+        assertArrayEquals(message.getBytes(encoding), ByteHelper.normalize(message, encoding));
     }
 
     @Test
     public void testNormalizeWithInputStream() throws Exception {
         String message = "test";
         java.io.InputStream in = new java.io.ByteArrayInputStream(message.getBytes(CharsetHelper.DEFAULT_CHARSET_NAME));
-        assertArrayEquals(message.getBytes(CharsetHelper.DEFAULT_CHARSET_NAME), BytesHelper.normalize(in));
+        assertArrayEquals(message.getBytes(CharsetHelper.DEFAULT_CHARSET_NAME), ByteHelper.normalize(in));
     }
 
     @Test
     public void testNormalizeWithBytes() throws Exception {
         String message = "test";
-        assertArrayEquals(message.getBytes(CharsetHelper.DEFAULT_CHARSET_NAME), BytesHelper.normalize(message.getBytes(CharsetHelper.DEFAULT_CHARSET_NAME)));
+        assertArrayEquals(message.getBytes(CharsetHelper.DEFAULT_CHARSET_NAME), ByteHelper.normalize(message.getBytes(CharsetHelper.DEFAULT_CHARSET_NAME)));
     }
 
     @Test
     public void testBase64Encode() throws Exception {
-        assertEquals("test", new String(BytesHelper.base64Decode("dGVzdA=="), "UTF-8"));
+        assertEquals("test", new String(ByteHelper.base64Decode("dGVzdA=="), "UTF-8"));
     }
 
     @Test
     public void testBase64Decode() throws Exception {
-        assertEquals("dGVzdA==", BytesHelper.base64Encode("test".getBytes("UTF-8")));
+        assertEquals("dGVzdA==", ByteHelper.base64Encode("test".getBytes("UTF-8")));
     }
 }

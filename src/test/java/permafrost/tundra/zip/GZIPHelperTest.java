@@ -26,8 +26,7 @@ package permafrost.tundra.zip;
 
 import org.junit.Before;
 import org.junit.Test;
-import permafrost.tundra.io.StreamHelper;
-import permafrost.tundra.lang.BytesHelper;
+import permafrost.tundra.lang.ByteHelper;
 
 import static org.junit.Assert.*;
 
@@ -36,22 +35,22 @@ public class GZIPHelperTest {
 
     @Before
     public void setUp() throws Exception {
-        expectedCompressedContent = BytesHelper.base64Decode("H4sIAAAAAAAAAA3IwQkAIAwDwFWymmiwPqxisj8W7nWOJRSdTZgy+kkzDUczkhyq2vdRWjk/qJJnGjAAAAA=");
-        expectedDecompressedContent = BytesHelper.base64Decode("dGhpcyBpcyBzb21lIHRlc3QgY29udGVudCB0aGF0IG5lZWRzIGNvbXByZXNzaW5n");;
+        expectedCompressedContent = ByteHelper.base64Decode("H4sIAAAAAAAAAA3IwQkAIAwDwFWymmiwPqxisj8W7nWOJRSdTZgy+kkzDUczkhyq2vdRWjk/qJJnGjAAAAA=");
+        expectedDecompressedContent = ByteHelper.base64Decode("dGhpcyBpcyBzb21lIHRlc3QgY29udGVudCB0aGF0IG5lZWRzIGNvbXByZXNzaW5n");;
     }
 
     @Test
     public void testCompress() throws Exception {
-        byte[] compressedContent = BytesHelper.normalize(GZIPHelper.compress(expectedDecompressedContent));
+        byte[] compressedContent = ByteHelper.normalize(GZIPHelper.compress(expectedDecompressedContent));
         assertNotNull("compressed content not null", compressedContent);
         assertTrue("compressed length > 0", compressedContent.length > 0);
-        assertNotEquals("decompressed content != compressed content", expectedDecompressedContent, BytesHelper.base64Encode(compressedContent));
-        assertArrayEquals(expectedDecompressedContent, BytesHelper.normalize(GZIPHelper.decompress(compressedContent)));
+        assertNotEquals("decompressed content != compressed content", expectedDecompressedContent, ByteHelper.base64Encode(compressedContent));
+        assertArrayEquals(expectedDecompressedContent, ByteHelper.normalize(GZIPHelper.decompress(compressedContent)));
     }
 
     @Test
     public void testDecompress() throws Exception {
-        byte[] decompressedContent = BytesHelper.normalize(GZIPHelper.decompress(expectedCompressedContent));
+        byte[] decompressedContent = ByteHelper.normalize(GZIPHelper.decompress(expectedCompressedContent));
         assertNotNull("decompressed content not null", decompressedContent);
         assertTrue("decompressed length > 0", decompressedContent.length > 0);
         assertArrayEquals(expectedDecompressedContent, decompressedContent);
