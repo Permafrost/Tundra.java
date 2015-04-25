@@ -24,6 +24,8 @@
 
 package permafrost.tundra.io;
 
+import permafrost.tundra.lang.ByteHelper;
+
 import java.io.*;
 
 /**
@@ -47,7 +49,13 @@ public class MarkableInputStream extends FilterInputStream {
 
         File backingFile = FileHelper.create();
         FileHelper.writeFromStream(backingFile, inputStream, false);
+
         in = new DeleteOnCloseFileInputStream(backingFile);
+
+        // if the size of the data is small, read it fully into memory
+        if (backingFile.length() <= StreamHelper.DEFAULT_BUFFER_SIZE) {
+            in = StreamHelper.normalize(ByteHelper.normalize(in));
+        }
     }
 
     /**
