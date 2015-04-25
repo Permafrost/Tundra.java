@@ -69,10 +69,14 @@ public class DeleteOnCloseFileInputStream extends MarkableFileInputStream {
         super.close();
 
         synchronized (this) {
-            // automatically delete the file after closing the stream
-            if (!isClosed && file != null && !file.delete())
-                throw new IOException("File could not be deleted: " + FileHelper.normalize(file));
-            isClosed = true;
+            if (!isClosed) {
+                // automatically delete the file after closing the stream
+                if (file != null && !file.delete()) {
+                    throw new IOException("File could not be deleted: " + FileHelper.normalize(file));
+                }
+
+                isClosed = true;
+            }
         }
     }
 
