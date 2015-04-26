@@ -277,9 +277,9 @@ public class StreamHelper {
     public static byte[] readToBytes(InputStream inputStream, boolean close) throws IOException {
         if (inputStream == null) return null;
 
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        StreamHelper.copy(inputStream, out, close);
-        return out.toByteArray();
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        StreamHelper.copy(inputStream, outputStream, close);
+        return outputStream.toByteArray();
     }
 
     /**
