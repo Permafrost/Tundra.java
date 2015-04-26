@@ -31,12 +31,17 @@ import java.io.*;
  */
 public class MarkableFileInputStream extends FileInputStream {
     /**
-     * The marked position that will be returned to upon calling the reset method.
+     * Whether the stream has been closed.
      */
-    private long mark = 0;
+    protected boolean isClosed = false;
 
     /**
-     * Creates a FileInputStream by opening a connection to an actual file named by the
+     * The marked position that will be returned to upon calling the reset method.
+     */
+    protected long markPosition = 0;
+
+    /**
+     * Creates a MarkableFileInputStream by opening a connection to an actual file named by the
      * given File object.
      * @param file                      The file to read from.
      * @throws FileNotFoundException    If the file does not exist, is a directory rather
@@ -48,7 +53,7 @@ public class MarkableFileInputStream extends FileInputStream {
     }
 
     /**
-     * Creates a FileInputStream by opening a connection to an actual file named by the
+     * Creates a MarkableFileInputStream by opening a connection to an actual file named by the
      * given FileDescriptor object.
      * @param descriptor                The file descriptor to read from.
      */
@@ -57,7 +62,7 @@ public class MarkableFileInputStream extends FileInputStream {
     }
 
     /**
-     * Creates a FileInputStream by opening a connection to an actual file with the given name.
+     * Creates a MarkableFileInputStream by opening a connection to an actual file with the given name.
      * @param filename                  The file to read from.
      * @throws FileNotFoundException    If the file does not exist, is a directory rather
      *                                  than a regular file, or for some other reason cannot
@@ -85,7 +90,7 @@ public class MarkableFileInputStream extends FileInputStream {
     @Override
     public synchronized void mark(int readLimit) {
         try {
-            mark = getChannel().position();
+            markPosition = getChannel().position();
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
@@ -98,6 +103,18 @@ public class MarkableFileInputStream extends FileInputStream {
      */
     @Override
     public synchronized void reset() throws IOException {
-        getChannel().position(mark);
+        getChannel().position(markPosition);
+    }
+
+    /**
+     * Closes this file input stream and releases any system resources associated with the stream.
+     * @throws IOException If an I/O error occurs.
+     */
+    @Override
+    public void close() throws IOException {
+        super.close();
+        synchronized (this) {
+            isClosed = true;
+        }
     }
 }

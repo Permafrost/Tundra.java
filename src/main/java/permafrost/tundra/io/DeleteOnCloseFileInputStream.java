@@ -33,7 +33,6 @@ import java.io.IOException;
  */
 public class DeleteOnCloseFileInputStream extends MarkableFileInputStream {
     private File file = null;
-    private boolean isClosed = false;
 
     /**
      * Constructs a new AutoDeleteFileInputStream by opening a connection to an actual file, the file
@@ -74,8 +73,6 @@ public class DeleteOnCloseFileInputStream extends MarkableFileInputStream {
                 if (file != null && !file.delete()) {
                     throw new IOException("File could not be deleted: " + FileHelper.normalize(file));
                 }
-
-                isClosed = true;
             }
         }
     }
