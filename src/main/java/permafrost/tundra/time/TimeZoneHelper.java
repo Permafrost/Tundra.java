@@ -24,14 +24,37 @@
 
 package permafrost.tundra.time;
 
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.SortedSet;
+import java.util.TimeZone;
+import java.util.TreeSet;
+import java.util.regex.Pattern;
+
 /**
  * A collection of convenience methods for working with time zones.
  */
 public class TimeZoneHelper {
-    private static java.util.SortedSet<String> ZONES = new java.util.TreeSet(java.util.Arrays.asList(java.util.TimeZone.getAvailableIDs()));
-    private static java.util.regex.Pattern OFFSET_HHMM_PATTERN = java.util.regex.Pattern.compile("([\\+-])?(\\d?\\d):(\\d\\d)");
-    private static java.util.regex.Pattern OFFSET_XML_PATTERN = java.util.regex.Pattern.compile("-?P(\\d+|T\\d+).+");
-    private static java.util.regex.Pattern OFFSET_RAW_PATTERN = java.util.regex.Pattern.compile("[\\+-]?\\d+");
+    /**
+     * A sorted set of all time zone IDs known to the JVM.
+     */
+    protected static final SortedSet<String> ZONES = new TreeSet(Arrays.asList(TimeZone.getAvailableIDs()));
+    /**
+     * Regular expression pattern for matching a time zone offset specified as HH:mm (hours and minutes).
+     */
+    protected static final Pattern OFFSET_HHMM_PATTERN = Pattern.compile("([\\+-])?(\\d?\\d):(\\d\\d)");
+    /**
+     * Regular expression pattern for matching a time zone offset specified as an XML duration string.
+     */
+    protected static final Pattern OFFSET_XML_PATTERN = Pattern.compile("-?P(\\d+|T\\d+).+");
+    /**
+     * Regular expression pattern for matching a time zone offset specified in milliseconds.
+     */
+    protected static final Pattern OFFSET_RAW_PATTERN = Pattern.compile("[\\+-]?\\d+");
+    /**
+     * The default time zone used by Tundra.
+     */
+    public static final TimeZone DEFAULT_TIME_ZONE = TimeZone.getTimeZone("UTC");
 
     /**
      * Disallow instantiation of this class.
@@ -43,10 +66,10 @@ public class TimeZoneHelper {
      * @param id A time zone ID.
      * @return   The time zone associated with the given ID.
      */
-    public static java.util.TimeZone get(String id) {
+    public static TimeZone get(String id) {
         if (id == null) return null;
 
-        java.util.TimeZone timezone = null;
+        TimeZone timezone = null;
 
         if (id.equals("$default") || id.equalsIgnoreCase("local") || id.equalsIgnoreCase("self")) {
             timezone = self();
@@ -90,7 +113,7 @@ public class TimeZoneHelper {
             }
 
             if (ZONES.contains(id)) {
-                timezone = java.util.TimeZone.getTimeZone(id);
+                timezone = TimeZone.getTimeZone(id);
             }
         }
 
@@ -106,7 +129,7 @@ public class TimeZoneHelper {
      */
     protected static String get(int offset) {
         String id = null;
-        String[] candidates = java.util.TimeZone.getAvailableIDs(offset);
+        String[] candidates = TimeZone.getAvailableIDs(offset);
         if (candidates != null && candidates.length > 0) id = candidates[0]; // default to the first candidate timezone ID
         return id;
     }
@@ -114,22 +137,31 @@ public class TimeZoneHelper {
     /**
      * @return The JVM's default time zone.
      */
-    public static java.util.TimeZone self() {
-        return java.util.TimeZone.getDefault();
+    public static TimeZone self() {
+        return TimeZone.getDefault();
     }
 
     /**
      * @return All time zones known to the JVM.
      */
-    public static java.util.TimeZone[] list() {
-        String[] id = java.util.TimeZone.getAvailableIDs();
-        java.util.TimeZone[] zones = new java.util.TimeZone[id.length];
+    public static TimeZone[] list() {
+        String[] id = TimeZone.getAvailableIDs();
+        TimeZone[] zones = new TimeZone[id.length];
 
         for (int i = 0; i < id.length; i++) {
             zones[i] = get(id[i]);
         }
 
         return zones;
+    }
+
+    /**
+     * Returns the given Calendar object converted to the default time zone.
+     * @param calendar  The Calendar object to be normalized.
+     * @return          The given Calendar object converted to the default time zone.
+     */
+    public static Calendar normalize(Calendar calendar) {
+        return convert(calendar, DEFAULT_TIME_ZONE);
     }
 
     /**
@@ -140,7 +172,7 @@ public class TimeZoneHelper {
      * @return          A new calendar representing the same instant in time
      *                  as the given calendar but in the given time.
      */
-    public static java.util.Calendar convert(java.util.Calendar input, String timezone) {
+    public static Calendar convert(Calendar input, String timezone) {
         return convert(input, get(timezone));
     }
 
@@ -151,10 +183,10 @@ public class TimeZoneHelper {
      * @return          A new calendar representing the same instant in time
      *                  as the given calendar but in the given time.
      */
-    public static java.util.Calendar convert(java.util.Calendar input, java.util.TimeZone timezone) {
+    public static Calendar convert(Calendar input, TimeZone timezone) {
         if (input == null || timezone == null) return input;
 
-        java.util.Calendar output = java.util.Calendar.getInstance(timezone);
+        Calendar output = Calendar.getInstance(timezone);
         output.setTimeInMillis(input.getTimeInMillis());
         return output;
     }
@@ -165,7 +197,7 @@ public class TimeZoneHelper {
      * @param timezone  A time zone ID identifying the time zone the calendar will be forced into.
      * @return          A new calendar that has been forced into a new time zone.
      */
-    public static java.util.Calendar replace(java.util.Calendar input, String timezone) {
+    public static Calendar replace(Calendar input, String timezone) {
         return replace(input, get(timezone));
     }
 
@@ -175,11 +207,11 @@ public class TimeZoneHelper {
      * @param timezone  The new time zone the calendar will be forced into.
      * @return          A new calendar that has been forced into a new time zone.
      */
-    public static java.util.Calendar replace(java.util.Calendar input, java.util.TimeZone timezone) {
+    public static Calendar replace(Calendar input, TimeZone timezone) {
         if (input == null || timezone == null) return input;
 
         long instant = input.getTimeInMillis();
-        java.util.TimeZone currentZone = input.getTimeZone();
+        TimeZone currentZone = input.getTimeZone();
         int currentOffset = currentZone.getOffset(instant);
         int desiredOffset = timezone.getOffset(instant);
 
@@ -187,7 +219,7 @@ public class TimeZoneHelper {
         instant = instant + currentOffset - desiredOffset;
 
         // convert to output zone
-        java.util.Calendar output = java.util.Calendar.getInstance(timezone);
+        Calendar output = Calendar.getInstance(timezone);
         output.setTimeInMillis(instant);
 
         return output;
