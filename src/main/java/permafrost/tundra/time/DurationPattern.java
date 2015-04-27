@@ -24,6 +24,9 @@
 
 package permafrost.tundra.time;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * The duration patterns supported by the methods on DurationHelper.
  */
@@ -31,7 +34,7 @@ public enum DurationPattern {
     XML(0), MILLISECONDS(1), SECONDS(2), MINUTES(3), HOURS(4), DAYS(5), WEEKS(6), MONTHS(7), YEARS(8);
 
     private int value;
-    private static java.util.Map<Integer, DurationPattern> map = new java.util.HashMap<Integer, DurationPattern>();
+    private static Map<Integer, DurationPattern> map = new HashMap<Integer, DurationPattern>();
 
     DurationPattern(int value) {
         this.value = value;
@@ -56,11 +59,27 @@ public enum DurationPattern {
     /**
      * Returns the enumeration value associated with the given name.
      * @param name  The name of the enumeration constant to be returned.
-     * @return      Null if the given name is null, otherwise the enumeration constant associated
-     *              with the given name (after it has been trimmed of leading and trailing whitespace
-     *              and converted to uppercase).
+     * @return      The enumeration value associated with the given name, or the default value if no value
+     *              is associated with the given name.
      */
     public static DurationPattern normalize(String name) {
-        return name == null ? null : valueOf(name.trim().toUpperCase());
+        return normalize(name == null ? (DurationPattern)null : valueOf(name.trim().toUpperCase()));
+    }
+
+    /**
+     * Normalizes the given pattern.
+     * @param pattern The pattern to be normalized.
+     * @return        The given pattern if not null, or the default pattern.
+     */
+    public static DurationPattern normalize(DurationPattern pattern) {
+        return pattern == null ? getDefault() : pattern;
+    }
+
+    /**
+     * Returns the default enumeration value.
+     * @return The default enumeration value.
+     */
+    public static DurationPattern getDefault() {
+        return XML;
     }
 }

@@ -36,11 +36,6 @@ import java.util.Date;
  * A collection of convenience methods for working with durations.
  */
 public class DurationHelper {
-    /**
-     * The default pattern for a duration string.
-     */
-    public static final DurationPattern DEFAULT_DURATION_PATTERN = DurationPattern.XML;
-
     private static final long MILLISECONDS_PER_SECOND = 1000;
     private static final long MILLISECONDS_PER_MINUTE =   60 * MILLISECONDS_PER_SECOND;
     private static final long MILLISECONDS_PER_HOUR   =   60 * MILLISECONDS_PER_MINUTE;
@@ -308,8 +303,8 @@ public class DurationHelper {
      */
     public static Duration parse(String input, DurationPattern pattern) {
         if (input == null) return null;
-        if (pattern == null) pattern = DEFAULT_DURATION_PATTERN;
 
+        pattern = DurationPattern.normalize(pattern);
         BigInteger integerValue = new BigInteger(input);
         BigDecimal decimalValue = new BigDecimal(input);
         Duration output = null;
@@ -459,9 +454,9 @@ public class DurationHelper {
      */
     public static String emit(Duration input, DurationPattern pattern, Date instant) {
         if (input == null) return null;
-        if (pattern == null) pattern = DEFAULT_DURATION_PATTERN;
         if (instant == null) instant = new Date();
 
+        pattern = DurationPattern.normalize(pattern);
         String output = null;
 
         switch(pattern) {
