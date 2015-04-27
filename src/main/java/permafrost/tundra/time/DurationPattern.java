@@ -33,6 +33,11 @@ import java.util.Map;
 public enum DurationPattern {
     XML(0), MILLISECONDS(1), SECONDS(2), MINUTES(3), HOURS(4), DAYS(5), WEEKS(6), MONTHS(7), YEARS(8);
 
+    /**
+     * The default duration pattern used by Tundra.
+     */
+    public static final DurationPattern DEFAULT_DURATION_PATTERN = XML;
+
     private int value;
     private static Map<Integer, DurationPattern> map = new HashMap<Integer, DurationPattern>();
 
@@ -72,14 +77,6 @@ public enum DurationPattern {
      * @return        The given pattern if not null, or the default pattern.
      */
     public static DurationPattern normalize(DurationPattern pattern) {
-        return pattern == null ? getDefault() : pattern;
-    }
-
-    /**
-     * Returns the default enumeration value.
-     * @return The default enumeration value.
-     */
-    public static DurationPattern getDefault() {
-        return XML;
+        return pattern == null ? DEFAULT_DURATION_PATTERN : pattern;
     }
 }
