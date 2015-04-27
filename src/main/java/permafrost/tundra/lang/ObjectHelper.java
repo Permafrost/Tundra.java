@@ -274,7 +274,12 @@ public class ObjectHelper {
      * The supported return types for the convert method.
      */
     public enum ConvertMode {
-        STREAM(0), BYTES(1), STRING(2);
+        STREAM(0), BYTES(1), STRING(2), BASE64(3);
+
+        /**
+         * The default convert mode used by Tundra.
+         */
+        public static final ConvertMode DEFAULT_CONVERT_MODE = STREAM;
 
         private int value;
 
@@ -305,7 +310,16 @@ public class ObjectHelper {
          * @return      The ConvertMode representing the given value.
          */
         public static ConvertMode normalize(String value) {
-            return value == null ? null : valueOf(value.trim().toUpperCase());
+            return normalize(value == null ? (ConvertMode)null : valueOf(value.trim().toUpperCase()));
+        }
+
+        /**
+         * Returns an ConvertMode for the given string value.
+         * @param value The value to be converted to an ConvertMode.
+         * @return      The ConvertMode representing the given value.
+         */
+        public static ConvertMode normalize(ConvertMode mode) {
+            return mode == null ? DEFAULT_CONVERT_MODE : mode;
         }
     }
 
@@ -364,14 +378,20 @@ public class ObjectHelper {
      * @throws IOException  If an I/O problem occurs.
      */
     public static Object convert(Object object, Charset charset, ConvertMode mode) throws IOException {
-        if (mode == null) mode = ConvertMode.STREAM;
+        if (object == null) return null;
+
+        mode = ConvertMode.normalize(mode);
 
         if (mode == ConvertMode.BYTES) {
             object = ByteHelper.normalize(object, charset);
         } else if (mode == ConvertMode.STRING) {
             object = StringHelper.normalize(object, charset);
-        } else {
+        } else if (mode == ConvertMode.BASE64) {
+            object = ByteHelper.base64Encode(ByteHelper.normalize(object, charset));
+        } else if (mode == ConvertMode.STREAM){
             object = StreamHelper.normalize(object, charset);
+        } else {
+            throw new IllegalArgumentException("Unsupported conversion mode specified: " + mode);
         }
 
         return object;
