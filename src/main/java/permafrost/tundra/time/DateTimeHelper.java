@@ -26,6 +26,8 @@ package permafrost.tundra.time;
 
 import permafrost.tundra.lang.ArrayHelper;
 
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.TimeZone;
 import java.util.Date;
@@ -52,7 +54,19 @@ public class DateTimeHelper {
      * Disallow instantiation of this class.
      */
     private DateTimeHelper() {}
-    
+
+    /**
+     * Adds the given XML duration to the given datetime.
+     *
+     * @param date     The Date to add the duration to.
+     * @param duration The duration to be added.
+     * @return         A new Date representing the given date's time plus
+     *                 the given duration.
+     */
+    public static Date add(Date date, Duration duration) {
+        return toDate(add(toCalendar(date), duration));
+    }
+
     /**
      * Adds the given XML duration to the given datetime.
      * 
@@ -82,6 +96,18 @@ public class DateTimeHelper {
     /**
      * Subtracts the given XML duration from the given datetime.
      *
+     * @param date     The date to subtract the duration from.
+     * @param duration The duration to be subtracted.
+     * @return         A new calendar representing the given date's time minus
+     *                 the given duration.
+     */
+    public static Date subtract(Date date, Duration duration) {
+        return toDate(subtract(toCalendar(date), duration));
+    }
+
+    /**
+     * Subtracts the given XML duration from the given datetime.
+     *
      * @param calendar The calendar to subtract the duration from.
      * @param duration The duration to be subtracted.
      * @return         A new calendar representing the given calendar's time minus
@@ -97,8 +123,8 @@ public class DateTimeHelper {
      * @param duration The duration to be subtracted from the current datetime.
      * @return         The current datetime minus the given duration.
      */
-    public static java.util.Calendar earlier(Duration duration) {
-        return subtract(java.util.Calendar.getInstance(), duration);
+    public static Calendar earlier(Duration duration) {
+        return subtract(Calendar.getInstance(), duration);
     }
 
     /**
@@ -106,8 +132,8 @@ public class DateTimeHelper {
      * @param duration The duration to be added from the current datetime.
      * @return         The current datetime plus the given duration.
      */
-    public static java.util.Calendar later(Duration duration) {
-        return add(java.util.Calendar.getInstance(), duration);
+    public static Calendar later(Duration duration) {
+        return add(Calendar.getInstance(), duration);
     }
 
     /**
@@ -134,7 +160,7 @@ public class DateTimeHelper {
      * @param endCalendar   The ending instant in time.
      * @return              The duration of time from the start instant to the end instant.
      */
-    public static javax.xml.datatype.Duration duration(Calendar startCalendar, Calendar endCalendar) {
+    public static Duration duration(Calendar startCalendar, Calendar endCalendar) {
         if (startCalendar == null || endCalendar == null) return null;
         return DurationHelper.parse((endCalendar.getTimeInMillis() - startCalendar.getTimeInMillis()));
     }
@@ -178,11 +204,7 @@ public class DateTimeHelper {
      */
     public static String emit(Date input, String pattern, TimeZone timezone) {
         if (input == null) return null;
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(input);
-
-        return emit(calendar, pattern, timezone);
+        return emit(toCalendar(input), pattern, timezone);
     }
 
     /**
@@ -309,7 +331,7 @@ public class DateTimeHelper {
      * @return        The given datetimes serialized to strings using the given pattern.
      */
     public static String[] emit(Calendar[] inputs, String pattern) {
-        return emit(inputs, pattern, (TimeZone)null);
+        return emit(inputs, pattern, (TimeZone) null);
     }
 
     /**
@@ -347,7 +369,7 @@ public class DateTimeHelper {
      * @return      A Calendar object representing the parsed XML datetime string.
      */
     public static Calendar parse(String input) {
-        return parse(input, (String)null);
+        return parse(input, (String) null);
     }
 
     /**
@@ -390,7 +412,7 @@ public class DateTimeHelper {
                 output = javax.xml.bind.DatatypeConverter.parseDateTime(input);
             } else if (pattern.equals("datetime.jdbc")) {
                 output = Calendar.getInstance();
-                output.setTime(java.sql.Timestamp.valueOf(input));
+                output.setTime(Timestamp.valueOf(input));
             } else if (pattern.equals("date") || pattern.equals("date.xml")) {
                 output = javax.xml.bind.DatatypeConverter.parseDate(input);
             } else if (pattern.equals("time") || pattern.equals("time.xml")) {
@@ -531,7 +553,7 @@ public class DateTimeHelper {
      *                 datetime strings.
      */
     public static Calendar[] parse(String[] inputs, String[] patterns) {
-        return parse(inputs, patterns, (TimeZone)null);
+        return parse(inputs, patterns, (TimeZone) null);
     }
 
     /**
@@ -581,7 +603,7 @@ public class DateTimeHelper {
      * @return        The current datetime as a string formatted according to the given pattern.
      */
     public static String now(String pattern) {
-        return now(pattern, (TimeZone)null);
+        return now(pattern, (TimeZone) null);
     }
 
     /**
@@ -601,7 +623,7 @@ public class DateTimeHelper {
      * @return         The current datetime as a string formatted according to the given pattern.
      */
     public static String now(String pattern, TimeZone timezone) {
-        return emit(java.util.Calendar.getInstance(), pattern, timezone);
+        return emit(Calendar.getInstance(), pattern, timezone);
     }
 
     /**
@@ -729,7 +751,7 @@ public class DateTimeHelper {
      * @return           The given datetime string reformatted according to the given outPattern.
      */
     public static String[] format(String[] inputs, String[] inPatterns, String outPattern) {
-        return format(inputs, inPatterns, (TimeZone)null, outPattern, (TimeZone)null);
+        return format(inputs, inPatterns, (TimeZone) null, outPattern, (TimeZone) null);
     }
 
     /**
@@ -762,5 +784,28 @@ public class DateTimeHelper {
             outputs[i] = format(inputs[i], inPatterns, inTimeZone, outPattern, outTimeZone);
         }
         return outputs;
+    }
+
+    /**
+     * Converts the given Date object to a Calendar object.
+     * @param input The Date object to be converted.
+     * @return      The Calendar object representing the given Date object.
+     */
+    private static Calendar toCalendar(Date input) {
+        if (input == null) return null;
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(input);
+        return calendar;
+    }
+
+    /**
+     * Converts the given Calendar object to a Date object.
+     * @param input The Calendar object to be converted.
+     * @return      The Date object representing the given Calendar object.
+     */
+    private static Date toDate(Calendar input) {
+        if (input == null) return null;
+        return input.getTime();
     }
 }
