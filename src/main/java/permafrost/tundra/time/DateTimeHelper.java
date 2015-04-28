@@ -28,6 +28,8 @@ import permafrost.tundra.lang.ArrayHelper;
 
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.TimeZone;
 import java.util.Date;
@@ -258,7 +260,7 @@ public class DateTimeHelper {
             output = "" + input.getTimeInMillis();
         } else {
             if (NAMED_PATTERNS.containsKey(pattern)) pattern = NAMED_PATTERNS.get(pattern);
-            java.text.DateFormat formatter = new java.text.SimpleDateFormat(pattern);
+            DateFormat formatter = new SimpleDateFormat(pattern);
             formatter.setTimeZone(input.getTimeZone());
             formatter.setLenient(false);
             output = formatter.format(input.getTime());
@@ -423,7 +425,7 @@ public class DateTimeHelper {
             } else {
                 if (NAMED_PATTERNS.containsKey(pattern)) pattern = NAMED_PATTERNS.get(pattern);
 
-                java.text.DateFormat formatter = new java.text.SimpleDateFormat(pattern);
+                DateFormat formatter = new SimpleDateFormat(pattern);
                 formatter.setLenient(false);
                 output = Calendar.getInstance();
                 output.setTime(formatter.parse(input));
