@@ -25,7 +25,7 @@
 package permafrost.tundra.zip;
 
 import org.junit.Test;
-import permafrost.tundra.lang.ByteHelper;
+import permafrost.tundra.lang.BytesHelper;
 import permafrost.tundra.lang.StringHelper;
 
 import static org.junit.Assert.*;
@@ -37,7 +37,7 @@ public class ZipHelperTest {
         ZipEntryWithData[] contents = new ZipEntryWithData[2];
         contents[0] = new ZipEntryWithData("test1.txt", "this is the first zip entry");
         contents[1] = new ZipEntryWithData("test2.txt", "this is the second zip entry");
-        byte[] compressedContent = ByteHelper.normalize(ZipHelper.compress(contents));
+        byte[] compressedContent = BytesHelper.normalize(ZipHelper.compress(contents));
 
         assertNotNull("compressed content not null", compressedContent);
         assertTrue("compressed length > 0", compressedContent.length > 0);
@@ -45,7 +45,7 @@ public class ZipHelperTest {
 
     @Test
     public void testDecompress() throws Exception {
-        byte[] compressedContent = ByteHelper.base64Decode("UEsDBBQACAgIAAizkkYAAAAAAAAAAAAAAAAJAAAAdGVzdDEudHh0K8nILFYAopKMVIW0zKLiEoWqzAKF1LySokoAUEsHCMvYnGgbAAAAGwAAAFBLAwQUAAgICAAIs5JGAAAAAAAAAAAAAAAACQAAAHRlc3QyLnR4dCvJyCxWAKKSjFSF4tTk/LwUharMAoXUvJKiSgBQSwcInFXy8BwAAAAcAAAAUEsBAhQAFAAICAgACLOSRsvYnGgbAAAAGwAAAAkAAAAAAAAAAAAAAAAAAAAAAHRlc3QxLnR4dFBLAQIUABQACAgIAAizkkacVfLwHAAAABwAAAAJAAAAAAAAAAAAAAAAAFIAAAB0ZXN0Mi50eHRQSwUGAAAAAAIAAgBuAAAApQAAAAAA");
+        byte[] compressedContent = BytesHelper.base64Decode("UEsDBBQACAgIAAizkkYAAAAAAAAAAAAAAAAJAAAAdGVzdDEudHh0K8nILFYAopKMVIW0zKLiEoWqzAKF1LySokoAUEsHCMvYnGgbAAAAGwAAAFBLAwQUAAgICAAIs5JGAAAAAAAAAAAAAAAACQAAAHRlc3QyLnR4dCvJyCxWAKKSjFSF4tTk/LwUharMAoXUvJKiSgBQSwcInFXy8BwAAAAcAAAAUEsBAhQAFAAICAgACLOSRsvYnGgbAAAAGwAAAAkAAAAAAAAAAAAAAAAAAAAAAHRlc3QxLnR4dFBLAQIUABQACAgIAAizkkacVfLwHAAAABwAAAAJAAAAAAAAAAAAAAAAAFIAAAB0ZXN0Mi50eHRQSwUGAAAAAAIAAgBuAAAApQAAAAAA");
         ZipEntryWithData[] contents = ZipHelper.decompress(compressedContent);
 
         assertNotNull(contents);

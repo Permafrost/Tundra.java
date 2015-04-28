@@ -27,7 +27,7 @@ package permafrost.tundra.io;
 import java.io.*;
 import java.nio.charset.Charset;
 
-import permafrost.tundra.lang.ByteHelper;
+import permafrost.tundra.lang.BytesHelper;
 import permafrost.tundra.lang.CharsetHelper;
 
 /**
@@ -144,7 +144,7 @@ public class StreamHelper {
      * @return          A java.io.InputStream representation of the given string.
      */
     public static InputStream normalize(String string, Charset charset) {
-        return normalize(ByteHelper.normalize(string, CharsetHelper.normalize(charset)));
+        return normalize(BytesHelper.normalize(string, CharsetHelper.normalize(charset)));
     }
 
     /**

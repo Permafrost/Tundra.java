@@ -27,7 +27,7 @@ package permafrost.tundra.security;
 import org.junit.Before;
 import org.junit.Test;
 import permafrost.tundra.io.StreamHelper;
-import permafrost.tundra.lang.ByteHelper;
+import permafrost.tundra.lang.BytesHelper;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -43,7 +43,7 @@ public class MessageDigestHelperTest {
     @Before
     public void setUp() throws Exception {
         data = "this is a test".getBytes();
-        sha256 = ByteHelper.hexDecode("2e99758548972a8e8822ad47fa1017ff72f06f3ff6a016851f45c398732bc50c");
+        sha256 = BytesHelper.hexDecode("2e99758548972a8e8822ad47fa1017ff72f06f3ff6a016851f45c398732bc50c");
     }
 
     @Test

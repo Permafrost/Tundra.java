@@ -26,7 +26,7 @@ package permafrost.tundra.security;
 
 import permafrost.tundra.io.MarkableInputStream;
 import permafrost.tundra.io.StreamHelper;
-import permafrost.tundra.lang.ByteHelper;
+import permafrost.tundra.lang.BytesHelper;
 import permafrost.tundra.lang.CharsetHelper;
 
 import java.io.ByteArrayInputStream;
@@ -186,6 +186,6 @@ public class MessageDigestHelper {
      * @return              The message digest calculated for the given data using the given algorithm.
      */
     public static byte[] getDigest(MessageDigestAlgorithm algorithm, String data, Charset charset) {
-        return getDigest(algorithm, ByteHelper.normalize(data, charset));
+        return getDigest(algorithm, BytesHelper.normalize(data, charset));
     }
 }

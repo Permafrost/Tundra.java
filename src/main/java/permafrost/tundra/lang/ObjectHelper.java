@@ -383,11 +383,11 @@ public class ObjectHelper {
         mode = ConvertMode.normalize(mode);
 
         if (mode == ConvertMode.BYTES) {
-            object = ByteHelper.normalize(object, charset);
+            object = BytesHelper.normalize(object, charset);
         } else if (mode == ConvertMode.STRING) {
             object = StringHelper.normalize(object, charset);
         } else if (mode == ConvertMode.BASE64) {
-            object = ByteHelper.base64Encode(ByteHelper.normalize(object, charset));
+            object = BytesHelper.base64Encode(BytesHelper.normalize(object, charset));
         } else if (mode == ConvertMode.STREAM){
             object = StreamHelper.normalize(object, charset);
         } else {

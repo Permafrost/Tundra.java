@@ -76,7 +76,7 @@ public class IdentityHelper {
             for (int i = 8; i < 16; i++) {
                 bytes[i] = (byte)(leastSignificantBits >>> 8 * (7 - i));
             }
-            id = ByteHelper.base64Encode(bytes);
+            id = BytesHelper.base64Encode(bytes);
         } else {
             throw new IllegalArgumentException("Unsupported conversion mode specified: " + mode);
         }

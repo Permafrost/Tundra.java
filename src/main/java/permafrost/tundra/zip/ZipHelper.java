@@ -25,7 +25,7 @@
 package permafrost.tundra.zip;
 
 import permafrost.tundra.io.StreamHelper;
-import permafrost.tundra.lang.ByteHelper;
+import permafrost.tundra.lang.BytesHelper;
 import permafrost.tundra.lang.ObjectHelper;
 
 import java.io.ByteArrayOutputStream;
@@ -135,6 +135,6 @@ public class ZipHelper {
      * @throws IOException If an I/O problem occurs while reading from the stream.
      */
     public static ZipEntryWithData[] decompress(String base64) throws IOException {
-        return decompress(ByteHelper.base64Decode(base64));
+        return decompress(BytesHelper.base64Decode(base64));
     }
 }
