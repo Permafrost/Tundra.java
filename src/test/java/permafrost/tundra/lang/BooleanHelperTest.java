@@ -33,6 +33,10 @@ public class BooleanHelperTest {
     @Test
     public void testParseWithNullArgument() throws Exception {
         assertEquals(false, BooleanHelper.parse(null));
+        assertEquals(false, BooleanHelper.parse(null, false));
+        assertEquals(true, BooleanHelper.parse(null, true));
+        assertEquals(false, BooleanHelper.parse(null, "false"));
+        assertEquals(true, BooleanHelper.parse(null, "true"));
     }
 
     @Test
@@ -68,6 +72,11 @@ public class BooleanHelperTest {
     public void testParseWithCustomValues() throws Exception {
         assertEquals(true, BooleanHelper.parse("abc", "abc", "def"));
         assertEquals(false, BooleanHelper.parse("def", "abc", "def"));
+        assertEquals(false, BooleanHelper.parse(null, "abc", "def"));
+        assertEquals(true, BooleanHelper.parse(null, "abc", "def", true));
+        assertEquals(false, BooleanHelper.parse(null, "abc", "def", false));
+        assertEquals(true, BooleanHelper.parse(null, "abc", "def", "true"));
+        assertEquals(false, BooleanHelper.parse(null, "abc", "def", "false"));
     }
 
     @Test(expected = IllegalArgumentException.class)

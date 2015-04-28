@@ -60,7 +60,29 @@ public class BooleanHelper {
      * @return       The boolean value of the given string.
      */
     public static boolean parse(String string) {
-        return parse(string, null, null);
+        return parse(string, false);
+    }
+
+    /**
+     * Parses a string that can contain (ignoring case and leading and trailing whitespace)
+     * "true" or "1" to represent true, or "false" or "0" falseValue to represent false.
+     * @param string        The boolean string to be parsed.
+     * @param defaultValue  The boolean value returned if the given string is null.
+     * @return              The boolean value of the given string.
+     */
+    public static boolean parse(String string, String defaultValue) {
+        return parse(string, parse(defaultValue));
+    }
+
+    /**
+     * Parses a string that can contain (ignoring case and leading and trailing whitespace)
+     * "true" or "1" to represent true, or "false" or "0" falseValue to represent false.
+     * @param string        The boolean string to be parsed.
+     * @param defaultValue  The boolean value returned if the given string is null.
+     * @return              The boolean value of the given string.
+     */
+    public static boolean parse(String string, boolean defaultValue) {
+        return parse(string, null, null, defaultValue);
     }
 
     /**
@@ -73,7 +95,35 @@ public class BooleanHelper {
      * @return              The boolean value of the given string.
      */
     public static boolean parse(String string, String trueValue, String falseValue) {
-        if (string == null) return false;
+        return parse(string, trueValue, falseValue, false);
+    }
+
+    /**
+     * Parses a string that can contain (ignoring case and leading and trailing whitespace)
+     * "true" or "1" or the given trueValue to represent true, or "false" or "0" or the given
+     * falseValue to represent false.
+     * @param string        The boolean string to be parsed.
+     * @param trueValue     The value used to determine if the string represents the boolean value true.
+     * @param falseValue    The value used to determine if the string represents the boolean value false.
+     * @param defaultValue  The boolean value returned if the given string is null.
+     * @return              The boolean value of the given string.
+     */
+    public static boolean parse(String string, String trueValue, String falseValue, String defaultValue) {
+        return parse(string, trueValue, falseValue, parse(defaultValue));
+    }
+
+    /**
+     * Parses a string that can contain (ignoring case and leading and trailing whitespace)
+     * "true" or "1" or the given trueValue to represent true, or "false" or "0" or the given
+     * falseValue to represent false.
+     * @param string        The boolean string to be parsed.
+     * @param trueValue     The value used to determine if the string represents the boolean value true.
+     * @param falseValue    The value used to determine if the string represents the boolean value false.
+     * @param defaultValue  The boolean value returned if the given string is null.
+     * @return              The boolean value of the given string.
+     */
+    public static boolean parse(String string, String trueValue, String falseValue, boolean defaultValue) {
+        if (string == null) return defaultValue;
 
         string = string.trim().toLowerCase();
 
