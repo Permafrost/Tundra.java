@@ -30,14 +30,14 @@ import permafrost.tundra.lang.StringHelper;
 
 import static org.junit.Assert.*;
 
-public class ZIPHelperTest {
+public class ZipHelperTest {
 
     @Test
     public void testCompress() throws Exception {
         ZipEntryWithData[] contents = new ZipEntryWithData[2];
         contents[0] = new ZipEntryWithData("test1.txt", "this is the first zip entry");
         contents[1] = new ZipEntryWithData("test2.txt", "this is the second zip entry");
-        byte[] compressedContent = ByteHelper.normalize(ZIPHelper.compress(contents));
+        byte[] compressedContent = ByteHelper.normalize(ZipHelper.compress(contents));
 
         assertNotNull("compressed content not null", compressedContent);
         assertTrue("compressed length > 0", compressedContent.length > 0);
@@ -46,7 +46,7 @@ public class ZIPHelperTest {
     @Test
     public void testDecompress() throws Exception {
         byte[] compressedContent = ByteHelper.base64Decode("UEsDBBQACAgIAAizkkYAAAAAAAAAAAAAAAAJAAAAdGVzdDEudHh0K8nILFYAopKMVIW0zKLiEoWqzAKF1LySokoAUEsHCMvYnGgbAAAAGwAAAFBLAwQUAAgICAAIs5JGAAAAAAAAAAAAAAAACQAAAHRlc3QyLnR4dCvJyCxWAKKSjFSF4tTk/LwUharMAoXUvJKiSgBQSwcInFXy8BwAAAAcAAAAUEsBAhQAFAAICAgACLOSRsvYnGgbAAAAGwAAAAkAAAAAAAAAAAAAAAAAAAAAAHRlc3QxLnR4dFBLAQIUABQACAgIAAizkkacVfLwHAAAABwAAAAJAAAAAAAAAAAAAAAAAFIAAAB0ZXN0Mi50eHRQSwUGAAAAAAIAAgBuAAAApQAAAAAA");
-        ZipEntryWithData[] contents = ZIPHelper.decompress(compressedContent);
+        ZipEntryWithData[] contents = ZipHelper.decompress(compressedContent);
 
         assertNotNull(contents);
         assertEquals("contents.length == 2", 2, contents.length);

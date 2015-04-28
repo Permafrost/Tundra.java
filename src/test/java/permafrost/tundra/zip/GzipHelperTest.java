@@ -30,7 +30,7 @@ import permafrost.tundra.lang.ByteHelper;
 
 import static org.junit.Assert.*;
 
-public class GZIPHelperTest {
+public class GzipHelperTest {
     byte[] expectedCompressedContent, expectedDecompressedContent;
 
     @Before
@@ -41,16 +41,16 @@ public class GZIPHelperTest {
 
     @Test
     public void testCompress() throws Exception {
-        byte[] compressedContent = ByteHelper.normalize(GZIPHelper.compress(expectedDecompressedContent));
+        byte[] compressedContent = ByteHelper.normalize(GzipHelper.compress(expectedDecompressedContent));
         assertNotNull("compressed content not null", compressedContent);
         assertTrue("compressed length > 0", compressedContent.length > 0);
         assertNotEquals("decompressed content != compressed content", expectedDecompressedContent, ByteHelper.base64Encode(compressedContent));
-        assertArrayEquals(expectedDecompressedContent, ByteHelper.normalize(GZIPHelper.decompress(compressedContent)));
+        assertArrayEquals(expectedDecompressedContent, ByteHelper.normalize(GzipHelper.decompress(compressedContent)));
     }
 
     @Test
     public void testDecompress() throws Exception {
-        byte[] decompressedContent = ByteHelper.normalize(GZIPHelper.decompress(expectedCompressedContent));
+        byte[] decompressedContent = ByteHelper.normalize(GzipHelper.decompress(expectedCompressedContent));
         assertNotNull("decompressed content not null", decompressedContent);
         assertTrue("decompressed length > 0", decompressedContent.length > 0);
         assertArrayEquals(expectedDecompressedContent, decompressedContent);
