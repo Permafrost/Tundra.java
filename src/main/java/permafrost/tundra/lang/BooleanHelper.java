@@ -24,8 +24,6 @@
 
 package permafrost.tundra.lang;
 
-import javax.xml.bind.DatatypeConverter;
-
 /**
  * A collection of convenience methods for working with booleans.
  */
@@ -56,43 +54,40 @@ public class BooleanHelper {
     }
 
     /**
-     * Parses a string that can contain "true" (ignoring case) or "1" to represent
-     * true, and "false" (ignoring case) or "0" to represent false.
-     * @param object The boolean object to parse.
-     * @return       The boolean value of the given object.
-     */
-    public static boolean parse(Object object) {
-        boolean result = false;
-
-        if (object != null) {
-            if (object instanceof Boolean) {
-                result = ((Boolean)object).booleanValue();
-            } else {
-                result = (parse(object.toString()));
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Parses a string that can contain "true" (ignoring case) or "1" to represent
-     * true, and "false" (ignoring case) or "0" to represent false.
+     * Parses a string that can contain (ignoring case and leading and trailing whitespace)
+     * "true" or "1" to represent true, or "false" or "0" falseValue to represent false.
      * @param string The boolean string to be parsed.
      * @return       The boolean value of the given string.
      */
     public static boolean parse(String string) {
-        return DatatypeConverter.parseBoolean(string == null ? null : string.toLowerCase());
+        return parse(string, null, null);
     }
 
     /**
-     * Returns a string representation of the given boolean object.
-     * @param object     The boolean object to convert to a string.
-     * @param trueValue  The value returned if the given boolean is true.
-     * @param falseValue The value returned if the given boolean is false.
-     * @return           The string representation of the given boolean.
+     * Parses a string that can contain (ignoring case and leading and trailing whitespace)
+     * "true" or "1" or the given trueValue to represent true, or "false" or "0" or the given
+     * falseValue to represent false.
+     * @param string        The boolean string to be parsed.
+     * @param trueValue     The value used to determine if the string represents the boolean value true.
+     * @param falseValue    The value used to determine if the string represents the boolean value false.
+     * @return              The boolean value of the given string.
      */
-    public static String emit(Object object, String trueValue, String falseValue) {
-        return emit(parse(object), trueValue, falseValue);
+    public static boolean parse(String string, String trueValue, String falseValue) {
+        if (string == null) return false;
+
+        string = string.trim().toLowerCase();
+
+        boolean result;
+
+        if (string.equals("1") || string.equals("true") || (trueValue != null && string.equalsIgnoreCase(trueValue))) {
+            result = true;
+        } else if (string.equals("0") || string.equals("false") || (falseValue != null && string.equalsIgnoreCase(falseValue))) {
+            result = false;
+        } else {
+            throw new IllegalArgumentException("Unparseable boolean value: " + string);
+        }
+
+        return result;
     }
 
     /**
@@ -103,7 +98,7 @@ public class BooleanHelper {
      * @return           The string representation of the given boolean.
      */
     public static String emit(boolean bool, String trueValue, String falseValue) {
-        return bool ? (trueValue == null ? emit(bool) : trueValue) : (falseValue == null ? emit(bool) : falseValue);
+        return bool ? (trueValue == null ? Boolean.toString(bool) : trueValue) : (falseValue == null ? Boolean.toString(bool) : falseValue);
     }
 
     /**
@@ -112,7 +107,18 @@ public class BooleanHelper {
      * @return     The canonical string representation of the given boolean value.
      */
     public static String emit(boolean bool) {
-        return "" + bool;
+        return emit(bool, null, null);
+    }
+
+    /**
+     * Returns the negated boolean value of the given string.
+     * @param string        The boolean string to be negated.
+     * @param trueValue     The value used to determine if the string represents the boolean value true.
+     * @param falseValue    The value used to determine if the string represents the boolean value false.
+     * @return              The given boolean string negated.
+     */
+    public static String negate(String string, String trueValue, String falseValue) {
+        return emit(negate(parse(string, trueValue, falseValue)), trueValue, falseValue);
     }
 
     /**
@@ -121,7 +127,7 @@ public class BooleanHelper {
      * @return       The given boolean string negated.
      */
     public static String negate(String string) {
-        return emit(negate(parse(string)));
+        return negate(string, null, null);
     }
 
     /**
@@ -131,5 +137,18 @@ public class BooleanHelper {
      */
     public static boolean negate(boolean bool) {
         return !bool;
+    }
+
+    /**
+     * Formats the given boolean string using the given output boolean values.
+     * @param inString      The string to be formatted.
+     * @param inTrueValue   The value used to determine if the string represents the boolean value true.
+     * @param inFalseValue  The value used to determine if the string represents the boolean value false.
+     * @param outTrueValue  The value returned if the given boolean is true.
+     * @param outFalseValue The value returned if the given boolean is false.
+     * @return              The given string reformatted.
+     */
+    public static String format(String inString, String inTrueValue, String inFalseValue, String outTrueValue, String outFalseValue) {
+        return emit(parse(inString, inTrueValue, inFalseValue), outTrueValue, outFalseValue);
     }
 }
