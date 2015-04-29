@@ -79,7 +79,7 @@ public class DurationHelper {
      * @return                The duration string reformatted according to the outPattern.
      */
     public static String format(String duration, DurationPattern inPattern, DurationPattern outPattern) {
-        return format(duration, inPattern, outPattern, (Date)null);
+        return format(duration, inPattern, outPattern, (Date) null);
     }
 
     /**
@@ -305,45 +305,46 @@ public class DurationHelper {
         if (input == null) return null;
 
         pattern = DurationPattern.normalize(pattern);
-        BigInteger integerValue = new BigInteger(input);
-        BigDecimal decimalValue = new BigDecimal(input);
         Duration output = null;
 
         try {
-            switch (pattern) {
-                case MILLISECONDS:
-                    // convert milliseconds to fractional seconds
-                    decimalValue = decimalValue.divide(DECIMAL_ONE_THOUSAND);
-                    output = DATATYPE_FACTORY.newDuration(decimalValue.compareTo(BigDecimal.ZERO) >= 0, null, null, null, null, null, decimalValue.abs());
-                    break;
-                case SECONDS:
-                    output = DATATYPE_FACTORY.newDuration(decimalValue.compareTo(BigDecimal.ZERO) >= 0, null, null, null, null, null, decimalValue.abs());
-                    break;
-                case MINUTES:
-                    output = DATATYPE_FACTORY.newDuration(integerValue.compareTo(BigInteger.ZERO) >= 0, null, null, null, null, integerValue.abs(), null);
-                    break;
-                case HOURS:
-                    output = DATATYPE_FACTORY.newDuration(integerValue.compareTo(BigInteger.ZERO) >= 0, null, null, null, integerValue.abs(), null, null);
-                    break;
-                case DAYS:
-                    output = DATATYPE_FACTORY.newDuration(integerValue.compareTo(BigInteger.ZERO) >= 0, null, null, integerValue.abs(), null, null, null);
-                    break;
-                case WEEKS:
-                    // convert weeks to days by multiplying by 7
-                    integerValue = integerValue.multiply(INTEGER_SEVEN);
-                    output = DATATYPE_FACTORY.newDuration(integerValue.compareTo(BigInteger.ZERO) >= 0, null, null, integerValue.abs(), null, null, null);
-                    break;
-                case MONTHS:
-                    output = DATATYPE_FACTORY.newDuration(integerValue.compareTo(BigInteger.ZERO) >= 0, null, integerValue.abs(), null, null, null, null);
-                    break;
-                case YEARS:
-                    output = DATATYPE_FACTORY.newDuration(integerValue.compareTo(BigInteger.ZERO) >= 0, integerValue.abs(), null, null, null, null, null);
-                    break;
-                case XML:
-                    output = DATATYPE_FACTORY.newDuration(input);
-                    break;
-                default:
-                    throw new IllegalArgumentException("Unsupported duration pattern: " + pattern);
+            if (pattern == DurationPattern.XML) {
+                output = DATATYPE_FACTORY.newDuration(input);
+            } else {
+                BigInteger integerValue = new BigInteger(input);
+                BigDecimal decimalValue = new BigDecimal(input);
+                switch (pattern) {
+                    case MILLISECONDS:
+                        // convert milliseconds to fractional seconds
+                        decimalValue = decimalValue.divide(DECIMAL_ONE_THOUSAND);
+                        output = DATATYPE_FACTORY.newDuration(decimalValue.compareTo(BigDecimal.ZERO) >= 0, null, null, null, null, null, decimalValue.abs());
+                        break;
+                    case SECONDS:
+                        output = DATATYPE_FACTORY.newDuration(decimalValue.compareTo(BigDecimal.ZERO) >= 0, null, null, null, null, null, decimalValue.abs());
+                        break;
+                    case MINUTES:
+                        output = DATATYPE_FACTORY.newDuration(integerValue.compareTo(BigInteger.ZERO) >= 0, null, null, null, null, integerValue.abs(), null);
+                        break;
+                    case HOURS:
+                        output = DATATYPE_FACTORY.newDuration(integerValue.compareTo(BigInteger.ZERO) >= 0, null, null, null, integerValue.abs(), null, null);
+                        break;
+                    case DAYS:
+                        output = DATATYPE_FACTORY.newDuration(integerValue.compareTo(BigInteger.ZERO) >= 0, null, null, integerValue.abs(), null, null, null);
+                        break;
+                    case WEEKS:
+                        // convert weeks to days by multiplying by 7
+                        integerValue = integerValue.multiply(INTEGER_SEVEN);
+                        output = DATATYPE_FACTORY.newDuration(integerValue.compareTo(BigInteger.ZERO) >= 0, null, null, integerValue.abs(), null, null, null);
+                        break;
+                    case MONTHS:
+                        output = DATATYPE_FACTORY.newDuration(integerValue.compareTo(BigInteger.ZERO) >= 0, null, integerValue.abs(), null, null, null, null);
+                        break;
+                    case YEARS:
+                        output = DATATYPE_FACTORY.newDuration(integerValue.compareTo(BigInteger.ZERO) >= 0, integerValue.abs(), null, null, null, null, null);
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Unsupported duration pattern: " + pattern);
+                }
             }
         } catch(IllegalArgumentException ex) {
             throw new IllegalArgumentException("Unparseable duration: '" + input + "' does not conform to pattern '" + pattern.toString() + "'", ex);

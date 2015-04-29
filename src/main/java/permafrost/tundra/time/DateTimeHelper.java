@@ -96,6 +96,17 @@ public class DateTimeHelper {
     }
 
     /**
+     * Adds the given duration to the given datetime.
+     *
+     * @param datetime The datetime to add the duration to.
+     * @param duration The duration to be added.
+     * @return         A new datetime representing the given datetime plus the given duration.
+     */
+    public static String add(String datetime, String datetimePattern, String duration, String durationPattern) {
+        return emit(add(parse(datetime, datetimePattern), DurationHelper.parse(duration, durationPattern)), datetimePattern);
+    }
+
+    /**
      * Subtracts the given XML duration from the given datetime.
      *
      * @param date     The date to subtract the duration from.
@@ -155,7 +166,23 @@ public class DateTimeHelper {
 
         return firstCalendar.compareTo(secondCalendar);
     }
-    
+
+    /**
+     * Compares two datetime strings.
+     *
+     * @param firstDate         The first datetime string to compare.
+     * @param firstPattern      The datetime pattern firstDate conforms to.
+     * @param secondDate        The second datetime string to compare.
+     * @param secondPattern     The datetime pattern secondDate conforms to.
+     * @return                  Zero if both calendars represent that same instant in time,
+     *                          less than zero if the firstCalendar is an earlier instant in
+     *                          time than the secondCalendar, or greater than zero if the
+     *                          firstCalendar is greater than the secondCalendar.
+     */
+    public static int compare(String firstDate, String firstPattern, String secondDate, String secondPattern) {
+        return compare(parse(firstDate, firstPattern), parse(secondDate, secondPattern));
+    }
+
     /**
      * Returns the duration of time between two given Calendar objects.
      * @param startCalendar The starting instant in time.
