@@ -59,13 +59,42 @@ public class IDataCSVParser extends IDataTextParser {
 
     /**
      * Construct a new IDataCSVCoder, using the given delimiter and
+     * default content type "text/csv".
+     * @param delimiter     The delimiter character to use.
+     */
+    public IDataCSVParser(char delimiter) {
+        this(delimiter, null);
+    }
+
+    /**
+     * Construct a new IDataCSVCoder, using the given delimiter and
+     * default content type "text/csv".
+     * @param delimiter     The delimiter character to use.
+     */
+    public IDataCSVParser(String delimiter) {
+        this(delimiter, null);
+    }
+
+    /**
+     * Construct a new IDataCSVCoder, using the given delimiter and
      * given content type.
      * @param delimiter     The delimiter character to use.
      * @param contentType   The content type to use.
      */
     public IDataCSVParser(char delimiter, String contentType) {
         this.delimiter = delimiter;
-        this.contentType = contentType;
+        if (contentType != null) this.contentType = contentType;
+    }
+
+    /**
+     * Construct a new IDataCSVCoder, using the given delimiter and
+     * given content type.
+     * @param delimiter     The delimiter character to use.
+     * @param contentType   The content type to use.
+     */
+    public IDataCSVParser(String delimiter, String contentType) {
+        if (delimiter != null && delimiter.length() >= 1) this.delimiter = delimiter.charAt(0);
+        if (contentType != null) this.contentType = contentType;
     }
 
     /**
@@ -107,9 +136,7 @@ public class IDataCSVParser extends IDataTextParser {
         if (inputStream == null) return null;
 
         Reader reader = new InputStreamReader(inputStream, CharsetHelper.normalize(charset));
-        CSVFormat format = CSVFormat.DEFAULT.withHeader().withNullString("");
-        format = format.withDelimiter(delimiter);
-
+        CSVFormat format = CSVFormat.DEFAULT.withHeader().withDelimiter(delimiter).withNullString("");
         CSVParser parser = format.parse(reader);
 
         Set<String> keys = parser.getHeaderMap().keySet();
@@ -152,9 +179,7 @@ public class IDataCSVParser extends IDataTextParser {
         if (records.length == 0) return "";
 
         StringBuilder builder = new StringBuilder();
-        CSVFormat format = CSVFormat.DEFAULT.withHeader(IDataHelper.getKeys(records));
-        format.withDelimiter(delimiter);
-
+        CSVFormat format = CSVFormat.DEFAULT.withHeader(IDataHelper.getKeys(records)).withDelimiter(delimiter).withNullString("");
         CSVPrinter printer = new CSVPrinter(builder, format);
 
         for (IData record : records) {
