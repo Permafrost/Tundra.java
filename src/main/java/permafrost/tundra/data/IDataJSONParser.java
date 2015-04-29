@@ -48,19 +48,19 @@ import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.List;
 
-public class IDataJSONCoder extends IDataStringCoder {
-    protected static IDataJSONCoder INSTANCE = new IDataJSONCoder();
+public class IDataJSONParser extends IDataTextParser {
+    protected static IDataJSONParser INSTANCE = new IDataJSONParser();
 
     /**
      * Disallow instantiation of this class.
      */
-    private IDataJSONCoder() {}
+    private IDataJSONParser() {}
 
     /**
      * Returns the singleton instance of this class.
      * @return The singleton instance of this class.
      */
-    public static IDataJSONCoder getInstance() {
+    public static IDataJSONParser getInstance() {
         return INSTANCE;
     }
 

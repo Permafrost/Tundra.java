@@ -33,7 +33,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class IDataCSVCoderTest {
+public class IDataCSVParserTest {
 
     @Test
     public void testEncodeToString() throws Exception {
@@ -63,7 +63,7 @@ public class IDataCSVCoderTest {
         IDataUtil.put(cursor, "recordWithNoID", records);
         cursor.destroy();
 
-        String csv = IDataCSVCoder.getInstance().encodeToString(document);
+        String csv = IDataCSVParser.getInstance().encodeToString(document);
 
         assertTrue(csv.contains("John"));
         assertTrue(csv.contains("john@example.org"));
@@ -77,7 +77,7 @@ public class IDataCSVCoderTest {
     public void testDecodeFromString() throws Exception {
         String csv = "name,email\nJohn,john@example.org\nJean,jean@example.org\nBill,bill@example.org";
 
-        IData document = IDataCSVCoder.getInstance().decodeFromString(csv);
+        IData document = IDataCSVParser.getInstance().decodeFromString(csv);
         IDataCursor cursor = document.getCursor();
         IData[] records = IDataUtil.getIDataArray(cursor, "recordWithNoID");
         cursor.destroy();

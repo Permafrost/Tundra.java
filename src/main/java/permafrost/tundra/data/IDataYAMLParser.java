@@ -40,19 +40,19 @@ import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
 
-public class IDataYAMLCoder extends IDataStringCoder {
-    protected static IDataYAMLCoder INSTANCE = new IDataYAMLCoder();
+public class IDataYAMLParser extends IDataTextParser {
+    protected static IDataYAMLParser INSTANCE = new IDataYAMLParser();
 
     /**
      * Disallow instantiation of this class.
      */
-    private IDataYAMLCoder() {}
+    private IDataYAMLParser() {}
 
     /**
      * Returns the singleton instance of this class.
      * @return The singleton instance of this class.
      */
-    public static IDataYAMLCoder getInstance() {
+    public static IDataYAMLParser getInstance() {
         return INSTANCE;
     }
 

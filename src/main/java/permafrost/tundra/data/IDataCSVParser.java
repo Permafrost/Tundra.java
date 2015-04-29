@@ -45,8 +45,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class IDataCSVCoder extends IDataStringCoder {
-    protected static IDataCSVCoder INSTANCE = new IDataCSVCoder();
+public class IDataCSVParser extends IDataTextParser {
+    protected static IDataCSVParser INSTANCE = new IDataCSVParser();
 
     protected char delimiter = ',';
     protected String contentType = "text/csv";
@@ -55,7 +55,7 @@ public class IDataCSVCoder extends IDataStringCoder {
      * Construct a new IDataCSVCoder, using the default delimiter ',' and
      * default content type "text/csv".
      */
-    public IDataCSVCoder() {}
+    public IDataCSVParser() {}
 
     /**
      * Construct a new IDataCSVCoder, using the given delimiter and
@@ -63,7 +63,7 @@ public class IDataCSVCoder extends IDataStringCoder {
      * @param delimiter     The delimiter character to use.
      * @param contentType   The content type to use.
      */
-    public IDataCSVCoder(char delimiter, String contentType) {
+    public IDataCSVParser(char delimiter, String contentType) {
         this.delimiter = delimiter;
         this.contentType = contentType;
     }
@@ -72,7 +72,7 @@ public class IDataCSVCoder extends IDataStringCoder {
      * Returns a default instance of this class with default settings.
      * @return The default instance of this class.
      */
-    public static IDataCSVCoder getInstance() {
+    public static IDataCSVParser getInstance() {
         return INSTANCE;
     }
 

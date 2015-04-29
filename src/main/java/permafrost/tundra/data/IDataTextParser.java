@@ -36,9 +36,9 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 
 /**
- * Encodes and decodes IData documents to and from a string representation.
+ * Serializes and deserializes IData documents to and from a text representation.
  */
-public abstract class IDataStringCoder extends IDataCoder {
+public abstract class IDataTextParser extends IDataCoder implements IDataParser {
     /**
      * Encodes the given IData document as a string.
      * @param outputStream  The stream to write the encoded IData to.
@@ -183,5 +183,72 @@ public abstract class IDataStringCoder extends IDataCoder {
      */
     public IData decodeFromString(String string) throws IOException {
         return decodeFromBytes(string.getBytes(CharsetHelper.DEFAULT_CHARSET), CharsetHelper.DEFAULT_CHARSET);
+    }
+
+    /**
+     * Parses the data in the given input stream, returning an IData representation.
+     * @param inputStream   The input stream to be parsed.
+     * @param charset       The character set to use when decoding the data in the input stream.
+     * @return              An IData representation of the data in the given input stream.
+     * @throws IOException  If an I/O error occurs.
+     */
+    public IData parse(InputStream inputStream, Charset charset) throws IOException {
+        return decode(inputStream, charset);
+    }
+
+    /**
+     * Parses the data in the given input stream, returning an IData representation.
+     * @param inputStream   The input stream to be parsed.
+     * @param charsetName   The character set to use when decoding the data in the input stream.
+     * @return              An IData representation of the data in the given input stream.
+     * @throws IOException  If an I/O error occurs.
+     */
+    public IData parse(InputStream inputStream, String charsetName) throws IOException {
+        return decode(inputStream, CharsetHelper.normalize(charsetName));
+    }
+
+    /**
+     * Parses the data in the given input stream, returning an IData representation.
+     * @param inputStream   The input stream to be parsed.
+     * @return              An IData representation of the data in the given input stream.
+     * @throws IOException  If an I/O error occurs.
+     */
+    public IData parse(InputStream inputStream) throws IOException {
+        return decode(inputStream, CharsetHelper.DEFAULT_CHARSET);
+    }
+
+    /**
+     * Serializes the given IData document.
+     * @param document      The IData document to be serialized.
+     * @param charset       The character set to use when serializing the IData document.
+     * @return              A serialized representation of the given IData document.
+     * @throws IOException  If an I/O error occurs.
+     */
+    public InputStream emit(IData document, Charset charset) throws IOException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        encode(outputStream, document, charset);
+        byte[] bytes = outputStream.toByteArray();
+        return new ByteArrayInputStream(bytes);
+    }
+
+    /**
+     * Serializes the given IData document.
+     * @param document      The IData document to be serialized.
+     * @param charsetName   The character set to use when serializing the IData document.
+     * @return              A serialized representation of the given IData document.
+     * @throws IOException  If an I/O error occurs.
+     */
+    public InputStream emit(IData document, String charsetName) throws IOException {
+        return emit(document, CharsetHelper.normalize(charsetName));
+    }
+
+    /**
+     * Serializes the given IData document.
+     * @param document      The IData document to be serialized.
+     * @return              A serialized representation of the given IData document.
+     * @throws IOException  If an I/O error occurs.
+     */
+    public InputStream emit(IData document) throws IOException {
+        return emit(document, CharsetHelper.DEFAULT_CHARSET);
     }
 }

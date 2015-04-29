@@ -33,7 +33,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class IDataHTMLCoderTest {
+public class IDataHTMLParserTest {
     IData document;
 
     @Before
@@ -48,7 +48,7 @@ public class IDataHTMLCoderTest {
 
     @Test
     public void testEncodeToString() throws Exception {
-        String html = IDataHTMLCoder.getInstance().encodeToString(document);
+        String html = IDataHTMLParser.getInstance().encodeToString(document);
         assertTrue(html.contains("abc"));
         assertTrue(html.contains("def"));
         assertTrue(html.contains("ghi"));
@@ -59,6 +59,6 @@ public class IDataHTMLCoderTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void testDecodeToString() throws Exception {
-        IDataHTMLCoder.getInstance().decodeFromString("test");
+        IDataHTMLParser.getInstance().decodeFromString("test");
     }
 }

@@ -31,19 +31,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class IDataYAMLCoderTest {
-
-    @Test
-    public void testDecodeFromString() throws Exception {
-        String yaml = "abc: '123'\ndef: '456'\nghi: '789'";
-
-        IData document = IDataYAMLCoder.getInstance().decodeFromString(yaml);
-        IDataCursor cursor = document.getCursor();
-        assertEquals("123", IDataUtil.getString(cursor, "abc"));
-        assertEquals("456", IDataUtil.getString(cursor, "def"));
-        assertEquals("789", IDataUtil.getString(cursor, "ghi"));
-        cursor.destroy();
-    }
+public class IDataJSONParserTest {
 
     @Test
     public void testEncodeToString() throws Exception {
@@ -54,13 +42,25 @@ public class IDataYAMLCoderTest {
         IDataUtil.put(cursor, "ghi", "789");
         cursor.destroy();
 
-        String yaml = IDataYAMLCoder.getInstance().encodeToString(document);
+        String json = IDataJSONParser.getInstance().encodeToString(document);
 
-        assertTrue(yaml.contains("abc"));
-        assertTrue(yaml.contains("123"));
-        assertTrue(yaml.contains("def"));
-        assertTrue(yaml.contains("456"));
-        assertTrue(yaml.contains("ghi"));
-        assertTrue(yaml.contains("789"));
+        assertTrue(json.contains("abc"));
+        assertTrue(json.contains("123"));
+        assertTrue(json.contains("def"));
+        assertTrue(json.contains("456"));
+        assertTrue(json.contains("ghi"));
+        assertTrue(json.contains("789"));
+    }
+
+    @Test
+    public void testDecodeFromString() throws Exception {
+        String json = "{ \"abc\": \"123\", \"def\": \"456\", \"ghi\": \"789\" }";
+
+        IData document = IDataJSONParser.getInstance().decodeFromString(json);
+        IDataCursor cursor = document.getCursor();
+        assertEquals("123", IDataUtil.getString(cursor, "abc"));
+        assertEquals("456", IDataUtil.getString(cursor, "def"));
+        assertEquals("789", IDataUtil.getString(cursor, "ghi"));
+        cursor.destroy();
     }
 }

@@ -44,19 +44,19 @@ import java.util.Map;
 /**
  * Encodes IData objects to HTML.
  */
-public class IDataHTMLCoder extends IDataStringCoder {
-    protected static IDataHTMLCoder INSTANCE = new IDataHTMLCoder();
+public class IDataHTMLParser extends IDataTextParser {
+    protected static IDataHTMLParser INSTANCE = new IDataHTMLParser();
 
     /**
      * Disallow instantiation of this class;
      */
-    private IDataHTMLCoder() {}
+    private IDataHTMLParser() {}
 
     /**
      * Returns the singleton instance of this class.
      * @return The singleton instance of this class.
      */
-    public static IDataHTMLCoder getInstance() {
+    public static IDataHTMLParser getInstance() {
         return INSTANCE;
     }
 
