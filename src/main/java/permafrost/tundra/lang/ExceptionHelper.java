@@ -28,11 +28,16 @@ import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
 import com.wm.data.IDataUtil;
+import org.xml.sax.SAXParseException;
 
 /**
  * A collection of convenience methods for working with exceptions.
  */
 public class ExceptionHelper {
+    /**
+     * Disallow instantiation of this class.
+     */
+    private ExceptionHelper() {}
     /**
      * Throws a new BaseException whose message is constructed from the given
      * list of causes.
@@ -94,7 +99,7 @@ public class ExceptionHelper {
      * @throws BaseException Always throws a new BaseException.
      */
     public static void raise() throws BaseException {
-        throw new BaseException("");
+        throw new BaseException();
     }
 
     /**
@@ -105,7 +110,20 @@ public class ExceptionHelper {
      */
     public static String getMessage(Throwable exception) {
         if (exception == null) return "";
-        return exception.getClass().getName() + ": " + exception.getMessage();
+
+        StringBuilder builder = new StringBuilder();
+
+        builder.append(exception.getClass().getName());
+        builder.append(": ");
+        builder.append(exception.getMessage());
+
+        if (exception instanceof SAXParseException) {
+            SAXParseException parseException = (SAXParseException)exception;
+            //builder.append(" (Line ").append("" + ex.getLineNumber()).append(", Column ").append("" + ex.getColumnNumber()).append(")");
+            builder.append(String.format(" (Line %d, Column %d)", parseException.getLineNumber(), parseException.getColumnNumber()));
+        }
+
+        return builder.toString();
     }
 
     /**
