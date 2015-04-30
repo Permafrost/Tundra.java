@@ -26,6 +26,7 @@ package permafrost.tundra.zip;
 
 import permafrost.tundra.io.StreamHelper;
 import permafrost.tundra.lang.BytesHelper;
+import permafrost.tundra.lang.ObjectConvertMode;
 import permafrost.tundra.lang.ObjectHelper;
 
 import java.io.ByteArrayOutputStream;
@@ -80,7 +81,7 @@ public class ZipHelper {
             StreamHelper.close(zipOutputStream);
         }
 
-        return (InputStream)ObjectHelper.convert(byteArrayOutputStream == null ? null : byteArrayOutputStream.toByteArray(), ObjectHelper.ConvertMode.STREAM);
+        return (InputStream)ObjectHelper.convert(byteArrayOutputStream == null ? null : byteArrayOutputStream.toByteArray(), ObjectConvertMode.STREAM);
     }
 
     /**

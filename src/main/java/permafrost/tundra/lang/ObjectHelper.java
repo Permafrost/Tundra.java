@@ -271,59 +271,6 @@ public class ObjectHelper {
     }
 
     /**
-     * The supported return types for the convert method.
-     */
-    public enum ConvertMode {
-        STREAM(0), BYTES(1), STRING(2), BASE64(3);
-
-        /**
-         * The default convert mode used by Tundra.
-         */
-        public static final ConvertMode DEFAULT_CONVERT_MODE = STREAM;
-
-        private int value;
-
-        private static java.util.Map<Integer, ConvertMode> map = new java.util.HashMap<Integer, ConvertMode>();
-
-        ConvertMode(int value) {
-            this.value = value;
-        }
-
-        static {
-            for (ConvertMode type : ConvertMode.values()) {
-                map.put(type.value, type);
-            }
-        }
-
-        /**
-         * Returns an ConvertMode for the given integer value.
-         * @param value The value to be converted to an ConvertMode.
-         * @return      The ConvertMode representing the given value.
-         */
-        public static ConvertMode valueOf(int value) {
-            return map.get(value);
-        }
-
-        /**
-         * Returns an ConvertMode for the given string value.
-         * @param value The value to be converted to an ConvertMode.
-         * @return      The ConvertMode representing the given value.
-         */
-        public static ConvertMode normalize(String value) {
-            return normalize(value == null ? (ConvertMode)null : valueOf(value.trim().toUpperCase()));
-        }
-
-        /**
-         * Returns an ConvertMode for the given string value.
-         * @param value The value to be converted to an ConvertMode.
-         * @return      The ConvertMode representing the given value.
-         */
-        public static ConvertMode normalize(ConvertMode mode) {
-            return mode == null ? DEFAULT_CONVERT_MODE : mode;
-        }
-    }
-
-    /**
      * Converts a string, byte array or stream to a string, byte array or stream.
      * @param object        The object to be converted.
      * @param charsetName   The character set to use.
@@ -344,7 +291,7 @@ public class ObjectHelper {
      * @throws IOException  If an I/O problem occurs.
      */
     public static Object convert(Object object, Charset charset, String mode) throws IOException {
-        return convert(object, charset, ConvertMode.normalize(mode));
+        return convert(object, charset, ObjectConvertMode.normalize(mode));
     }
 
     /**
@@ -355,7 +302,7 @@ public class ObjectHelper {
      * @throws IOException  If an I/O problem occurs.
      */
     public static Object convert(Object object, String mode) throws IOException {
-        return convert(object, ConvertMode.normalize(mode));
+        return convert(object, ObjectConvertMode.normalize(mode));
     }
 
     /**
@@ -365,7 +312,7 @@ public class ObjectHelper {
      * @return              The converted object.
      * @throws IOException  If an I/O problem occurs.
      */
-    public static Object convert(Object object, ConvertMode mode) throws IOException {
+    public static Object convert(Object object, ObjectConvertMode mode) throws IOException {
         return convert(object, CharsetHelper.DEFAULT_CHARSET, mode);
     }
 
@@ -377,18 +324,18 @@ public class ObjectHelper {
      * @return              The converted object.
      * @throws IOException  If an I/O problem occurs.
      */
-    public static Object convert(Object object, Charset charset, ConvertMode mode) throws IOException {
+    public static Object convert(Object object, Charset charset, ObjectConvertMode mode) throws IOException {
         if (object == null) return null;
 
-        mode = ConvertMode.normalize(mode);
+        mode = ObjectConvertMode.normalize(mode);
 
-        if (mode == ConvertMode.BYTES) {
+        if (mode == ObjectConvertMode.BYTES) {
             object = BytesHelper.normalize(object, charset);
-        } else if (mode == ConvertMode.STRING) {
+        } else if (mode == ObjectConvertMode.STRING) {
             object = StringHelper.normalize(object, charset);
-        } else if (mode == ConvertMode.BASE64) {
+        } else if (mode == ObjectConvertMode.BASE64) {
             object = BytesHelper.base64Encode(BytesHelper.normalize(object, charset));
-        } else if (mode == ConvertMode.STREAM){
+        } else if (mode == ObjectConvertMode.STREAM){
             object = StreamHelper.normalize(object, charset);
         } else {
             throw new IllegalArgumentException("Unsupported conversion mode specified: " + mode);

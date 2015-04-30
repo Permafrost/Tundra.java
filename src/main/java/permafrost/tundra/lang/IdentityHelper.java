@@ -38,7 +38,7 @@ public class IdentityHelper {
      * @return     The new random UUID.
      */
     public static String generate() {
-        return generate((ObjectHelper.ConvertMode)null);
+        return generate((ObjectConvertMode)null);
     }
 
     /**
@@ -48,7 +48,7 @@ public class IdentityHelper {
      * @return     The new random UUID.
      */
     public static String generate(String mode) {
-        return generate(mode == null ? (ObjectHelper.ConvertMode)null : ObjectHelper.ConvertMode.normalize(mode));
+        return generate(mode == null ? (ObjectConvertMode)null : ObjectConvertMode.normalize(mode));
     }
 
     /**
@@ -57,15 +57,15 @@ public class IdentityHelper {
      *             UUID string or as a base64-encoded byte array.
      * @return     The new random UUID.
      */
-    public static String generate(ObjectHelper.ConvertMode mode) {
+    public static String generate(ObjectConvertMode mode) {
         java.util.UUID uuid = java.util.UUID.randomUUID();
         String id = null;
 
-        if (mode == null) mode = ObjectHelper.ConvertMode.STRING;
+        if (mode == null) mode = ObjectConvertMode.STRING;
 
-        if (mode == ObjectHelper.ConvertMode.STRING) {
+        if (mode == ObjectConvertMode.STRING) {
             id = uuid.toString();
-        } else if (mode == ObjectHelper.ConvertMode.BASE64) {
+        } else if (mode == ObjectConvertMode.BASE64) {
             long mostSignificantBits = uuid.getMostSignificantBits();
             long leastSignificantBits = uuid.getLeastSignificantBits();
             byte[] bytes = new byte[16];

@@ -30,6 +30,7 @@ import permafrost.tundra.data.IDataMap;
 import permafrost.tundra.io.StreamHelper;
 import permafrost.tundra.lang.BytesHelper;
 import permafrost.tundra.lang.CharsetHelper;
+import permafrost.tundra.lang.ObjectConvertMode;
 import permafrost.tundra.lang.ObjectHelper;
 
 import java.io.IOException;
@@ -106,8 +107,8 @@ public class ZipEntryWithData extends ZipEntry implements IDataCodable {
      * @param mode      Determines the type of object the data is returned as.
      * @return          An IData representation of this object.
      */
-    public IData getIData(Charset charset, ObjectHelper.ConvertMode mode) {
-        if (mode == null) mode = ObjectHelper.ConvertMode.STREAM;
+    public IData getIData(Charset charset, ObjectConvertMode mode) {
+        if (mode == null) mode = ObjectConvertMode.STREAM;
 
         IDataMap map = new IDataMap();
         map.put("name", getName());
@@ -128,7 +129,7 @@ public class ZipEntryWithData extends ZipEntry implements IDataCodable {
      * @param mode        Determines the type of object the data is returned as.
      * @return            An IData representation of this object.
      */
-    public IData getIData(String charsetName, ObjectHelper.ConvertMode mode) {
+    public IData getIData(String charsetName, ObjectConvertMode mode) {
         return getIData(CharsetHelper.normalize(charsetName), mode);
     }
 
@@ -139,7 +140,7 @@ public class ZipEntryWithData extends ZipEntry implements IDataCodable {
      * @return            An IData representation of this object.
      */
     public IData getIData(String charsetName, String mode) {
-        return getIData(charsetName, ObjectHelper.ConvertMode.normalize(mode));
+        return getIData(charsetName, ObjectConvertMode.normalize(mode));
     }
 
     /**
@@ -147,7 +148,7 @@ public class ZipEntryWithData extends ZipEntry implements IDataCodable {
      * @param mode      Determines the type of object the data is returned as.
      * @return An IData representation of this object.
      */
-    public IData getIData(ObjectHelper.ConvertMode mode) {
+    public IData getIData(ObjectConvertMode mode) {
         return getIData((Charset)null, mode);
     }
 
@@ -207,7 +208,7 @@ public class ZipEntryWithData extends ZipEntry implements IDataCodable {
      * @param mode     Determines the type of object the data is returned as.
      * @return         The IData[] representing the given ZipEntryWithData[].
      */
-    public static IData[] toIDataArray(ZipEntryWithData[] contents, Charset charset, ObjectHelper.ConvertMode mode) {
+    public static IData[] toIDataArray(ZipEntryWithData[] contents, Charset charset, ObjectConvertMode mode) {
         if (contents == null) return null;
 
         IData[] array = new IData[contents.length];
@@ -227,7 +228,7 @@ public class ZipEntryWithData extends ZipEntry implements IDataCodable {
      * @param mode          Determines the type of object the data is returned as.
      * @return              The IData[] representing the given ZipEntryWithData[].
      */
-    public static IData[] toIDataArray(ZipEntryWithData[] contents, String charsetName, ObjectHelper.ConvertMode mode) {
+    public static IData[] toIDataArray(ZipEntryWithData[] contents, String charsetName, ObjectConvertMode mode) {
         return toIDataArray(contents, CharsetHelper.normalize(charsetName), mode);
     }
 
@@ -239,7 +240,7 @@ public class ZipEntryWithData extends ZipEntry implements IDataCodable {
      * @return              The IData[] representing the given ZipEntryWithData[].
      */
     public static IData[] toIDataArray(ZipEntryWithData[] contents, String charsetName, String mode) {
-        return toIDataArray(contents, charsetName, ObjectHelper.ConvertMode.normalize(mode));
+        return toIDataArray(contents, charsetName, ObjectConvertMode.normalize(mode));
     }
 
     /**
@@ -248,7 +249,7 @@ public class ZipEntryWithData extends ZipEntry implements IDataCodable {
      * @param mode          Determines the type of object the data is returned as.
      * @return              The IData[] representing the given ZipEntryWithData[].
      */
-    public static IData[] toIDataArray(ZipEntryWithData[] contents, ObjectHelper.ConvertMode mode) {
+    public static IData[] toIDataArray(ZipEntryWithData[] contents, ObjectConvertMode mode) {
         return toIDataArray(contents, (Charset)null, mode);
     }
 
@@ -258,6 +259,6 @@ public class ZipEntryWithData extends ZipEntry implements IDataCodable {
      * @return         The IData[] representing the given ZipEntryWithData[].
      */
     public static IData[] toIDataArray(ZipEntryWithData[] contents) {
-        return toIDataArray(contents, (ObjectHelper.ConvertMode)(null));
+        return toIDataArray(contents, (ObjectConvertMode)(null));
     }
 }
