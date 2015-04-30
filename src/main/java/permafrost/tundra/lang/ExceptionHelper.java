@@ -30,6 +30,9 @@ import com.wm.data.IDataFactory;
 import com.wm.data.IDataUtil;
 import org.xml.sax.SAXParseException;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 /**
  * A collection of convenience methods for working with exceptions.
  */
@@ -143,20 +146,36 @@ public class ExceptionHelper {
      * @return A message describing all exceptions in the given list.
      */
     public static String getMessage(Throwable[] exceptions) {
-        StringBuilder msg = new StringBuilder();
-        if (exceptions != null) {
-            if (exceptions.length == 1 && exceptions[0] != null) {
-                msg.append(getMessage(exceptions[0]));
-            } else {
-                for (int i = 0; i < exceptions.length; i++) {
-                    if (exceptions[i] != null) {
-                        msg.append("[").append(i).append("]: ").append(getMessage(exceptions[i]));
-                        if (i < exceptions.length - 1) msg.append("\n");
-                    }
-                }
+        return ArrayHelper.join(getMessages(exceptions), "\n");
+    }
+
+    /**
+     * Returns a message describing the given list of exceptions.
+     *
+     * @param exceptions A list of exceptions whose messages are to be retrieved.
+     * @return A message describing all exceptions in the given list.
+     */
+    public static Collection<String> getMessages(Collection<Throwable> exceptions) {
+        return Arrays.asList(getMessages(exceptions.toArray(new Throwable[exceptions.size()])));
+    }
+
+    /**
+     * Returns a message describing the given list of exceptions.
+     *
+     * @param exceptions A list of exceptions whose messages are to be retrieved.
+     * @return A message describing all exceptions in the given list.
+     */
+    public static String[] getMessages(Throwable[] exceptions) {
+        if (exceptions == null) return null;
+
+        String[] messages = new String[exceptions.length];
+        for (int i = 0; i < exceptions.length; i++) {
+            if (exceptions[i] != null) {
+                messages[i] = String.format("[%d] %s", i, getMessage(exceptions[i]));
             }
         }
-        return msg.toString();
+
+        return messages;
     }
 
     /**
