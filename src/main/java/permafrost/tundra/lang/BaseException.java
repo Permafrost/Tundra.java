@@ -26,40 +26,55 @@ package permafrost.tundra.lang;
 
 import com.wm.app.b2b.server.ServiceException;
 
-public class ChainableServiceException extends ServiceException {
+import java.util.Collection;
+
+public class BaseException extends ServiceException {
     /**
-     * Constructs a new ChainableServiceException.
+     * Constructs a new BaseException.
      */
-    public ChainableServiceException() {
+    public BaseException() {
         super("");
     }
 
     /**
-     * Constructs a new ChainableServiceException with the given message.
-     *
-     * @param message A message describing why the ChainableServiceException was thrown.
+     * Constructs a new BaseException with the given message.
+     * @param message A message describing why the BaseException was thrown.
      */
-    public ChainableServiceException(String message) {
+    public BaseException(String message) {
         super(message);
     }
 
     /**
-     * Constructs a new ChainableServiceException with the given cause.
-     *
-     * @param cause The cause of this ChainableServiceException.
+     * Constructs a new BaseException with the given cause.
+     * @param cause The cause of this BaseException.
      */
-    public ChainableServiceException(Throwable cause) {
+    public BaseException(Throwable cause) {
         this(ExceptionHelper.getMessage(cause), cause);
     }
 
     /**
-     * Constructs a new ChainableServiceException with the given message and cause.
-     *
-     * @param message A message describing why the ChainableServiceException was thrown.
+     * Constructs a new BaseException with the given message and cause.
+     * @param message A message describing why the BaseException was thrown.
      * @param cause The cause of this Exception.
      */
-    public ChainableServiceException(String message, Throwable cause) {
+    public BaseException(String message, Throwable cause) {
         super(message);
         initCause(cause);
+    }
+
+    /**
+     * Constructs a new BaseException with the given list of exceptions.
+     * @param exceptions A collection of exceptions this exception will wrap.
+     */
+    public BaseException(Collection<Throwable> exceptions) {
+        super(ExceptionHelper.getMessage(exceptions));
+    }
+
+    /**
+     * Constructs a new BaseException with the given list of exceptions.
+     * @param exceptions A collection of exceptions this exception will wrap.
+     */
+    public BaseException(Throwable... exceptions) {
+        super(ExceptionHelper.getMessage(exceptions));
     }
 }

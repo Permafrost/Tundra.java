@@ -29,37 +29,37 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class ChainableServiceExceptionTest {
+public class BaseExceptionTest {
     @Test
     public void testGetMessageWithCause() throws Exception {
         String message = "test";
-        ChainableServiceException ex = new ChainableServiceException(new IllegalArgumentException(message));
+        BaseException ex = new BaseException(new IllegalArgumentException(message));
         assertEquals("Message should be prefixed with cause's class name", IllegalArgumentException.class.getName() + ": " + message, ex.getMessage());
     }
 
     @Test
     public void testGetMessageWithMessageAndCause() throws Exception {
         String message = "test";
-        ChainableServiceException ex = new ChainableServiceException(message, new IllegalArgumentException(message));
+        BaseException ex = new BaseException(message, new IllegalArgumentException(message));
         assertEquals("Message should be a literal match", message, ex.getMessage());
     }
 
     @Test
     public void testGetMessageWithMessage() throws Exception {
         String message = "test";
-        ChainableServiceException ex = new ChainableServiceException(message);
+        BaseException ex = new BaseException(message);
         assertEquals("Message should be a literal match", message, ex.getMessage());
     }
 
     @Test
     public void testGetMessageNoArguments() throws Exception {
-        ChainableServiceException ex = new ChainableServiceException();
+        BaseException ex = new BaseException();
         assertEquals("Message should be empty string", "", ex.getMessage());
     }
 
     @Test
     public void testBaseExceptionInstanceOfServiceException() throws Exception {
-        ChainableServiceException ex = new ChainableServiceException();
+        BaseException ex = new BaseException();
         assertTrue(ex instanceof ServiceException);
     }
 }

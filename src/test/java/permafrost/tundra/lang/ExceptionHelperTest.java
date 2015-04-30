@@ -32,22 +32,22 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 public class ExceptionHelperTest {
-    @Test(expected = ChainableServiceException.class)
+    @Test(expected = BaseException.class)
     public void testRaiseNoArguments() throws Exception {
         ExceptionHelper.raise();
     }
 
-    @Test(expected = ChainableServiceException.class)
+    @Test(expected = BaseException.class)
     public void testRaiseWithMessage() throws Exception {
         ExceptionHelper.raise("test");
     }
 
-    @Test(expected = ChainableServiceException.class)
+    @Test(expected = BaseException.class)
     public void testRaiseWithCause() throws Exception {
         ExceptionHelper.raise(new IllegalArgumentException("test"));
     }
 
-    @Test(expected = ChainableServiceException.class)
+    @Test(expected = BaseException.class)
     public void testRaiseWithCauseArray() throws Exception {
         Throwable[] throwables = new Throwable[2];
 
@@ -58,7 +58,7 @@ public class ExceptionHelperTest {
         ExceptionHelper.raise(throwables);
     }
 
-    @Test(expected = ChainableServiceException.class)
+    @Test(expected = BaseException.class)
     public void testRaiseWithCauseCollection() throws Exception {
         List<Throwable> throwables = new ArrayList<Throwable>(2);
 
