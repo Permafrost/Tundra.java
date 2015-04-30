@@ -332,6 +332,8 @@ public class IDataHelper {
             value = normalize((ValuesCodable[]) value);
         } else if (value instanceof Collection) {
             value = normalize((Collection) value);
+        } else if (value instanceof Map[]) {
+            value = normalize((Map[]) value);
         }
 
         return value;
@@ -384,7 +386,7 @@ public class IDataHelper {
      * @return      An Object[] representation of the given java.util.List object.
      */
     private static Object[] normalize(Collection input) {
-        return normalize(input.toArray());
+        return normalize(ArrayHelper.toArray(input));
     }
 
     /**
@@ -478,6 +480,16 @@ public class IDataHelper {
      * @return          An IData[] representation of the given com.wm.util.Table object.
      */
     public static IData[] normalize(Table input) {
+        return normalize(toIDataArray(input));
+    }
+
+    /**
+     * Normalizes a Map[] object to an IData[] representation.
+     *
+     * @param input     A Map[] object to be normalized.
+     * @return          An IData[] representation of the given Map[] object.
+     */
+    public static IData[] normalize(Map[] input) {
         return normalize(toIDataArray(input));
     }
 
@@ -928,6 +940,8 @@ public class IDataHelper {
             output = toIData((IDataPortable)input);
         } else if (input instanceof ValuesCodable) {
             output = toIData((ValuesCodable)input);
+        } else if (input instanceof Map) {
+            output = toIData((Map) input);
         }
 
         return output;
@@ -1001,11 +1015,13 @@ public class IDataHelper {
         } else if (input instanceof Table) {
             output = toIDataArray((Table) input);
         } else if (input instanceof IDataCodable[]) {
-            output = toIDataArray((IDataCodable[])input);
+            output = toIDataArray((IDataCodable[]) input);
         } else if (input instanceof IDataPortable[]) {
-            output = toIDataArray((IDataPortable[])input);
+            output = toIDataArray((IDataPortable[]) input);
         } else if (input instanceof ValuesCodable[]) {
-            output = toIDataArray((ValuesCodable[])input);
+            output = toIDataArray((ValuesCodable[]) input);
+        } else if (input instanceof Map[]) {
+            output = toIDataArray((Map[]) input);
         }
 
         return output;
@@ -1055,6 +1071,20 @@ public class IDataHelper {
      * @return      An IData[] representation of the give ValuesCodable[] object.
      */
     public static IData[] toIDataArray(ValuesCodable[] input) {
+        if (input == null) return null;
+        IData[] output = new IData[input.length];
+        for(int i = 0; i < input.length; i++) {
+            output[i] = toIData(input[i]);
+        }
+        return output;
+    }
+
+    /**
+     * Returns an IData[] representation of the given Map[] object.
+     * @param input The Map[] object to be converted to an IData[] object.
+     * @return      An IData[] representation of the give Map[] object.
+     */
+    public static IData[] toIDataArray(Map[] input) {
         if (input == null) return null;
         IData[] output = new IData[input.length];
         for(int i = 0; i < input.length; i++) {
