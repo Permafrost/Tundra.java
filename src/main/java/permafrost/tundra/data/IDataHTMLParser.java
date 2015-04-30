@@ -107,49 +107,57 @@ public class IDataHTMLParser extends IDataTextParser {
         if (size == 0) {
             buffer.append(HTMLEntity.EMPTY.toString());
         } else {
-            // table
-            buffer.append("<table>");
+            IDataCursor cursor = input.getCursor();
+            IData[] array = IDataUtil.getIDataArray(cursor, "recordWithNoID");
+            cursor.destroy();
 
-            // thead
-            buffer.append("<thead>");
-            buffer.append("<tr>");
-            buffer.append("<th>Key</th>");
-            buffer.append("<th>Value</th>");
-            buffer.append("</tr>");
-            buffer.append("</thead>");
+            if (array != null) {
+                buffer.append(encodeToString(array));
+            } else {
+                // table
+                buffer.append("<table>");
 
-            // tbody
-            buffer.append("<tbody>");
-            for (Map.Entry<String, Object> entry : new IDataMap(input)) {
-                String key = entry.getKey();
-                Object value = entry.getValue();
-
+                // thead
+                buffer.append("<thead>");
                 buffer.append("<tr>");
-                buffer.append("<th>");
-                buffer.append(HTMLHelper.encode(key));
-                buffer.append("</th>");
-                buffer.append("<td>");
-
-                if (value == null) {
-                    buffer.append(HTMLEntity.NULL.toString());
-                } else {
-                    if (value instanceof IData) {
-                        buffer.append(encodeToString((IData) value));
-                    } else if (value instanceof IData[]) {
-                        buffer.append(encodeToString((IData[]) value));
-                    } else if (value instanceof Object[][]) {
-                        buffer.append(encodeToString((Object[][]) value));
-                    } else if (value instanceof Object[]) {
-                        buffer.append(encodeToString((Object[]) value));
-                    } else {
-                        buffer.append(HTMLHelper.encode(value.toString()));
-                    }
-                }
-                buffer.append("</td>");
+                buffer.append("<th>Key</th>");
+                buffer.append("<th>Value</th>");
                 buffer.append("</tr>");
+                buffer.append("</thead>");
+
+                // tbody
+                buffer.append("<tbody>");
+                for (Map.Entry<String, Object> entry : new IDataMap(input)) {
+                    String key = entry.getKey();
+                    Object value = entry.getValue();
+
+                    buffer.append("<tr>");
+                    buffer.append("<th>");
+                    buffer.append(HTMLHelper.encode(key));
+                    buffer.append("</th>");
+                    buffer.append("<td>");
+
+                    if (value == null) {
+                        buffer.append(HTMLEntity.NULL.toString());
+                    } else {
+                        if (value instanceof IData) {
+                            buffer.append(encodeToString((IData) value));
+                        } else if (value instanceof IData[]) {
+                            buffer.append(encodeToString((IData[]) value));
+                        } else if (value instanceof Object[][]) {
+                            buffer.append(encodeToString((Object[][]) value));
+                        } else if (value instanceof Object[]) {
+                            buffer.append(encodeToString((Object[]) value));
+                        } else {
+                            buffer.append(HTMLHelper.encode(value.toString()));
+                        }
+                    }
+                    buffer.append("</td>");
+                    buffer.append("</tr>");
+                }
+                buffer.append("</tbody>");
+                buffer.append("</table>");
             }
-            buffer.append("</tbody>");
-            buffer.append("</table>");
         }
 
         return buffer.toString();
