@@ -115,7 +115,7 @@ public class IDataHTMLParser extends IDataTextParser {
                 buffer.append(encodeToString(array));
             } else {
                 // table
-                buffer.append("<table>");
+                buffer.append("<table class=\"IData\">");
 
                 // thead
                 buffer.append("<thead>");
@@ -178,7 +178,7 @@ public class IDataHTMLParser extends IDataTextParser {
             buffer.append(HTMLEntity.EMPTY.toString());
         } else {
             // table
-            buffer.append("<table>");
+            buffer.append("<table class=\"IData[]\">");
 
             // thead
             buffer.append("<thead>");
