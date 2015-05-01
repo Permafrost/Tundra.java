@@ -132,6 +132,7 @@ public class CharsetHelper {
      * @param inCharset         The charset the text content is currently encoded with.
      * @param outCharset        The charset the returned converted text content will be encoded with.
      * @return                  The given text content converted from one charset to another.
+     * @throws IOException      If an I/O error occurs.
      */
     public static InputStream convert(InputStream content, Charset inCharset, Charset outCharset) throws IOException {
         return StreamHelper.normalize(convert(BytesHelper.normalize(content), inCharset, outCharset));
@@ -145,6 +146,7 @@ public class CharsetHelper {
      * @param inCharsetName     The charset the text content is currently encoded with.
      * @param outCharsetName    The charset the returned converted text content will be encoded with.
      * @return                  The given text content converted from one charset to another.
+     * @throws IOException      If an I/O error occurs.
      */
     public static InputStream convert(InputStream content, String inCharsetName, String outCharsetName) throws IOException {
         return convert(content, normalize(inCharsetName), normalize(outCharsetName));
