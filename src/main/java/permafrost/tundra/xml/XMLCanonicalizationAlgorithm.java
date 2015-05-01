@@ -84,9 +84,9 @@ public enum XMLCanonicalizationAlgorithm {
     }
 
     /**
-     * Returns an XML canonicalization algorithm associated with the given name.
-     * @param name The value to be converted to an HTTPMethod.
-     * @return      The HTTPMethod representing the given value.
+     * Normalizes the given XMLCanonicalizationAlgorithm.
+     * @param algorithm The XMLCanonicalizationAlgorithm to be normalized.
+     * @return          The default XMLCanonicalizationAlgorithm if algorithm is null, otherwise algorithm.
      */
     public static XMLCanonicalizationAlgorithm normalize(XMLCanonicalizationAlgorithm algorithm) {
         return algorithm == null ? DEFAULT_ALGORITHM : algorithm;
