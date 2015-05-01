@@ -50,11 +50,13 @@ public class StreamHelper {
      * @param closeables One or more java.io.Closeable object to be closed.
      */
     public static void close(Closeable ... closeables) {
-        for (Closeable closeable : closeables) {
-            try {
-                closeable.close();
-            } catch (IOException ex) {
-                // suppress the exception
+        if (closeables != null) {
+            for (Closeable closeable : closeables) {
+                try {
+                    if (closeable != null) closeable.close();
+                } catch (IOException ex) {
+                    // suppress the exception
+                }
             }
         }
     }
