@@ -98,9 +98,11 @@ public class DateTimeHelper {
     /**
      * Adds the given duration to the given datetime.
      *
-     * @param datetime The datetime to add the duration to.
-     * @param duration The duration to be added.
-     * @return         A new datetime representing the given datetime plus the given duration.
+     * @param datetime          The datetime to add the duration to.
+     * @param datetimePattern   The pattern the given datetime conforms to.
+     * @param duration          The duration to be added.
+     * @param durationPattern   The pattern the given duration conforms to.
+     * @return                  A new datetime representing the given datetime plus the given duration.
      */
     public static String add(String datetime, String datetimePattern, String duration, String durationPattern) {
         return emit(add(parse(datetime, datetimePattern), DurationHelper.parse(duration, durationPattern)), datetimePattern);
