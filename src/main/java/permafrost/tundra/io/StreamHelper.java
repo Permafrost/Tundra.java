@@ -47,6 +47,7 @@ public class StreamHelper {
     /**
      * Closes all given closeable objects, suppressing any encountered
      * java.io.IOExceptions.
+     *
      * @param closeables One or more java.io.Closeable object to be closed.
      */
     public static void close(Closeable ... closeables) {
@@ -64,6 +65,7 @@ public class StreamHelper {
     /**
      * Normalizes the given java.io.InputStream, by wrapping it in a
      * java.io.BufferedInputStream where appropriate.
+     *
      * @param inputStream   A java.io.InputStream to be normalized.
      * @return              The normalized java.io.InputStream.
      */
@@ -78,6 +80,7 @@ public class StreamHelper {
     /**
      * Normalizes the given java.io.OutputStream, by wrapping it in a
      * java.io.BufferedOutputStream where appropriate.
+     *
      * @param outputStream  A java.io.OutputStream to be normalized.
      * @return              The normalized java.io.OutputStream.
      */
@@ -92,6 +95,7 @@ public class StreamHelper {
     /**
      * Normalizes the given java.io.Reader, by wrapping it in a
      * java.io.BufferedReader where appropriate.
+     *
      * @param reader    A java.io.Reader to be normalized.
      * @return          The normalized java.io.Reader.
      */
@@ -106,6 +110,7 @@ public class StreamHelper {
     /**
      * Normalizes the given java.io.Writer, by wrapping it in a
      * java.io.BufferedWriter where appropriate.
+     *
      * @param writer    A java.io.Writer to be normalized.
      * @return          The normalized java.io.Writer.
      */
@@ -274,6 +279,7 @@ public class StreamHelper {
      *
      * @param inputStream       An input stream containing data to be read.
      * @param close             When true the input stream will be closed when done.
+     * @return                  Returns a byte[] containing all the data read from the given inputStream.
      * @throws IOException      If there is a problem reading from the stream.
      */
     public static byte[] readToBytes(InputStream inputStream, boolean close) throws IOException {
@@ -285,9 +291,10 @@ public class StreamHelper {
     }
 
     /**
-     * Reads all data from the given input stream, and optionally closes it when done.
+     * Reads all data from the given input stream, and then closes it when done.
      *
      * @param inputStream       An input stream containing data to be read.
+     * @return                  Returns a byte[] containing all the data read from the given inputStream.
      * @throws IOException      If there is a problem reading from the stream.
      */
     public static byte[] readToBytes(InputStream inputStream) throws IOException {
