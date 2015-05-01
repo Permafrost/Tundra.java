@@ -48,7 +48,7 @@ public class ExceptionHelper {
      * @param causes The list of exceptions which caused this new BaseException to be thrown.
      * @throws BaseException Always throws a new BaseException using the given list of causes.
      */
-    public static void raise(Throwable[] causes) throws BaseException {
+    public static void raise(Throwable ... causes) throws BaseException {
         raise(getMessage(causes));
     }
 
@@ -145,7 +145,7 @@ public class ExceptionHelper {
      * @param exceptions A list of exceptions whose messages are to be retrieved.
      * @return A message describing all exceptions in the given list.
      */
-    public static String getMessage(Throwable[] exceptions) {
+    public static String getMessage(Throwable ... exceptions) {
         return ArrayHelper.join(getMessages(exceptions), "\n");
     }
 
@@ -165,7 +165,7 @@ public class ExceptionHelper {
      * @param exceptions A list of exceptions whose messages are to be retrieved.
      * @return A message describing all exceptions in the given list.
      */
-    public static String[] getMessages(Throwable[] exceptions) {
+    public static String[] getMessages(Throwable ... exceptions) {
         if (exceptions == null) return null;
 
         String[] messages = new String[exceptions.length];
