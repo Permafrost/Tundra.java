@@ -45,9 +45,10 @@ public class IDataComparisonCriterion implements IDataCodable {
 
     /**
      * Constructs a new IDataComparisonCriterion object.
-     * @param key The IData key on which the comparison will be made:
-     *            the values associated with this key will be compared
-     *            in ascending order.
+     *
+     * @param key           The IData key on which the comparison will be made:
+     *                      the values associated with this key will be compared
+     *                      in ascending order.
      */
     public IDataComparisonCriterion(String key) {
         this(key, false);
@@ -55,10 +56,11 @@ public class IDataComparisonCriterion implements IDataCodable {
 
     /**
      * Constructs a new IDataComparisonCriterion object.
-     * @param key The IData key on which the comparison will be made.
-     * @param descending If true, the values associated with this key
-     *                   will be compared in descending order, otherwise
-     *                   they will be compared in ascending order.
+     *
+     * @param key           The IData key on which the comparison will be made.
+     * @param descending    If true, the values associated with this key
+     *                      will be compared in descending order, otherwise
+     *                      they will be compared in ascending order.
      */
     public IDataComparisonCriterion(String key, boolean descending) {
         this(key, (IDataComparisonType)null, (String)null, descending);
@@ -66,12 +68,13 @@ public class IDataComparisonCriterion implements IDataCodable {
 
     /**
      * Constructs a new IDataComparisonCriterion object.
-     * @param key The IData key on which the comparison will be made.
-     * @param type The type of comparison to be used; must be one of the
-     *             enumeration values in the IDataComparisonType enumeration.
-     * @param pattern If the type of comparison is DATETIME or DURATION, this
-     *                is the pattern to be used to parse the DATETIME or
-     *                DURATION value.
+     *
+     * @param key           The IData key on which the comparison will be made.
+     * @param type          The type of comparison to be used; must be one of the
+     *                      enumeration values in the IDataComparisonType enumeration.
+     * @param pattern       If the type of comparison is DATETIME or DURATION, this
+     *                      is the pattern to be used to parse the DATETIME or
+     *                      DURATION value.
      */
     public IDataComparisonCriterion(String key, String type, String pattern) {
         this(key, IDataComparisonType.normalize(type), pattern);
@@ -79,12 +82,13 @@ public class IDataComparisonCriterion implements IDataCodable {
 
     /**
      * Constructs a new IDataComparisonCriterion object.
-     * @param key The IData key on which the comparison will be made.
-     * @param type The type of comparison to be used; must be one of the
-     *             enumeration values in the IDataComparisonType enumeration.
-     * @param pattern If the type of comparison is DATETIME or DURATION, this
-     *                is the pattern to be used to parse the DATETIME or
-     *                DURATION value.
+     *
+     * @param key           The IData key on which the comparison will be made.
+     * @param type          The type of comparison to be used; must be one of the
+     *                      enumeration values in the IDataComparisonType enumeration.
+     * @param pattern       If the type of comparison is DATETIME or DURATION, this
+     *                      is the pattern to be used to parse the DATETIME or
+     *                      DURATION value.
      */
     public IDataComparisonCriterion(String key, IDataComparisonType type, String pattern) {
         this(key, type, pattern, false);
@@ -92,15 +96,16 @@ public class IDataComparisonCriterion implements IDataCodable {
 
     /**
      * Constructs a new IDataComparisonCriterion object.
-     * @param key The IData key on which the comparison will be made.
-     * @param type The type of comparison to be used; must be one of the
-     *             enumeration values in the IDataComparisonType enumeration.
-     * @param pattern If the type of comparison is DATETIME or DURATION, this
-     *                is the pattern to be used to parse the DATETIME or
-     *                DURATION value.
-     * @param descending If true, the values associated with this key
-     *                   will be compared in descending order, otherwise
-     *                   they will be compared in ascending order.
+     *
+     * @param key           The IData key on which the comparison will be made.
+     * @param type          The type of comparison to be used; must be one of the
+     *                      enumeration values in the IDataComparisonType enumeration.
+     * @param pattern       If the type of comparison is DATETIME or DURATION, this
+     *                      is the pattern to be used to parse the DATETIME or
+     *                      DURATION value.
+     * @param descending    If true, the values associated with this key
+     *                      will be compared in descending order, otherwise
+     *                      they will be compared in ascending order.
      */
     public IDataComparisonCriterion(String key, String type, String pattern, boolean descending) {
         this(key, IDataComparisonType.normalize(type), pattern, descending);
@@ -108,15 +113,16 @@ public class IDataComparisonCriterion implements IDataCodable {
 
     /**
      * Constructs a new IDataComparisonCriterion object.
-     * @param key The IData key on which the comparison will be made.
-     * @param type The type of comparison to be used; must be one of the
-     *             enumeration values in the IDataComparisonType enumeration.
-     * @param pattern If the type of comparison is DATETIME or DURATION, this
-     *                is the pattern to be used to parse the DATETIME or
-     *                DURATION value.
-     * @param descending If true, the values associated with this key
-     *                   will be compared in descending order, otherwise
-     *                   they will be compared in ascending order.
+     *
+     * @param key           The IData key on which the comparison will be made.
+     * @param type          The type of comparison to be used; must be one of the
+     *                      enumeration values in the IDataComparisonType enumeration.
+     * @param pattern       If the type of comparison is DATETIME or DURATION, this
+     *                      is the pattern to be used to parse the DATETIME or
+     *                      DURATION value.
+     * @param descending    If true, the values associated with this key
+     *                      will be compared in descending order, otherwise
+     *                      they will be compared in ascending order.
      */
     public IDataComparisonCriterion(String key, IDataComparisonType type, String pattern, boolean descending) {
         initialize(key, type, pattern, descending);
@@ -124,8 +130,9 @@ public class IDataComparisonCriterion implements IDataCodable {
 
     /**
      * Constructs a new IDataComparisonCriterion object.
-     * @param document  An IData document containing the following keys: key,
-     *                  type, pattern, descending?
+     *
+     * @param document      An IData document containing the following keys: key,
+     *                      type, pattern, descending?
      */
     public IDataComparisonCriterion(IData document) {
         setIData(document);
@@ -194,6 +201,7 @@ public class IDataComparisonCriterion implements IDataCodable {
     /**
      * Sets all the values of this comparison criterion object
      * using the given IData.
+     *
      * @param document  An IData document containing the following keys: key,
      *                  type, pattern, descending?
      */
@@ -215,6 +223,7 @@ public class IDataComparisonCriterion implements IDataCodable {
 
     /**
      * Initializes all the values of this comparison criterion object.
+     *
      * @param key           The key to use in the comparison.
      * @param type          The type of value the key is associated with.
      * @param pattern       The pattern to use to parse the value the key is associated with.
@@ -226,6 +235,11 @@ public class IDataComparisonCriterion implements IDataCodable {
 
     /**
      * Initializes all the values of this comparison criterion object.
+     *
+     * @param key           The key to use in the comparison.
+     * @param type          The type of value the key is associated with.
+     * @param pattern       The pattern to use to parse the value the key is associated with.
+     * @param descending    True if the comparison should be in descending order.
      */
     protected void initialize(String key, IDataComparisonType type, String pattern, boolean descending) {
         this.key = key;
