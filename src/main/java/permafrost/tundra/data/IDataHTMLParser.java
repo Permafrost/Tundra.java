@@ -178,7 +178,7 @@ public class IDataHTMLParser extends IDataTextParser {
             buffer.append(HTMLEntity.EMPTY.toString());
         } else {
             // table
-            buffer.append("<table class=\"IData[]\">");
+            buffer.append("<table class=\"IDataArray\">");
 
             // thead
             buffer.append("<thead>");
