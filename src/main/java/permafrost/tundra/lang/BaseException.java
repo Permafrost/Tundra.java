@@ -41,7 +41,7 @@ public class BaseException extends ServiceException {
      * @param message A message describing why the BaseException was thrown.
      */
     public BaseException(String message) {
-        super(message);
+        super(message == null ? "" : message);
     }
 
     /**
