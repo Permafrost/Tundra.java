@@ -41,6 +41,7 @@ import java.nio.charset.Charset;
 public abstract class IDataTextParser extends IDataCoder implements IDataParser {
     /**
      * Encodes the given IData document as a string.
+     *
      * @param outputStream  The stream to write the encoded IData to.
      * @param document      The IData document to be encoded.
      * @param charset       The character set to use.
@@ -49,7 +50,18 @@ public abstract class IDataTextParser extends IDataCoder implements IDataParser 
     public abstract void encode(OutputStream outputStream, IData document, Charset charset) throws IOException;
 
     /**
+     * Decodes the given input stream data as an IData.
+     *
+     * @param inputStream   The stream to read the data to be decoded from.
+     * @param charset       The character set to use.
+     * @return              The IData representation of the stream data.
+     * @throws IOException  If there is a problem reading from the stream.
+     */
+    public abstract IData decode(InputStream inputStream, Charset charset) throws IOException;
+
+    /**
      * Encodes the given IData document as a string.
+     *
      * @param outputStream  The stream to write the encoded IData to.
      * @param document      The IData document to be encoded.
      * @param charsetName   The character set to use.
@@ -61,6 +73,7 @@ public abstract class IDataTextParser extends IDataCoder implements IDataParser 
 
     /**
      * Encodes the given IData document as a string.
+     *
      * @param outputStream  The stream to write the encoded IData to.
      * @param document      The IData document to be encoded.
      * @throws IOException  If there is a problem writing to the stream.
@@ -71,6 +84,7 @@ public abstract class IDataTextParser extends IDataCoder implements IDataParser 
 
     /**
      * Encodes the given IData document as a string.
+     *
      * @param document      The IData document to be encoded.
      * @param charset       The character set to use.
      * @return              A byte[] representation of the resulting string.
@@ -84,6 +98,7 @@ public abstract class IDataTextParser extends IDataCoder implements IDataParser 
 
     /**
      * Encodes the given IData document as a string.
+     *
      * @param document      The IData document to be encoded.
      * @param charsetName   The character set to use.
      * @return              A byte[] representation of the resulting string.
@@ -95,6 +110,7 @@ public abstract class IDataTextParser extends IDataCoder implements IDataParser 
 
     /**
      * Encodes the given IData document as a string.
+     *
      * @param document      The IData document to be encoded.
      * @return              A byte[] representation of the resulting string.
      * @throws IOException  If there is a problem writing to the stream.
@@ -105,6 +121,7 @@ public abstract class IDataTextParser extends IDataCoder implements IDataParser 
 
     /**
      * Encodes the given IData document as a string.
+     *
      * @param document      The IData document to be encoded.
      * @return              A string representation of the IData.
      * @throws IOException  If there is an I/O problem.
@@ -115,15 +132,7 @@ public abstract class IDataTextParser extends IDataCoder implements IDataParser 
 
     /**
      * Decodes the given input stream data as an IData.
-     * @param inputStream   The stream to read the data to be decoded from.
-     * @param charset       The character set to use.
-     * @return              The IData representation of the stream data.
-     * @throws IOException  If there is a problem reading from the stream.
-     */
-    public abstract IData decode(InputStream inputStream, Charset charset) throws IOException;
-
-    /**
-     * Decodes the given input stream data as an IData.
+     *
      * @param inputStream   The stream to read the data to be decoded from.
      * @param charsetName   The character set to use.
      * @return              The IData representation of the stream data.
@@ -135,6 +144,7 @@ public abstract class IDataTextParser extends IDataCoder implements IDataParser 
 
     /**
      * Decodes the given input stream data as an IData.
+     *
      * @param inputStream   The stream to read the data to be decoded from.
      * @return              The IData representation of the stream data.
      * @throws IOException  If there is a problem reading from the stream.
@@ -145,6 +155,7 @@ public abstract class IDataTextParser extends IDataCoder implements IDataParser 
 
     /**
      * Decodes the given byte data as an IData.
+     *
      * @param bytes         The byte[] to read the data to be decoded from.
      * @param charset       The character set to use.
      * @return              The IData representation of the byte data.
@@ -156,6 +167,7 @@ public abstract class IDataTextParser extends IDataCoder implements IDataParser 
 
     /**
      * Decodes the given byte data as an IData.
+     *
      * @param bytes         The byte[] to read the data to be decoded from.
      * @param charsetName   The character set to use.
      * @return              The IData representation of the byte data.
@@ -167,6 +179,7 @@ public abstract class IDataTextParser extends IDataCoder implements IDataParser 
 
     /**
      * Decodes the given byte data as an IData.
+     *
      * @param bytes         The byte[] to read the data to be decoded from.
      * @return              The IData representation of the byte data.
      * @throws IOException  If there is a problem reading from the stream.
@@ -177,6 +190,7 @@ public abstract class IDataTextParser extends IDataCoder implements IDataParser 
 
     /**
      * Decodes the given String as an IData.
+     *
      * @param string        The String to be decoded.
      * @return              The IData representation of the String.
      * @throws IOException  If there is an I/O problem.
@@ -187,6 +201,7 @@ public abstract class IDataTextParser extends IDataCoder implements IDataParser 
 
     /**
      * Parses the data in the given input stream, returning an IData representation.
+     *
      * @param inputStream   The input stream to be parsed.
      * @param charset       The character set to use when decoding the data in the input stream.
      * @return              An IData representation of the data in the given input stream.
@@ -198,6 +213,7 @@ public abstract class IDataTextParser extends IDataCoder implements IDataParser 
 
     /**
      * Parses the data in the given input stream, returning an IData representation.
+     *
      * @param inputStream   The input stream to be parsed.
      * @param charsetName   The character set to use when decoding the data in the input stream.
      * @return              An IData representation of the data in the given input stream.
@@ -209,6 +225,7 @@ public abstract class IDataTextParser extends IDataCoder implements IDataParser 
 
     /**
      * Parses the data in the given input stream, returning an IData representation.
+     *
      * @param inputStream   The input stream to be parsed.
      * @return              An IData representation of the data in the given input stream.
      * @throws IOException  If an I/O error occurs.
@@ -219,6 +236,7 @@ public abstract class IDataTextParser extends IDataCoder implements IDataParser 
 
     /**
      * Serializes the given IData document.
+     *
      * @param document      The IData document to be serialized.
      * @param charset       The character set to use when serializing the IData document.
      * @return              A serialized representation of the given IData document.
@@ -233,6 +251,7 @@ public abstract class IDataTextParser extends IDataCoder implements IDataParser 
 
     /**
      * Serializes the given IData document.
+     *
      * @param document      The IData document to be serialized.
      * @param charsetName   The character set to use when serializing the IData document.
      * @return              A serialized representation of the given IData document.
@@ -244,6 +263,7 @@ public abstract class IDataTextParser extends IDataCoder implements IDataParser 
 
     /**
      * Serializes the given IData document.
+     *
      * @param document      The IData document to be serialized.
      * @return              A serialized representation of the given IData document.
      * @throws IOException  If an I/O error occurs.
