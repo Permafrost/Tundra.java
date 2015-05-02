@@ -48,6 +48,9 @@ import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * Deserializes and serializes IData objects from and to JSON.
+ */
 public class IDataJSONParser extends IDataTextParser {
     protected static IDataJSONParser INSTANCE = new IDataJSONParser();
 
@@ -66,6 +69,7 @@ public class IDataJSONParser extends IDataTextParser {
 
     /**
      * Encodes the given IData document as JSON to the given output stream.
+     *
      * @param outputStream  The stream to write the encoded IData to.
      * @param document      The IData document to be encoded.
      * @param charset       The character set to use.
@@ -77,6 +81,7 @@ public class IDataJSONParser extends IDataTextParser {
 
     /**
      * Returns an IData representation of the JSON data in the given input stream.
+     *
      * @param inputStream                       The input stream to be decoded.
      * @param charset                           The character set to use.
      * @return                                  An IData representation of the given input stream data.
@@ -112,6 +117,7 @@ public class IDataJSONParser extends IDataTextParser {
 
     /**
      * Converts an JSON value to an appropriate webMethods compatible representation.
+     *
      * @param input The JSON value to convert.
      * @return      The converted Object.
      */
@@ -143,6 +149,7 @@ public class IDataJSONParser extends IDataTextParser {
 
     /**
      * Converts a JSON string to an appropriate webMethods compatible representation.
+     *
      * @param input The JSON string to convert.
      * @return      The converted Object.
      */
@@ -152,6 +159,7 @@ public class IDataJSONParser extends IDataTextParser {
 
     /**
      * Converts a JSON number to an appropriate webMethods compatible representation.
+     *
      * @param input The JSON number to convert.
      * @return      The converted Object.
      */
@@ -167,6 +175,7 @@ public class IDataJSONParser extends IDataTextParser {
 
     /**
      * Converts a JSON object to an IData document.
+     *
      * @param input The JSON object to be converted.
      * @return      The converted IData document.
      */
@@ -191,6 +200,7 @@ public class IDataJSONParser extends IDataTextParser {
 
     /**
      * Converts a JSON array to an Object[].
+     *
      * @param input The JSON array to convert.
      * @return      The converted Object[].
      */
@@ -211,6 +221,7 @@ public class IDataJSONParser extends IDataTextParser {
 
     /**
      * Returns a JSON representation of the given IData object.
+     *
      * @param input The IData to convert to JSON.
      * @return      The JSON representation of the IData.
      */
@@ -236,6 +247,7 @@ public class IDataJSONParser extends IDataTextParser {
 
     /**
      * Converts an IData document to a JSON object.
+     *
      * @param input An IData document.
      * @return      A JSON object.
      */
@@ -283,6 +295,7 @@ public class IDataJSONParser extends IDataTextParser {
 
     /**
      * Converts an Object[] to a JSON array.
+     *
      * @param input An Object[] to be converted.
      * @return      A JSON array.
      */
