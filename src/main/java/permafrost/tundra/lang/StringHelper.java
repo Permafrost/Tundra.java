@@ -447,8 +447,6 @@ public class StringHelper {
         return output;
     }
 
-    // s
-
     /**
      * Splits a string around each match of the given regular expression pattern.
      *
@@ -457,9 +455,25 @@ public class StringHelper {
      * @return          The array of strings computed by splitting the given string around matches of this pattern.
      */
     public static String[] split(String string, String pattern) {
+        return split(string, pattern, false);
+    }
+
+    /**
+     * Splits a string around each match of the given pattern.
+     *
+     * @param string    The string to be split.
+     * @param pattern   The literal or regular expression pattern to split around.
+     * @param literal   Whether the pattern is a literal pattern or a regular expression.
+     * @return          The array of strings computed by splitting the given string around matches of this pattern.
+     */
+    public static String[] split(String string, String pattern, boolean literal) {
         String[] output = null;
         if (string != null && pattern != null) {
+            if (literal) pattern = quote(pattern);
             output = Pattern.compile(pattern).split(string);
+        } else if (string != null) {
+            output = new String[1];
+            output[0] = string;
         }
         return output;
     }

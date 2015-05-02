@@ -102,4 +102,21 @@ public class StringHelperTest {
     public void testLinesWithMultipleLines() throws Exception {
         assertArrayEquals(new String[]{"abc", "def"}, StringHelper.lines("abc\ndef"));
     }
+
+    @Test
+    public void testSplitWithNull() throws Exception {
+        assertArrayEquals(null, StringHelper.split(null, null));
+        assertArrayEquals(null, StringHelper.split(null, "a"));
+        assertArrayEquals(new String[]{"a"}, StringHelper.split("a", null));
+    }
+
+    @Test
+    public void testSplitWithLiteral() throws Exception {
+        assertArrayEquals(new String[]{"a", "c", "d", "e"}, StringHelper.split("abcbdbe", "b", true));
+    }
+
+    @Test
+    public void testSplitWithRegularExpression() throws Exception {
+        assertArrayEquals(new String[]{"a", "", "be"}, StringHelper.split("abcbdbe", "(bc|bd)", false));
+    }
 }
