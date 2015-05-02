@@ -520,42 +520,6 @@ public class ArrayHelper {
     }
 
     /**
-     * Returns a new array with all string items trimmed, all empty string
-     * items removed, and all null items removed.
-     * @param array The array to be squeezed.
-     * @param <T>   The class of items stored in the array.
-     * @return      A new copy of the given array with all string items trimmed of
-     *              leading and trailing whitespace, all empty string items removed,
-     *              and all null items removed.
-     */
-    @SuppressWarnings("unchecked")
-    public static <T> T[] squeeze(T[] array) {
-        if (array == null || array.length == 0) return null;
-
-        List<T> list = new ArrayList<T>(array.length);
-
-        for (int i = 0; i < array.length; i++) {
-            if (array[i] != null && array[i] instanceof String) {
-                String item = ((String)array[i]).trim();
-                if (item.equals("")) {
-                    array[i] = null;
-                } else {
-                    array[i] = (T)item;
-                }
-            }
-            if (array[i] != null) list.add(array[i]);
-        }
-
-        if (list.size() == 0) {
-            array = null;
-        } else {
-            array = list.toArray(Arrays.copyOf(array, list.size()));
-        }
-
-        return array;
-    }
-
-    /**
      * Returns a new array with all duplicate elements removed.
      * @param array The array to remove duplicates from.
      * @param <T>   The class of items stored in the array.
@@ -617,9 +581,54 @@ public class ArrayHelper {
      * @param input The array to be normalized.
      * @return      A new copy of the given array whose class is the nearest ancestor of all contained items.
      */
-    @SuppressWarnings("all")
     public static Object[] normalize(Object[] input) {
         if (input == null) return null;
         return toList(input).toArray(instantiate(ObjectHelper.getNearestAncestor(input), input.length));
+    }
+
+    /**
+     * Returns a new array with all string items trimmed, all
+     * empty string items removed, and all null items removed.
+     *
+     * @param array     An array to be squeezed.
+     * @param <T>       The type of item in the array.
+     * @return          A new array that is the given array squeezed.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T[] squeeze(T[] array) {
+        if (array == null || array.length == 0) return null;
+
+        List<T> list = new ArrayList<T>(array.length);
+
+        for (T item : array) {
+            if (item instanceof String) item = (T)StringHelper.squeeze((String)item, false);
+            if (item != null) list.add(item);
+        }
+
+        array = list.toArray(Arrays.copyOf(array, list.size()));
+
+        return array.length == 0 ? null : array;
+    }
+
+    /**
+     * Returns a new table with all empty or null elements removed.
+     *
+     * @param table A table to be squeezed.
+     * @param <T>   The type of item in the table.
+     * @return      A new table that is the given table squeezed.
+     */
+    private static <T> T[][] squeeze(T[][] table) {
+        if (table == null || table.length == 0) return null;
+
+        List<T[]> list = new ArrayList<T[]>(table.length);
+
+        for (T[] row : table) {
+            row = squeeze(row);
+            if (row != null) list.add(row);
+        }
+
+        table = list.toArray(java.util.Arrays.copyOf(table, list.size()));
+
+        return table.length == 0 ? null : table;
     }
 }
