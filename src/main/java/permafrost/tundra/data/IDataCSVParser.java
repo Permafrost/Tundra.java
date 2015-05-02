@@ -45,6 +45,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Deserializes and serializes IData objects from and to CSV.
+ */
 public class IDataCSVParser extends IDataTextParser {
     protected static IDataCSVParser INSTANCE = new IDataCSVParser();
 
@@ -60,6 +63,7 @@ public class IDataCSVParser extends IDataTextParser {
     /**
      * Construct a new IDataCSVCoder, using the given delimiter and
      * default content type "text/csv".
+     *
      * @param delimiter     The delimiter character to use.
      */
     public IDataCSVParser(char delimiter) {
@@ -69,6 +73,7 @@ public class IDataCSVParser extends IDataTextParser {
     /**
      * Construct a new IDataCSVCoder, using the given delimiter and
      * default content type "text/csv".
+     *
      * @param delimiter     The delimiter character to use.
      */
     public IDataCSVParser(String delimiter) {
@@ -78,6 +83,7 @@ public class IDataCSVParser extends IDataTextParser {
     /**
      * Construct a new IDataCSVCoder, using the given delimiter and
      * given content type.
+     *
      * @param delimiter     The delimiter character to use.
      * @param contentType   The content type to use.
      */
@@ -89,6 +95,7 @@ public class IDataCSVParser extends IDataTextParser {
     /**
      * Construct a new IDataCSVCoder, using the given delimiter and
      * given content type.
+     *
      * @param delimiter     The delimiter character to use.
      * @param contentType   The content type to use.
      */
@@ -107,6 +114,7 @@ public class IDataCSVParser extends IDataTextParser {
 
     /**
      * Encodes the given IData document as CSV to the given output stream.
+     *
      * @param outputStream  The stream to write the encoded IData to.
      * @param document      The IData document to be encoded.
      * @param charset       The character set to use.
@@ -126,6 +134,7 @@ public class IDataCSVParser extends IDataTextParser {
 
     /**
      * Returns an IData representation of the CSV data in the given input stream.
+     *
      * @param inputStream                       The input stream to be decoded.
      * @param charset                           The character set to use.
      * @return                                  An IData representation of the given input stream data.
@@ -164,6 +173,7 @@ public class IDataCSVParser extends IDataTextParser {
 
     /**
      * Returns a CSV representation of the given IData object.
+     *
      * @param document  The IData to convert to CSV.
      * @return          The CSV representation of the IData.
      */
