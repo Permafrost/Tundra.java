@@ -175,7 +175,7 @@ public class IDataHelper {
      *  @return             A new IData document which is a copy of the given IData document.
      *  @throws IOException If a problem writing to the serialization stream is encountered.
      */
-    public static IData duplicate(IData document) throws IOException {
+    public static IData duplicate(IData document) {
         return duplicate(document, true);
     }
 
@@ -188,19 +188,24 @@ public class IDataHelper {
      *  @return             A new IData document which is a copy of the given IData document.
      *  @throws IOException If a problem writing to the serialization stream is encountered.
      */
-    public static IData duplicate(IData document, boolean recurse) throws IOException {
+    public static IData duplicate(IData document, boolean recurse) {
         IData output = null;
-        if (document != null) {
-            IDataCursor cursor = document.getCursor();
-            try {
-                if (recurse) {
-                    output = IDataUtil.deepClone(document);
-                } else {
-                    output = IDataUtil.clone(document);
+
+        try {
+            if (document != null) {
+                IDataCursor cursor = document.getCursor();
+                try {
+                    if (recurse) {
+                        output = IDataUtil.deepClone(document);
+                    } else {
+                        output = IDataUtil.clone(document);
+                    }
+                } finally {
+                    cursor.destroy();
                 }
-            } finally {
-                cursor.destroy();
             }
+        } catch(IOException ex) {
+            throw new RuntimeException(ex);
         }
         return output;
     }
