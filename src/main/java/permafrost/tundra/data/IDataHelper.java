@@ -283,12 +283,14 @@ public class IDataHelper {
      * @param source    A simple or fully-qualified key identifying the value in
      *                  the given IData document to be renamed.
      * @param target    The new simple or fully-qualified key for the renamed value.
+     * @return          The given IData document.
      */
-    public static void rename(IData document, String source, String target) {
+    public static IData rename(IData document, String source, String target) {
         if (document != null && source != null && target != null && !source.equals(target)) {
-            copy(document, source, target);
-            drop(document, source);
+            document = copy(document, source, target);
+            document = drop(document, source);
         }
+        return document;
     }
 
     /**
@@ -298,11 +300,13 @@ public class IDataHelper {
      * @param source    A simple or fully-qualified key identifying the value in the given
      *                  IData document to be copied.
      * @param target    A simple or fully-qualified key the source value will be copied to.
+     * @return          The given IData document.
      */
-    public static void copy(IData document, String source, String target) {
+    public static IData copy(IData document, String source, String target) {
         if (document != null && source != null && target != null && !source.equals(target)) {
-            put(document, target, get(document, source));
+            document = put(document, target, get(document, source));
         }
+        return document;
     }
 
     /**
