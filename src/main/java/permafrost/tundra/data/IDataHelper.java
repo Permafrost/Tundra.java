@@ -35,9 +35,11 @@ import permafrost.tundra.flow.VariableSubstitutor;
 import permafrost.tundra.lang.ArrayHelper;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
+import permafrost.tundra.lang.StringHelper;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -345,6 +347,86 @@ public class IDataHelper {
         }
 
         return document;
+    }
+
+    /**
+     * Trims all string values, then converts empty strings to nulls,
+     * then compacts by removing all null values.
+     *
+     * @param document  An IData document to be squeezed.
+     * @param recurse   Whether to also squeeze embedded IData and IData[] objects.
+     * @return          A new IData document that is the given IData squeezed.
+     */
+    public static IData squeeze(IData document, boolean recurse) {
+        if (document == null) return null;
+
+        IData output = IDataFactory.create();
+        IDataCursor inputCursor = document.getCursor();
+        IDataCursor outputCursor = output.getCursor();
+
+        while(inputCursor.next()) {
+            String key = inputCursor.getKey();
+            Object value = inputCursor.getValue();
+
+            if (value instanceof String) {
+                value = StringHelper.squeeze((String) value, false);
+            } else if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
+                IData data = toIData(value);
+                if (recurse) {
+                    value = squeeze(data, recurse);
+                } else {
+                    if (size(data) == 0) {
+                        value = null;
+                    } else {
+                        value = data;
+                    }
+                }
+            } else if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
+                IData[] array = toIDataArray(value);
+                if (recurse) {
+                    value = squeeze(array, recurse);
+                } else {
+                    if (array != null && array.length == 0) {
+                        value = null;
+                    } else {
+                        value = array;
+                    }
+                }
+            } else if (value instanceof Object[][]) {
+                value = ArrayHelper.squeeze((Object[][])value);
+            } else if (value instanceof Object[]) {
+                value = ArrayHelper.squeeze((Object[])value);
+            }
+
+            if (value != null) outputCursor.insertAfter(key, value);
+        }
+
+        inputCursor.destroy();
+        outputCursor.destroy();
+
+        return size(output) == 0 ? null : output;
+    }
+
+    /**
+     * Returns a new IData[] with all empty and null items removed.
+     *
+     * @param array     An IData[] to be squeezed.
+     * @param recurse   Whether to also squeeze embedded IData and IData[] objects.
+     * @return          A new IData[] that is the given IData[] squeezed.
+     */
+    public static IData[] squeeze(IData[] array, boolean recurse) {
+        if (array == null || array.length == 0) return null;
+
+        List<IData> list = new ArrayList<IData>(array.length);
+
+        for (IData document : array) {
+            document = squeeze(document, recurse);
+            if (document != null) list.add(document);
+        }
+
+        array = list.toArray(new IData[list.size()]);
+
+        return array.length == 0 ? null : array;
     }
 
     /**
@@ -1258,6 +1340,19 @@ public class IDataHelper {
      * the IData[] document list items associated with each pivot key.
      *
      * @param array     The IData[] to be pivoted.
+     * @param pivotKeys The keys to pivot on.
+     * @return          The IData document representing the pivoted IData[].
+     */
+    public static IData pivot(IData[] array, String ... pivotKeys) {
+        return pivot(array, null, pivotKeys);
+    }
+
+    /**
+     * Returns an IData document where the keys are the values associated with
+     * given pivot key from the given IData[] document list, and the values are
+     * the IData[] document list items associated with each pivot key.
+     *
+     * @param array     The IData[] to be pivoted.
      * @param delimiter The delimiter to use when building a compound key.
      * @param pivotKeys The keys to pivot on.
      * @return          The IData document representing the pivoted IData[].
@@ -1315,7 +1410,7 @@ public class IDataHelper {
         if (document == null) return null;
 
         String[] keys = getKeys(document);
-        java.util.Arrays.sort(keys);
+        Arrays.sort(keys);
 
         IData output = IDataFactory.create();
         IDataCursor ic = document.getCursor();
@@ -1435,7 +1530,7 @@ public class IDataHelper {
         if (criteria != null && criteria.length > 0) {
             array = ArrayHelper.sort(array, new CriteriaBasedIDataComparator(criteria));
         } else {
-            array = java.util.Arrays.copyOf(array, array.length);
+            array = Arrays.copyOf(array, array.length);
         }
 
         return array;
