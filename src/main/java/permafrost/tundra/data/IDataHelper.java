@@ -1220,6 +1220,43 @@ public class IDataHelper {
     }
 
     /**
+     * Returns an IData document where the keys are the values associated with
+     * given pivot key from the given IData[] document list, and the values are
+     * the IData[] document list items associated with each pivot key.
+     *
+     * @param array     The IData[] to be pivoted.
+     * @param delimiter The delimiter to use when building a compound key.
+     * @param pivotKeys The keys to pivot on.
+     * @return          The IData document representing the pivoted IData[].
+     */
+    public static IData pivot(IData[] array, String delimiter, String ... pivotKeys) {
+        if (array == null || pivotKeys == null || pivotKeys.length == 0) return null;
+        if (delimiter == null) delimiter = "/";
+
+        IData output = IDataFactory.create();
+
+        outer:
+        for (IData item : array) {
+            if (item != null) {
+                StringBuilder buffer = new StringBuilder();
+                for (int i = 0; i < pivotKeys.length; i++) {
+                    Object value = get(item, pivotKeys[i]);
+                    if (value == null) {
+                        continue outer;
+                    } else {
+                        buffer.append(value.toString());
+                    }
+                    if (i < (pivotKeys.length - 1)) buffer.append(delimiter);
+                }
+                String key = buffer.toString();
+                if (get(output, key) == null) put(output, key, item);
+            }
+        }
+
+        return output;
+    }
+
+    /**
      * Sorts the given IData document by its keys in natural ascending order.
      *
      * @param document  An IData document to be sorted by its keys.
