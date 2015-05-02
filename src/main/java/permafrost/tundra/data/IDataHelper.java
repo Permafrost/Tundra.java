@@ -30,6 +30,8 @@ import com.wm.data.IDataUtil;
 import com.wm.util.Table;
 import com.wm.util.coder.IDataCodable;
 import com.wm.util.coder.ValuesCodable;
+import permafrost.tundra.flow.ConditionEvaluator;
+import permafrost.tundra.flow.VariableSubstitutor;
 import permafrost.tundra.lang.ArrayHelper;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
@@ -311,6 +313,37 @@ public class IDataHelper {
         if (document != null && source != null && target != null && !source.equals(target)) {
             document = put(document, target, get(document, source));
         }
+        return document;
+    }
+
+    /**
+     * Amends the given IData document with the key value pairs specified in the amendments IData document.
+     *
+     * @param document      The IData document to be amended.
+     * @param amendments    The list of key value pairs to amend the document with.
+     * @param scope         The scope against which to resolve variable substitution statements.
+     * @return              The amended IData document.
+     */
+    public static IData amend(IData document, IData[] amendments, IData scope) {
+        if (amendments == null) return document;
+
+        for (int i = 0; i < amendments.length; i++) {
+            if (amendments[i] != null) {
+                IDataCursor cursor = amendments[i].getCursor();
+                String key = IDataUtil.getString(cursor, "key");
+                String value = IDataUtil.getString(cursor, "value");
+                String condition = IDataUtil.getString(cursor, "condition");
+                cursor.destroy();
+
+                key = VariableSubstitutor.substitute(key, scope);
+                value = VariableSubstitutor.substitute(value, scope);
+
+                if ((condition == null) || ConditionEvaluator.evaluate(condition, scope)) {
+                    document = IDataHelper.put(document, key, value);
+                }
+            }
+        }
+
         return document;
     }
 
