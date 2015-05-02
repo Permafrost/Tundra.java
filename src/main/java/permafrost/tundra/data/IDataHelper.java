@@ -54,42 +54,42 @@ public class IDataHelper {
     /**
      * Returns all the keys in the given IData document.
      *
-     * @param input An IData document to retrieve the keys from.
+     * @param document An IData document to retrieve the keys from.
      * @return The list of keys present in the given IData document.
      */
-    public static String[] getKeys(IData input) {
-        return getKeys(input, (Pattern) null);
+    public static String[] getKeys(IData document) {
+        return getKeys(document, (Pattern) null);
     }
 
     /**
      * Returns the keys that match the given regular expression pattern
      * in the given IData document.
      *
-     * @param input         An IData document to retrieve the keys from.
+     * @param document      An IData document to retrieve the keys from.
      * @param patternString A regular expression pattern which the returned
      *                      set of keys must match.
      * @return              The list of keys present in the given IData
      *                      document that match the given regular expression
      *                      pattern.
      */
-    public static String[] getKeys(IData input, String patternString) {
-        return getKeys(input, patternString == null ? null : Pattern.compile(patternString));
+    public static String[] getKeys(IData document, String patternString) {
+        return getKeys(document, patternString == null ? null : Pattern.compile(patternString));
     }
 
     /**
      * Returns the keys that match the given regular expression pattern
      * in the given IData document.
      *
-     * @param input         An IData document to retrieve the keys from.
+     * @param document      An IData document to retrieve the keys from.
      * @param pattern       A regular expression pattern which the returned
      *                      set of keys must match.
      * @return              The list of keys present in the given IData
      *                      document that match the given regular expression
      *                      pattern.
      */
-    public static String[] getKeys(IData input, Pattern pattern) {
+    public static String[] getKeys(IData document, Pattern pattern) {
         java.util.List<String> keys = new java.util.ArrayList<String>();
-        for (Map.Entry<String, Object> entry : new IDataMap(input)) {
+        for (Map.Entry<String, Object> entry : new IDataMap(document)) {
             String key = entry.getKey();
 
             if (pattern == null) {
@@ -106,13 +106,13 @@ public class IDataHelper {
     /**
      * Returns all the values in the given document.
      *
-     * @param input An IData document from which to return all values.
+     * @param document An IData document from which to return all values.
      * @return The list of values present in the given IData document.
      */
-    public static Object[] getValues(IData input) {
+    public static Object[] getValues(IData document) {
         List values = new ArrayList();
 
-        for(Map.Entry<String, Object> entry : new IDataMap(input)) {
+        for(Map.Entry<String, Object> entry : new IDataMap(document)) {
             values.add(entry.getValue());
         }
 
@@ -122,15 +122,17 @@ public class IDataHelper {
     /**
      * Merges multiple IData documents into a single new IData document.
      *
-     * @param input One or more IData documents to be merged.
+     * @param documents One or more IData documents to be merged.
      * @return A new IData document containing the keys and values from all
      *         merged input documents.
      */
-    public static IData merge(IData... input) {
+    public static IData merge(IData... documents) {
         IData output = IDataFactory.create();
-        if (input != null) {
-            for (int i = 0; i < input.length; i++) {
-                IDataUtil.merge(input[i], output);
+        if (documents != null) {
+            for (int i = 0; i < documents.length; i++) {
+                if (documents[i] != null) {
+                    IDataUtil.merge(documents[i], output);
+                }
             }
         }
         return output;
@@ -139,13 +141,13 @@ public class IDataHelper {
     /**
      * Returns the number of top-level key value pairs in the given IData document.
      *
-     * @param input An IData document.
+     * @param document An IData document.
      * @return The number of key value pairs in the given IData document.
      */
-    public static int size(IData input) {
+    public static int size(IData document) {
         int size = 0;
-        if (input != null) {
-            IDataCursor cursor = input.getCursor();
+        if (document != null) {
+            IDataCursor cursor = document.getCursor();
             size = IDataUtil.size(cursor);
             cursor.destroy();
         }
@@ -153,8 +155,9 @@ public class IDataHelper {
     }
 
     /**
-     * Returns the given key from the given IData document, returning the associated
+     * Removes the given key from the given IData document, returning the associated
      * value if one exists.
+     *
      * @param document  The document to remove the key from.
      * @param key       The key to remove.
      * @return          The value that was associated with the given key.
@@ -166,34 +169,34 @@ public class IDataHelper {
     }
 
     /**
-     *  Returns a copy of the given IData document.
+     *  Returns a recursive clone of the given IData document.
      *
-     *  @param input    An IData document to be duplicated.
-     *  @return         A new IData document which is a copy of the given IData document.
+     *  @param document     An IData document to be duplicated.
+     *  @return             A new IData document which is a copy of the given IData document.
      *  @throws IOException If a problem writing to the serialization stream is encountered.
      */
-    public static IData duplicate(IData input) throws IOException {
-        return duplicate(input, true);
+    public static IData duplicate(IData document) throws IOException {
+        return duplicate(document, true);
     }
 
     /**
-     *  Returns a copy of the given IData document.
+     *  Returns a clone of the given IData document.
      *
-     *  @param input    An IData document to be duplicated.
-     *  @param recurse  When true, nested IData documents and IData[] document lists will
-     *                  also be duplicated.
-     *  @return         A new IData document which is a copy of the given IData document.
+     *  @param document     An IData document to be duplicated.
+     *  @param recurse      When true, nested IData documents and IData[] document lists will
+     *                      also be duplicated.
+     *  @return             A new IData document which is a copy of the given IData document.
      *  @throws IOException If a problem writing to the serialization stream is encountered.
      */
-    public static IData duplicate(IData input, boolean recurse) throws IOException {
+    public static IData duplicate(IData document, boolean recurse) throws IOException {
         IData output = null;
-        if (input != null) {
-            IDataCursor cursor = input.getCursor();
+        if (document != null) {
+            IDataCursor cursor = document.getCursor();
             try {
                 if (recurse) {
-                    output = IDataUtil.deepClone(input);
+                    output = IDataUtil.deepClone(document);
                 } else {
-                    output = IDataUtil.clone(input);
+                    output = IDataUtil.clone(document);
                 }
             } finally {
                 cursor.destroy();
@@ -205,40 +208,40 @@ public class IDataHelper {
     /**
      * Removes the value with the given key from the given IData document.
      *
-     * @param input    An IData document.
+     * @param document An IData document.
      * @param key      A simple or fully-qualified key identifying the value to
      *                 be removed from the given IData document.
-     * @return         The input IData document.
+     * @return         The given IData document.
      */
-    public static IData drop(IData input, String key) {
-        if (input != null && key != null) {
-            IDataCursor cursor = input.getCursor();
+    public static IData drop(IData document, String key) {
+        if (document != null && key != null) {
+            IDataCursor cursor = document.getCursor();
             IDataUtil.remove(cursor, key);
             cursor.destroy();
 
-            if (Key.isFullyQualified(key)) drop(input, Key.parse(key));
+            if (Key.isFullyQualified(key)) drop(document, Key.parse(key));
         }
-        return input;
+        return document;
     }
 
     /**
      * Removes the value with the given key from the given IData document.
      *
-     * @param input    An IData document.
+     * @param document An IData document.
      * @param keys     A fully-qualified key identifying the value to
      *                 be removed from the given IData document.
-     * @return         The input IData document.
+     * @return         The given IData document.
      */
-    private static IData drop(IData input, java.util.Queue<Key> keys) {
-        if (input != null && keys != null && keys.size() > 0) {
-            IDataCursor cursor = input.getCursor();
+    private static IData drop(IData document, java.util.Queue<Key> keys) {
+        if (document != null && keys != null && keys.size() > 0) {
+            IDataCursor cursor = document.getCursor();
             Key key = keys.remove();
 
             if (keys.size() > 0) {
                 if (key.hasArrayIndex()) {
                     drop(ArrayHelper.get(toIDataArray(IDataUtil.get(cursor, key.getKey())), key.getIndex()), keys);
                 } else if (key.hasKeyIndex()) {
-                    drop(toIData(get(input, key.getKey(), key.getIndex())), keys);
+                    drop(toIData(get(document, key.getKey(), key.getIndex())), keys);
                 } else {
                     drop(toIData(IDataUtil.get(cursor, key.getKey())), keys);
                 }
@@ -246,14 +249,14 @@ public class IDataHelper {
                 if (key.hasArrayIndex()) {
                     IDataUtil.put(cursor, key.getKey(), ArrayHelper.drop(IDataUtil.getObjectArray(cursor, key.getKey()), key.getIndex()));
                 } else if (key.hasKeyIndex()) {
-                    drop(input, key.getKey(), key.getIndex());
+                    drop(document, key.getKey(), key.getIndex());
                 } else {
                     IDataUtil.remove(cursor, key.getKey());
                 }
             }
             cursor.destroy();
         }
-        return input;
+        return document;
     }
 
     /**
@@ -265,7 +268,6 @@ public class IDataHelper {
     private static void drop(IData document, String key, int n) {
         if (document == null || key == null || n < 0) return;
 
-        Object value = null;
         int i = 0;
 
         IDataCursor cursor = document.getCursor();
@@ -275,31 +277,31 @@ public class IDataHelper {
     }
 
     /**
-     * Renames a key from source to target within the given IData document
+     * Renames a key from source to target within the given IData document.
      *
-     * @param input  An IData document.
-     * @param source A simple or fully-qualified key identifying the value in
-     *               the given IData document to be renamed.
-     * @param target The new simple or fully-qualified key for the renamed value.
+     * @param document  An IData document.
+     * @param source    A simple or fully-qualified key identifying the value in
+     *                  the given IData document to be renamed.
+     * @param target    The new simple or fully-qualified key for the renamed value.
      */
-    public static void rename(IData input, String source, String target) {
-        if (!source.equals(target)) {
-            copy(input, source, target);
-            drop(input, source);
+    public static void rename(IData document, String source, String target) {
+        if (document != null && source != null && target != null && !source.equals(target)) {
+            copy(document, source, target);
+            drop(document, source);
         }
     }
 
     /**
      * Copies a value from source key to target key within the given IData document.
      *
-     * @param input  An IData document.
-     * @param source A simple or fully-qualified key identifying the value in the given
-     *               IData document to be copied.
-     * @param target A simple or fully-qualified key the source value will be copied to.
+     * @param document  An IData document.
+     * @param source    A simple or fully-qualified key identifying the value in the given
+     *                  IData document to be copied.
+     * @param target    A simple or fully-qualified key the source value will be copied to.
      */
-    public static void copy(IData input, String source, String target) {
-        if (!source.equals(target)) {
-            put(input, target, get(input, source));
+    public static void copy(IData document, String source, String target) {
+        if (document != null && source != null && target != null && !source.equals(target)) {
+            put(document, target, get(document, source));
         }
     }
 
@@ -341,11 +343,12 @@ public class IDataHelper {
 
     /**
      * Normalizes the given Object[].
-     * @param input The Object[] to be normalized.
+     *
+     * @param array The Object[] to be normalized.
      * @return      Normalized version of the Object[].
      */
-    private static Object[] normalize(Object[] input) {
-        return (Object[])normalize((Object)ArrayHelper.normalize(input));
+    private static Object[] normalize(Object[] array) {
+        return (Object[])normalize((Object)ArrayHelper.normalize(array));
     }
 
     /**
@@ -353,16 +356,16 @@ public class IDataHelper {
      * with the same class, and all fully-qualified keys are replaced with their representative
      * nested structure.
      *
-     * @param input   An IData document to be normalized.
-     * @return        A new normalized version of the given IData document.
+     * @param document  An IData document to be normalized.
+     * @return          A new normalized version of the given IData document.
      */
-    public static IData normalize(IData input) {
-        if (input == null) return null;
+    public static IData normalize(IData document) {
+        if (document == null) return null;
 
         IData output = IDataFactory.create();
 
-        for(Map.Entry<String, Object> entry : new IDataMap(input)) {
-            // normalize fully-qualified keys by using Tundra put rather than IDataUtil put
+        for(Map.Entry<String, Object> entry : new IDataMap(document)) {
+            // normalize fully-qualified keys by using IDataHelper.put() rather than IDataUtil.put()
             put(output, entry.getKey(), normalize(entry.getValue()));
         }
 
@@ -372,31 +375,31 @@ public class IDataHelper {
     /**
      * Converts a java.util.Map to an IData object.
      *
-     * @param input A java.util.Map to be converted to an IData object.
+     * @param map   A java.util.Map to be converted to an IData object.
      * @return      An IData representation of the given java.util.Map object.
      */
-    private static IData normalize(Map input) {
-        return normalize(toIData(input));
+    private static IData normalize(Map map) {
+        return normalize(toIData(map));
     }
 
     /**
-     * Normalizes a java.util.List to an Object[].
+     * Normalizes a java.util.Collection to an Object[].
      *
-     * @param input A java.util.List to be converted to an Object[].
-     * @return      An Object[] representation of the given java.util.List object.
+     * @param collection    A java.util.Collection to be converted to an Object[].
+     * @return              An Object[] representation of the given java.util.Collection object.
      */
-    private static Object[] normalize(Collection input) {
-        return normalize(ArrayHelper.toArray(input));
+    private static Object[] normalize(Collection collection) {
+        return normalize(ArrayHelper.toArray(collection));
     }
 
     /**
      * Normalizes an IDataCodable object to an IData representation.
      *
-     * @param input     An IDataCodable object to be normalized.
+     * @param document  An IDataCodable object to be normalized.
      * @return          An IData representation for the given IDataCodable object.
      */
-    public static IData normalize(IDataCodable input) {
-        return normalize(toIData(input));
+    public static IData normalize(IDataCodable document) {
+        return normalize(toIData(document));
     }
 
     /**
@@ -404,21 +407,21 @@ public class IDataHelper {
      * implemented with the same class, and all fully-qualified keys are replaced with
      * their representative nested structure.
      *
-     * @param input   An IDataCodable[] list to be normalized.
+     * @param array   An IDataCodable[] list to be normalized.
      * @return        A new normalized IData[] version of the given IDataCodable[] list.
      */
-    public static IData[] normalize(IDataCodable[] input) {
-        return normalize(toIDataArray(input));
+    public static IData[] normalize(IDataCodable[] array) {
+        return normalize(toIDataArray(array));
     }
 
     /**
      * Normalizes an IDataPortable object to an IData representation.
      *
-     * @param input     An IDataPortable object to be normalized.
+     * @param document  An IDataPortable object to be normalized.
      * @return          An IData representation for the given IDataPortable object.
      */
-    public static IData normalize(IDataPortable input) {
-        return normalize(toIData(input));
+    public static IData normalize(IDataPortable document) {
+        return normalize(toIData(document));
     }
 
     /**
@@ -426,21 +429,21 @@ public class IDataHelper {
      * implemented with the same class, and all fully-qualified keys are replaced with
      * their representative nested structure.
      *
-     * @param input   An IDataPortable[] list to be normalized.
+     * @param array   An IDataPortable[] list to be normalized.
      * @return        A new normalized IData[] version of the given IDataPortable[] list.
      */
-    public static IData[] normalize(IDataPortable[] input) {
-        return normalize(toIDataArray(input));
+    public static IData[] normalize(IDataPortable[] array) {
+        return normalize(toIDataArray(array));
     }
 
     /**
      * Normalizes an ValuesCodable object to an IData representation.
      *
-     * @param input     An ValuesCodable object to be normalized.
+     * @param document  An ValuesCodable object to be normalized.
      * @return          An IData representation for the given ValuesCodable object.
      */
-    public static IData normalize(ValuesCodable input) {
-        return normalize(toIData(input));
+    public static IData normalize(ValuesCodable document) {
+        return normalize(toIData(document));
     }
 
     /**
@@ -448,26 +451,26 @@ public class IDataHelper {
      * implemented with the same class, and all fully-qualified keys are replaced with
      * their representative nested structure.
      *
-     * @param input   An ValuesCodable[] list to be normalized.
+     * @param array   An ValuesCodable[] list to be normalized.
      * @return        A new normalized IData[] version of the given ValuesCodable[] list.
      */
-    public static IData[] normalize(ValuesCodable[] input) {
-        return normalize(toIDataArray(input));
+    public static IData[] normalize(ValuesCodable[] array) {
+        return normalize(toIDataArray(array));
     }
 
     /**
      * Normalizes an IData[] where all IData objects are implemented with the same class, and
      * all fully-qualified keys are replaced with their representative nested structure.
      *
-     * @param input   An IData[] document list to be normalized.
+     * @param array   An IData[] document list to be normalized.
      * @return        A new normalized version of the given IData[] document list.
      */
-    public static IData[] normalize(IData[] input) {
-        if (input == null) return null;
+    public static IData[] normalize(IData[] array) {
+        if (array == null) return null;
 
-        IData[] output = new IData[input.length];
-        for (int i = 0; i < input.length; i++) {
-            output[i] = normalize(input[i]);
+        IData[] output = new IData[array.length];
+        for (int i = 0; i < array.length; i++) {
+            output[i] = normalize(array[i]);
         }
 
         return output;
@@ -476,21 +479,21 @@ public class IDataHelper {
     /**
      * Normalizes a com.wm.util.Table object to an IData[] representation.
      *
-     * @param input     A com.wm.util.Table object to be normalized.
+     * @param table     A com.wm.util.Table object to be normalized.
      * @return          An IData[] representation of the given com.wm.util.Table object.
      */
-    public static IData[] normalize(Table input) {
-        return normalize(toIDataArray(input));
+    public static IData[] normalize(Table table) {
+        return normalize(toIDataArray(table));
     }
 
     /**
      * Normalizes a Map[] object to an IData[] representation.
      *
-     * @param input     A Map[] object to be normalized.
+     * @param array     A Map[] object to be normalized.
      * @return          An IData[] representation of the given Map[] object.
      */
-    public static IData[] normalize(Map[] input) {
-        return normalize(toIDataArray(input));
+    public static IData[] normalize(Map[] array) {
+        return normalize(toIDataArray(array));
     }
 
     /**
@@ -532,7 +535,7 @@ public class IDataHelper {
      * Returns the value associated with the given key from the given IData document, or
      * if null the specified default value.
      *
-     * @param input        An IData document.
+     * @param document     An IData document.
      * @param key          A simple or fully-qualified key identifying the value in the given
      *                     IData document to be returned.
      * @param defaultValue A default value to be returned if the existing value
@@ -540,8 +543,8 @@ public class IDataHelper {
      * @return             Either the value associated with the given key in the given IData
      *                     document, or the given defaultValue if null.
      */
-    public static Object get(IData input, String key, Object defaultValue) {
-        Object value = get(input, key);
+    public static Object get(IData document, String key, Object defaultValue) {
+        Object value = get(document, key);
         if (value == null) value = defaultValue;
 
         return value;
@@ -550,18 +553,18 @@ public class IDataHelper {
     /**
      * Returns the value associated with the given key from the given IData document.
      *
-     * @param input        An IData document.
+     * @param document     An IData document.
      * @param key          A simple or fully-qualified key identifying the value in the given
      *                     IData document to be returned.
      * @return             Either the value associated with the given key in the given IData
      *                     document.
      */
-    public static Object get(IData input, String key) {
-        if (input == null || key == null) return null;
+    public static Object get(IData document, String key) {
+        if (document == null || key == null) return null;
 
         Object value = null;
         // try finding a value that matches the literal key
-        IDataCursor cursor = input.getCursor();
+        IDataCursor cursor = document.getCursor();
         try {
             value = IDataUtil.get(cursor, key);
         } finally {
@@ -569,7 +572,7 @@ public class IDataHelper {
         }
 
         // if value wasn't found using the literal key, the key could be fully qualified
-        if (value == null && Key.isFullyQualified(key)) value = get(input, Key.parse(key));
+        if (value == null && Key.isFullyQualified(key)) value = get(document, Key.parse(key));
 
         return value;
     }
@@ -578,24 +581,24 @@ public class IDataHelper {
      * Returns the value associated with the given fully-qualified key from the given IData
      * document.
      *
-     * @param input             An IData document.
+     * @param document          An IData document.
      * @param fullyQualifiedKey A fully-qualified key identifying the value in the given
      *                          IData document to be returned.
      * @return                  Either the value associated with the given key in the given
      *                          IData document.
      */
-    private static Object get(IData input, java.util.Queue<Key> fullyQualifiedKey) {
+    private static Object get(IData document, java.util.Queue<Key> fullyQualifiedKey) {
         Object value = null;
 
-        if (input != null && fullyQualifiedKey != null && fullyQualifiedKey.size() > 0) {
-            IDataCursor cursor = input.getCursor();
+        if (document != null && fullyQualifiedKey != null && fullyQualifiedKey.size() > 0) {
+            IDataCursor cursor = document.getCursor();
             Key key = fullyQualifiedKey.remove();
 
             if (fullyQualifiedKey.size() > 0) {
                 if (key.hasArrayIndex()) {
                     value = get(ArrayHelper.get(toIDataArray(IDataUtil.get(cursor, key.getKey())), key.getIndex()), fullyQualifiedKey);
                 } else if (key.hasKeyIndex()) {
-                    value = get(toIData(get(input, key.getKey(), key.getIndex())), fullyQualifiedKey);
+                    value = get(toIData(get(document, key.getKey(), key.getIndex())), fullyQualifiedKey);
                 } else {
                     value = get(IDataUtil.getIData(cursor, key.getKey()), fullyQualifiedKey);
                 }
@@ -611,7 +614,7 @@ public class IDataHelper {
                         }
                     }
                 } else if (key.hasKeyIndex()) {
-                    value = get(input, key.getKey(), key.getIndex());
+                    value = get(document, key.getKey(), key.getIndex());
                 } else {
                     value = IDataUtil.get(cursor, key.getKey());
                 }
@@ -625,6 +628,7 @@ public class IDataHelper {
 
     /**
      * Returns the nth value associated with the given key.
+     *
      * @param document The IData document to return the value from.
      * @param key      The key whose associated value is to be returned.
      * @param n        Determines which occurrence of the key to return the value for.
@@ -648,48 +652,48 @@ public class IDataHelper {
      * Sets the value associated with the given key in the given IData document. Note
      * that this method mutates the given IData document in place.
      *
-     * @param input An IData document.
-     * @param key   A simple or fully-qualified key identifying the value to be set.
-     * @param value The value to be set.
-     * @return      The input IData document with the value set.
+     * @param document  An IData document.
+     * @param key       A simple or fully-qualified key identifying the value to be set.
+     * @param value     The value to be set.
+     * @return          The input IData document with the value set.
      */
-    public static IData put(IData input, String key, Object value) {
-        return put(input, key, value, true);
+    public static IData put(IData document, String key, Object value) {
+        return put(document, key, value, true);
     }
 
     /**
      * Sets the value associated with the given key in the given IData document. Note
      * that this method mutates the given IData document in place.
      *
-     * @param input         An IData document.
+     * @param document      An IData document.
      * @param key           A simple or fully-qualified key identifying the value to be set.
      * @param value         The value to be set.
      * @param includeNull   When true the value is set even when null, otherwise the value
      *                      is only set when it is not null.
      * @return              The input IData document with the value set.
      */
-    public static IData put(IData input, String key, Object value, boolean includeNull) {
-        return put(input, key == null ? null : Key.parse(key), value, includeNull);
+    public static IData put(IData document, String key, Object value, boolean includeNull) {
+        return put(document, key == null ? null : Key.parse(key), value, includeNull);
     }
 
     /**
      * Sets the value associated with the given key in the given IData document. Note
      * that this method mutates the given IData document in place.
      *
-     * @param input             An IData document.
+     * @param document          An IData document.
      * @param fullyQualifiedKey A fully-qualified key identifying the value to be set.
      * @param value             The value to be set.
      * @param includeNull       When true the value is set even when null, otherwise the value
      *                          is only set when it is not null.
      * @return                  The input IData document with the value set.
      */
-    private static IData put(IData input, java.util.Queue<Key> fullyQualifiedKey, Object value, boolean includeNull) {
-        if (!includeNull && value == null) return input;
+    private static IData put(IData document, java.util.Queue<Key> fullyQualifiedKey, Object value, boolean includeNull) {
+        if (!includeNull && value == null) return document;
 
         if (fullyQualifiedKey != null && fullyQualifiedKey.size() > 0) {
-            if (input == null) input = IDataFactory.create();
+            if (document == null) document = IDataFactory.create();
 
-            IDataCursor cursor = input.getCursor();
+            IDataCursor cursor = document.getCursor();
             Key key = fullyQualifiedKey.remove();
 
             if (fullyQualifiedKey.size() > 0) {
@@ -699,7 +703,7 @@ public class IDataHelper {
                     try { child = ArrayHelper.get(array, key.getIndex()); } catch(ArrayIndexOutOfBoundsException ex) { }
                     value = ArrayHelper.put(array, put(child, fullyQualifiedKey, value, includeNull), key.getIndex(), IData.class);
                 } else if (key.hasKeyIndex()) {
-                    value = put(toIData(get(input, key.getKey(), key.getIndex())), fullyQualifiedKey, value, includeNull);
+                    value = put(toIData(get(document, key.getKey(), key.getIndex())), fullyQualifiedKey, value, includeNull);
                 } else {
                     value = put(IDataUtil.getIData(cursor, key.getKey()), fullyQualifiedKey, value, includeNull);
                 }
@@ -716,19 +720,20 @@ public class IDataHelper {
             }
 
             if (key.hasKeyIndex()) {
-                put(input, key.getKey(), key.getIndex(), value);
+                put(document, key.getKey(), key.getIndex(), value);
             } else {
                 IDataUtil.put(cursor, key.getKey(), value);
             }
             cursor.destroy();
         }
 
-        return input;
+        return document;
     }
 
     /**
      * Sets the value associated with the given nth key in the given IData document. Note
      * that this method mutates the given IData document in place.
+     *
      * @param document The IData document to set the key's associated value in.
      * @param key      The key whose value is to be set.
      * @param n        Determines which occurrence of the key to set the value for.
@@ -750,45 +755,45 @@ public class IDataHelper {
 
     /**
      * Converts the given object to a Map object, if possible.
-     * @param input The object to be converted.
-     * @return      A Map representation of the given object if its type
-     *              is compatible (IData, IDataCodable, IDataPortable,
-     *              ValuesCodable), otherwise null.
+     * @param object    The object to be converted.
+     * @return          A Map representation of the given object if its type
+     *                  is compatible (IData, IDataCodable, IDataPortable,
+     *                  ValuesCodable), otherwise null.
      */
-    private static Map<String, Object> toMap(Object input) {
-        if (input == null) return null;
+    private static Map<String, Object> toMap(Object object) {
+        if (object == null) return null;
 
         Map<String, Object> output = null;
 
-        if (input instanceof IData) {
-            output = toMap((IData)input);
-        } else if (input instanceof IDataCodable) {
-            output = toMap((IDataCodable)input);
-        } else if (input instanceof IDataPortable) {
-            output = toMap((IDataPortable)input);
-        } else if (input instanceof ValuesCodable) {
-            output = toMap((ValuesCodable) input);
+        if (object instanceof IData) {
+            output = toMap((IData)object);
+        } else if (object instanceof IDataCodable) {
+            output = toMap((IDataCodable)object);
+        } else if (object instanceof IDataPortable) {
+            output = toMap((IDataPortable)object);
+        } else if (object instanceof ValuesCodable) {
+            output = toMap((ValuesCodable) object);
         }
 
         return output;
     }
 
     /**
-     * Converts an IData object to a java.util.Map object.
+     * Converts an IData object to a Map object.
      *
-     * @param input An IData object to be converted.
-     * @return      A java.util.Map representation of the given IData object.
+     * @param document  An IData object to be converted.
+     * @return          A Map representation of the given IData object.
      */
-    public static Map<String, Object> toMap(IData input) {
-        if (input == null) return null;
+    public static Map<String, Object> toMap(IData document) {
+        if (document == null) return null;
 
-        IDataCursor cursor = input.getCursor();
+        IDataCursor cursor = document.getCursor();
         int size = IDataUtil.size(cursor);
         cursor.destroy();
 
         Map<String, Object> output = new java.util.LinkedHashMap<String, Object>(size);
 
-        for(Map.Entry<String, Object> entry : new IDataMap(input)) {
+        for(Map.Entry<String, Object> entry : new IDataMap(document)) {
             String key = entry.getKey();
             Object value = entry.getValue();
             if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
@@ -805,75 +810,74 @@ public class IDataHelper {
     }
 
     /**
-     * Converts an IDataCodable object to a java.util.Map object.
+     * Converts an IDataCodable object to a Map object.
      *
-     * @param input An IDataCodable object to be converted.
-     * @return      A java.util.Map representation of the given IDataCodable object.
+     * @param document  An IDataCodable object to be converted.
+     * @return          A Map representation of the given IDataCodable object.
      */
-    public static Map<String, Object> toMap(IDataCodable input) {
-        return toMap(toIData(input));
+    public static Map<String, Object> toMap(IDataCodable document) {
+        return toMap(toIData(document));
     }
 
     /**
-     * Converts an IDataPortable object to a java.util.Map object.
+     * Converts an IDataPortable object to a Map object.
      *
-     * @param input An IDataPortable object to be converted.
-     * @return      A java.util.Map representation of the given IDataPortable object.
+     * @param document  An IDataPortable object to be converted.
+     * @return          A Map representation of the given IDataPortable object.
      */
-    public static Map<String, Object> toMap(IDataPortable input) {
-        return toMap(toIData(input));
+    public static Map<String, Object> toMap(IDataPortable document) {
+        return toMap(toIData(document));
     }
 
     /**
-     * Converts an ValuesCodable object to a java.util.Map object.
+     * Converts an ValuesCodable object to a Map object.
      *
-     * @param input An ValuesCodable object to be converted.
-     * @return      A java.util.Map representation of the given ValuesCodable object.
+     * @param document  An ValuesCodable object to be converted.
+     * @return          A Map representation of the given ValuesCodable object.
      */
-    public static Map<String, Object> toMap(ValuesCodable input) {
-        return toMap(toIData(input));
+    public static Map<String, Object> toMap(ValuesCodable document) {
+        return toMap(toIData(document));
     }
 
     /**
-     * Converts an object to a java.util.List object, if possible.
+     * Converts an object to a List object, if possible.
      *
-     * @param input An object to be converted.
-     * @return      A java.util.List representation of the given object, if
-     *              the object was a compatible type (IData[], Table, IDataCodable[],
-     *              IDataPortable[], ValuesCodable[]), otherwise null.
+     * @param object    An object to be converted.
+     * @return          A List representation of the given object, if the object was a compatible type
+     *                  (IData[], Table, IDataCodable[], IDataPortable[], ValuesCodable[]), otherwise null.
      */
-    private static List<Map<String, Object>> toList(Object input) {
-        if (input == null) return null;
+    private static List<Map<String, Object>> toList(Object object) {
+        if (object == null) return null;
 
         List<Map<String, Object>> output = null;
 
-        if (input instanceof IData[]) {
-            output = toList((IData[])input);
-        } else if (input instanceof Table) {
-            output = toList((Table)input);
-        } else if (input instanceof IDataCodable[]) {
-            output = toList((IDataCodable[])input);
-        } else if (input instanceof IDataPortable[]) {
-            output = toList((IDataPortable[])input);
-        } else if (input instanceof ValuesCodable[]) {
-            output = toList((ValuesCodable[])input);
+        if (object instanceof IData[]) {
+            output = toList((IData[])object);
+        } else if (object instanceof Table) {
+            output = toList((Table)object);
+        } else if (object instanceof IDataCodable[]) {
+            output = toList((IDataCodable[])object);
+        } else if (object instanceof IDataPortable[]) {
+            output = toList((IDataPortable[])object);
+        } else if (object instanceof ValuesCodable[]) {
+            output = toList((ValuesCodable[])object);
         }
 
         return output;
     }
 
     /**
-     * Converts an IData[] object to a java.util.List object.
+     * Converts an IData[] object to a List object.
      *
-     * @param input An IData[] object to be converted.
-     * @return      A java.util.List representation of the given IData[] object.
+     * @param array An IData[] object to be converted.
+     * @return      A List representation of the given IData[] object.
      */
-    public static List<Map<String, Object>> toList(IData[] input) {
-        if (input == null) return null;
+    public static List<Map<String, Object>> toList(IData[] array) {
+        if (array == null) return null;
 
-        List<Map<String, Object>> output = new java.util.ArrayList<Map<String, Object>>(input.length);
+        List<Map<String, Object>> output = new java.util.ArrayList<Map<String, Object>>(array.length);
 
-        for (IData item : input) {
+        for (IData item : array) {
             output.add(toMap(item));
         }
 
@@ -881,67 +885,68 @@ public class IDataHelper {
     }
 
     /**
-     * Converts a Table object to a java.util.List object.
+     * Converts a Table object to a List object.
      *
-     * @param input An Table object to be converted.
-     * @return      A java.util.List representation of the given Table object.
+     * @param table An Table object to be converted.
+     * @return      A List representation of the given Table object.
      */
-    public static List<Map<String, Object>> toList(Table input) {
-        return toList(toIDataArray(input));
+    public static List<Map<String, Object>> toList(Table table) {
+        return toList(toIDataArray(table));
     }
 
     /**
-     * Converts an IDataCodable[] object to a java.util.List object.
+     * Converts an IDataCodable[] object to a List object.
      *
-     * @param input An IDataCodable[] object to be converted.
-     * @return      A java.util.List representation of the given IDataCodable[] object.
+     * @param array An IDataCodable[] object to be converted.
+     * @return      A List representation of the given IDataCodable[] object.
      */
-    public static List<Map<String, Object>> toList(IDataCodable[] input) {
-        return toList(toIDataArray(input));
+    public static List<Map<String, Object>> toList(IDataCodable[] array) {
+        return toList(toIDataArray(array));
     }
 
     /**
-     * Converts an IDataPortable[] object to a java.util.List object.
+     * Converts an IDataPortable[] object to a List object.
      *
-     * @param input An IDataPortable[] object to be converted.
-     * @return      A java.util.List representation of the given IDataPortable[] object.
+     * @param array An IDataPortable[] object to be converted.
+     * @return      A List representation of the given IDataPortable[] object.
      */
-    public static List<Map<String, Object>> toList(IDataPortable[] input) {
-        return toList(toIDataArray(input));
+    public static List<Map<String, Object>> toList(IDataPortable[] array) {
+        return toList(toIDataArray(array));
     }
 
     /**
      * Converts an ValuesCodable[] object to a java.util.List object.
      *
-     * @param input An ValuesCodable[] object to be converted.
-     * @return      A java.util.List representation of the given ValuesCodable[] object.
+     * @param array An ValuesCodable[] object to be converted.
+     * @return      A List representation of the given ValuesCodable[] object.
      */
-    public static List<Map<String, Object>> toList(ValuesCodable[] input) {
-        return toList(toIDataArray(input));
+    public static List<Map<String, Object>> toList(ValuesCodable[] array) {
+        return toList(toIDataArray(array));
     }
 
     /**
      * Returns an IData representation of the given object, if possible.
-     * @param input The object to convert.
-     * @return      An IData representing the given object if its type
-     *              is compatible (IData, IDataCodable, IDataPortable,
-     *              ValuesCodable), otherwise null.
+     *
+     * @param object    The object to convert.
+     * @return          An IData representing the given object if its type
+     *                  is compatible (IData, IDataCodable, IDataPortable,
+     *                  ValuesCodable), otherwise null.
      */
-    public static IData toIData(Object input) {
-        if (input == null) return null;
+    public static IData toIData(Object object) {
+        if (object == null) return null;
 
         IData output = null;
 
-        if (input instanceof IData) {
-            output = (IData)input;
-        } else if (input instanceof IDataCodable) {
-            output = toIData((IDataCodable)input);
-        } else if (input instanceof IDataPortable) {
-            output = toIData((IDataPortable)input);
-        } else if (input instanceof ValuesCodable) {
-            output = toIData((ValuesCodable)input);
-        } else if (input instanceof Map) {
-            output = toIData((Map) input);
+        if (object instanceof IData) {
+            output = (IData)object;
+        } else if (object instanceof IDataCodable) {
+            output = toIData((IDataCodable)object);
+        } else if (object instanceof IDataPortable) {
+            output = toIData((IDataPortable)object);
+        } else if (object instanceof ValuesCodable) {
+            output = toIData((ValuesCodable)object);
+        } else if (object instanceof Map) {
+            output = toIData((Map) object);
         }
 
         return output;
@@ -949,47 +954,51 @@ public class IDataHelper {
 
     /**
      * Returns an IData representation of the given IDataCodable object.
-     * @param input The IDataCodable object to be converted to an IData object.
-     * @return      An IData representation of the give IDataCodable object.
+     *
+     * @param document  The IDataCodable object to be converted to an IData object.
+     * @return          An IData representation of the give IDataCodable object.
      */
-    public static IData toIData(IDataCodable input) {
-        if (input == null) return null;
-        return input.getIData();
+    public static IData toIData(IDataCodable document) {
+        if (document == null) return null;
+        return document.getIData();
     }
 
     /**
      * Returns an IData representation of the given IDataPortable object.
-     * @param input The IDataPortable object to be converted to an IData object.
-     * @return      An IData representation of the give IDataPortable object.
+     *
+     * @param document  The IDataPortable object to be converted to an IData object.
+     * @return          An IData representation of the give IDataPortable object.
      */
-    public static IData toIData(IDataPortable input) {
-        if (input == null) return null;
-        return input.getAsData();
+    public static IData toIData(IDataPortable document) {
+        if (document == null) return null;
+        return document.getAsData();
     }
 
     /**
      * Returns an IData representation of the given ValuesCodable object.
-     * @param input The ValuesCodable object to be converted to an IData object.
-     * @return      An IData representation of the give ValuesCodable object.
+     *
+     * @param document  The ValuesCodable object to be converted to an IData object.
+     * @return          An IData representation of the give ValuesCodable object.
      */
-    public static IData toIData(ValuesCodable input) {
-        if (input == null) return null;
-        return input.getValues();
+    public static IData toIData(ValuesCodable document) {
+        if (document == null) return null;
+        return document.getValues();
     }
 
     /**
      * Returns an IData representation of the given Map.
-     * @param input The Map to be converted.
+     *
+     * @param map   The Map to be converted.
      * @return      An IData representation of the given map.
      */
-    public static IData toIData(Map input) {
-        if (input == null) return null;
+    public static IData toIData(Map map) {
+        if (map == null) return null;
 
         IData output = IDataFactory.create();
         IDataCursor cursor = output.getCursor();
-        for (Object key : input.keySet()) {
+        for (Object key : map.keySet()) {
             if (key != null) {
-                put(output, key.toString(), normalize(input.get(key)));
+                put(output, key.toString(), normalize(map.get(key)));
             }
         }
         cursor.destroy();
@@ -999,29 +1008,30 @@ public class IDataHelper {
 
     /**
      * Returns an IData[] representation of the given object, if possible.
-     * @param input The Table object to be converted to an IData[] object.
-     * @return      An IData[] representation of the give object if the
-     *              object was a compatible type (IData[], Table,
-     *              IDataCodable[], IDataPortable[], ValuesCodable[]),
-     *              otherwise null.
+     *
+     * @param object    The Table object to be converted to an IData[] object.
+     * @return          An IData[] representation of the give object if the
+     *                  object was a compatible type (IData[], Table,
+     *                  IDataCodable[], IDataPortable[], ValuesCodable[]),
+     *                  otherwise null.
      */
-    public static IData[] toIDataArray(Object input) {
-        if (input == null) return null;
+    public static IData[] toIDataArray(Object object) {
+        if (object == null) return null;
 
         IData[] output = null;
 
-        if (input instanceof IData[]) {
-            output = (IData[]) input;
-        } else if (input instanceof Table) {
-            output = toIDataArray((Table) input);
-        } else if (input instanceof IDataCodable[]) {
-            output = toIDataArray((IDataCodable[]) input);
-        } else if (input instanceof IDataPortable[]) {
-            output = toIDataArray((IDataPortable[]) input);
-        } else if (input instanceof ValuesCodable[]) {
-            output = toIDataArray((ValuesCodable[]) input);
-        } else if (input instanceof Map[]) {
-            output = toIDataArray((Map[]) input);
+        if (object instanceof IData[]) {
+            output = (IData[]) object;
+        } else if (object instanceof Table) {
+            output = toIDataArray((Table) object);
+        } else if (object instanceof IDataCodable[]) {
+            output = toIDataArray((IDataCodable[]) object);
+        } else if (object instanceof IDataPortable[]) {
+            output = toIDataArray((IDataPortable[]) object);
+        } else if (object instanceof ValuesCodable[]) {
+            output = toIDataArray((ValuesCodable[]) object);
+        } else if (object instanceof Map[]) {
+            output = toIDataArray((Map[]) object);
         }
 
         return output;
@@ -1029,66 +1039,71 @@ public class IDataHelper {
 
     /**
      * Returns an IData[] representation of the given Table object.
-     * @param input The Table object to be converted to an IData[] object.
+     *
+     * @param table The Table object to be converted to an IData[] object.
      * @return      An IData[] representation of the give Table object.
      */
-    public static IData[] toIDataArray(Table input) {
-        if (input == null) return null;
-        return input.getValues();
+    public static IData[] toIDataArray(Table table) {
+        if (table == null) return null;
+        return table.getValues();
     }
 
     /**
      * Returns an IData[] representation of the given IDataCodable[] object.
-     * @param input The IDataCodable[] object to be converted to an IData[] object.
+     *
+     * @param array The IDataCodable[] object to be converted to an IData[] object.
      * @return      An IData[] representation of the give IDataCodable[] object.
      */
-    public static IData[] toIDataArray(IDataCodable[] input) {
-        if (input == null) return null;
-        IData[] output = new IData[input.length];
-        for(int i = 0; i < input.length; i++) {
-            output[i] = toIData(input[i]);
+    public static IData[] toIDataArray(IDataCodable[] array) {
+        if (array == null) return null;
+        IData[] output = new IData[array.length];
+        for(int i = 0; i < array.length; i++) {
+            output[i] = toIData(array[i]);
         }
         return output;
     }
 
     /**
      * Returns an IData[] representation of the given IDataPortable[] object.
-     * @param input The IDataPortable[] object to be converted to an IData[] object.
+     *
+     * @param array The IDataPortable[] object to be converted to an IData[] object.
      * @return      An IData[] representation of the give IDataPortable[] object.
      */
-    public static IData[] toIDataArray(IDataPortable[] input) {
-        if (input == null) return null;
-        IData[] output = new IData[input.length];
-        for(int i = 0; i < input.length; i++) {
-            output[i] = toIData(input[i]);
+    public static IData[] toIDataArray(IDataPortable[] array) {
+        if (array == null) return null;
+        IData[] output = new IData[array.length];
+        for(int i = 0; i < array.length; i++) {
+            output[i] = toIData(array[i]);
         }
         return output;
     }
 
     /**
      * Returns an IData[] representation of the given ValuesCodable[] object.
-     * @param input The ValuesCodable[] object to be converted to an IData[] object.
+     *
+     * @param array The ValuesCodable[] object to be converted to an IData[] object.
      * @return      An IData[] representation of the give ValuesCodable[] object.
      */
-    public static IData[] toIDataArray(ValuesCodable[] input) {
-        if (input == null) return null;
-        IData[] output = new IData[input.length];
-        for(int i = 0; i < input.length; i++) {
-            output[i] = toIData(input[i]);
+    public static IData[] toIDataArray(ValuesCodable[] array) {
+        if (array == null) return null;
+        IData[] output = new IData[array.length];
+        for(int i = 0; i < array.length; i++) {
+            output[i] = toIData(array[i]);
         }
         return output;
     }
 
     /**
      * Returns an IData[] representation of the given Map[] object.
-     * @param input The Map[] object to be converted to an IData[] object.
+     *
+     * @param array The Map[] object to be converted to an IData[] object.
      * @return      An IData[] representation of the give Map[] object.
      */
-    public static IData[] toIDataArray(Map[] input) {
-        if (input == null) return null;
-        IData[] output = new IData[input.length];
-        for(int i = 0; i < input.length; i++) {
-            output[i] = toIData(input[i]);
+    public static IData[] toIDataArray(Map[] array) {
+        if (array == null) return null;
+        IData[] output = new IData[array.length];
+        for(int i = 0; i < array.length; i++) {
+            output[i] = toIData(array[i]);
         }
         return output;
     }
@@ -1097,40 +1112,40 @@ public class IDataHelper {
      * Returns the union set of keys present in every item in the given
      * IData[] document list.
      *
-     * @param input An IData[] to retrieve the union set of keys from.
+     * @param array An IData[] to retrieve the union set of keys from.
      * @return      The union set of keys from the given IData[].
      */
-    public static String[] getKeys(IData[] input) {
-        return getKeys(input, (Pattern) null);
+    public static String[] getKeys(IData[] array) {
+        return getKeys(array, (Pattern) null);
     }
 
     /**
      * Returns the union set of keys present in every item in the given
      * IData[] document list that match the given regular expression pattern.
      *
-     * @param input         An IData[] to retrieve the union set of keys from.
+     * @param array         An IData[] to retrieve the union set of keys from.
      * @param patternString A regular expression pattern the returned keys
      *                      must match.
      * @return              The union set of keys from the given IData[].
      */
-    public static String[] getKeys(IData[] input, String patternString) {
-        return getKeys(input, patternString == null ? null : Pattern.compile(patternString));
+    public static String[] getKeys(IData[] array, String patternString) {
+        return getKeys(array, patternString == null ? null : Pattern.compile(patternString));
     }
 
     /**
      * Returns the union set of keys present in every item in the given
      * IData[] document list that match the given regular expression pattern.
      *
-     * @param input   An IData[] to retrieve the union set of keys from.
+     * @param array   An IData[] to retrieve the union set of keys from.
      * @param pattern A regular expression pattern the returned keys
      *                must match.
      * @return        The union set of keys from the given IData[].
      */
-    public static String[] getKeys(IData[] input, Pattern pattern) {
+    public static String[] getKeys(IData[] array, Pattern pattern) {
         java.util.Set<String> keys = new java.util.LinkedHashSet<String>();
 
-        if (input != null) {
-            for (IData document : input) {
+        if (array != null) {
+            for (IData document : array) {
                 if (document != null) {
                     for (Map.Entry<String, Object> entry : new IDataMap(document)) {
                         String key = entry.getKey();
@@ -1151,33 +1166,33 @@ public class IDataHelper {
     /**
      * Sorts the given IData document by its keys in natural ascending order.
      *
-     * @param input An IData document to be sorted by its keys.
-     * @return A new IData document which is duplicate of the given input
-     *         IData document but with its keys sorted in natural ascending
-     *         order.
+     * @param document  An IData document to be sorted by its keys.
+     * @return          A new IData document which is duplicate of the given input
+     *                  IData document but with its keys sorted in natural ascending
+     *                  order.
      */
-    public static IData sort(IData input) {
-        return sort(input, true);
+    public static IData sort(IData document) {
+        return sort(document, true);
     }
 
     /**
      * Sorts the given IData document by its keys in natural ascending order.
      *
-     * @param input     An IData document to be sorted by its keys.
+     * @param document  An IData document to be sorted by its keys.
      * @param recurse   A boolean which when true will also recursively sort
      *                  nested IData document and IData[] document lists.
      * @return          A new IData document which is duplicate of the given input
      *                  IData document but with its keys sorted in natural ascending
      *                  order.
      */
-    public static IData sort(IData input, boolean recurse) {
-        if (input == null) return null;
+    public static IData sort(IData document, boolean recurse) {
+        if (document == null) return null;
 
-        String[] keys = getKeys(input);
+        String[] keys = getKeys(document);
         java.util.Arrays.sort(keys);
 
         IData output = IDataFactory.create();
-        IDataCursor ic = input.getCursor();
+        IDataCursor ic = document.getCursor();
         IDataCursor oc = output.getCursor();
 
         for (int i = 0; i < keys.length; i++) {
@@ -1283,6 +1298,7 @@ public class IDataHelper {
     /**
      * Returns a new IData[] array with all elements sorted according
      * to the specified criteria.
+     *
      * @param array     An IData[] array to be sorted.
      * @param criteria  One or more sort criteria.
      * @return          A new IData[] array sorted by the given criteria.
@@ -1302,6 +1318,7 @@ public class IDataHelper {
     /**
      * Returns a new IData[] array with all elements sorted according
      * to the specified criteria.
+     *
      * @param array         An IData[] array to be sorted.
      * @param comparator    An IDataComparator object used to determine element ordering.
      * @return              A new IData[] array sorted by the given criteria.
@@ -1314,19 +1331,20 @@ public class IDataHelper {
     /**
      * Returns the values associated with the given key from each item in the
      * given IData[] document list.
-     * @param input         An IData[] array to return values from.
+     *
+     * @param array         An IData[] array to return values from.
      * @param key           A fully-qualified key identifying the values to return.
      * @param defaultValue  The default value returned if the key does not exist.
      * @return              The values associated with the given key from each IData
      *                      item in the given array.
      */
-    public static Object[] getValues(IData[] input, String key, Object defaultValue) {
-        if (input == null || key == null) return null;
+    public static Object[] getValues(IData[] array, String key, Object defaultValue) {
+        if (array == null || key == null) return null;
 
-        List list = new ArrayList(input.length);
+        List list = new ArrayList(array.length);
 
-        for (int i = 0; i < input.length; i++) {
-            list.add(get(input[i], key, defaultValue));
+        for (int i = 0; i < array.length; i++) {
+            list.add(get(array[i], key, defaultValue));
         }
 
         return ArrayHelper.normalize(list.toArray());
@@ -1422,6 +1440,7 @@ public class IDataHelper {
 
         /**
          * Parses a fully-qualified IData key string into its constituent parts.
+         *
          * @param key A fully-qualified IData key string.
          * @return    The parsed key as a java.util.Queue of individual key parts.
          */

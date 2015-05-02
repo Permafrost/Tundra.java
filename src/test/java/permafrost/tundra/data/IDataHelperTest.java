@@ -477,4 +477,71 @@ public class IDataHelperTest {
         assertEquals(null, IDataHelper.get(document, "y/z(1)"));
         assertEquals("4", IDataHelper.get(document, "y/z(2)"));
     }
+
+    @Test
+    public void testRenameWithNullSource() throws Exception {
+        IDataHelper.rename(document, null, "d");
+        assertEquals(null, IDataHelper.get(document, null));
+        assertEquals(null, IDataHelper.get(document, "d"));
+    }
+
+    @Test
+    public void testRenameWithNullTarget() throws Exception {
+        IDataHelper.rename(document, "c", null);
+        assertEquals("3", IDataHelper.get(document, "c"));
+        assertEquals(null, IDataHelper.get(document, null));
+    }
+
+    @Test
+    public void testRenameWithNullSourceAndTarget() throws Exception {
+        IDataHelper.rename(document, null, null);
+        assertEquals(null, IDataHelper.get(document, null));
+    }
+
+    @Test
+    public void testRenameWithEqualSourceAndTarget() throws Exception {
+        IDataHelper.rename(document, "c", "c");
+        assertEquals("3", IDataHelper.get(document, "c"));
+    }
+
+    @Test
+    public void testRename() throws Exception {
+        assertEquals("3", IDataHelper.get(document, "c"));
+        IDataHelper.rename(document, "c", "d");
+        assertEquals(null, IDataHelper.get(document, "c"));
+        assertEquals("3", IDataHelper.get(document, "d"));
+    }
+
+    @Test
+    public void testCopyWithNullSource() throws Exception {
+        IDataHelper.copy(document, null, "d");
+        assertEquals(null, IDataHelper.get(document, null));
+        assertEquals(null, IDataHelper.get(document, "d"));
+    }
+
+    @Test
+    public void testCopyWithNullTarget() throws Exception {
+        IDataHelper.copy(document, "c", null);
+        assertEquals("3", IDataHelper.get(document, "c"));
+        assertEquals(null, IDataHelper.get(document, null));
+    }
+
+    @Test
+    public void testCopyWithNullSourceAndTarget() throws Exception {
+        IDataHelper.copy(document, null, null);
+        assertEquals(null, IDataHelper.get(document, null));
+    }
+
+    @Test
+    public void testCopyWithEqualSourceAndTarget() throws Exception {
+        IDataHelper.copy(document, "c", "c");
+        assertEquals("3", IDataHelper.get(document, "c"));
+    }
+
+    @Test
+    public void testCopy() throws Exception {
+        IDataHelper.copy(document, "c", "d");
+        assertEquals("3", IDataHelper.get(document, "c"));
+        assertEquals("3", IDataHelper.get(document, "d"));
+    }
 }
