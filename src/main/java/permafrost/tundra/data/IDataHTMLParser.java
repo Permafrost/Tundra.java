@@ -42,7 +42,7 @@ import java.nio.charset.Charset;
 import java.util.Map;
 
 /**
- * Encodes IData objects to HTML.
+ * Serializes IData objects to HTML.
  */
 public class IDataHTMLParser extends IDataTextParser {
     protected static IDataHTMLParser INSTANCE = new IDataHTMLParser();
@@ -62,6 +62,7 @@ public class IDataHTMLParser extends IDataTextParser {
 
     /**
      * Encodes the given IData document as HTML to the given output stream.
+     *
      * @param outputStream  The stream to write the encoded IData to.
      * @param document      The IData document to be encoded.
      * @param charset       The character set to use.
@@ -73,6 +74,7 @@ public class IDataHTMLParser extends IDataTextParser {
 
     /**
      * This method has not implemented.
+     *
      * @param inputStream                       The input stream to be decoded.
      * @param charset                           The character set to use.
      * @return                                  An IData representation of the given input stream data.
@@ -93,6 +95,7 @@ public class IDataHTMLParser extends IDataTextParser {
 
     /**
      * Returns an HTML representation of the given IData object.
+     *
      * @param input The IData to convert to HTML.
      * @return      The HTML representation of the IData.
      */
@@ -165,6 +168,7 @@ public class IDataHTMLParser extends IDataTextParser {
 
     /**
      * Converts an IData[] to an HTML string.
+     *
      * @param input The IData[] to be converted.
      * @return      The HTML string that represents the given IData[].
      */
@@ -227,6 +231,7 @@ public class IDataHTMLParser extends IDataTextParser {
 
     /**
      * Converts an Object[][] to an HTML string.
+     *
      * @param input The Object[][] to be converted.
      * @return      The HTML string that represents the given Object[][].
      */
@@ -256,6 +261,7 @@ public class IDataHTMLParser extends IDataTextParser {
 
     /**
      * Converts an Object[] to an HTML string.
+     *
      * @param input The Object[] to be converted.
      * @return      The HTML string that represents the given Object[].
      */
