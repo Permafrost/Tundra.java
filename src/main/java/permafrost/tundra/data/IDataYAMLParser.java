@@ -40,6 +40,9 @@ import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Deserializes and serializes IData objects from and to YAML.
+ */
 public class IDataYAMLParser extends IDataTextParser {
     protected static IDataYAMLParser INSTANCE = new IDataYAMLParser();
 
@@ -57,7 +60,8 @@ public class IDataYAMLParser extends IDataTextParser {
     }
 
     /**
-     * Encodes the given IData document as YAML to the given output stream.
+     * Serializes the given IData document as YAML to the given output stream.
+     *
      * @param outputStream  The stream to write the encoded IData to.
      * @param document      The IData document to be encoded.
      * @param charset       The character set to use.
@@ -68,7 +72,8 @@ public class IDataYAMLParser extends IDataTextParser {
     }
 
     /**
-     * Returns an IData representation of the YAML data in the given input stream.
+     * Returns an IData representation of the YAML data read from the given input stream.
+     *
      * @param inputStream                       The input stream to be decoded.
      * @param charset                           The character set to use.
      * @return                                  An IData representation of the given input stream data.
@@ -80,6 +85,7 @@ public class IDataYAMLParser extends IDataTextParser {
 
     /**
      * The MIME media type for YAML.
+     *
      * @return YAML MIME media type.
      */
     public String getContentType() {
@@ -88,6 +94,7 @@ public class IDataYAMLParser extends IDataTextParser {
 
     /**
      * Returns an IData representation of the YAML data.
+     *
      * @param string        The String to be decoded.
      * @return              An IData representation of the given data.
      * @throws IOException  If an I/O problem occurs.
@@ -114,6 +121,7 @@ public class IDataYAMLParser extends IDataTextParser {
 
     /**
      * Returns a YAML representation of the given IData object.
+     *
      * @param input The IData to convert to YAML.
      * @return      The YAML representation of the IData.
      */
