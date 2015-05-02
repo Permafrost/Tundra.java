@@ -1173,6 +1173,53 @@ public class IDataHelper {
     }
 
     /**
+     * Converts an IData document to an IData[] document list with each
+     * item representing each key value tuple from the given document.
+     *
+     * @param document  An IData document to pivot.
+     * @param recurse   Whether to recursively pivot embedded IData objects.
+     * @return          The given IData document pivoted.
+     */
+    public static IData[] pivot(IData document, boolean recurse) {
+        if (document == null) return null;
+
+        IDataCursor cursor = document.getCursor();
+        List<IData> pivot = new ArrayList<IData>();
+
+        while(cursor.next()) {
+            String key = cursor.getKey();
+            Object value = cursor.getValue();
+
+            if (recurse && value != null) {
+                if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
+                    value = pivot(toIData(value), recurse);
+                } else if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
+                    IData[] array = toIDataArray(value);
+                    if (array != null) {
+                        List<IData[]> list = new ArrayList<IData[]>(array.length);
+
+                        for (int i = 0; i < array.length; i++) {
+                            list.add(pivot(array[i], recurse));
+                        }
+
+                        value = list.toArray(new IData[0][0]);
+                    }
+                }
+            }
+
+            IData item = IDataFactory.create();
+            IDataCursor ic = item.getCursor();
+            IDataUtil.put(ic, "key", key);
+            IDataUtil.put(ic, "value", value);
+            ic.destroy();
+
+            pivot.add(item);
+        }
+
+        return pivot.toArray(new IData[pivot.size()]);
+    }
+
+    /**
      * Sorts the given IData document by its keys in natural ascending order.
      *
      * @param document  An IData document to be sorted by its keys.
