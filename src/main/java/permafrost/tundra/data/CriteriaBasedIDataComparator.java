@@ -98,11 +98,9 @@ public class CriteriaBasedIDataComparator implements IDataComparator {
             if (firstValue == null) {
                 if (secondValue != null) {
                     result = normalize(-1, criterion.isDescending());
-                    break;
                 }
             } else if (secondValue == null) {
                 result = normalize(1, criterion.isDescending());
-                break;
             } else {
                 switch(criterion.getType()) {
                     case INTEGER:
@@ -126,7 +124,7 @@ public class CriteriaBasedIDataComparator implements IDataComparator {
                         secondValue = secondValue.toString();
                         break;
                 }
-                if (firstValue instanceof Comparable && secondValue instanceof Comparable) {
+                if (firstValue instanceof Comparable) {
                     result = normalize(((Comparable)firstValue).compareTo(secondValue), criterion.isDescending());
                 }
             }
