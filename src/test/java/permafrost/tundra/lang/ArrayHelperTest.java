@@ -83,4 +83,67 @@ public class ArrayHelperTest {
 
         assertArrayEquals(expected, ArrayHelper.fill(actual, item, 5, 0));
     }
+
+    @Test
+    public void testToStringArrayWithNull() throws Exception {
+        assertArrayEquals(null, ArrayHelper.toStringArray(null));
+    }
+
+    @Test
+    public void testToStringArrayWithIntegerArray() throws Exception {
+        Integer[] array = new Integer[2];
+        array[0] = new Integer(1);
+        array[1] = new Integer(2);
+
+        assertArrayEquals(new String[]{"1", "2"}, ArrayHelper.toStringArray(array));
+    }
+
+    @Test
+    public void testToStringTableWithNull() throws Exception {
+        assertArrayEquals(null, ArrayHelper.toStringTable(null));
+    }
+
+    @Test
+    public void testToStringTableWithIntegerTable() throws Exception {
+        Integer[][] table = new Integer[2][];
+
+        table[0] = new Integer[2];
+        table[1] = new Integer[2];
+
+        table[0][0] = new Integer("1");
+        table[0][1] = new Integer("2");
+        table[1][0] = new Integer("3");
+        table[1][1] = new Integer("4");
+
+        assertArrayEquals(new String[][]{{"1", "2"},{"3", "4"}}, ArrayHelper.toStringTable(table));
+    }
+
+    @Test
+    public void testStringifyWithNull() throws Exception {
+        assertEquals(null, ArrayHelper.stringify(null));
+    }
+
+    @Test
+    public void testStringifyWithIntegerArray() throws Exception {
+        Integer[] array = new Integer[2];
+        array[0] = new Integer(1);
+        array[1] = new Integer(2);
+
+        assertEquals("[1, 2]", ArrayHelper.stringify(array));
+    }
+
+    @Test
+    public void testStringifyWithIntegerTable() throws Exception {
+        Integer[][] table = new Integer[2][];
+
+        table[0] = new Integer[2];
+        table[1] = new Integer[2];
+
+        table[0][0] = new Integer("1");
+        table[0][1] = new Integer("2");
+        table[1][0] = new Integer("3");
+        table[1][1] = new Integer("4");
+
+        assertEquals("[[1, 2], [3, 4]]", ArrayHelper.stringify(table));
+    }
 }

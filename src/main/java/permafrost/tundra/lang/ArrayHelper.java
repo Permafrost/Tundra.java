@@ -33,15 +33,17 @@ public class ArrayHelper {
     /**
      * Disallow instantiation of this class.
      */
-    private ArrayHelper() {}
+    private ArrayHelper() {
+    }
 
     /**
      * Returns a new array, with the given element inserted at the end.
+     *
      * @param array The array to append the item to.
      * @param item  The item to be appended.
      * @param klass The class of the item being appended.
      * @param <T>   The class of the item being appended.
-     * @return      A copy of the given array with the given item appended to the end.
+     * @return A copy of the given array with the given item appended to the end.
      */
     public static <T> T[] append(T[] array, T item, Class<T> klass) {
         return insert(array, item, -1, klass);
@@ -49,8 +51,9 @@ public class ArrayHelper {
 
     /**
      * Returns a new array with all null elements removed.
+     *
      * @param array The array to be compacted.
-     * @param <T> The class of the items in the array.
+     * @param <T>   The class of the items in the array.
      * @return A copy of the given array with all null items removed.
      */
     public static <T> T[] compact(T[] array) {
@@ -67,11 +70,12 @@ public class ArrayHelper {
 
     /**
      * Returns a new array which contains all the elements from the given arrays.
-     * @param arrays    One or more arrays to be concatenated together.
-     * @param <T>       The class of item stored in the array.
-     * @return          A new array which contains all the elements from the given arrays.
+     *
+     * @param arrays One or more arrays to be concatenated together.
+     * @param <T>    The class of item stored in the array.
+     * @return A new array which contains all the elements from the given arrays.
      */
-    public static <T> T[] concatenate(T[] ... arrays) {
+    public static <T> T[] concatenate(T[]... arrays) {
         if (arrays == null || arrays.length == 0) return null;
         if (arrays.length == 1) return Arrays.copyOf(arrays[0], arrays[0].length);
 
@@ -91,13 +95,14 @@ public class ArrayHelper {
 
     /**
      * Removes the element at the given index from the given list.
+     *
      * @param array An array to remove an element from.
      * @param index The zero-based index of the element to be removed.
      * @param <T>   The class of the items stored in the array.
-     * @return      A new array whose length is one item less than the
-     *              given array, and which includes all elements from
-     *              the given array except for the element at the given
-     *              index.
+     * @return A new array whose length is one item less than the
+     * given array, and which includes all elements from
+     * the given array except for the element at the given
+     * index.
      */
     @SuppressWarnings("unchecked")
     public static <T> T[] drop(T[] array, int index) {
@@ -117,17 +122,18 @@ public class ArrayHelper {
 
     /**
      * Returns true if the given arrays are equal.
-     * @param arrays    One or more arrays to be compared for equality.
-     * @param <T>       The class of item stored in the array.
-     * @return          True if the given arrays are all considered equivalent, otherwise false.
+     *
+     * @param arrays One or more arrays to be compared for equality.
+     * @param <T>    The class of item stored in the array.
+     * @return True if the given arrays are all considered equivalent, otherwise false.
      */
-    public static <T> boolean equal(T[] ... arrays) {
+    public static <T> boolean equal(T[]... arrays) {
         if (arrays == null) return false;
         if (arrays.length < 2) return false;
 
         boolean result = true;
 
-        for(int i = 0; i < arrays.length - 1; i++) {
+        for (int i = 0; i < arrays.length - 1; i++) {
             for (int j = i + 1; j < arrays.length; j++) {
                 if (arrays[i] != null && arrays[j] != null) {
                     result = (arrays[i].length == arrays[j].length);
@@ -151,12 +157,13 @@ public class ArrayHelper {
     /**
      * Returns the element from the given array at the given index (supports
      * ruby-style reverse indexing).
+     *
      * @param array An array to retrieve an item from.
      * @param index The zero-based index of the item to be retrieved; supports
      *              ruby-style reverse indexing where, for example, -1 is the
      *              last item and -2 is the second last item in the array.
      * @param <T>   The class of the items stored in the array.
-     * @return      The item stored in the array at the given index.
+     * @return The item stored in the array at the given index.
      */
     public static <T> T get(T[] array, int index) {
         T item = null;
@@ -173,6 +180,7 @@ public class ArrayHelper {
 
     /**
      * Resizes the given array to the desired length, and pads with nulls.
+     *
      * @param array     The array to be resized, must not be null.
      * @param newLength The new length of returned array, which can be less than the
      *                  given array's length in which case it will be truncated, or
@@ -180,8 +188,8 @@ public class ArrayHelper {
      *                  padded to the new size with the given item (or null if no
      *                  item is specified).
      * @param <T>       The class of the items stored in the array.
-     * @return          A new array with the items from the given array but with the
-     *                  new desired length.
+     * @return A new array with the items from the given array but with the
+     * new desired length.
      */
     public static <T> T[] resize(T[] array, int newLength) {
         return resize(array, newLength, null);
@@ -190,6 +198,7 @@ public class ArrayHelper {
     /**
      * Resizes the given array (or instantiates a new array, if null) to the
      * desired length, and pads with the given item.
+     *
      * @param array     The array to be resized. If null, a new array will be instantiated.
      * @param newLength The new length of returned array, which can be less than the
      *                  given array's length in which case it will be truncated, or
@@ -199,8 +208,8 @@ public class ArrayHelper {
      * @param item      The item to use when padding the array to a larger size.
      * @param klass     The class of the items stored in the array.
      * @param <T>       The class of the items stored in the array.
-     * @return          A new array with the items from the given array but with the
-     *                  new desired length.
+     * @return A new array with the items from the given array but with the
+     * new desired length.
      */
     public static <T> T[] resize(T[] array, int newLength, T item, Class<T> klass) {
         if (array == null) {
@@ -214,6 +223,7 @@ public class ArrayHelper {
 
     /**
      * Resizes the given array to the desired length, and pads with the given item.
+     *
      * @param array     The array to be resized, must not be null.
      * @param newLength The new length of returned array, which can be less than the
      *                  given array's length in which case it will be truncated, or
@@ -222,8 +232,8 @@ public class ArrayHelper {
      *                  item is specified).
      * @param item      The item to use when padding the array to a larger size.
      * @param <T>       The class of the items stored in the array.
-     * @return          A new array with the items from the given array but with the
-     *                  new desired length.
+     * @return A new array with the items from the given array but with the
+     * new desired length.
      */
     public static <T> T[] resize(T[] array, int newLength, T item) {
         if (array == null) throw new IllegalArgumentException("array must not be null");
@@ -243,14 +253,15 @@ public class ArrayHelper {
 
     /**
      * Fills the given array with the given item for the given range.
-     * @param array         The array to be filled.
-     * @param item          The item to fill the array with.
-     * @param index         The zero-based index from which the fill should start; supports
-     *                      ruby-style reverse indexing where, for example, -1 is the
-     *                      last item and -2 is the second last item in the array.
-     * @param length        The number of items from the given index to be filled.
-     * @param <T>           The class of item stored in the array.
-     * @return              The given array filled with the given item for the given range.
+     *
+     * @param array  The array to be filled.
+     * @param item   The item to fill the array with.
+     * @param index  The zero-based index from which the fill should start; supports
+     *               ruby-style reverse indexing where, for example, -1 is the
+     *               last item and -2 is the second last item in the array.
+     * @param length The number of items from the given index to be filled.
+     * @param <T>    The class of item stored in the array.
+     * @return The given array filled with the given item for the given range.
      */
     public static <T> T[] fill(T[] array, T item, int index, int length) {
         if (array == null) return null;
@@ -269,14 +280,15 @@ public class ArrayHelper {
     /**
      * Grows the size of the given array by the given count, and pads
      * with the given item.
-     * @param array     The array to be resized, must not be null.
-     * @param count     The number of additional items to be appended to the end of
-     *                  the array.
-     * @param item      The item to use to pad the array.
-     * @param klass     The class of the items stored in the array.
-     * @param <T>       The class of the items stored in the array.
-     * @return          A new array with the items from the given array but with
-     *                  a new length equal to the old length + count.
+     *
+     * @param array The array to be resized, must not be null.
+     * @param count The number of additional items to be appended to the end of
+     *              the array.
+     * @param item  The item to use to pad the array.
+     * @param klass The class of the items stored in the array.
+     * @param <T>   The class of the items stored in the array.
+     * @return A new array with the items from the given array but with
+     * a new length equal to the old length + count.
      */
     public static <T> T[] grow(T[] array, int count, T item, Class<T> klass) {
         return resize(array, array == null ? count : array.length + count, item, klass);
@@ -284,11 +296,12 @@ public class ArrayHelper {
 
     /**
      * Shrinks the size of the given array by the given count.
+     *
      * @param array The array to be shrunk.
      * @param count The number of items to shrink the array by.
      * @param <T>   The class of the items stored in the array.
-     * @return      A new array with the items from the given array but with
-     *              a new length equal to the old length - count.
+     * @return A new array with the items from the given array but with
+     * a new length equal to the old length - count.
      */
     public static <T> T[] shrink(T[] array, int count) {
         if (array == null) return null;
@@ -298,11 +311,12 @@ public class ArrayHelper {
 
     /**
      * Returns true if the given item is found in the given array.
+     *
      * @param array The array to be searched for the given item.
      * @param item  The item to be searched for in the given array.
      * @param <T>   The class of the items stored in the array.
-     * @return      True if the given item was found in the given array,
-     *              otherwise false.
+     * @return True if the given item was found in the given array,
+     * otherwise false.
      */
     public static <T> boolean include(T[] array, T item) {
         boolean found = false;
@@ -320,6 +334,7 @@ public class ArrayHelper {
 
     /**
      * Returns a new array with the given item inserted at the given index.
+     *
      * @param array The array which is to be copied to a new array.
      * @param item  The item to be inserted.
      * @param index The zero-based index at which the item is to be inserted; supports
@@ -327,10 +342,10 @@ public class ArrayHelper {
      *              last item and -2 is the second last item in the array.
      * @param klass The class of the items stored in the array.
      * @param <T>   The class of the items stored in the array.
-     * @return      A new array which includes all the items from the given array,
-     *              with the given item inserted at the given index, and existing
-     *              items at and after the given index shifted to the right (by
-     *              adding one to their indices).
+     * @return A new array which includes all the items from the given array,
+     * with the given item inserted at the given index, and existing
+     * items at and after the given index shifted to the right (by
+     * adding one to their indices).
      */
     public static <T> T[] insert(T[] array, T item, int index, Class<T> klass) {
         if (array == null) array = instantiate(klass);
@@ -360,12 +375,13 @@ public class ArrayHelper {
 
     /**
      * Returns a new array that contains only the items present in all the given arrays.
+     *
      * @param arrays One or more arrays to be intersected.
      * @param <T>    The class of the items stored in the arrays.
-     * @return       A new array which is a set intersection of the given arrays.
+     * @return A new array which is a set intersection of the given arrays.
      */
     @SuppressWarnings("unchecked")
-    public static <T> T[] intersect(T[] ... arrays) {
+    public static <T> T[] intersect(T[]... arrays) {
         if (arrays == null || arrays.length == 0) return null;
 
         List<T> intersection = new ArrayList<T>(arrays[0].length);
@@ -381,12 +397,13 @@ public class ArrayHelper {
     /**
      * Returns a string created by concatenating each element of the given array,
      * separated by the given separator string.
+     *
      * @param array     The array whose contents are to be joined.
      * @param separator An optional separator string to be used between items of the array.
      * @param <T>       The class of items stored in the array.
-     * @return          A string representation of the given array created by concatenating
-     *                  together the string representation of each item in order, optionally
-     *                  separated by the given separator string.
+     * @return A string representation of the given array created by concatenating
+     * together the string representation of each item in order, optionally
+     * separated by the given separator string.
      */
     public static <T> String join(T[] array, String separator) {
         if (array == null) return "";
@@ -401,22 +418,52 @@ public class ArrayHelper {
 
     /**
      * Returns a string representation of the given array.
+     *
      * @param array The array to be stringified.
      * @param <T>   The class of items stored in the array.
-     * @return      A string representation of the given array.
+     * @return A string representation of the given array.
      */
     public static <T> String stringify(T[] array) {
-        return "[" + join(array, ", ") + "]";
+        return array == null ? null : "[" + join(array, ", ") + "]";
+    }
+
+    /**
+     * Returns a string representation of the given table.
+     *
+     * @param table The table to be stringified.
+     * @param <T>   The class of items stored in the array.
+     * @return A string representation of the given array.
+     */
+    public static <T> String stringify(T[][] table) {
+        if (table == null) return null;
+
+        String[] rows = new String[table.length];
+
+        for (int i = 0; i < table.length; i++) {
+            StringBuilder builder = new StringBuilder();
+            builder.append("[");
+            builder.append(join(table[i], ", "));
+            builder.append("]");
+            rows[i] = builder.toString();
+        }
+
+        StringBuilder builder = new StringBuilder();
+        builder.append("[");
+        builder.append(join(rows, ", "));
+        builder.append("]");
+
+        return builder.toString();
     }
 
     /**
      * Returns a new array with a new element inserted at the beginning.
+     *
      * @param array The array to be prepended.
      * @param item  The item to prepend to the array.
      * @param klass The class of the items stored in the array.
      * @param <T>   The class of the items stored in the array.
-     * @return      A new copy of the given array with the given item prepended
-     *              to the start of the array.
+     * @return A new copy of the given array with the given item prepended
+     * to the start of the array.
      */
     public static <T> T[] prepend(T[] array, T item, Class<T> klass) {
         return insert(array, item, 0, klass);
@@ -425,6 +472,7 @@ public class ArrayHelper {
     /**
      * Sets the element from the given array at the given index (supports ruby-style reverse
      * indexing).
+     *
      * @param array The array in which to set the item at the given index.
      * @param item  The item to be set at the given index in the array.
      * @param index The zero-based index of the array item whose value is to be set; supports
@@ -432,7 +480,7 @@ public class ArrayHelper {
      *              last item and -2 is the second last item in the array.
      * @param klass The class of the items stored in the array.
      * @param <T>   The class of the items stored in the array.
-     * @return      The given array with the item at the given index set to the given value.
+     * @return The given array with the item at the given index set to the given value.
      */
     public static <T> T[] put(T[] array, T item, int index, Class<T> klass) {
         if (array == null) array = instantiate(klass);
@@ -457,9 +505,10 @@ public class ArrayHelper {
 
     /**
      * Returns a new array with all elements from the given array but in reverse order.
+     *
      * @param array The array to be reversed.
      * @param <T>   The class of the items stored in the array.
-     * @return      A copy of the given array but with all item orders reversed.
+     * @return A copy of the given array but with all item orders reversed.
      */
     public static <T> T[] reverse(T[] array) {
         if (array == null) return null;
@@ -472,15 +521,16 @@ public class ArrayHelper {
 
     /**
      * Returns a new array which is a subset of elements from the given array.
-     * @param array     The array to be sliced.
-     * @param index     The zero-based start index of the subset; supports
-     *                  ruby-style reverse indexing where, for example, -1 is the
-     *                  last item and -2 is the second last item in the array.
-     * @param length    The desired length of the slice; supports negative lengths
-     *                  for slicing backwards from the end of the array.
-     * @param <T>       The class of the items stored in the array.
-     * @return          A new array which is a subset of the given array taken
-     *                  at the desired index for the desired length.
+     *
+     * @param array  The array to be sliced.
+     * @param index  The zero-based start index of the subset; supports
+     *               ruby-style reverse indexing where, for example, -1 is the
+     *               last item and -2 is the second last item in the array.
+     * @param length The desired length of the slice; supports negative lengths
+     *               for slicing backwards from the end of the array.
+     * @param <T>    The class of the items stored in the array.
+     * @return A new array which is a subset of the given array taken
+     * at the desired index for the desired length.
      */
     public static <T> T[] slice(T[] array, int index, int length) {
         if (array == null || array.length == 0) return array;
@@ -496,9 +546,10 @@ public class ArrayHelper {
 
     /**
      * Returns a new array with all elements sorted.
+     *
      * @param array The array to be sorted.
      * @param <T>   The class of items stored in the array.
-     * @return      A new copy of the given array but with the items sorted in their natural order.
+     * @return A new copy of the given array but with the items sorted in their natural order.
      */
     public static <T> T[] sort(T[] array) {
         return sort(array, null);
@@ -506,10 +557,11 @@ public class ArrayHelper {
 
     /**
      * Returns a new array with all elements sorted according to the given comparator.
-     * @param array         The array to be sorted.
-     * @param comparator    The comparator used to determine element ordering.
-     * @param <T>           The class of items stored in the array.
-     * @return              A new copy of the given array but with the items sorted in their natural order.
+     *
+     * @param array      The array to be sorted.
+     * @param comparator The comparator used to determine element ordering.
+     * @param <T>        The class of items stored in the array.
+     * @return A new copy of the given array but with the items sorted in their natural order.
      */
     public static <T> T[] sort(T[] array, Comparator<T> comparator) {
         if (array == null) return null;
@@ -521,9 +573,10 @@ public class ArrayHelper {
 
     /**
      * Returns a new array with all duplicate elements removed.
+     *
      * @param array The array to remove duplicates from.
      * @param <T>   The class of items stored in the array.
-     * @return      A new copy of the given array with all duplicate elements removed.
+     * @return A new copy of the given array with all duplicate elements removed.
      */
     public static <T> T[] unique(T[] array) {
         if (array == null) return null;
@@ -533,9 +586,10 @@ public class ArrayHelper {
 
     /**
      * Dynamically instantiates a new zero-length array of the given class.
+     *
      * @param klass The class of items to be stored in the array.
      * @param <T>   The class of items to be stored in the array.
-     * @return      A new zero-length array of the given class.
+     * @return A new zero-length array of the given class.
      */
     @SuppressWarnings("unchecked")
     public static <T> T[] instantiate(Class<T> klass) {
@@ -544,21 +598,22 @@ public class ArrayHelper {
 
     /**
      * Dynamically instantiates a new array of the given class with the given length.
-     * @param klass     The class of items to be stored in the array.
-     * @param length    The desired length of the returned array.
-     * @param <T>       The class of items to be stored in the array.
-     * @return          A new array of the given class with the given length.
+     *
+     * @param klass  The class of items to be stored in the array.
+     * @param length The desired length of the returned array.
+     * @param <T>    The class of items to be stored in the array.
+     * @return A new array of the given class with the given length.
      */
     @SuppressWarnings("unchecked")
     public static <T> T[] instantiate(Class<T> klass, int length) {
-        return (T[])java.lang.reflect.Array.newInstance(klass, length);
+        return (T[]) java.lang.reflect.Array.newInstance(klass, length);
     }
 
     /**
      * Converts a Collection to an Object[].
      *
      * @param input A Collection to be converted to an Object[].
-     * @return      An Object[] representation of the given Collection.
+     * @return An Object[] representation of the given Collection.
      */
     public static Object[] toArray(Collection input) {
         if (input == null) return null;
@@ -569,7 +624,7 @@ public class ArrayHelper {
      * Converts an Object[] to a Collection.
      *
      * @param input An Object[] to be converted to a Collection.
-     * @return      An Collection representation of the given Object[].
+     * @return An Collection representation of the given Object[].
      */
     public static List toList(Object[] input) {
         if (input == null) return null;
@@ -578,8 +633,9 @@ public class ArrayHelper {
 
     /**
      * Returns a new array whose class is the nearest ancestor class of all contained items.
+     *
      * @param input The array to be normalized.
-     * @return      A new copy of the given array whose class is the nearest ancestor of all contained items.
+     * @return A new copy of the given array whose class is the nearest ancestor of all contained items.
      */
     public static Object[] normalize(Object[] input) {
         if (input == null) return null;
@@ -590,9 +646,9 @@ public class ArrayHelper {
      * Returns a new array with all string items trimmed, all
      * empty string items removed, and all null items removed.
      *
-     * @param array     An array to be squeezed.
-     * @param <T>       The type of item in the array.
-     * @return          A new array that is the given array squeezed.
+     * @param array An array to be squeezed.
+     * @param <T>   The type of item in the array.
+     * @return A new array that is the given array squeezed.
      */
     @SuppressWarnings("unchecked")
     public static <T> T[] squeeze(T[] array) {
@@ -601,7 +657,7 @@ public class ArrayHelper {
         List<T> list = new ArrayList<T>(array.length);
 
         for (T item : array) {
-            if (item instanceof String) item = (T)StringHelper.squeeze((String)item, false);
+            if (item instanceof String) item = (T) StringHelper.squeeze((String) item, false);
             if (item != null) list.add(item);
         }
 
@@ -615,7 +671,7 @@ public class ArrayHelper {
      *
      * @param table A table to be squeezed.
      * @param <T>   The type of item in the table.
-     * @return      A new table that is the given table squeezed.
+     * @return A new table that is the given table squeezed.
      */
     private static <T> T[][] squeeze(T[][] table) {
         if (table == null || table.length == 0) return null;
@@ -630,5 +686,42 @@ public class ArrayHelper {
         table = list.toArray(java.util.Arrays.copyOf(table, list.size()));
 
         return table.length == 0 ? null : table;
+    }
+
+    /**
+     * Converts the given two dimensional array of objects to a string table.
+     *
+     * @param table The two dimensional array to be converted.
+     * @param <T>   The type of item in the given array.
+     * @return      The converted string table.
+     */
+    public static <T> String[][] toStringTable(T[][] table) {
+        if (table == null) return null;
+
+        String[][] stringTable = new String[table.length][];
+        for (int i = 0; i < table.length; i++) {
+            stringTable[i] = toStringArray(table[i]);
+        }
+
+        return stringTable;
+    }
+
+    /**
+     * Converts the given array to a string array.
+     *
+     * @param array The array to be converted
+     * @param <T>   The type of item in the array.
+     * @return      The converted string array.
+     */
+    public static <T> String[] toStringArray(T[] array) {
+        if (array == null) return null;
+
+        String[] stringArray = new String[array.length];
+
+        for (int i = 0; i < array.length; i++) {
+            if (array[i] != null) stringArray[i] = array[i].toString();
+        }
+
+        return stringArray;
     }
 }
