@@ -28,6 +28,8 @@ import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataUtil;
 
+import java.util.Locale;
+
 /**
  * A collection of convenience methods for working with Locale objects.
  */
@@ -38,26 +40,27 @@ public class LocaleHelper {
     private LocaleHelper() {}
 
     /**
-     * Returns a new java.util.Locale object for the given language, country and variant
-     * @param language An ISO 639 alpha-2 or alpha-3 language code, or a language subtag
-     *                 up to 8 characters in length. See the Locale class description
-     *                 about valid language values.
-     * @param country  An ISO 3166 alpha-2 country code or a UN M.49 numeric-3 area code.
-     *                 See the Locale class description about valid country values.
-     * @param variant  Any arbitrary value used to indicate a variation of a Locale.
-     *                 See the Locale class description for the details.
-     * @return A new java.util.Local object.
+     * Returns a new Locale object for the given language, country and variant
+     *
+     * @param language  An ISO 639 alpha-2 or alpha-3 language code, or a language subtag
+     *                  up to 8 characters in length. See the Locale class description
+     *                  about valid language values.
+     * @param country   An ISO 3166 alpha-2 country code or a UN M.49 numeric-3 area code.
+     *                  See the Locale class description about valid country values.
+     * @param variant   Any arbitrary value used to indicate a variation of a Locale.
+     *                  See the Locale class description for the details.
+     * @return          A new Locale object.
      */
-    public static java.util.Locale locale(String language, String country, String variant) {
-        java.util.Locale locale = java.util.Locale.getDefault();
+    public static Locale toLocale(String language, String country, String variant) {
+        Locale locale = Locale.getDefault();
 
         if (language != null) {
             if (country == null) {
-                locale = new java.util.Locale(language);
+                locale = new Locale(language);
             } else if (variant == null) {
-                locale = new java.util.Locale(language, country);
+                locale = new Locale(language, country);
             } else {
-                locale = new java.util.Locale(language, country, variant);
+                locale = new Locale(language, country, variant);
             }
         }
 
@@ -65,11 +68,12 @@ public class LocaleHelper {
     }
 
     /**
-     * Converts an IData locale object to a java.util.Locale object.
+     * Converts an IData locale object to a Locale object.
+     *
      * @param document The IData locale object to be converted.
-     * @return         A java.util.Locale object representing the given locale.
+     * @return         A Locale object representing the given locale.
      */
-    public static java.util.Locale locale(IData document) {
+    public static Locale toLocale(IData document) {
         String language = null, country = null, variant = null;
 
         if (document != null) {
@@ -80,6 +84,6 @@ public class LocaleHelper {
             cursor.destroy();
         }
 
-        return locale(language, country, variant);
+        return toLocale(language, country, variant);
     }
 }
