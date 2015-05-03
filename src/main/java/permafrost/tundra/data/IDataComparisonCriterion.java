@@ -29,15 +29,12 @@ import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
 import com.wm.data.IDataUtil;
 import com.wm.util.coder.IDataCodable;
+import permafrost.tundra.lang.BooleanHelper;
 
 /**
  * Defines a single criterion used by the IDataComparator class.
  */
 public class IDataComparisonCriterion implements IDataCodable {
-    /**
-     * The default comparison type, if none is specified.
-     */
-    public static final IDataComparisonType DEFAULT_COMPARISON_TYPE = IDataComparisonType.OBJECT;
 
     protected String key, pattern;
     protected IDataComparisonType type;
@@ -64,6 +61,56 @@ public class IDataComparisonCriterion implements IDataCodable {
      */
     public IDataComparisonCriterion(String key, boolean descending) {
         this(key, (IDataComparisonType)null, (String)null, descending);
+    }
+
+    /**
+     * Constructs a new IDataComparisonCriterion object.
+     *
+     * @param key           The IData key on which the comparison will be made.
+     * @param type          The type of comparison to be used; must be one of the
+     *                      enumeration values in the IDataComparisonType enumeration.
+     */
+    public IDataComparisonCriterion(String key, String type) {
+        this(key, IDataComparisonType.normalize(type), null);
+    }
+
+    /**
+     * Constructs a new IDataComparisonCriterion object.
+     *
+     * @param key           The IData key on which the comparison will be made.
+     * @param type          The type of comparison to be used; must be one of the
+     *                      enumeration values in the IDataComparisonType enumeration.
+     */
+    public IDataComparisonCriterion(String key, IDataComparisonType type) {
+        this(key, type, null, false);
+    }
+
+    /**
+     * Constructs a new IDataComparisonCriterion object.
+     *
+     * @param key           The IData key on which the comparison will be made.
+     * @param type          The type of comparison to be used; must be one of the
+     *                      enumeration values in the IDataComparisonType enumeration.
+     * @param descending    If true, the values associated with this key
+     *                      will be compared in descending order, otherwise
+     *                      they will be compared in ascending order.
+     */
+    public IDataComparisonCriterion(String key, String type, boolean descending) {
+        this(key, IDataComparisonType.normalize(type), null, descending);
+    }
+
+    /**
+     * Constructs a new IDataComparisonCriterion object.
+     *
+     * @param key           The IData key on which the comparison will be made.
+     * @param type          The type of comparison to be used; must be one of the
+     *                      enumeration values in the IDataComparisonType enumeration.
+     * @param descending    If true, the values associated with this key
+     *                      will be compared in descending order, otherwise
+     *                      they will be compared in ascending order.
+     */
+    public IDataComparisonCriterion(String key, IDataComparisonType type, boolean descending) {
+        this(key, type, null, descending);
     }
 
     /**
@@ -230,7 +277,7 @@ public class IDataComparisonCriterion implements IDataCodable {
      * @param descending    True if the comparison should be in descending order.
      */
     protected void initialize(String key, String type, String pattern, String descending) {
-        initialize(key, IDataComparisonType.normalize(type), pattern, Boolean.valueOf(descending));
+        initialize(key, IDataComparisonType.normalize(type), pattern, BooleanHelper.parse(descending, false));
     }
 
     /**
@@ -243,7 +290,7 @@ public class IDataComparisonCriterion implements IDataCodable {
      */
     protected void initialize(String key, IDataComparisonType type, String pattern, boolean descending) {
         this.key = key;
-        this.type = type == null ? DEFAULT_COMPARISON_TYPE : type;
+        this.type = IDataComparisonType.normalize(type);
         this.pattern = pattern;
         this.descending = descending;
     }

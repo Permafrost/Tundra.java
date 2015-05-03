@@ -6,6 +6,8 @@ import com.wm.data.IDataFactory;
 import com.wm.data.IDataUtil;
 import org.junit.Before;
 import org.junit.Test;
+import permafrost.tundra.io.StreamHelper;
+import permafrost.tundra.lang.ObjectHelper;
 
 import java.util.regex.Pattern;
 
@@ -543,5 +545,59 @@ public class IDataHelperTest {
         IDataHelper.copy(document, "c", "d");
         assertEquals("3", IDataHelper.get(document, "c"));
         assertEquals("3", IDataHelper.get(document, "d"));
+    }
+
+    @Test
+    public void testSortWithMultipleKeys() throws Exception {
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "\n" +
+                "<IDataXMLCoder version=\"1.0\">\n" +
+                "  <record javaclass=\"com.wm.data.ISMemDataImpl\">\n" +
+                "    <array name=\"array\" type=\"record\" depth=\"1\">\n" +
+                "      <record javaclass=\"com.wm.util.Values\">\n" +
+                "        <value name=\"string\">a</value>\n" +
+                "        <value name=\"integer\">26</value>\n" +
+                "        <value name=\"decimal\">43.2</value>\n" +
+                "        <value name=\"datetime\">02-03-2015</value>\n" +
+                "        <value name=\"duration\">P1Y</value>\n" +
+                "      </record>\n" +
+                "      <record javaclass=\"com.wm.util.Values\">\n" +
+                "        <value name=\"string\">z</value>\n" +
+                "        <value name=\"integer\">99</value>\n" +
+                "        <value name=\"decimal\">99.9</value>\n" +
+                "        <value name=\"datetime\">01-01-2014</value>\n" +
+                "        <value name=\"duration\">P1D</value>\n" +
+                "      </record>\n" +
+                "      <record javaclass=\"com.wm.util.Values\">\n" +
+                "        <value name=\"string\">a</value>\n" +
+                "        <value name=\"integer\">25</value>\n" +
+                "        <value name=\"decimal\">64.345</value>\n" +
+                "        <value name=\"datetime\">01-01-2014</value>\n" +
+                "        <value name=\"duration\">PT1S</value>\n" +
+                "      </record>\n" +
+                "    </array>\n" +
+                "  </record>\n" +
+                "</IDataXMLCoder>\n";
+
+        IDataMap map = new IDataMap(IDataXMLParser.getInstance().parse(StreamHelper.normalize(xml)));
+        IData[] array = (IData[])map.get("array");
+
+        IDataComparisonCriterion c1 = new IDataComparisonCriterion("string", "string", false);
+        IDataComparisonCriterion c2 = new IDataComparisonCriterion("integer", "integer", false);
+
+        IData[] result = IDataHelper.sort(array, c1, c2);
+
+        assertEquals(3, result.length);
+        IDataMap first = new IDataMap(result[0]);
+        assertEquals("a", first.get("string"));
+        assertEquals("25", first.get("integer"));
+
+        IDataMap second = new IDataMap(result[1]);
+        assertEquals("a", second.get("string"));
+        assertEquals("26", second.get("integer"));
+
+        IDataMap third = new IDataMap(result[2]);
+        assertEquals("z", third.get("string"));
+        assertEquals("99", third.get("integer"));
     }
 }

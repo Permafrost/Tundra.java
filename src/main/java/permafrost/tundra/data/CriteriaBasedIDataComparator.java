@@ -128,9 +128,9 @@ public class CriteriaBasedIDataComparator implements IDataComparator {
                 }
                 if (firstValue instanceof Comparable && secondValue instanceof Comparable) {
                     result = normalize(((Comparable)firstValue).compareTo(secondValue), criterion.isDescending());
-                    if (result != 0) break;
                 }
             }
+            if (result != 0) break;
         }
         return result;
     }

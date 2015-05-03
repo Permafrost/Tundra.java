@@ -28,29 +28,11 @@ package permafrost.tundra.data;
  * The different types of IData value comparison supported by the IDataComparator class.
  */
 public enum IDataComparisonType {
-    OBJECT(0), STRING(1), INTEGER(2), DECIMAL(3), DATETIME(4), DURATION(5);
-
-    private int value;
-    private static java.util.Map<Integer, IDataComparisonType> map = new java.util.HashMap<Integer, IDataComparisonType>();
-
-    IDataComparisonType(int value) {
-        this.value = value;
-    }
-
-    static {
-        for (IDataComparisonType type : IDataComparisonType.values()) {
-            map.put(type.value, type);
-        }
-    }
-
+    OBJECT, STRING, INTEGER, DECIMAL, DATETIME, DURATION;
     /**
-     * Returns an IDataKeyComparisonType for the given integer value.
-     * @param value The value to be converted to an IDataKeyComparisonType.
-     * @return      The IDataKeyComparisonType representing the given value.
+     * The default comparison type, if none is specified.
      */
-    public static IDataComparisonType valueOf(int value) {
-        return map.get(value);
-    }
+    public static final IDataComparisonType DEFAULT_COMPARISON_TYPE = OBJECT;
 
     /**
      * Returns an IDataKeyComparisonType for the given string value.
@@ -58,6 +40,15 @@ public enum IDataComparisonType {
      * @return      The IDataKeyComparisonType representing the given value.
      */
     public static IDataComparisonType normalize(String value) {
-        return value == null ? OBJECT : valueOf(value.trim().toUpperCase());
+        return normalize(value == null ? null : valueOf(value.trim().toUpperCase()));
+    }
+
+    /**
+     * Normalizes an IDataKeyComparisonType.
+     * @param type  The IDataKeyComparisonType to be normalized.
+     * @return      If the given type is null the default type, otherwise the given type.
+     */
+    public static IDataComparisonType normalize(IDataComparisonType type) {
+        return type == null ? DEFAULT_COMPARISON_TYPE : type;
     }
 }
