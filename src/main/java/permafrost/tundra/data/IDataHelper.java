@@ -393,7 +393,7 @@ public class IDataHelper {
                     }
                 }
             } else if (value instanceof Object[][]) {
-                value = ArrayHelper.squeeze((Object[][])value);
+                value = ArrayHelper.squeeze((Object[][]) value);
             } else if (value instanceof Object[]) {
                 value = ArrayHelper.squeeze((Object[])value);
             }
@@ -415,7 +415,7 @@ public class IDataHelper {
      * @return          A new IData[] that is the given IData[] squeezed.
      */
     public static IData[] squeeze(IData[] array, boolean recurse) {
-        if (array == null || array.length == 0) return null;
+        if (array == null) return null;
 
         List<IData> list = new ArrayList<IData>(array.length);
 
@@ -427,6 +427,280 @@ public class IDataHelper {
         array = list.toArray(new IData[list.size()]);
 
         return array.length == 0 ? null : array;
+    }
+
+    /**
+     * Converts all non-string values to strings, except for IData and IData[] compatible objects.
+     *
+     * @param document  The IData document to stringify.
+     * @param recurse   Whether embedded IData and IData[] objects should also be stringified recursively.
+     * @return          The stringified IData document.
+     */
+    public static IData stringify(IData document, boolean recurse) {
+        if (document == null) return null;
+
+        IData output = IDataFactory.create();
+        IDataCursor inputCursor = document.getCursor();
+        IDataCursor outputCursor = output.getCursor();
+
+        while(inputCursor.next()) {
+            String key = inputCursor.getKey();
+            Object value = inputCursor.getValue();
+
+            if (value instanceof String || value instanceof String[] || value instanceof String[][]) {
+                // do nothing, already value is already a string
+            } else if (recurse && (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable)) {
+                value = stringify(toIData(value), recurse);
+            } else if (recurse && (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[])) {
+                value = stringify(toIDataArray(value), recurse);
+            } else if (value instanceof Object[][]) {
+                value = ArrayHelper.toStringTable((Object[][])value);
+            } else if (value instanceof Object[]) {
+                value = ArrayHelper.toStringArray((Object[])value);
+            } else {
+                value = value.toString();
+            }
+            outputCursor.insertAfter(key, value);
+        }
+
+        inputCursor.destroy();
+        outputCursor.destroy();
+
+        return output;
+    }
+
+    /**
+     * Converts all non-string values to strings, except for IData and IData[] compatible objects.
+     *
+     * @param array     The IData[] to stringify.
+     * @param recurse   Whether to stringify embedded IData and IData[] objects recursively.
+     * @return          The stringified IData[].
+     */
+    public static IData[] stringify(IData[] array, boolean recurse) {
+        if (array == null) return null;
+
+        IData[] output = new IData[array.length];
+
+        for (int i = 0; i < array.length; i++) {
+            output[i] = stringify(array[i], recurse);
+        }
+
+        return output;
+    }
+
+    /**
+     * Converts all null values to empty strings.
+     *
+     * @param document  The IData document to blankify.
+     * @param recurse   Whether embedded IData and IData[] objects should be recursively blankified.
+     * @return          The blankified IData.
+     */
+    public static IData blankify(IData document, boolean recurse) {
+        if (document == null) return null;
+
+        IData output = IDataFactory.create();
+        IDataCursor inputCursor = document.getCursor();
+        IDataCursor outputCursor = output.getCursor();
+
+        while(inputCursor.next()) {
+            String key = inputCursor.getKey();
+            Object value = inputCursor.getValue();
+
+            if (value == null) {
+                value = "";
+            } else if (recurse && (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable)) {
+                value = blankify(toIData(value), recurse);
+            } else if (recurse && (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[])) {
+                value = blankify(toIDataArray(value), recurse);
+            }
+            outputCursor.insertAfter(key, value);
+        }
+
+        inputCursor.destroy();
+        outputCursor.destroy();
+
+        return output;
+    }
+
+    /**
+     * Converts all null values to empty strings.
+     *
+     * @param array     The IData[] to blankify.
+     * @param recurse   Whether embedded IData and IData[] objects should be recursively blankified.
+     * @return          The blankified IData[].
+     */
+    public static IData[] blankify(IData[] array, boolean recurse) {
+        if (array == null) return null;
+
+        IData[] output = new IData[array.length];
+
+        for (int i = 0; i < array.length; i++) {
+            output[i] = blankify(array[i], recurse);
+        }
+
+        return output;
+    }
+
+    /**
+     * Removes all null values from the given IData document.
+     *
+     * @param document  The IData document to be compacted.
+     * @param recurse   Whether embedded IData and IData[] objects should be recursively compacted.
+     * @return          The compacted IData.
+     */
+    public static IData compact(IData document, boolean recurse) {
+        if (document == null) return null;
+
+        IData output = IDataFactory.create();
+        IDataCursor inputCursor = document.getCursor();
+        IDataCursor outputCursor = output.getCursor();
+
+        while(inputCursor.next()) {
+            String key = inputCursor.getKey();
+            Object value = inputCursor.getValue();
+
+            if (value != null) {
+                if (recurse) {
+                    if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
+                        value = compact(toIData(value), recurse);
+                    } else if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
+                        value = compact(toIDataArray(value), recurse);
+                    } else if (value instanceof Object[][]) {
+                        value = ArrayHelper.compact((Object[][])value);
+                    } else if (value instanceof Object[]) {
+                        value = ArrayHelper.compact((Object[])value);
+                    }
+                }
+            }
+
+            if (value != null) IDataUtil.put(outputCursor, key, value);
+        }
+        inputCursor.destroy();
+        outputCursor.destroy();
+
+        return output;
+    }
+
+    /**
+     * Removes all null values from the given IData[].
+     *
+     * @param array     The IData[] to be compacted.
+     * @param recurse   Whether embedded IData and IData[] objects should be recursively compacted.
+     * @return          The compacted IData[].
+     */
+    public static IData[] compact(IData[] array, boolean recurse) {
+        if (array == null) return null;
+
+        IData[] output = ArrayHelper.compact(array);
+
+        if (recurse) {
+            for (int i = 0; i < array.length; i++) {
+                output[i] = compact(array[i], recurse);
+            }
+        }
+
+        return output;
+    }
+
+    /**
+     * Performs variable substitution on all elements of the given IData input document.
+     *
+     * @param document  The IData document to perform variable substitution on.
+     * @return          The variable substituted IData.
+     */
+    public static IData substitute(IData document) {
+        return substitute(document, null, null, true);
+    }
+
+    /**
+     * Performs variable substitution on all elements of the given IData input document.
+     *
+     * @param document  The IData document to perform variable substitution on.
+     * @param recurse   Whether embedded IData and IData[] should have variable
+     *                  substitution recursively performed on them.
+     * @return          The variable substituted IData.
+     */
+    public static IData substitute(IData document, boolean recurse) {
+        return substitute(document, null, null, recurse);
+    }
+
+    /**
+     * Performs variable substitution on all elements of the given IData input document.
+     *
+     * @param document  The IData document to perform variable substitution on.
+     * @param scope     The scope against which variables are are resolved.
+     * @param recurse   Whether embedded IData and IData[] should have variable
+     *                  substitution recursively performed on them.
+     * @return          The variable substituted IData.
+     */
+    public static IData substitute(IData document, IData scope, boolean recurse) {
+        return substitute(document, null, scope, recurse);
+    }
+
+    /**
+     * Performs variable substitution on all elements of the given IData input document.
+     *
+     * @param document      The IData document to perform variable substitution on.
+     * @param defaultValue  The value to substitute if a variable cannot be resolved.
+     * @param scope         The scope against which variables are are resolved.
+     * @param recurse       Whether embedded IData and IData[] should have variable
+     *                      substitution recursively performed on them.
+     * @return              The variable substituted IData.
+     */
+    public static IData substitute(IData document, String defaultValue, IData scope, boolean recurse) {
+        if (document == null) return null;
+        if (scope == null) scope = document;
+
+        IData output = IDataFactory.create();
+        IDataCursor inputCursor = document.getCursor();
+        IDataCursor outputCursor = output.getCursor();
+
+        while(inputCursor.next()) {
+            String key = inputCursor.getKey();
+            Object value = inputCursor.getValue();
+
+            if (value != null) {
+                if (recurse && (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable)) {
+                    value = substitute(toIData(value), defaultValue, scope, recurse);
+                } else if (recurse && (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[])) {
+                    value = substitute(toIDataArray(value), defaultValue, scope, recurse);
+                } else if (value instanceof String) {
+                    value = VariableSubstitutor.substitute((String)value, defaultValue, scope);
+                } else if (value instanceof String[]) {
+                    value = VariableSubstitutor.substitute((String[])value, defaultValue, scope);
+                } else if (value instanceof String[][]) {
+                    value = VariableSubstitutor.substitute((String[][])value, defaultValue, scope);
+                }
+            }
+            IDataUtil.put(outputCursor, key, value);
+        }
+
+        inputCursor.destroy();
+        outputCursor.destroy();
+
+        return output;
+    }
+
+    /**
+     * Performs variable substitution on all elements of the given IData[].
+     *
+     * @param array         The IData[] to perform variable substitution on.
+     * @param defaultValue  The value to substitute if a variable cannot be resolved.
+     * @param scope         The scope against which variables are are resolved.
+     * @param recurse       Whether embedded IData and IData[] should have variable
+     *                      substitution recursively performed on them.
+     * @return              The variable substituted IData[].
+     */
+    public static IData[] substitute(IData[] array, String defaultValue, IData scope, boolean recurse) {
+        if (array == null) return null;
+
+        IData[] output = new IData[array.length];
+
+        for (int i = 0; i < array.length; i++) {
+            output[i] = substitute(array[i], defaultValue, scope, recurse);
+        }
+
+        return output;
     }
 
     /**
