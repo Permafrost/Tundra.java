@@ -1614,19 +1614,6 @@ public class IDataHelper {
      * the IData[] document list items associated with each pivot key.
      *
      * @param array     The IData[] to be pivoted.
-     * @param pivotKeys The keys to pivot on.
-     * @return          The IData document representing the pivoted IData[].
-     */
-    public static IData pivot(IData[] array, String ... pivotKeys) {
-        return pivot(array, null, pivotKeys);
-    }
-
-    /**
-     * Returns an IData document where the keys are the values associated with
-     * given pivot key from the given IData[] document list, and the values are
-     * the IData[] document list items associated with each pivot key.
-     *
-     * @param array     The IData[] to be pivoted.
      * @param delimiter The delimiter to use when building a compound key.
      * @param pivotKeys The keys to pivot on.
      * @return          The IData document representing the pivoted IData[].
