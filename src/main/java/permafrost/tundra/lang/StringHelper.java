@@ -581,4 +581,25 @@ public class StringHelper {
         return builder.toString();
     }
 
+    /**
+     * Compares two strings lexicographically.
+     *
+     * @param string1           The first string to compare.
+     * @param string2           The second string to compare.
+     * @param caseInsensitive   Whether the comparison should be case insensitive.
+     * @return                  < 0 if the first string is less than the second string,
+     *                          == 0 if the two strings are equal, or > 0 if the first
+     *                          string is greater than the second string.
+     */
+    public static int compare(String string1, String string2, boolean caseInsensitive) {
+        if (string1 == null && string2 == null) return 0;
+        if (string1 == null) return -1;
+        if (string2 == null) return 1;
+
+        if (caseInsensitive) {
+            return string1.compareToIgnoreCase(string2);
+        } else {
+            return string1.compareTo(string2);
+        }
+    }
 }
