@@ -160,7 +160,7 @@ public class ArrayHelper {
 
                     if (result) {
                         for (int k = 0; k < arrays[i].length; k++) {
-                            result = ObjectHelper.equal(arrays[i], arrays[j]);
+                            result = ObjectHelper.equal(arrays[i][k], arrays[j][k]);
                             if (!result) break;
                         }
                     }

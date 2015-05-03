@@ -146,4 +146,20 @@ public class ArrayHelperTest {
 
         assertEquals("[[1, 2], [3, 4]]", ArrayHelper.stringify(table));
     }
+
+    @Test
+    public void testEqualReturnsTrue() throws Exception {
+        String[] array1 = {"a","b","c"};
+        String[] array2 = {"a","b","c"};
+
+        assertEquals(true, ArrayHelper.equal(array1, array2));
+    }
+
+    @Test
+    public void testEqualReturnsFalse() throws Exception {
+        String[] array1 = {"a","b","c"};
+        String[] array2 = {"a","b","d"};
+
+        assertEquals(false, ArrayHelper.equal(array1, array2));
+    }
 }
