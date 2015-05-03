@@ -247,4 +247,22 @@ public class IDataComparisonCriterion implements IDataCodable {
         this.pattern = pattern;
         this.descending = descending;
     }
+
+    /**
+     * Returns an IDataComparisonCriterion[] given an IData[].
+     *
+     * @param criteria  The comparison criteria specified as an IData[].
+     * @return          An IDataComparisonCriterion[] representing the given criteria.
+     */
+    public static IDataComparisonCriterion[] valueOf(IData[] criteria) {
+        if (criteria == null) return null;
+
+        IDataComparisonCriterion[] output = new IDataComparisonCriterion[criteria.length];
+
+        for (int i = 0; i < criteria.length; i++) {
+            output[i] = new IDataComparisonCriterion(criteria[0]);
+        }
+
+        return output;
+    }
 }

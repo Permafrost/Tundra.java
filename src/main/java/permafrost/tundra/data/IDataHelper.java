@@ -1801,6 +1801,18 @@ public class IDataHelper {
      * Returns a new IData[] array with all elements sorted according
      * to the specified criteria.
      *
+     * @param array     An IData[] array to be sorted.
+     * @param criteria  One or more sort criteria specified as an IData[].
+     * @return          A new IData[] array sorted by the given criteria.
+     */
+    public static IData[] sort(IData[] array, IData[] criteria) {
+        return sort(array, IDataComparisonCriterion.valueOf(criteria));
+    }
+
+    /**
+     * Returns a new IData[] array with all elements sorted according
+     * to the specified criteria.
+     *
      * @param array         An IData[] array to be sorted.
      * @param comparator    An IDataComparator object used to determine element ordering.
      * @return              A new IData[] array sorted by the given criteria.
