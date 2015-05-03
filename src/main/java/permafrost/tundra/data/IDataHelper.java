@@ -41,8 +41,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -1956,6 +1959,174 @@ public class IDataHelper {
          */
         public static boolean isFullyQualified(String key) {
             return key != null && (key.contains(SEPARATOR) || INDEX_PATTERN.matcher(key).find());
+        }
+    }
+
+    /**
+     * Groups the given IData[] by the given keys.
+     *
+     * @param array     The IData[] to be grouped.
+     * @param keys      The keys to group items by.
+     * @return          The grouped IData[].
+     */
+    public static IData[] group(IData[] array, String... keys) {
+        if (array == null) return null;
+
+        IData[] output = null;
+
+        if (keys == null || keys.length == 0) {
+            output = new IData[1];
+            output[0] = IDataFactory.create();
+            IDataCursor cursor = output[0].getCursor();
+            IDataUtil.put(cursor, "group", IDataFactory.create());
+            IDataUtil.put(cursor, "items", array);
+            cursor.destroy();
+        } else {
+            Map<CompoundKey, List<IData>> groups = new TreeMap<CompoundKey, List<IData>>();
+
+            for (int i = 0; i < array.length; i++) {
+                if (array[i] != null) {
+                    CompoundKey key = new CompoundKey(keys, array[i]);
+                    List<IData> list = groups.get(key);
+                    if (list == null) list = new LinkedList<IData>();
+                    list.add(array[i]);
+                    groups.put(key, list);
+                }
+            }
+
+            List<IData> result = new ArrayList<IData>(groups.size());
+            java.util.Iterator<CompoundKey> iterator = groups.keySet().iterator();
+
+            for (Map.Entry<CompoundKey, List<IData>> entry : groups.entrySet()) {
+                CompoundKey key = entry.getKey();
+                List<IData> items = entry.getValue();
+
+                IData group = IDataFactory.create();
+                IDataCursor cursor = group.getCursor();
+                IDataUtil.put(cursor, "group", key.getIData());
+                IDataUtil.put(cursor, "items", items.toArray(new IData[items.size()]));
+                cursor.destroy();
+
+                result.add(group);
+            }
+
+            output = result.toArray(new IData[result.size()]);
+        }
+
+        return output;
+    }
+
+    /**
+     * Represents a compound key which can be used for grouping IData documents together.
+     */
+    private static class CompoundKey extends LinkedHashMap<String, Comparable> implements Comparable<CompoundKey>, IDataCodable {
+        /**
+         * Constructs a new compound key.
+         */
+        public CompoundKey() {
+            super();
+        }
+
+        /**
+         * Constructs a new compound key seeded with the given list of keys and their
+         * associated values from the given IData document.
+         *
+         * @param keys      The keys which together form this compound key.
+         * @param document  The IData document containing the seed values associated with
+         *                  the given keys.
+         */
+        public CompoundKey(String[] keys, IData document) {
+            super(keys.length);
+
+            // seed with key value pairs
+            for (int i = 0; i < keys.length; i++) {
+                Object value = IDataHelper.get(document, keys[i]);
+                if (value != null && value instanceof Comparable) {
+                    this.put(keys[i], (Comparable)value);
+                } else {
+                    this.put(keys[i], null);
+                }
+            }
+        }
+
+        /**
+         * Compares this compound key with another compound key.
+         *
+         * @param other The other key to be compared with.
+         * @return      0 if the two keys are equal, < 0 if this key is
+         *              less than the other key, > 0 if this key is
+         *              greater than the other key.
+         */
+        public int compareTo(CompoundKey other) {
+            if (other == null) return 1;
+
+            int result = 0;
+
+            java.util.Iterator<String> iterator = this.keySet().iterator();
+
+            while(iterator.hasNext()) {
+                String key = iterator.next();
+                Comparable thisValue = this.get(key);
+                Comparable otherValue = other.get(key);
+
+                if (thisValue == null) {
+                    if (otherValue != null) result = -1;
+                } else {
+                    if (otherValue == null) {
+                        result = 1;
+                    } else {
+                        result = thisValue.compareTo(otherValue);
+                    }
+                }
+                if (result != 0) break;
+            }
+            return result;
+        }
+
+        /**
+         * Returns true if this object is equal to the other object.
+         * @param other The object to compare for equality with.
+         * @return      True if this object is equal to the other object.
+         */
+        public boolean equals(Object other) {
+            boolean result = false;
+
+            if (other instanceof CompoundKey) {
+                result = this.compareTo((CompoundKey)other) == 0;
+            }
+
+            return result;
+        }
+
+        /**
+         * Returns an IData representation of this compound key.
+         * @return An IData representation of this compound key.
+         */
+        public IData getIData() {
+            IData output = IDataFactory.create();
+            for(Map.Entry<String, Comparable> entry : entrySet()) {
+                IDataHelper.put(output, entry.getKey(), entry.getValue());
+            }
+            return output;
+        }
+
+        /**
+         * Sets the entries in this compound key from the entries in the given IData document.
+         * @param document  The IData document containing entries to be set in this compound key.
+         */
+        public void setIData(IData document) {
+            if (document == null) return;
+
+            this.clear();
+
+            IDataCursor cursor = document.getCursor();
+            while(cursor.next()) {
+                String key = cursor.getKey();
+                Object value = cursor.getValue();
+
+                if (value != null && value instanceof Comparable) this.put(key, (Comparable)value);
+            }
+            cursor.destroy();
         }
     }
 
