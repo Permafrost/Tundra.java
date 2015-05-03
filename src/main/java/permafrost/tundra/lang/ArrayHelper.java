@@ -54,7 +54,7 @@ public class ArrayHelper {
      *
      * @param array The array to be compacted.
      * @param <T>   The class of the items in the array.
-     * @return A copy of the given array with all null items removed.
+     * @return      A copy of the given array with all null items removed.
      */
     public static <T> T[] compact(T[] array) {
         if (array == null) return null;
@@ -66,6 +66,26 @@ public class ArrayHelper {
         }
 
         return list.toArray(Arrays.copyOf(array, list.size()));
+    }
+
+    /**
+     * Returns a new table with all null elements removed.
+     *
+     * @param table The two dimensional array to be compacted.
+     * @param <T>   The class of the items in the array.
+     * @return      A copy of the given array with all null items removed.
+     */
+    public static <T> T[][] compact(T[][] table) {
+        if (table == null) return null;
+
+        List<T[]> list = new ArrayList<T[]>(table.length);
+
+        for (int i = 0; i < table.length; i++) {
+            T[] row = compact(table[i]);
+            if (row != null) list.add(row);
+        }
+
+        return list.toArray(Arrays.copyOf(table, 0));
     }
 
     /**
@@ -683,7 +703,7 @@ public class ArrayHelper {
             if (row != null) list.add(row);
         }
 
-        table = list.toArray(java.util.Arrays.copyOf(table, list.size()));
+        table = list.toArray(Arrays.copyOf(table, list.size()));
 
         return table.length == 0 ? null : table;
     }
