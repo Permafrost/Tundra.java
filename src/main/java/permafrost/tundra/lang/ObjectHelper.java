@@ -25,7 +25,13 @@
 package permafrost.tundra.lang;
 
 import com.wm.data.IData;
+import com.wm.data.IDataPortable;
 import com.wm.data.IDataUtil;
+import com.wm.util.Table;
+import com.wm.util.coder.IDataCodable;
+import com.wm.util.coder.ValuesCodable;
+import permafrost.tundra.data.IDataHelper;
+import permafrost.tundra.data.IDataMap;
 import permafrost.tundra.io.StreamHelper;
 
 import java.io.IOException;
@@ -92,13 +98,18 @@ public class ObjectHelper {
      * @return       A string representation of the given object.
      */
     public static String stringify(Object object) {
+        if (object == null) return null;
+
         String output;
 
-        //TODO: add support for IData etc.
-        if (object == null) {
-            output = "";
+        if (object instanceof Object[][]) {
+            output = ArrayHelper.stringify((Object[][]) object);
         } else if (object instanceof Object[]) {
             output = ArrayHelper.stringify((Object[]) object);
+        } else if (object instanceof IData || object instanceof IDataCodable || object instanceof IDataPortable || object instanceof ValuesCodable) {
+            output = IDataHelper.toIData(object).toString();
+        } else if (object instanceof IData[] || object instanceof Table || object instanceof IDataCodable[] || object instanceof IDataPortable[] || object instanceof ValuesCodable[]) {
+            output = ArrayHelper.stringify(IDataHelper.toIDataArray(object));
         } else {
             output = object.toString();
         }
