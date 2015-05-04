@@ -65,7 +65,8 @@ public class BytesHelper {
      * @return              A byte[] representation of the given String.
      */
     public static byte[] normalize(String string, Charset charset) {
-        return string == null ? null : string.getBytes(CharsetHelper.normalize(charset));
+        if (string == null) return null;
+        return string.getBytes(CharsetHelper.normalize(charset));
     }
 
     /**
@@ -130,40 +131,44 @@ public class BytesHelper {
     /**
      * Encodes binary data as a base64-encoded string.
      *
-     * @param input Binary data to be base64-encoded.
-     * @return The given data as a base64-encoded string.
+     * @param bytes     Binary data to be base64-encoded.
+     * @return          The given data as a base64-encoded string.
      */
-    public static String base64Encode(byte[] input) {
-        return input == null ? null : javax.xml.bind.DatatypeConverter.printBase64Binary(input);
+    public static String base64Encode(byte[] bytes) {
+        if (bytes == null) return null;
+        return javax.xml.bind.DatatypeConverter.printBase64Binary(bytes);
     }
 
     /**
      * Decodes a base64-encoded string to binary data.
      *
-     * @param input A base64-encoded string.
-     * @return The base64-encoded string decoded to binary data.
+     * @param string    A base64-encoded string.
+     * @return          The base64-encoded string decoded to binary data.
      */
-    public static byte[] base64Decode(String input) {
-        return input == null ? null : javax.xml.bind.DatatypeConverter.parseBase64Binary(input);
+    public static byte[] base64Decode(String string) {
+        if (string == null) return null;
+        return javax.xml.bind.DatatypeConverter.parseBase64Binary(string);
     }
 
     /**
      * Encodes binary data as a hex-encoded string.
      *
-     * @param input Binary data to be hex-encoded.
-     * @return The given data as a hex-encoded string.
+     * @param bytes     Binary data to be hex-encoded.
+     * @return          The given data as a hex-encoded string.
      */
-    public static String hexEncode(byte[] input) {
-        return input == null ? null : javax.xml.bind.DatatypeConverter.printHexBinary(input);
+    public static String hexEncode(byte[] bytes) {
+        if (bytes == null) return null;
+        return javax.xml.bind.DatatypeConverter.printHexBinary(bytes);
     }
 
     /**
      * Decodes a hex-encoded string to binary data.
      *
-     * @param input A hex-encoded string.
-     * @return The hex-encoded string decoded to binary data.
+     * @param string    A hex-encoded string.
+     * @return          The hex-encoded string decoded to binary data.
      */
-    public static byte[] hexDecode(String input) {
-        return input == null ? null : javax.xml.bind.DatatypeConverter.parseHexBinary(input);
+    public static byte[] hexDecode(String string) {
+        if (string == null) return null;
+        return javax.xml.bind.DatatypeConverter.parseHexBinary(string);
     }
 }
