@@ -220,6 +220,34 @@ public class StreamHelper {
     }
 
     /**
+     * Copies all data from the given input String, byte[] or InputStream to the given output stream,
+     * and optionally closes both streams.
+     *
+     * @param inputObject       An input String, byte[] or InputStream containing data to be copied.
+     * @param outputObject      An OutputStream to where the copied data will be written.
+     * @param close             When true, both the input and output streams will be closed when done.
+     * @throws IOException      If there is a problem reading from or writing to the streams.
+     */
+    public static void copy(Object inputObject, Object outputObject, boolean close) throws IOException {
+        if (outputObject != null && (!(outputObject instanceof OutputStream)))
+            throw new IllegalArgumentException("output object must be an instance of java.io.OutputStream");
+
+        copy(normalize(inputObject), normalize((OutputStream) outputObject), close);
+    }
+
+    /**
+     * Copies all data from the given input String, byte[] or InputStream to the given output stream,
+     * and then closes both streams.
+     *
+     * @param inputObject       An input String, byte[] or InputStream containing data to be copied.
+     * @param outputObject      An OutputStream to where the copied data will be written.
+     * @throws IOException      If there is a problem reading from or writing to the streams.
+     */
+    public static void copy(Object inputObject, Object outputObject) throws IOException {
+        copy(inputObject, outputObject, true);
+    }
+
+    /**
      * Copies all data from the given input stream to the given output stream, and optionally
      * closes both streams.
      *
