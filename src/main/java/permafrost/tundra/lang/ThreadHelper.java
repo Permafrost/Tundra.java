@@ -66,11 +66,12 @@ public class ThreadHelper {
         int threadCount = 0, iteration = 0;
         Thread[] list = new Thread[threadCount];
 
-        // because ThreadGroup.enumerate isn't thread save, we have to keep trying
-        // to enumerate until we happen to have an array large enough to hold
-        // all the threads that exist at the instant enumerate is called
-        while(threadCount >= list.length) {
-            list = new Thread[root.activeCount() + (100 * ++iteration)];
+        // because ThreadGroup.enumerate isn't thread save, keep trying to
+        // enumerate for up to 10 times until we happen to have an array
+        // large enough to hold all the threads that exist at the moment
+        // enumerate is called
+        while(iteration < 10 && threadCount >= list.length) {
+            list = new Thread[root.activeCount() + (500 * ++iteration)];
             threadCount = root.enumerate(list, true);
         }
 
