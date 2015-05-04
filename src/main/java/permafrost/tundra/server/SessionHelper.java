@@ -26,6 +26,7 @@ package permafrost.tundra.server;
 
 import com.wm.app.b2b.server.Service;
 import com.wm.app.b2b.server.Session;
+import com.wm.app.b2b.server.User;
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
@@ -35,6 +36,9 @@ import permafrost.tundra.time.DateTimeHelper;
 import permafrost.tundra.time.DurationHelper;
 import permafrost.tundra.time.DurationPattern;
 
+/**
+ * A collection of convenience methods for working with webMethods Integration Server sessions.
+ */
 public class SessionHelper {
     /**
      * Disallow instantiation of this class.
@@ -70,7 +74,7 @@ public class SessionHelper {
      * Returns the current session.
      * @return The current session.
      */
-    public static Session currentSession() {
+    public static Session getCurrentSession() {
         return Service.getSession();
     }
 
@@ -78,7 +82,7 @@ public class SessionHelper {
      * Returns the current session in an IData document representation.
      * @return The current session in an IData document representation.
      */
-    public static IData currentSessionAsIData() {
+    public static IData getCurrentSessionAsIData() {
         return toIData(Service.getSession());
     }
 
@@ -88,7 +92,19 @@ public class SessionHelper {
      * @param value The value to be associated with the given key.
      */
     public static void put(String key, Object value) {
-        if (key != null) currentSession().put(key, value);
+        if (key != null) {
+            getCurrentSession().put(key, value);
+        }
+    }
+
+    /**
+     * Returns the value associated with the given key from the current session state.
+     * @param key   The key whose value is to be retrieved.
+     * @return      The value associated with the given key, or null if the key does not exist.
+     */
+    public static Object get(String key) {
+        if (key == null) return null;
+        return getCurrentSession().get(key);
     }
 
     /**
@@ -97,6 +113,23 @@ public class SessionHelper {
      * @return    The value associated with the removed element.
      */
     public static Object remove(String key) {
-        return key == null ? null : currentSession().remove(key);
+        if (key == null) return null;
+        return getCurrentSession().remove(key);
+    }
+
+    /**
+     * Returns the current user's name.
+     * @return The current user's name.
+     */
+    public static String getCurrentUserName() {
+        return getCurrentUser().getName();
+    }
+
+    /**
+     * Returns the current user.
+     * @return The current user.
+     */
+    public static User getCurrentUser() {
+        return getCurrentSession().getUser();
     }
 }
