@@ -90,22 +90,15 @@ public class ThreadHelper {
      * @return The root thread group.
      */
     public static ThreadGroup getRootThreadGroup() {
-        return getRootThreadGroup(getCurrentThread().getThreadGroup());
-    }
-
-    /**
-     * Walks up the thread group tree from the given leaf to return the root.
-     *
-     * @param group The ThreadGroup leaf node to start the tree walk from.
-     * @return      The root ThreadGroup.
-     */
-    private static ThreadGroup getRootThreadGroup(ThreadGroup group) {
-        if (group == null) throw new IllegalArgumentException("group must not be null");
-
+        ThreadGroup group = getCurrentThread().getThreadGroup();
         ThreadGroup parent = group.getParent();
-        if (parent == null) return group;
 
-        return getRootThreadGroup(parent);
+        while(parent != null) {
+            group = parent;
+            parent = group.getParent();
+        }
+
+        return group;
     }
 
     /**
