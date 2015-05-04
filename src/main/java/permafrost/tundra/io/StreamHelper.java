@@ -291,9 +291,10 @@ public class StreamHelper {
      *
      * @param reader            The reader to copy data from.
      * @param writer            The writer to copy data to.
-     * @throws IOException     If there is a problem reading from the reader or writing to the writer.
+     * @param close             When true, both the reader and writer will be closed when done.
+     * @throws IOException      If there is a problem reading from the reader or writing to the writer.
      */
-    public static void copy(Reader reader, Writer writer) throws IOException {
+    public static void copy(Reader reader, Writer writer, boolean close) throws IOException {
         if (reader == null || writer == null) return;
 
         try {
@@ -307,8 +308,19 @@ public class StreamHelper {
                 writer.write(buffer, 0, length);
             }
         } finally {
-            close(reader, writer);
+            if (close) close(reader, writer);
         }
+    }
+
+    /**
+     * Copies all the data from the given reader to the given writer, then closes both.
+     *
+     * @param reader            The reader to copy data from.
+     * @param writer            The writer to copy data to.
+     * @throws IOException      If there is a problem reading from the reader or writing to the writer.
+     */
+    public static void copy(Reader reader, Writer writer) throws IOException {
+        copy(reader, writer, true);
     }
 
     /**
