@@ -169,7 +169,8 @@ public class StreamHelper {
      * @return      A java.io.InputStream representation of the given byte[].
      */
     public static InputStream normalize(byte[] bytes) {
-        return bytes == null ? null : new ByteArrayInputStream(bytes);
+        if (bytes == null) return null;
+        return new ByteArrayInputStream(bytes);
     }
 
     /**
