@@ -8,5 +8,9 @@ permafrost.tundra.math
 permafrost.tundra.net.http
 permafrost.tundra.net.http.route
 permafrost.tundra.net.uri
+permafrost.tundra.security
+permafrost.tundra.server
 permafrost.tundra.time
+permafrost.tundra.xml
+permafrost.tundra.xml.namespace
 permafrost.tundra.zip
