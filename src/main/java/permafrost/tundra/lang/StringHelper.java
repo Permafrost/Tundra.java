@@ -556,9 +556,9 @@ public class StringHelper {
      * Pads a string with the given character to the given length.
      *
      * @param string    The string to pad.
-     * @param length    The desired length of the string. If < 0,
-     *                  pads from right to left, otherwise pads left
-     *                  to right.
+     * @param length    The desired length of the string. If less than
+     *                  0 the string is padded right to left, otherwise
+     *                  it is padded from left to right.
      * @param character The character to pad the string with.
      * @return          The padded string.
      */
@@ -587,9 +587,10 @@ public class StringHelper {
      * @param string1           The first string to compare.
      * @param string2           The second string to compare.
      * @param caseInsensitive   Whether the comparison should be case insensitive.
-     * @return                  < 0 if the first string is less than the second string,
-     *                          == 0 if the two strings are equal, or > 0 if the first
-     *                          string is greater than the second string.
+     * @return                  Less than 0 if the first string is less than the second
+     *                          string, equal to 0 if the two strings are equal, or
+     *                          greater than 0 if the first string is greater than the
+     *                          second string.
      */
     public static int compare(String string1, String string2, boolean caseInsensitive) {
         if (string1 == null && string2 == null) return 0;

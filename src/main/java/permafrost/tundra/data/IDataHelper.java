@@ -180,7 +180,6 @@ public class IDataHelper {
      *
      *  @param document     An IData document to be duplicated.
      *  @return             A new IData document which is a copy of the given IData document.
-     *  @throws IOException If a problem writing to the serialization stream is encountered.
      */
     public static IData duplicate(IData document) {
         return duplicate(document, true);
@@ -193,7 +192,6 @@ public class IDataHelper {
      *  @param recurse      When true, nested IData documents and IData[] document lists will
      *                      also be duplicated.
      *  @return             A new IData document which is a copy of the given IData document.
-     *  @throws IOException If a problem writing to the serialization stream is encountered.
      */
     public static IData duplicate(IData document, boolean recurse) {
         IData output = null;
