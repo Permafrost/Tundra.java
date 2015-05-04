@@ -25,9 +25,6 @@
 package permafrost.tundra.lang;
 
 import com.wm.data.IData;
-import com.wm.data.IDataCursor;
-import com.wm.data.IDataFactory;
-import com.wm.data.IDataUtil;
 import org.xml.sax.SAXParseException;
 
 import java.util.Arrays;
@@ -185,26 +182,7 @@ public class ExceptionHelper {
      * @return The call stack associated with the given exception as an IData[] document list.
      */
     public static IData[] getStackTrace(Throwable exception) {
-        IData[] output = null;
-
-        if (exception != null) {
-            StackTraceElement[] stack = exception.getStackTrace();
-            output = new IData[stack.length];
-
-            for (int i = 0; i < stack.length; i++) {
-                output[i] = IDataFactory.create();
-                IDataCursor cursor = output[i].getCursor();
-                IDataUtil.put(cursor, "description", stack[i].toString());
-                IDataUtil.put(cursor, "file", stack[i].getFileName());
-                IDataUtil.put(cursor, "class", stack[i].getClassName());
-                IDataUtil.put(cursor, "method", stack[i].getMethodName());
-                IDataUtil.put(cursor, "line", "" + stack[i].getLineNumber());
-                IDataUtil.put(cursor, "native?", "" + stack[i].isNativeMethod());
-                cursor.destroy();
-            }
-        }
-
-        return output;
+        if (exception == null) return null;
+        return StackTraceElementHelper.toIDataArray(exception.getStackTrace());
     }
-
 }
