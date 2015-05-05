@@ -25,57 +25,83 @@
 package permafrost.tundra.io;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Encapsulates the results of a directory listing.
+ * Implements the convenience methods in DirectoryListing interface.
  */
-public interface DirectoryListing {
+public abstract class AbstractDirectoryListing implements DirectoryListing {
     /**
      * Returns all the files and directories in this listing.
      * @return All the files and directories in this listing.
      */
-    List<File> listAll();
+    abstract public List<File> listAll();
 
     /**
      * Returns all the files and directories in this listing as a String[].
      * @return All the files and directories in this listing as a String[].
      */
-    String[] listAllAsStringArray();
+    public String[] listAllAsStringArray() {
+        return(convertListToStringArray(listAll()));
+    }
 
     /**
      * Returns all the directories in this listing.
      * @return All the directories in this listing.
      */
-    List<File> listDirectories();
+    abstract public List<File> listDirectories();
 
     /**
      * Returns all the directories in this listing as a String[].
      * @return All the directories in this listing as a String[].
      */
-    String[] listDirectoriesAsStringArray();
+    public String[] listDirectoriesAsStringArray() {
+        return(convertListToStringArray(listDirectories()));
+    }
 
     /**
      * Returns all the files in this listing.
      * @return All the files in this listing.
      */
-    List<File> listFiles();
+    abstract public List<File> listFiles();
 
     /**
      * Returns all the files in this listing as a String[].
      * @return All the files in this listing as a String[].
      */
-    String[] listFilesAsStringArray();
+    public String[] listFilesAsStringArray() {
+        return(convertListToStringArray(listFiles()));
+    }
 
     /**
      * Returns the directory which produced this listing.
      * @return The directory which produced this listing.
      */
-    File getDirectory();
+    abstract public File getDirectory();
 
     /**
      * Returns the directory which produced this listing as a String.
      * @return The directory which produced this listing as a String.
      */
-    String getDirectoryAsString();
+    public String getDirectoryAsString() {
+        return FileHelper.normalize(getDirectory());
+    }
+
+    /**
+     * Converts a List to a String[].
+     * @param list  The List to be converted.
+     * @return      The String[] representation of the given list.
+     */
+    private String[] convertListToStringArray(List<File> list) {
+        if (list == null) return null;
+
+        List<String> output = new ArrayList<String>(list.size());
+
+        for (File file : list) {
+            output.add(FileHelper.normalize(file));
+        }
+
+        return output.toArray(new String[output.size()]);
+    }
 }

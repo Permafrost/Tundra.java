@@ -154,7 +154,7 @@ public class DirectoryLister {
     /**
      * Encapsulates the results of a directory listing.
      */
-    private static class DirectoryListingImplementation implements DirectoryListing {
+    private static class DirectoryListingImplementation extends AbstractDirectoryListing {
         protected List<File> all, directories, files;
         protected File directory;
 
