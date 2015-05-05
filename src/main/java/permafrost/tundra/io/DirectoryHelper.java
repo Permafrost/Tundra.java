@@ -43,6 +43,7 @@ public class DirectoryHelper {
 
     /**
      * Creates a new directory.
+     *
      * @param directory     The directory to be created.
      * @throws IOException  If the directory already exists or otherwise cannot be created.
      */
@@ -52,6 +53,7 @@ public class DirectoryHelper {
 
     /**
      * Creates a new directory.
+     *
      * @param directory     The directory to be created.
      * @throws IOException  If the directory already exists or otherwise cannot be created.
      */
@@ -61,6 +63,7 @@ public class DirectoryHelper {
 
     /**
      * Creates a new directory.
+     *
      * @param directory     The directory to be created.
      * @param raise         If true, will throw an exception if the creation of the directory fails.
      * @throws IOException  If raise is true and the directory already exists or otherwise
@@ -78,6 +81,7 @@ public class DirectoryHelper {
 
     /**
      * Creates a new directory.
+     *
      * @param directory     The directory to be created.
      * @param raise         If true, will throw an exception if the creation of the directory fails.
      * @throws IOException  If raise is true and the directory already exists or otherwise
@@ -89,15 +93,18 @@ public class DirectoryHelper {
 
     /**
      * Returns true if the given directory exists and is a directory.
+     *
      * @param directory The directory to check existence of.
      * @return          True if the directory exists and is a directory.
      */
     public static boolean exists(File directory) {
-        return directory != null && directory.exists() && directory.isDirectory();
+        if (directory == null) return false;
+        return directory.exists() && directory.isDirectory();
     }
 
     /**
      * Returns true if the given directory exists and is a directory.
+     *
      * @param directory The directory to check existence of.
      * @return          True if the directory exists and is a directory.
      */
@@ -107,6 +114,7 @@ public class DirectoryHelper {
 
     /**
      * Deletes the given directory.
+     *
      * @param directory     The directory to be deleted.
      * @param recurse       If true, all child directories and files
      *                      will also be recursively deleted.
@@ -129,6 +137,7 @@ public class DirectoryHelper {
 
     /**
      * Deletes the given directory.
+     *
      * @param directory         The directory to be deleted.
      * @param recurse           If true, all child directories and files
      *                          will also be recursively deleted.
@@ -140,6 +149,7 @@ public class DirectoryHelper {
 
     /**
      * Renames a directory.
+     *
      * @param source            The directory to be renamed.
      * @param target            The new name for the directory.
      * @throws IOException      If the directory cannot be renamed.
@@ -154,6 +164,7 @@ public class DirectoryHelper {
 
     /**
      * Renames a directory.
+     *
      * @param source         The directory to be renamed.
      * @param target         The new name for the directory.
      * @throws IOException   If the directory cannot be renamed.
@@ -166,6 +177,7 @@ public class DirectoryHelper {
      * Returns a raw directory listing with no additional processing: useful for when performance
      * takes priority over ease of use; for example, when the directory contains hundreds of
      * thousands or more files.
+     *
      * @param directory                 The directory to list.
      * @return                          The list of item names in the given directory.
      * @throws FileNotFoundException    If the directory does not exist.
@@ -178,6 +190,7 @@ public class DirectoryHelper {
      * Returns a raw directory listing with no additional processing: useful for when performance
      * takes priority over ease of use; for example, when the directory contains hundreds of
      * thousands or more files.
+     *
      * @param directory                 The directory to list.
      * @return                          The list of item names in the given directory.
      * @throws FileNotFoundException    If the directory does not exist.
@@ -190,6 +203,7 @@ public class DirectoryHelper {
     /**
      * Deletes all files in the given directory, and child directories if recurse
      * is true, older than the given duration.
+     *
      * @param directory                 The directory to be purged.
      * @param duration                  The age files must be before they are deleted.
      * @param recurse                   If true, then child files and directories will also
@@ -204,6 +218,22 @@ public class DirectoryHelper {
     /**
      * Deletes all files in the given directory, and child directories if recurse
      * is true, older than the given duration.
+     *
+     * @param directory                 The directory to be purged.
+     * @param duration                  The age files must be before they are deleted.
+     * @param recurse                   If true, then child files and directories will also
+     *                                  be recursively purged.
+     * @return                          The number of files deleted.
+     * @throws FileNotFoundException    If the directory does not exist.
+     */
+    public static long purge(String directory, Duration duration, boolean recurse) throws FileNotFoundException {
+        return purge(FileHelper.construct(directory), duration, recurse);
+    }
+
+    /**
+     * Deletes all files in the given directory, and child directories if recurse
+     * is true, older than the given duration.
+     *
      * @param directory                 The directory to be purged.
      * @param olderThan                 Only files modified prior to this datetime will be deleted.
      * @param recurse                   If true, then child files and directories will also
@@ -228,5 +258,44 @@ public class DirectoryHelper {
         }
 
         return count;
+    }
+
+    /**
+     * Deletes all files in the given directory, and child directories if recurse
+     * is true, older than the given duration.
+     *
+     * @param directory                 The directory to be purged.
+     * @param olderThan                 Only files modified prior to this datetime will be deleted.
+     * @param recurse                   If true, then child files and directories will also
+     *                                  be recursively purged.
+     * @return                          The number of files deleted.
+     * @throws FileNotFoundException    If the directory does not exist.
+     */
+    public static long purge(String directory, Calendar olderThan, boolean recurse) throws FileNotFoundException {
+        return purge(FileHelper.construct(directory), olderThan, recurse);
+    }
+
+    /**
+     * Creates a new path given a parent directory and child item.
+     *
+     * @param parent    The parent directory.
+     * @param child     The child item.
+     * @return          A new path
+     */
+    public static File join(File parent, String child) {
+        if (parent == null) return null;
+        if (child == null) return parent;
+        return new File(parent, child);
+    }
+
+    /**
+     * Creates a new path given a parent directory and child item.
+     *
+     * @param parent    The parent directory.
+     * @param child     The child item.
+     * @return          A new path
+     */
+    public static String join(String parent, String child) {
+        return FileHelper.normalize(join(FileHelper.construct(parent), child));
     }
 }
