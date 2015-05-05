@@ -166,8 +166,8 @@ public class DirectoryLister {
          */
         public DirectoryListingImplementation(File directory, List<File> directoryList, List<File> fileList) {
             if (directory == null) throw new IllegalArgumentException("directory must not be null");
-            if (directories == null) throw new IllegalArgumentException("directoryList must not be null");
-            if (files == null) throw new IllegalArgumentException("fileList must not be null");
+            if (directoryList == null) throw new IllegalArgumentException("directoryList must not be null");
+            if (fileList == null) throw new IllegalArgumentException("fileList must not be null");
 
             this.directory = directory;
             this.directories = directoryList;
@@ -213,6 +213,11 @@ public class DirectoryLister {
         @Override
         public File getDirectory() {
             return directory;
+        }
+
+        @Override
+        public String toString() {
+            return listAll().toString();
         }
     }
 }
