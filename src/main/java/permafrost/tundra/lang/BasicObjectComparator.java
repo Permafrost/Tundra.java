@@ -27,11 +27,24 @@ package permafrost.tundra.lang;
 /**
  * Compares two Objects.
  */
-public enum BasicObjectComparator implements ObjectComparator {
+public class BasicObjectComparator implements ObjectComparator {
     /**
      * The singleton instance of this class.
      */
-    INSTANCE;
+    private static final BasicObjectComparator INSTANCE = new BasicObjectComparator();
+
+    /**
+     * Disallow instantiation of this class.
+     */
+    private BasicObjectComparator() {}
+
+    /**
+     * Returns the singleton instance of this class.
+     * @return The singleton instance of this class.
+     */
+    public static BasicObjectComparator getInstance() {
+        return INSTANCE;
+    }
 
     /**
      * Compares two Objects.

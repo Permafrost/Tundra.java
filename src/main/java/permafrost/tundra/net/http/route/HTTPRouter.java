@@ -44,8 +44,11 @@ import java.util.Map;
 /**
  * webMethods Integration Server HTTP handler which allows arbitrary HTTP request routing.
  */
-public enum HTTPRouter implements HTTPHandler {
-    INSTANCE;
+public class HTTPRouter implements HTTPHandler {
+    /**
+     * The singleton instance of this class.
+     */
+    private static final HTTPRouter INSTANCE = new HTTPRouter();
 
     protected static final HTTPInvokeHandler DEFAULT_INVOKE_HANDLER = new HTTPInvokeHandler();
     protected static final HTTPDocHandler DEFAULT_DOCUMENT_HANDLER = new HTTPDocHandler();
@@ -54,6 +57,19 @@ public enum HTTPRouter implements HTTPHandler {
      * The route table, which holds routing instructions for different URIs.
      */
     protected volatile HTTPRouteTable routes = new HTTPRouteTable();
+
+    /**
+     * Disallow instantiation of this class.
+     */
+    private HTTPRouter() {}
+
+    /**
+     * Returns the singleton instance of this class.
+     * @return The singleton instance of this class.
+     */
+    public static HTTPRouter getInstance() {
+        return INSTANCE;
+    }
 
     /**
      * Processes an HTTP request.

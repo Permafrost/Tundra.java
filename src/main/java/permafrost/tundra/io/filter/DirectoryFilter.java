@@ -30,11 +30,24 @@ import java.io.FilenameFilter;
 /**
  * A FilenameFilter that only accepts directories.
  */
-public enum DirectoryFilter implements FilenameFilter {
+public class DirectoryFilter implements FilenameFilter {
     /**
      * The singleton instance of this filter.
      */
-    INSTANCE;
+    private static final DirectoryFilter INSTANCE = new DirectoryFilter();
+
+    /**
+     * Disallow instantiation of this class.
+     */
+    private DirectoryFilter() {}
+
+    /**
+     * Returns the singleton instance of this class.
+     * @return The singleton instance of this class.
+     */
+    public static DirectoryFilter getInstance() {
+        return INSTANCE;
+    }
 
     /**
      * Returns true if the given child is a directory.

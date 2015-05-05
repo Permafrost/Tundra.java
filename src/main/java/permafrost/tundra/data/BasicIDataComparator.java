@@ -36,11 +36,24 @@ import permafrost.tundra.lang.BasicObjectComparator;
 /**
  * Compares two IData objects using all the keys and values in each document.
  */
-public enum BasicIDataComparator implements IDataComparator {
+public class BasicIDataComparator implements IDataComparator {
     /**
      * The singleton instance of this class.
      */
-    INSTANCE;
+    private static final BasicIDataComparator INSTANCE = new BasicIDataComparator();
+
+    /**
+     * Disallow instantiation of this class;
+     */
+    private BasicIDataComparator() {}
+
+    /**
+     * Returns the singleton instance of this class.
+     * @return The singleton instance of this class.
+     */
+    public static BasicIDataComparator getInstance() {
+        return INSTANCE;
+    }
 
     /**
      * Compares two IData documents.
@@ -99,11 +112,11 @@ public enum BasicIDataComparator implements IDataComparator {
                             result = compare(IDataHelper.toIData(value1), IDataHelper.toIData(value2));
                         } else if ((value1 instanceof IData[] || value1 instanceof Table || value1 instanceof IDataCodable[] || value1 instanceof IDataPortable[] || value1 instanceof ValuesCodable[]) &&
                                    (value2 instanceof IData[] || value2 instanceof Table || value2 instanceof IDataCodable[] || value2 instanceof IDataPortable[] || value2 instanceof ValuesCodable[])) {
-                            result = BasicIDataArrayComparator.INSTANCE.compare(IDataHelper.toIDataArray(value1), IDataHelper.toIDataArray(value2));
+                            result = BasicIDataArrayComparator.getInstance().compare(IDataHelper.toIDataArray(value1), IDataHelper.toIDataArray(value2));
                         } else if (value1 instanceof Object[] && value2 instanceof Object[]) {
-                            result = BasicArrayComparator.INSTANCE.compare((Object[]) value1, (Object[]) value2);
+                            result = BasicArrayComparator.getInstance().compare((Object[]) value1, (Object[]) value2);
                         } else {
-                            result = BasicObjectComparator.INSTANCE.compare(value1, value2);
+                            result = BasicObjectComparator.getInstance().compare(value1, value2);
                         }
                     }
 

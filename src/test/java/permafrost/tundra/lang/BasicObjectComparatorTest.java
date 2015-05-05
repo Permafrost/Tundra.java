@@ -34,7 +34,7 @@ public class BasicObjectComparatorTest {
         Object object1 = "XYZ";
         Object object2 = "ABC";
 
-        assertTrue(BasicObjectComparator.INSTANCE.compare(object1, object2) > 0);
+        assertTrue(BasicObjectComparator.getInstance().compare(object1, object2) > 0);
     }
 
     @Test
@@ -42,7 +42,7 @@ public class BasicObjectComparatorTest {
         Object object1 = "ABC";
         Object object2 = "XYZ";
 
-        assertTrue(BasicObjectComparator.INSTANCE.compare(object1, object2) < 0);
+        assertTrue(BasicObjectComparator.getInstance().compare(object1, object2) < 0);
     }
 
     @Test
@@ -50,7 +50,7 @@ public class BasicObjectComparatorTest {
         Object object1 = new Integer(1);
         Object object2 = new Integer(1);
 
-        assertTrue(BasicObjectComparator.INSTANCE.compare(object1, object2) == 0);
+        assertTrue(BasicObjectComparator.getInstance().compare(object1, object2) == 0);
     }
 
     @Test
@@ -58,6 +58,6 @@ public class BasicObjectComparatorTest {
         Object object1 = new Object();
         Object object2 = new Object();
 
-        assertTrue(BasicObjectComparator.INSTANCE.compare(object1, object2) != 0);
+        assertTrue(BasicObjectComparator.getInstance().compare(object1, object2) != 0);
     }
 }

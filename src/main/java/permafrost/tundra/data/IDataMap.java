@@ -38,7 +38,7 @@ public class IDataMap extends WrappedIData implements Iterable<Map.Entry<String,
     /**
      * The default comparator used when no other comparator or comparison criteria is specified.
      */
-    public static final IDataComparator DEFAULT_COMPARATOR = BasicIDataComparator.INSTANCE;
+    public static final IDataComparator DEFAULT_COMPARATOR = BasicIDataComparator.getInstance();
     protected IDataComparator comparator = DEFAULT_COMPARATOR;
 
     /**

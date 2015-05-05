@@ -30,11 +30,24 @@ import java.io.FilenameFilter;
 /**
  * A FilenameFilter that only accepts files.
  */
-public enum FileFilter implements FilenameFilter {
+public class FileFilter implements FilenameFilter {
     /**
      * The singleton instance of this filter.
      */
-    INSTANCE;
+    private static final FileFilter INSTANCE = new FileFilter();
+
+    /**
+     * Disallow instantiation of this class.
+     */
+    private FileFilter() {}
+
+    /**
+     * Returns the singleton instance of this class.
+     * @return The singleton instance of this class.
+     */
+    public static FileFilter getInstance() {
+        return INSTANCE;
+    }
 
     /**
      * Returns true if the given child is a file.

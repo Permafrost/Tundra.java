@@ -29,11 +29,24 @@ import com.wm.data.IData;
 /**
  * Compares two IData[] objects using by comparing each item's keys and values.
  */
-public enum BasicIDataArrayComparator implements IDataArrayComparator {
+public class BasicIDataArrayComparator implements IDataArrayComparator {
     /**
      * The singleton instance of this class.
      */
-    INSTANCE;
+    private static final BasicIDataArrayComparator INSTANCE = new BasicIDataArrayComparator();
+
+    /**
+     * Disallow instantiation of this class.
+     */
+    private BasicIDataArrayComparator() {}
+
+    /**
+     * Returns the singleton instance of this class.
+     * @return The singleton instance of this class.
+     */
+    public static BasicIDataArrayComparator getInstance() {
+        return INSTANCE;
+    }
 
     /**
      * Compares two IData[] objects.
@@ -63,7 +76,7 @@ public enum BasicIDataArrayComparator implements IDataArrayComparator {
                 result = 1;
             } else {
                 for (int i = 0; i < array1.length; i++) {
-                    result = BasicIDataComparator.INSTANCE.compare(array1[i], array2[i]);
+                    result = BasicIDataComparator.getInstance().compare(array1[i], array2[i]);
                     if (result != 0) break;
                 }
             }

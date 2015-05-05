@@ -82,11 +82,11 @@ public class DirectoryLister {
         this.recurse = recurse;
 
         if (filters != null && filters.length > 0) {
-            this.directoryFilter = new ChainFilter(DirectoryFilter.INSTANCE, new ChainFilter(filters));
-            this.fileFilter = new ChainFilter(FileFilter.INSTANCE, new ChainFilter(filters));
+            this.directoryFilter = new ChainFilter(DirectoryFilter.getInstance(), new ChainFilter(filters));
+            this.fileFilter = new ChainFilter(FileFilter.getInstance(), new ChainFilter(filters));
         } else {
-            this.directoryFilter = DirectoryFilter.INSTANCE;
-            this.fileFilter = FileFilter.INSTANCE;
+            this.directoryFilter = DirectoryFilter.getInstance();
+            this.fileFilter = FileFilter.getInstance();
         }
     }
 
@@ -141,7 +141,7 @@ public class DirectoryLister {
                 directories.add(file);
             }
 
-            if (recurse && DirectoryFilter.INSTANCE.accept(directory, item)) {
+            if (recurse && DirectoryFilter.getInstance().accept(directory, item)) {
                 DirectoryListing results = list(file, recurse);
                 files.addAll(results.listFiles());
                 directories.addAll(results.listDirectories());

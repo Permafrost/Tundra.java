@@ -27,11 +27,24 @@ package permafrost.tundra.lang;
 /**
  * Compares two Object[] objects.
  */
-public enum BasicArrayComparator implements ArrayComparator {
+public class BasicArrayComparator implements ArrayComparator {
     /**
      * The singleton instance of this class.
      */
-    INSTANCE;
+    private static final BasicArrayComparator INSTANCE = new BasicArrayComparator();
+
+    /**
+     * Disallow instantiation of this class.
+     */
+    private BasicArrayComparator() {}
+
+    /**
+     * Returns the singleton instance of this class.
+     * @return The singleton instance of this class.
+     */
+    public static BasicArrayComparator getInstance() {
+        return INSTANCE;
+    }
 
     /**
      * Compares two Object[] objects.
@@ -61,7 +74,7 @@ public enum BasicArrayComparator implements ArrayComparator {
                 result = 1;
             } else {
                 for (int i = 0; i < array1.length; i++) {
-                    result = BasicObjectComparator.INSTANCE.compare(array1[i], array2[i]);
+                    result = BasicObjectComparator.getInstance().compare(array1[i], array2[i]);
                     if (result != 0) break;
                 }
             }
