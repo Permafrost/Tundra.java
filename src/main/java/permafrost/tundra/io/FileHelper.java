@@ -28,12 +28,18 @@ import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
+import java.util.Date;
 
+import com.wm.data.IData;
+import com.wm.data.IDataCursor;
+import com.wm.data.IDataFactory;
+import com.wm.data.IDataUtil;
 import permafrost.tundra.io.filter.RegularExpressionFilter;
 import permafrost.tundra.io.filter.WildcardFilter;
 import permafrost.tundra.lang.CharsetHelper;
 import permafrost.tundra.lang.StringHelper;
 import permafrost.tundra.net.uri.URIHelper;
+import permafrost.tundra.time.DateTimeHelper;
 
 /**
  * A collection of convenience methods for working with files.
@@ -48,7 +54,7 @@ public class FileHelper {
      * @return true if the file system is case insensitive.
      */
     public static boolean isCaseInsensitive() {
-        return (new java.io.File("TUNDRA")).equals(new java.io.File("tundra"));
+        return (new File("TUNDRA")).equals(new File("tundra"));
     }
 
     /**
@@ -161,7 +167,7 @@ public class FileHelper {
      */
     public static void touch(File file) throws IOException {
         if (file.exists()) {
-            file.setLastModified((new java.util.Date()).getTime());
+            file.setLastModified((new Date()).getTime());
         } else {
             create(file);
         }
@@ -608,5 +614,269 @@ public class FileHelper {
         }
 
         return match;
+    }
+
+    /**
+     * Returns whether the given file can be written to by this process.
+     *
+     * @param file      The file to check the permissions of.
+     * @return          Whether the given file is writable by this process.
+     */
+    public static boolean isWritable(File file) {
+        if (file == null) return false;
+        return file.canWrite();
+    }
+
+    /**
+     * Returns whether the given file can be written to by this process.
+     *
+     * @param filename  The file to check the permissions of.
+     * @return          Whether the given file is writable by this process.
+     */
+    public static boolean isWritable(String filename) {
+        return isWritable(construct(filename));
+    }
+
+    /**
+     * Returns whether the given file can be read by this process.
+     *
+     * @param file      The file to check the permissions of.
+     * @return          Whether the given file is readable by this process.
+     */
+    public static boolean isReadable(File file) {
+        if (file == null) return false;
+        return file.canRead();
+    }
+
+    /**
+     * Returns whether the given file can be read by this process.
+     *
+     * @param filename  The file to check the permissions of.
+     * @return          Whether the given file is readable by this process.
+     */
+    public static boolean isReadable(String filename) {
+        return isReadable(construct(filename));
+    }
+
+    /**
+     * Returns whether the given file can be executed by this process.
+     *
+     * @param file      The file to check the permissions of.
+     * @return          Whether the given file is executable by this process.
+     */
+    public static boolean isExecutable(File file) {
+        if (file == null) return false;
+        return file.canExecute();
+    }
+
+    /**
+     * Returns whether the given file can be executed by this process.
+     *
+     * @param filename  The file to check the permissions of.
+     * @return          Whether the given file is executable by this process.
+     */
+    public static boolean isExecutable(String filename) {
+        return isExecutable(construct(filename));
+    }
+
+    /**
+     * Returns the length of the given file in bytes.
+     *
+     * @param file      The file to check the length of.
+     * @return          The length in bytes of the given file.
+     */
+    public static long length(File file) {
+        if (file == null) return 0;
+        return file.length();
+    }
+
+    /**
+     * Returns the length of the given file in bytes.
+     *
+     * @param filename  The file to check the length of.
+     * @return          The length in bytes of the given file.
+     */
+    public static long length(String filename) {
+        return length(construct(filename));
+    }
+
+    /**
+     * Returns only the name component of the given file.
+     *
+     * @param file      The file to return the name of.
+     * @return          The name component only of the given file.
+     */
+    public static String getName(File file) {
+        if (file == null || file.equals("")) return null;
+        return file.getName();
+    }
+
+    /**
+     * Returns only the name component of the given file.
+     *
+     * @param filename  The file to return the name of.
+     * @return          The name component only of the given file.
+     */
+    public static String getName(String filename) {
+        return getName(construct(filename));
+    }
+
+    /**
+     * Returns the base and extension parts of the given file's name.
+     * @param file      The file to get the name parts of.
+     * @return          The parts of the given file's name.
+     */
+    public static String[] getNameParts(File file) {
+        String[] parts = null;
+
+        String name = getName(file);
+        if (name != null) {
+            parts = name.split("\\.(?=[^\\.]+$)");
+        }
+
+        return parts;
+    }
+
+    /**
+     * Returns the base and extension parts of the given file's name.
+     * @param filename  The file to get the name parts of.
+     * @return          The parts of the given file's name.
+     */
+    public static String[] getNameParts(String filename) {
+        return getNameParts(construct(filename));
+    }
+
+    /**
+     * Returns the parent directory containing the given file.
+     * @param file      The file to return the parent directory of.
+     * @return          The parent directory of the given file.
+     */
+    public static File getParentDirectory(File file) {
+        if (file == null) return null;
+        return file.getParentFile();
+    }
+
+    /**
+     * Returns the parent directory containing the given file.
+     * @param filename  The file to return the parent directory of.
+     * @return          The parent directory of the given file.
+     */
+    public static File getParentDirectory(String filename) {
+        return getParentDirectory(construct(filename));
+    }
+
+    /**
+     * Returns the parent directory containing the given file as a string.
+     * @param file      The file to return the parent directory of.
+     * @return          The parent directory of the given file.
+     */
+    public static String getParentDirectoryAsString(File file) {
+        return normalize(getParentDirectory(file));
+    }
+
+    /**
+     * Returns the parent directory containing the given file as a string.
+     * @param filename  The file to return the parent directory of.
+     * @return          The parent directory of the given file.
+     */
+    public static String getParentDirectoryAsString(String filename) {
+        return getParentDirectoryAsString(construct(filename));
+    }
+
+    /**
+     * Returns the last modified datetime of the given file.
+     *
+     * @param file      The file to return the last modified datetime of.
+     * @return          The last modified datetime of the given file.
+     */
+    public static Date getLastModifiedDate(File file) {
+        if (file == null) return null;
+        return new Date(file.lastModified());
+    }
+
+    /**
+     * Returns the last modified datetime of the given file.
+     *
+     * @param filename  The file to return the last modified datetime of.
+     * @return          The last modified datetime of the given file.
+     */
+    public static Date getLastModifiedDate(String filename) {
+        return getLastModifiedDate(construct(filename));
+    }
+
+    /**
+     * Returns the last modified datetime of the given file as an ISO8601
+     * formatted datetime string.
+     *
+     * @param file      The file to return the last modified datetime of.
+     * @return          The last modified datetime of the given file.
+     */
+    public static String getLastModifiedDateTimeString(File file) {
+        return DateTimeHelper.emit(getLastModifiedDate(file));
+    }
+
+    /**
+     * Returns the last modified datetime of the given file as an ISO8601
+     * formatted datetime string.
+     *
+     * @param filename  The file to return the last modified datetime of.
+     * @return          The last modified datetime of the given file.
+     */
+    public static String getLastModifiedDateTimeString(String filename) {
+        return getLastModifiedDateTimeString(construct(filename));
+    }
+
+    /**
+     * Returns an IData document containing the properties of the given file.
+     *
+     * @param filename  The file to return the properties for.
+     * @return          The properties of the given file as an IData document.
+     */
+    public static IData getPropertiesAsIData(String filename) {
+        return getPropertiesAsIData(construct(filename));
+    }
+
+    /**
+     * Returns an IData document containing the properties of the given file.
+     *
+     * @param file      The file to return the properties for.
+     * @return          The properties of the given file as an IData document.
+     */
+    public static IData getPropertiesAsIData(File file) {
+        IData output = IDataFactory.create();
+        IDataCursor cursor = output.getCursor();
+
+        boolean isFile = file.isFile();
+        boolean exists = exists(file);
+
+        IDataUtil.put(cursor, "exists?", "" + exists);
+
+        String parent = getParentDirectoryAsString(file);
+        if (parent != null) IDataUtil.put(cursor, "parent", parent);
+
+        String name = getName(file);
+        if (name != null) IDataUtil.put(cursor, "name", name);
+
+        String[] parts = getNameParts(file);
+        if (parts != null) {
+            if (parts.length > 0) IDataUtil.put(cursor, "base", parts[0]);
+            if (parts.length > 1) IDataUtil.put(cursor, "extension", parts[1]);
+        }
+
+        if (isFile) IDataUtil.put(cursor, "type", getMIMEType(file));
+
+        if (exists) {
+            IDataUtil.put(cursor, "length", "" + length(file));
+            IDataUtil.put(cursor, "modified", getLastModifiedDateTimeString(file));
+            IDataUtil.put(cursor, "executable?", "" + isExecutable(file));
+            IDataUtil.put(cursor, "readable?", "" + isReadable(file));
+            IDataUtil.put(cursor, "writable?", "" + isWritable(file));
+        }
+
+        IDataUtil.put(cursor, "uri", normalize(file));
+
+        cursor.destroy();
+
+        return output;
     }
 }
