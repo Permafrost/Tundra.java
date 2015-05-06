@@ -1661,18 +1661,33 @@ public class IDataHelper {
     /**
      * Sorts the given IData document by its keys in natural ascending order.
      *
-     * @param document  An IData document to be sorted by its keys.
-     * @param recurse   A boolean which when true will also recursively sort
-     *                  nested IData document and IData[] document lists.
-     * @return          A new IData document which is duplicate of the given input
-     *                  IData document but with its keys sorted in natural ascending
-     *                  order.
+     * @param document   An IData document to be sorted by its keys.
+     * @param recurse    A boolean which when true will also recursively sort
+     *                   nested IData document and IData[] document lists.
+     * @return           A new IData document which is duplicate of the given input
+     *                   IData document but with its keys sorted in natural ascending
+     *                   order.
      */
     public static IData sort(IData document, boolean recurse) {
+        return sort(document, recurse, false);
+    }
+
+    /**
+     * Sorts the given IData document by its keys in natural ascending or descending
+     * order.
+     *
+     * @param document   An IData document to be sorted by its keys.
+     * @param recurse    A boolean which when true will also recursively sort
+     *                   nested IData document and IData[] document lists.
+     * @param descending Whether to sort in descending or ascending order.
+     * @return           A new IData document which is duplicate of the given input
+     *                   IData document but with its keys sorted in natural ascending
+     *                   order.
+     */
+    public static IData sort(IData document, boolean recurse, boolean descending) {
         if (document == null) return null;
 
-        String[] keys = getKeys(document);
-        Arrays.sort(keys);
+        String[] keys = ArrayHelper.sort(getKeys(document), descending);
 
         IData output = IDataFactory.create();
         IDataCursor ic = document.getCursor();
