@@ -581,13 +581,40 @@ public class ArrayHelper {
      * @param array      The array to be sorted.
      * @param comparator The comparator used to determine element ordering.
      * @param <T>        The class of items stored in the array.
-     * @return A new copy of the given array but with the items sorted in their natural order.
+     * @return A new copy of the given array but with the items sorted.
      */
     public static <T> T[] sort(T[] array, Comparator<T> comparator) {
+        return sort(array, comparator, false);
+    }
+
+    /**
+     * Returns a new array with all elements sorted in natural ascending or descending order.
+     *
+     * @param array      The array to be sorted.
+     * @param descending Whether to sort in descending or ascending order.
+     * @param <T>        The class of items stored in the array.
+     * @return A new copy of the given array but with the items sorted in their natural order.
+     */
+    public static <T> T[] sort(T[] array, boolean descending) {
+        return sort(array, null, descending);
+    }
+
+    /**
+     * Returns a new array with all elements sorted according to the given comparator.
+     *
+     * @param array      The array to be sorted.
+     * @param comparator The comparator used to determine element ordering.
+     * @param descending Whether to sort in descending or ascending order.
+     * @param <T>        The class of items stored in the array.
+     * @return A new copy of the given array but with the items sorted.
+     */
+    public static <T> T[] sort(T[] array, Comparator<T> comparator, boolean descending) {
         if (array == null) return null;
 
         T[] copy = Arrays.copyOf(array, array.length);
         Arrays.sort(copy, comparator);
+        if (descending) copy = reverse(copy);
+
         return copy;
     }
 
