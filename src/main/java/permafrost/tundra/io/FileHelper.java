@@ -30,6 +30,7 @@ import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.Date;
 
+import com.wm.app.b2b.server.MimeTypes;
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
@@ -38,6 +39,7 @@ import permafrost.tundra.io.filter.RegularExpressionFilter;
 import permafrost.tundra.io.filter.WildcardFilter;
 import permafrost.tundra.lang.CharsetHelper;
 import permafrost.tundra.lang.StringHelper;
+import permafrost.tundra.mime.MIMETypeHelper;
 import permafrost.tundra.net.uri.URIHelper;
 import permafrost.tundra.time.DateTimeHelper;
 
@@ -71,8 +73,8 @@ public class FileHelper {
      */
     public static String getMIMEType(File file) {
         String type = null;
-        if (file != null) type = com.wm.app.b2b.server.MimeTypes.getTypeFromName(file.getName());
-        if (type == null) type = "application/octet-stream";
+        if (file != null) type = MimeTypes.getTypeFromName(file.getName());
+        if (type == null) type = MIMETypeHelper.DEFAULT_MIME_TYPE;
         return type;
     }
 
