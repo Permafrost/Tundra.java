@@ -43,6 +43,8 @@ public class MIMETypeHelper {
      */
     private MIMETypeHelper()  {}
 
+    public static final String DEFAULT_MIME_TYPE = "application/octet-stream";
+
     /**
      * Parses the given MIME type string to an IData representation.
      *
