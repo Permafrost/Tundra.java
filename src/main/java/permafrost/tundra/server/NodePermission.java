@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package permafrost.tundra.server.namespace;
+package permafrost.tundra.server;
 
 public enum NodePermission {
     LIST, READ, WRITE, EXECUTE;

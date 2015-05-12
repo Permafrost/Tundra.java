@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package permafrost.tundra.server.namespace;
+package permafrost.tundra.server;
 
 import com.wm.app.b2b.server.ACLManager;
 import com.wm.app.b2b.server.ns.Namespace;
