@@ -138,8 +138,7 @@ public class NodeHelper {
      * @return      True if the given webMethods Integration Server namespace node exists.
      */
     public static boolean exists(NSName name) {
-        if (name == null) return false;
-        return Namespace.current().nodeExists(name);
+        return name != null && Namespace.current().nodeExists(name);
     }
 
     /**
@@ -241,7 +240,7 @@ public class NodeHelper {
 
         for (NSNode node : nodes) {
             if (node instanceof NSInterface && recurse) {
-                children.addAll(list((NSInterface)node, pattern, type, recurse));
+                children.addAll(list((NSInterface)node, pattern, type, true));
             }
 
             String name = node.getNSName().toString();
