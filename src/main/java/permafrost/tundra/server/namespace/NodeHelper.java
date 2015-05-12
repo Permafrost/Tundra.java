@@ -178,7 +178,7 @@ public class NodeHelper {
      * @return          A sorted set of child nodes.
      */
     public static SortedSet<String> listRoot(Pattern pattern, NSType type, boolean recurse) {
-        return list(Namespace.current().getRootNode(), pattern, type, recurse);
+        return list((NSInterface)null, pattern, type, recurse);
     }
 
     /**
@@ -206,7 +206,7 @@ public class NodeHelper {
      * @return          A sorted set of child nodes.
      */
     public static SortedSet<String> list(NSInterface parent, String pattern, String type, boolean recurse) {
-        return list(parent, Pattern.compile(pattern), type, recurse);
+        return list(parent, pattern == null ? null : Pattern.compile(pattern), type, recurse);
     }
 
     /**
@@ -220,7 +220,7 @@ public class NodeHelper {
      * @return          A sorted set of child nodes.
      */
     public static SortedSet<String> list(NSInterface parent, Pattern pattern, String type, boolean recurse) {
-        return list(parent, pattern, NSType.create(type), recurse);
+        return list(parent, pattern, type == null ? null : NSType.create(type), recurse);
     }
 
     /**
@@ -234,22 +234,20 @@ public class NodeHelper {
      * @return          A sorted set of child nodes.
      */
     public static SortedSet<String> list(NSInterface parent, Pattern pattern, NSType type, boolean recurse) {
+        if (parent == null) parent = Namespace.current().getRootNode();
+
         SortedSet<String> children = new TreeSet<String>();
+        NSNode[] nodes = parent.getNodes();
 
-        if (parent != null) {
-            NSNode[] nodes = parent.getNodes();
+        for (NSNode node : nodes) {
+            if (node instanceof NSInterface && recurse) {
+                children.addAll(list((NSInterface)node, pattern, type, recurse));
+            }
 
-            for (NSNode node : nodes) {
-                if (node instanceof NSInterface && recurse) {
-                    SortedSet<String> grandchildren = list((NSInterface)node, pattern, type, recurse);
-                    children.addAll(grandchildren);
-                }
+            String name = node.getNSName().toString();
 
-                String name = node.getNSName().toString();
-
-                if ((pattern == null || pattern.matcher(name).matches()) && (type == null || type.equals(node.getNodeTypeObj()))) {
-                    children.add(name);
-                }
+            if ((pattern == null || pattern.matcher(name).matches()) && (type == null || type.equals(node.getNodeTypeObj()))) {
+                children.add(name);
             }
         }
 
