@@ -145,16 +145,16 @@ public class ThreadHelper {
     /**
      * Converts the given Thread[] to an IData[] representation.
      *
-     * @param array The Thread[] to be converted.
-     * @return      An IData[] representation of the given Thread[].
+     * @param threads   The Thread[] to be converted.
+     * @return          An IData[] representation of the given Thread[].
      */
-    public static IData[] toIDataArray(Thread[] array) {
-        if (array == null) return null;
+    public static IData[] toIDataArray(Thread ... threads) {
+        if (threads == null) return null;
 
-        IData[] output = new IData[array.length];
+        IData[] output = new IData[threads.length];
 
-        for (int i = 0; i < array.length; i++) {
-            output[i] = toIData(array[i]);
+        for (int i = 0; i < threads.length; i++) {
+            output[i] = toIData(threads[i]);
         }
 
         return output;
