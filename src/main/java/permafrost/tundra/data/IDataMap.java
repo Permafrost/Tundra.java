@@ -266,6 +266,22 @@ public class IDataMap extends WrappedIData implements Iterable<Map.Entry<String,
     }
 
     /**
+     * Copies all of the mappings from the specified document to this map.
+     * @param document Mappings to be stored in this map.
+     */
+    public void putAll(IData document) {
+        putAll((Map)new IDataMap(document));
+    }
+
+    /**
+     * Copies all of the mappings from the specified document to this map.
+     * @param document Mappings to be stored in this map.
+     */
+    public void merge(IData document) {
+        putAll(document);
+    }
+
+    /**
      * Returns the value to which the specified key is mapped, or null if this
      * map contains no mapping for the key.
      * @param key The key whose associated value is to be returned.
