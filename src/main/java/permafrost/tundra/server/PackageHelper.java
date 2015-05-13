@@ -24,8 +24,16 @@
 
 package permafrost.tundra.server;
 
+import com.wm.app.b2b.server.*;
 import com.wm.app.b2b.server.Package;
-import com.wm.app.b2b.server.PackageManager;
+import com.wm.data.IData;
+import permafrost.tundra.data.IDataMap;
+import permafrost.tundra.io.FileHelper;
+import permafrost.tundra.lang.BooleanHelper;
+import permafrost.tundra.lang.IterableEnumeration;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A collection of convenience methods for working with webMethods Integration Server packages.
@@ -37,13 +45,213 @@ public class PackageHelper {
     private PackageHelper() {}
 
     /**
-     * Returns true if a package with the given name exists on the Integration Server it is run.
+     * Returns true if a package with the given name exists on this Integration Server.
      *
      * @param packageName   The name of the package to check existence of.
      * @return              True if a package with the given name exists.
      */
     public static boolean exists(String packageName) {
-        Package pkg = PackageManager.getPackage(packageName);
-        return pkg != null;
+        return getPackage(packageName) != null;
+    }
+
+    /**
+     * Returns the package with the given name if it exists on this Integration Server.
+     *
+     * @param packageName   The name of the package.
+     * @return              The package with the given name, or null if no package with the given name exists.
+     */
+    public static Package getPackage(String packageName) {
+        if (packageName == null) return null;
+        return PackageManager.getPackage(packageName);
+    }
+
+    /**
+     * Returns true if the package with the given name is enabled on this Integration Server.
+     *
+     * @param packageName   The name of the package.
+     * @return              True if the package with the given name is enabled.
+     */
+    public static boolean isEnabled(String packageName) {
+        Package pkg = getPackage(packageName);
+        return pkg != null && pkg.isEnabled();
+    }
+
+    /**
+     * Returns a list of packages on this Integration Server.
+     * @return A list of packages on this Integration Server.
+     */
+    public static Package[] list() {
+        return PackageManager.getAllPackages();
+    }
+
+    /**
+     * Reloads the package with the given name.
+     *
+     * @param packageName The name of the package to be reloaded.
+     */
+    public static void reload(String packageName) {
+        PackageManager.loadPackage(packageName, true);
+    }
+
+    /**
+     * Converts the given Package to an IData document.
+     *
+     * @param pkg   The package to be converted.
+     * @return      An IData representation of the given package.
+     */
+    public static IData toIData(Package pkg) {
+        if (pkg == null) return null;
+
+        IDataMap map = new IDataMap();
+
+        map.put("name", pkg.getName());
+        map.merge(toIData(pkg.getManifest()));
+        map.merge(toIData(pkg.getState()));
+
+        IDataMap directories = new IDataMap();
+        directories.merge(toIData(pkg.getStore()));
+        directories.put("config", FileHelper.normalize(ServerAPI.getPackageConfigDir(pkg.getName())));
+        map.put("directories", directories);
+
+        return map;
+    }
+
+    /**
+     * Converts the given list of packages to an IData[].
+     *
+     * @param packages  The list of packages to convert.
+     * @return          The IData[] representation of the packages.
+     */
+    public static IData[] toIDataArray(Package ... packages) {
+        if (packages == null) return new IData[0];
+
+        IData[] output = new IData[packages.length];
+        for (int i = 0; i < packages.length; i++) {
+            output[i] = toIData(packages[i]);
+        }
+
+        return output;
+    }
+
+    /**
+     * Converts an Package[] to a String[] by calling getName on each package in the list.
+     *
+     * @param packages  The list of packages to convert.
+     * @return          The String[] representation of the list.
+     */
+    private static String[] toStringArray(Package ... packages) {
+        if (packages == null) return new String[0];
+
+        List<String> output = new ArrayList<String>(packages.length);
+        for (Package item : packages) {
+            if (item != null) output.add(item.getName());
+        }
+
+        return output.toArray(new String[output.size()]);
+    }
+
+    /**
+     * Converts an Iterable object to a String[] by calling toString on each object returned by the iterator.
+     *
+     * @param iterable  The object to convert.
+     * @return          The String[] representation of the object.
+     */
+    private static String[] toStringArray(Iterable iterable) {
+        if (iterable == null) return new String[0];
+
+        List<String> output = new ArrayList<String>();
+        for (Object item : iterable) {
+            output.add(item == null ? null : item.toString());
+        }
+
+        return output.toArray(new String[output.size()]);
+    }
+
+    /**
+     * Converts the given Manifest object to an IData document representation.
+     * @param manifest      The object to be converted.
+     * @return              An IData representation of the object.
+     */
+    private static IData toIData(Manifest manifest) {
+        if (manifest == null) return null;
+
+        IDataMap map = new IDataMap();
+
+        map.put("version", manifest.getVersion());
+        map.put("enabled?", BooleanHelper.emit(manifest.isEnabled()));
+        map.put("system?", BooleanHelper.emit(manifest.isSystemPkg()));
+
+        IData[] packageDependencies = toIDataArray(manifest.getRequires());
+        map.put("package.dependencies", packageDependencies);
+        map.put("package.dependencies.length", "" + packageDependencies.length);
+
+        String[] startupServices = toStringArray(manifest.getStartupServices());
+        map.put("services.startup", startupServices);
+        map.put("services.startup.length", "" + startupServices.length);
+
+        String[] shutdownServices = toStringArray(manifest.getShutdownServices());
+        map.put("services.shutdown", shutdownServices);
+        map.put("services.shutdown.length", "" + shutdownServices.length);
+
+        String[] replicationServices = toStringArray(manifest.getReplicationServices());
+        map.put("services.replication", replicationServices);
+        map.put("services.replication.length", "" + replicationServices.length);
+
+        return map;
+    }
+
+    /**
+     * Convert the given list of package dependencies to an IData[].
+     *
+     * @param packageDependencies   The object to convert.
+     * @return                      The IData[] representation of the object.
+     */
+    private static IData[] toIDataArray(Iterable<Manifest.Requires> packageDependencies) {
+        if (packageDependencies == null) return new IData[0];
+
+        List<IData> output = new ArrayList<IData>();
+        for (Manifest.Requires packageDependency : packageDependencies) {
+            IDataMap map = new IDataMap();
+            map.put("package", packageDependency.getPackage());
+            map.put("version", packageDependency.getVersion());
+            output.add(map);
+        }
+
+        return output.toArray(new IData[output.size()]);
+    }
+
+    /**
+     * Converts the given PackageState object to an IData document representation.
+     * @param packageState  The object to be converted.
+     * @return              An IData representation of the object.
+     */
+    private static IData toIData(PackageState packageState) {
+        if (packageState == null) return null;
+
+        IDataMap map = new IDataMap();
+
+        String[] loadedServices = toStringArray(IterableEnumeration.of(packageState.getLoaded()));
+        map.put("services.loaded", loadedServices);
+        map.put("services.loaded.length", "" + loadedServices.length);
+
+        return map;
+    }
+
+    /**
+     * Converts the given PackageStore object to an IData document representation.
+     * @param packageStore  The object to be converted.
+     * @return              An IData representation of the object.
+     */
+    private static IData toIData(PackageStore packageStore) {
+        if (packageStore == null) return null;
+
+        IDataMap map = new IDataMap();
+        map.put("root", FileHelper.normalize(packageStore.getPackageDir()));
+        map.put("ns", FileHelper.normalize(packageStore.getNSDir()));
+        map.put("pub", FileHelper.normalize(packageStore.getPubDir()));
+        map.put("template", FileHelper.normalize(packageStore.getTemplateDir()));
+        map.put("web", FileHelper.normalize(packageStore.getWebDir()));
+
+        return map;
     }
 }
