@@ -66,6 +66,17 @@ public class PackageHelper {
     }
 
     /**
+     * Returns the package with the given name if it exists on this Integration Server in an IData representation.
+     *
+     * @param packageName   The name of the package.
+     * @return              The IData representation of the package with the given name,
+     *                      or null if no package with the given name exists.
+     */
+    public static IData getPackageAsIData(String packageName) {
+        return toIData(getPackage(packageName));
+    }
+
+    /**
      * Returns true if the package with the given name is enabled on this Integration Server.
      *
      * @param packageName   The name of the package.
