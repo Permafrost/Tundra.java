@@ -117,7 +117,10 @@ public class PackageHelper {
 
         map.put("name", pkg.getName());
         map.merge(toIData(pkg.getManifest()));
-        map.merge(toIData(pkg.getState()));
+
+        IDataMap services = new IDataMap((IData)map.get("services"));
+        services.merge(toIData(pkg.getState()));
+        map.put("services", services);
 
         IDataMap directories = new IDataMap();
         directories.merge(toIData(pkg.getStore()));
@@ -183,6 +186,7 @@ public class PackageHelper {
      * @param manifest      The object to be converted.
      * @return              An IData representation of the object.
      */
+    @SuppressWarnings("unchecked")
     private static IData toIData(Manifest manifest) {
         if (manifest == null) return null;
 
@@ -193,20 +197,23 @@ public class PackageHelper {
         map.put("system?", BooleanHelper.emit(manifest.isSystemPkg()));
 
         IData[] packageDependencies = toIDataArray(manifest.getRequires());
-        map.put("package.dependencies", packageDependencies);
-        map.put("package.dependencies.length", "" + packageDependencies.length);
+        map.put("dependencies", packageDependencies);
+        map.put("dependencies.length", "" + packageDependencies.length);
 
+        IDataMap services = new IDataMap();
         String[] startupServices = toStringArray(manifest.getStartupServices());
-        map.put("services.startup", startupServices);
-        map.put("services.startup.length", "" + startupServices.length);
+        services.put("startup", startupServices);
+        services.put("startup.length", "" + startupServices.length);
 
         String[] shutdownServices = toStringArray(manifest.getShutdownServices());
-        map.put("services.shutdown", shutdownServices);
-        map.put("services.shutdown.length", "" + shutdownServices.length);
+        services.put("shutdown", shutdownServices);
+        services.put("shutdown.length", "" + shutdownServices.length);
 
         String[] replicationServices = toStringArray(manifest.getReplicationServices());
-        map.put("services.replication", replicationServices);
-        map.put("services.replication.length", "" + replicationServices.length);
+        services.put("replication", replicationServices);
+        services.put("replication.length", "" + replicationServices.length);
+
+        map.put("services", services);
 
         return map;
     }
@@ -242,8 +249,8 @@ public class PackageHelper {
         IDataMap map = new IDataMap();
 
         String[] loadedServices = toStringArray(IterableEnumeration.of(packageState.getLoaded()));
-        map.put("services.loaded", loadedServices);
-        map.put("services.loaded.length", "" + loadedServices.length);
+        map.put("loaded", loadedServices);
+        map.put("loaded.length", "" + loadedServices.length);
 
         return map;
     }
