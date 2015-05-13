@@ -54,7 +54,7 @@ public class IDataMap extends WrappedIData implements Iterable<Map.Entry<String,
      * @param document The IData document to be wrapped.
      */
     public IDataMap(IData document) {
-        super(document);
+        super(document instanceof IDataMap ? ((IDataMap)document).getIData() : document);
     }
 
     /**
@@ -279,6 +279,15 @@ public class IDataMap extends WrappedIData implements Iterable<Map.Entry<String,
      */
     public void merge(IData document) {
         putAll(document);
+    }
+
+    /**
+     * Returns a new IDataMap wrapping the given IData document.
+     * @param document The document to be wrapped.
+     * @return         A new IDataMap wrapping the given IData document.
+     */
+    public static IDataMap of(IData document) {
+        return new IDataMap(document);
     }
 
     /**
