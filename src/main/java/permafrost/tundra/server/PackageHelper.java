@@ -34,6 +34,8 @@ import permafrost.tundra.lang.IterableEnumeration;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * A collection of convenience methods for working with webMethods Integration Server packages.
@@ -92,7 +94,42 @@ public class PackageHelper {
      * @return A list of packages on this Integration Server.
      */
     public static Package[] list() {
-        return PackageManager.getAllPackages();
+        return list(false);
+    }
+
+    /**
+     * Returns a list of packages on this Integration Server.
+     * @param enabledOnly   If true, only returns enabled packages.
+     * @return              A list of packages on this Integration Server.
+     */
+    public static Package[] list(boolean enabledOnly) {
+        Package[] packages = PackageManager.getAllPackages();
+
+        SortedSet<Package> packageSet = new TreeSet<Package>(PackageNameComparator.getInstance());
+        if (packages != null) {
+            for (Package item : packages) {
+                if (item != null && (!enabledOnly || (enabledOnly && item.isEnabled()))) packageSet.add(item);
+            }
+        }
+
+        return packageSet.toArray(new Package[packageSet.size()]);
+    }
+
+    /**
+     * Returns a list of packages on this Integration Server as an IData[].
+     * @return A list of packages on this Integration Server as an IData[].
+     */
+    public static IData[] listAsIDataArray() {
+        return listAsIDataArray(false);
+    }
+
+    /**
+     * Returns a list of packages on this Integration Server as an IData[].
+     * @param enabledOnly   If true, only returns enabled packages.
+     * @return A list of packages on this Integration Server as an IData[].
+     */
+    public static IData[] listAsIDataArray(boolean enabledOnly) {
+        return toIDataArray(list(enabledOnly));
     }
 
     /**
