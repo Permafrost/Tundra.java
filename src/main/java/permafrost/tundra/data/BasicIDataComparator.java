@@ -58,14 +58,14 @@ public class BasicIDataComparator implements IDataComparator {
     /**
      * Compares two IData documents.
      *
-     * @param document1  The first IData document to be compared.
+     * @param document1 The first IData document to be compared.
      * @param document2 The second IData document to be compared.
-     * @return               A value less than zero if the first document
-     *                       comes before the second document, a value of
-     *                       zero if they are equal, or a value of greater
-     *                       than zero if the first document comes after the
-     *                       second document according to the comparison
-     *                       of all the keys and values in each document.
+     * @return          A value less than zero if the first document
+     *                  comes before the second document, a value of
+     *                  zero if they are equal, or a value of greater
+     *                  than zero if the first document comes after the
+     *                  second document according to the comparison
+     *                  of all the keys and values in each document.
      */
     public int compare(IData document1, IData document2) {
         int result = 0;
