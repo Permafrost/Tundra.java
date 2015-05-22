@@ -29,6 +29,8 @@ import permafrost.tundra.math.IntegerHelper;
 import permafrost.tundra.time.DateTimeHelper;
 import permafrost.tundra.time.DurationHelper;
 
+import java.util.Arrays;
+
 /**
  * Compares two IData objects using the values associated with the given
  * list of keys in precedence order.
@@ -42,7 +44,7 @@ public class CriteriaBasedIDataComparator implements IDataComparator {
      * @param criteria The comparison criteria to be used when comparing IData objects.
      */
     public CriteriaBasedIDataComparator(IDataComparisonCriterion... criteria) {
-        this(java.util.Arrays.asList(criteria));
+        this(Arrays.asList(criteria));
     }
 
     /**
@@ -51,7 +53,7 @@ public class CriteriaBasedIDataComparator implements IDataComparator {
      * @param criteria The comparison criteria to be used when comparing IData objects.
      */
     public CriteriaBasedIDataComparator(java.util.List<IDataComparisonCriterion> criteria) {
-        if (criteria == null || criteria.size() == 0) throw new IllegalArgumentException("At least one comparison criteria is required to construct an IDataComparator object");
+        if (criteria == null || criteria.size() == 0) throw new IllegalArgumentException("At least one comparison criteria is required to construct an CriteriaBasedIDataComparator object");
         this.criteria = criteria;
     }
 
