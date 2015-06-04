@@ -59,6 +59,7 @@ public class IterableEnumeration<T> implements Iterable<T> {
      * Constructs a new IterableEnumeration object.
      *
      * @param enumeration   The enumeration to be iterated over.
+     * @param <T>           The generic type iterated over.
      * @return              The constructed IterableEnumeration object.
      * @throws NullPointerException If the enumeration is null.
      */
@@ -70,6 +71,7 @@ public class IterableEnumeration<T> implements Iterable<T> {
      * Constructs a new IterableEnumeration object. This is an alias for the of method.
      *
      * @param enumeration   The enumeration to be iterated over.
+     * @param <T>           The generic type iterated over.
      * @return              The constructed IterableEnumeration object.
      * @throws NullPointerException If the enumeration is null.
      */
