@@ -150,8 +150,11 @@ public class WrappedIData implements IData, IDataCodable, IDataPortable, ValuesC
      */
     @Override
     public void setIData(IData document) {
-        if (document == null) document = IDataFactory.create();
-        this.document = document;
+        if (document == null) {
+            this.document = IDataFactory.create();
+        } else {
+            this.document = document;
+        }
     }
 
     /**
