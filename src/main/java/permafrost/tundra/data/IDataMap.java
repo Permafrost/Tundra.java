@@ -282,6 +282,14 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
     }
 
     /**
+     * Copies all of the mappings from the specified Map to this IDataMap.
+     * @param map A Map containing key value pairs to be stored in this IDataMap.
+     */
+    public void merge(Map<? extends String, ? extends Object> map) {
+        putAll(map);
+    }
+
+    /**
      * Returns a new IDataMap wrapping the given IData document.
      * @param document The document to be wrapped.
      * @return         A new IDataMap wrapping the given IData document.
