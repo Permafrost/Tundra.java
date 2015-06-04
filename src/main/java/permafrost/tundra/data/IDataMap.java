@@ -291,6 +291,15 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
     }
 
     /**
+     * Returns a new IDataMap that includes all the key value pairs from the given Map.
+     * @param map      The Map to seed the new IDataMap with.
+     * @return         A new IDataMap that includes all the key value pairs from the given Map.
+     */
+    public static IDataMap of(Map<? extends String, ? extends Object> map) {
+        return new IDataMap(map);
+    }
+
+    /**
      * Returns the value to which the specified key is mapped, or null if this
      * map contains no mapping for the key.
      * @param key The key whose associated value is to be returned.
