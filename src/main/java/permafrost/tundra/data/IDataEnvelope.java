@@ -29,54 +29,52 @@ import com.wm.util.Values;
 import com.wm.util.coder.IDataCodable;
 import com.wm.util.coder.ValuesCodable;
 
-import java.io.IOException;
-
 /**
  * A convenience wrapper for an IData object, that implements the IData, IDataCodable,
  * IDataPortable, and ValuesCodable interfaces for maximum API compatibility.
  */
-public class WrappedIData implements IData, IDataCodable, IDataPortable, ValuesCodable {
+public class IDataEnvelope implements IData, IDataCodable, IDataPortable, ValuesCodable {
     /**
      * The wrapped IData document.
      */
     protected IData document;
 
     /**
-     * Constructs a new empty WrappedIData document.
+     * Constructs a new empty IDataEnvelope document.
      */
-    public WrappedIData() {
+    public IDataEnvelope() {
         setIData(null);
     }
 
     /**
-     * Constructs a new WrappedIData wrapping the given IData document.
+     * Constructs a new IDataEnvelope wrapping the given IData document.
      * @param document The IData document to be wrapped.
      */
-    public WrappedIData(IData document) {
+    public IDataEnvelope(IData document) {
         setIData(document);
     }
 
     /**
-     * Constructs a new WrappedIData wrapping the given IDataCodable object.
+     * Constructs a new IDataEnvelope wrapping the given IDataCodable object.
      * @param codable The IDataCodable object to be wrapped.
      */
-    public WrappedIData(IDataCodable codable) {
+    public IDataEnvelope(IDataCodable codable) {
         this(codable == null ? null : codable.getIData());
     }
 
     /**
-     * Constructs a new WrappedIData wrapping the given IDataPortable object.
+     * Constructs a new IDataEnvelope wrapping the given IDataPortable object.
      * @param portable The IDataPortable object to be wrapped.
      */
-    public WrappedIData(IDataPortable portable) {
+    public IDataEnvelope(IDataPortable portable) {
         this(portable == null ? null : portable.getAsData());
     }
 
     /**
-     * Constructs a new WrappedIData wrapping the given ValuesCodable object.
+     * Constructs a new IDataEnvelope wrapping the given ValuesCodable object.
      * @param codable The ValuesCodable object to be wrapped.
      */
-    public WrappedIData(ValuesCodable codable) {
+    public IDataEnvelope(ValuesCodable codable) {
         this(codable == null ? null : codable.getValues());
     }
 
