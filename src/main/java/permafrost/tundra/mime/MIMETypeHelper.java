@@ -114,7 +114,7 @@ public class MIMETypeHelper {
      *
      * @param string1   The first MIME type string to be compare.
      * @param string2   The second MIME type string to be compared.
-     * @return
+     * @return          True if the two MIME type strings are considered equal, otherwise false.
      * @throws MimeTypeParseException If either of the MIME type strings are malformed.
      */
     public static boolean equal(String string1, String string2) throws MimeTypeParseException {
@@ -134,7 +134,7 @@ public class MIMETypeHelper {
      * @param string    The string to validate.
      * @param raise     Whether an exception should be thrown if the string is an invalid MIME type.
      * @return          True if the string is a well-formed MIME type.
-     * @throws BaseException
+     * @throws BaseException If raise is true and the given string is an invalid MIME type.
      */
     public static boolean validate(String string, boolean raise) throws BaseException {
         boolean valid = false;
