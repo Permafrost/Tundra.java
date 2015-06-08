@@ -26,12 +26,11 @@ package permafrost.tundra.security;
 
 import org.junit.Before;
 import org.junit.Test;
+import permafrost.tundra.io.FileHelper;
 import permafrost.tundra.io.StreamHelper;
 import permafrost.tundra.lang.BytesHelper;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Map;
 
 import static org.junit.Assert.*;
@@ -64,7 +63,10 @@ public class MessageDigestHelperTest {
 
     @Test
     public void testGetDigestWithBufferedInputStream() throws Exception {
-        Map.Entry<InputStream, byte[]> result = MessageDigestHelper.getDigest(MessageDigestAlgorithm.SHA_256, new BufferedInputStream(new ByteArrayInputStream(data)));
+        File tempFile = FileHelper.create();
+        FileHelper.writeFromBytes(tempFile, data, false);
+
+        Map.Entry<InputStream, byte[]> result = MessageDigestHelper.getDigest(MessageDigestAlgorithm.SHA_256, new FileInputStream(tempFile));
         assertArrayEquals(sha256, result.getValue());
 
         InputStream inputStream = result.getKey();
