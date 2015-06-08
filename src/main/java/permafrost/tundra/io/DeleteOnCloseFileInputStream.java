@@ -32,6 +32,14 @@ import java.io.IOException;
  * Automatically deletes the underlying file when the close method is called on the input stream.
  */
 public class DeleteOnCloseFileInputStream extends MarkableFileInputStream {
+    /**
+     * Whether the stream has been closed.
+     */
+    protected boolean isClosed = false;
+
+    /**
+     * Reference to the file to be read and deleted on close.
+     */
     private File file = null;
 
     /**
@@ -69,6 +77,7 @@ public class DeleteOnCloseFileInputStream extends MarkableFileInputStream {
 
         synchronized (this) {
             if (!isClosed) {
+                isClosed = true;
                 // automatically delete the file after closing the stream
                 if (file != null && !file.delete()) {
                     throw new IOException("File could not be deleted: " + FileHelper.normalize(file));

@@ -31,11 +31,6 @@ import java.io.*;
  */
 public class MarkableFileInputStream extends FileInputStream {
     /**
-     * Whether the stream has been closed.
-     */
-    protected boolean isClosed = false;
-
-    /**
      * The marked position that will be returned to upon calling the reset method.
      */
     protected long markPosition = 0;
@@ -113,8 +108,5 @@ public class MarkableFileInputStream extends FileInputStream {
     @Override
     public void close() throws IOException {
         super.close();
-        synchronized (this) {
-            isClosed = true;
-        }
     }
 }
