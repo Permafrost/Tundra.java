@@ -29,9 +29,14 @@ package permafrost.tundra.lang;
  */
 public class BasicArrayComparator implements ArrayComparator {
     /**
-     * The singleton instance of this class.
+     * Initialization on demand holder idiom.
      */
-    private static final BasicArrayComparator INSTANCE = new BasicArrayComparator();
+    private static class Holder {
+        /**
+         * The singleton instance of the class.
+         */
+        private static final BasicArrayComparator INSTANCE = new BasicArrayComparator();
+    }
 
     /**
      * Disallow instantiation of this class.
@@ -43,7 +48,7 @@ public class BasicArrayComparator implements ArrayComparator {
      * @return The singleton instance of this class.
      */
     public static BasicArrayComparator getInstance() {
-        return INSTANCE;
+        return Holder.INSTANCE;
     }
 
     /**

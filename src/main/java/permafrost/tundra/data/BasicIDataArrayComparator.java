@@ -31,9 +31,14 @@ import com.wm.data.IData;
  */
 public class BasicIDataArrayComparator implements IDataArrayComparator {
     /**
-     * The singleton instance of this class.
+     * Initialization on demand holder idiom.
      */
-    private static final BasicIDataArrayComparator INSTANCE = new BasicIDataArrayComparator();
+    private static class Holder {
+        /**
+         * The singleton instance of the class.
+         */
+        private static final BasicIDataArrayComparator INSTANCE = new BasicIDataArrayComparator();
+    }
 
     /**
      * Disallow instantiation of this class.
@@ -45,7 +50,7 @@ public class BasicIDataArrayComparator implements IDataArrayComparator {
      * @return The singleton instance of this class.
      */
     public static BasicIDataArrayComparator getInstance() {
-        return INSTANCE;
+        return Holder.INSTANCE;
     }
 
     /**

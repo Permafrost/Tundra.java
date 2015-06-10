@@ -38,9 +38,14 @@ import permafrost.tundra.lang.BasicObjectComparator;
  */
 public class BasicIDataComparator implements IDataComparator {
     /**
-     * The singleton instance of this class.
+     * Initialization on demand holder idiom.
      */
-    private static final BasicIDataComparator INSTANCE = new BasicIDataComparator();
+    private static class Holder {
+        /**
+         * The singleton instance of the class.
+         */
+        private static final BasicIDataComparator INSTANCE = new BasicIDataComparator();
+    }
 
     /**
      * Disallow instantiation of this class;
@@ -52,7 +57,7 @@ public class BasicIDataComparator implements IDataComparator {
      * @return The singleton instance of this class.
      */
     public static BasicIDataComparator getInstance() {
-        return INSTANCE;
+        return Holder.INSTANCE;
     }
 
     /**

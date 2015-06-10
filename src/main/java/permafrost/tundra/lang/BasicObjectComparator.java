@@ -29,9 +29,14 @@ package permafrost.tundra.lang;
  */
 public class BasicObjectComparator implements ObjectComparator {
     /**
-     * The singleton instance of this class.
+     * Initialization on demand holder idiom.
      */
-    private static final BasicObjectComparator INSTANCE = new BasicObjectComparator();
+    private static class Holder {
+        /**
+         * The singleton instance of the class.
+         */
+        private static final BasicObjectComparator INSTANCE = new BasicObjectComparator();
+    }
 
     /**
      * Disallow instantiation of this class.
@@ -43,7 +48,7 @@ public class BasicObjectComparator implements ObjectComparator {
      * @return The singleton instance of this class.
      */
     public static BasicObjectComparator getInstance() {
-        return INSTANCE;
+        return Holder.INSTANCE;
     }
 
     /**

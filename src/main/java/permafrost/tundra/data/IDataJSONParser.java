@@ -52,7 +52,15 @@ import java.util.List;
  * Deserializes and serializes IData objects from and to JSON.
  */
 public class IDataJSONParser extends IDataTextParser {
-    protected static IDataJSONParser INSTANCE = new IDataJSONParser();
+    /**
+     * Initialization on demand holder idiom.
+     */
+    private static class Holder {
+        /**
+         * The singleton instance of the class.
+         */
+        private static final IDataJSONParser INSTANCE = new IDataJSONParser();
+    }
 
     /**
      * Disallow instantiation of this class.
@@ -64,7 +72,7 @@ public class IDataJSONParser extends IDataTextParser {
      * @return The singleton instance of this class.
      */
     public static IDataJSONParser getInstance() {
-        return INSTANCE;
+        return Holder.INSTANCE;
     }
 
     /**

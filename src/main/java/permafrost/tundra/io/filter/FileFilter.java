@@ -32,9 +32,14 @@ import java.io.FilenameFilter;
  */
 public class FileFilter implements FilenameFilter {
     /**
-     * The singleton instance of this filter.
+     * Initialization on demand holder idiom.
      */
-    private static final FileFilter INSTANCE = new FileFilter();
+    private static class Holder {
+        /**
+         * The singleton instance of the class.
+         */
+        static final FileFilter INSTANCE = new FileFilter();
+    }
 
     /**
      * Disallow instantiation of this class.
@@ -46,7 +51,7 @@ public class FileFilter implements FilenameFilter {
      * @return The singleton instance of this class.
      */
     public static FileFilter getInstance() {
-        return INSTANCE;
+        return Holder.INSTANCE;
     }
 
     /**

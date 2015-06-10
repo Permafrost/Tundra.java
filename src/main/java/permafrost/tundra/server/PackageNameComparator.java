@@ -32,9 +32,14 @@ import java.util.Comparator;
  */
 public class PackageNameComparator implements Comparator<NSPackage> {
     /**
-     * The singleton instance of this class.
+     * Initialization on demand holder idiom.
      */
-    private static final PackageNameComparator INSTANCE = new PackageNameComparator();
+    private static class Holder {
+        /**
+         * The singleton instance of the class.
+         */
+        private static final PackageNameComparator INSTANCE = new PackageNameComparator();
+    }
 
     /**
      * Disallow instantiation of this class;
@@ -46,7 +51,7 @@ public class PackageNameComparator implements Comparator<NSPackage> {
      * @return The singleton instance of this class.
      */
     public static PackageNameComparator getInstance() {
-        return INSTANCE;
+        return Holder.INSTANCE;
     }
 
     /**

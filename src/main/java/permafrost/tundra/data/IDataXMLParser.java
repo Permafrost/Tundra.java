@@ -37,7 +37,15 @@ import java.nio.charset.Charset;
  * Deserializes and serializes IData objects from and to XML.
  */
 public class IDataXMLParser extends IDataTextParser {
-    protected static final IDataXMLParser INSTANCE = new IDataXMLParser();
+    /**
+     * Initialization on demand holder idiom.
+     */
+    private static class Holder {
+        /**
+         * The singleton instance of the class.
+         */
+        private static final IDataXMLParser INSTANCE = new IDataXMLParser();
+    }
 
     /**
      * Disallow instantiation of this class.
@@ -49,7 +57,7 @@ public class IDataXMLParser extends IDataTextParser {
      * @return The singleton instance of this class.
      */
     public static IDataXMLParser getInstance() {
-        return INSTANCE;
+        return Holder.INSTANCE;
     }
 
     /**

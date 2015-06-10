@@ -49,7 +49,15 @@ import java.util.Set;
  * Deserializes and serializes IData objects from and to CSV.
  */
 public class IDataCSVParser extends IDataTextParser {
-    protected static IDataCSVParser INSTANCE = new IDataCSVParser();
+    /**
+     * Initialization on demand holder idiom.
+     */
+    private static class Holder {
+        /**
+         * The singleton instance of the class.
+         */
+        private static final IDataCSVParser INSTANCE = new IDataCSVParser();
+    }
 
     protected char delimiter = ',';
     protected String contentType = "text/csv";
@@ -109,7 +117,7 @@ public class IDataCSVParser extends IDataTextParser {
      * @return The default instance of this class.
      */
     public static IDataCSVParser getInstance() {
-        return INSTANCE;
+        return Holder.INSTANCE;
     }
 
     /**

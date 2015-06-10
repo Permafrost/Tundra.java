@@ -46,9 +46,14 @@ import java.util.Map;
  */
 public class HTTPRouter implements HTTPHandler {
     /**
-     * The singleton instance of this class.
+     * Initialization on demand holder idiom.
      */
-    private static final HTTPRouter INSTANCE = new HTTPRouter();
+    private static class Holder {
+        /**
+         * The singleton instance of the class.
+         */
+        private static final HTTPRouter INSTANCE = new HTTPRouter();
+    }
 
     protected static final HTTPInvokeHandler DEFAULT_INVOKE_HANDLER = new HTTPInvokeHandler();
     protected static final HTTPDocHandler DEFAULT_DOCUMENT_HANDLER = new HTTPDocHandler();
@@ -68,7 +73,7 @@ public class HTTPRouter implements HTTPHandler {
      * @return The singleton instance of this class.
      */
     public static HTTPRouter getInstance() {
-        return INSTANCE;
+        return Holder.INSTANCE;
     }
 
     /**

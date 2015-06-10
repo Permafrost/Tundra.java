@@ -44,7 +44,15 @@ import java.util.Map;
  * Deserializes and serializes IData objects from and to YAML.
  */
 public class IDataYAMLParser extends IDataTextParser {
-    protected static IDataYAMLParser INSTANCE = new IDataYAMLParser();
+    /**
+     * Initialization on demand holder idiom.
+     */
+    private static class Holder {
+        /**
+         * The singleton instance of the class.
+         */
+        private static final IDataYAMLParser INSTANCE = new IDataYAMLParser();
+    }
 
     /**
      * Disallow instantiation of this class.
@@ -56,7 +64,7 @@ public class IDataYAMLParser extends IDataTextParser {
      * @return The singleton instance of this class.
      */
     public static IDataYAMLParser getInstance() {
-        return INSTANCE;
+        return Holder.INSTANCE;
     }
 
     /**

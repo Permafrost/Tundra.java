@@ -45,7 +45,15 @@ import java.util.Map;
  * Serializes IData objects to HTML.
  */
 public class IDataHTMLParser extends IDataTextParser {
-    protected static IDataHTMLParser INSTANCE = new IDataHTMLParser();
+    /**
+     * Initialization on demand holder idiom.
+     */
+    private static class Holder {
+        /**
+         * The singleton instance of the class.
+         */
+        private static final IDataHTMLParser INSTANCE = new IDataHTMLParser();
+    }
 
     /**
      * Disallow instantiation of this class;
@@ -57,7 +65,7 @@ public class IDataHTMLParser extends IDataTextParser {
      * @return The singleton instance of this class.
      */
     public static IDataHTMLParser getInstance() {
-        return INSTANCE;
+        return Holder.INSTANCE;
     }
 
     /**
