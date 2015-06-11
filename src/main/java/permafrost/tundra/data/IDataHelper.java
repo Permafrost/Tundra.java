@@ -226,10 +226,14 @@ public class IDataHelper {
     public static IData drop(IData document, String key) {
         if (document != null && key != null) {
             IDataCursor cursor = document.getCursor();
-            IDataUtil.remove(cursor, key);
-            cursor.destroy();
 
-            if (Key.isFullyQualified(key)) drop(document, Key.parse(key));
+            if (cursor.first(key)) {
+                cursor.delete();
+            } else if (Key.isFullyQualified(key)) {
+                drop(document, Key.parse(key));
+            }
+            
+            cursor.destroy();
         }
         return document;
     }
