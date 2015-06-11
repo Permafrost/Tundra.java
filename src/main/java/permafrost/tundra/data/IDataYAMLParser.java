@@ -30,9 +30,14 @@ import com.wm.data.IDataFactory;
 import com.wm.data.IDataUtil;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.error.YAMLException;
+import org.yaml.snakeyaml.nodes.Node;
+import org.yaml.snakeyaml.representer.Represent;
 import permafrost.tundra.io.StreamHelper;
+import permafrost.tundra.lang.BytesHelper;
 import permafrost.tundra.lang.StringHelper;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -138,7 +143,7 @@ public class IDataYAMLParser extends IDataTextParser {
         DumperOptions options = new DumperOptions();
         options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
 
-        Yaml yaml = new Yaml(options);
+        Yaml yaml = new Yaml(new Representer(), options);
 
         IDataCursor cursor = input.getCursor();
         IData[] array = IDataUtil.getIDataArray(cursor, "recordWithNoID");
@@ -152,5 +157,75 @@ public class IDataYAMLParser extends IDataTextParser {
         }
 
         return yaml.dump(object);
+    }
+
+    /**
+     * Tundra implementation of YAML Representer which supports InputStreams and
+     * Objects with no public members.
+     */
+    protected class Representer extends org.yaml.snakeyaml.representer.Representer {
+        /**
+         * Default constructor.
+         */
+        public Representer() {
+            this.multiRepresenters.put(InputStream.class, new RepresentInputStream());
+            this.representers.put(null, new RepresentObject());
+        }
+
+        /**
+         * Expose RepresentString implementation to this class by subclassing it.
+         */
+        private class RepresentString extends org.yaml.snakeyaml.representer.Representer.RepresentString {}
+
+        /**
+         * Represent any Object as a YAML node, even those without public members.
+         */
+        protected class RepresentObject extends RepresentJavaBean {
+            /**
+             * The Represent object used when encoding an Object with no public members.
+             */
+            protected Represent defaultRepresent;
+
+            /**
+             * Default constructor.
+             */
+            public RepresentObject() {
+                defaultRepresent = new RepresentString();
+            }
+
+            /**
+             * Returns a YAML node representation of the given Object: if the Object
+             * has public members, these are encoded to YAML, otherwise Object.toString()
+             * is encoded to YAML.
+             * @param data The Object to be converted to a YAML node.
+             */
+            public Node representData(Object data) {
+                Node node = null;
+                try {
+                    node = super.representData(data);
+                } catch(YAMLException ex) {
+                    node = defaultRepresent.representData(data);
+                }
+                return node;
+            }
+        }
+
+        /**
+         * Represent an InputStream as a YAML node.
+         */
+        protected class RepresentInputStream extends RepresentByteArray {
+            /**
+             * Returns a YAML node representation of the given InputStream object.
+             * @param data The InputStream to be converted to a YAML node.
+             */
+            @SuppressWarnings("unchecked")
+            public Node representData(Object data) {
+                try {
+                    return super.representData(BytesHelper.normalize((InputStream) data));
+                } catch(IOException ex) {
+                    throw new YAMLException(ex);
+                }
+            }
+        }
     }
 }

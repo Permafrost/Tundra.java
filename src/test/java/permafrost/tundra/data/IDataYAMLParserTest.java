@@ -29,6 +29,9 @@ import com.wm.data.IDataCursor;
 import com.wm.data.IDataUtil;
 import org.junit.Test;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+
 import static org.junit.Assert.*;
 
 public class IDataYAMLParserTest {
@@ -47,11 +50,15 @@ public class IDataYAMLParserTest {
 
     @Test
     public void testEncodeToString() throws Exception {
+        String content = "this is a test";
+        InputStream inputStream = new ByteArrayInputStream(content.getBytes());
+
         IDataMap document = new IDataMap();
         IDataCursor cursor = document.getCursor();
         IDataUtil.put(cursor, "abc", "123");
         IDataUtil.put(cursor, "def", "456");
-        IDataUtil.put(cursor, "ghi", "789");
+        IDataUtil.put(cursor, "ghi", inputStream);
+        IDataUtil.put(cursor, "jkl", new ObjectWithNoPublicMembers(1, 2));
         cursor.destroy();
 
         String yaml = IDataYAMLParser.getInstance().encodeToString(document);
@@ -61,6 +68,16 @@ public class IDataYAMLParserTest {
         assertTrue(yaml.contains("def"));
         assertTrue(yaml.contains("456"));
         assertTrue(yaml.contains("ghi"));
-        assertTrue(yaml.contains("789"));
+        assertTrue(yaml.contains("jkl"));
+    }
+
+    private class ObjectWithNoPublicMembers {
+        private int foo;
+        private int bar;
+
+        public ObjectWithNoPublicMembers(int foo, int bar) {
+            this.foo = foo;
+            this.bar = bar;
+        }
     }
 }
