@@ -1068,26 +1068,24 @@ public class IDataHelper {
      * Returns the value associated with the given fully-qualified key from the given IData
      * document.
      *
-     * @param document          An IData document.
-     * @param fullyQualifiedKey A fully-qualified key identifying the value in the given
-     *                          IData document to be returned.
-     * @return                  Either the value associated with the given key in the given
-     *                          IData document.
+     * @param document  An IData document.
+     * @param keys      A fully-qualified key identifying the value in the given IData document to be returned.
+     * @return          Either the value associated with the given key in the given IData document.
      */
-    private static Object get(IData document, java.util.Queue<Key> fullyQualifiedKey) {
+    private static Object get(IData document, java.util.Queue<Key> keys) {
         Object value = null;
 
-        if (document != null && fullyQualifiedKey != null && fullyQualifiedKey.size() > 0) {
+        if (document != null && keys != null && keys.size() > 0) {
             IDataCursor cursor = document.getCursor();
-            Key key = fullyQualifiedKey.remove();
+            Key key = keys.remove();
 
-            if (fullyQualifiedKey.size() > 0) {
+            if (keys.size() > 0) {
                 if (key.hasArrayIndex()) {
-                    value = get(ArrayHelper.get(toIDataArray(IDataUtil.get(cursor, key.getKey())), key.getIndex()), fullyQualifiedKey);
+                    value = get(ArrayHelper.get(toIDataArray(IDataUtil.get(cursor, key.getKey())), key.getIndex()), keys);
                 } else if (key.hasKeyIndex()) {
-                    value = get(toIData(get(document, key.getKey(), key.getIndex())), fullyQualifiedKey);
+                    value = get(toIData(get(document, key.getKey(), key.getIndex())), keys);
                 } else {
-                    value = get(IDataUtil.getIData(cursor, key.getKey()), fullyQualifiedKey);
+                    value = get(IDataUtil.getIData(cursor, key.getKey()), keys);
                 }
             } else {
                 if (key.hasArrayIndex()) {
