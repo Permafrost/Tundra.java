@@ -316,7 +316,7 @@ public class IDataHelper {
             } else if (Key.isFullyQualified(key)) {
                 drop(document, Key.parse(key));
             }
-            
+
             cursor.destroy();
         }
         return document;
@@ -1050,16 +1050,17 @@ public class IDataHelper {
         if (document == null || key == null) return null;
 
         Object value = null;
-        // try finding a value that matches the literal key
         IDataCursor cursor = document.getCursor();
-        try {
-            value = IDataUtil.get(cursor, key);
-        } finally {
-            cursor.destroy();
+
+        // try finding a value that matches the literal key, and if not found try finding a value
+        // associated with the leaf key if the key is considered fully-qualified
+        if (cursor.first(key)) {
+            value = cursor.getValue();
+        } else if (Key.isFullyQualified(key)) {
+            value = get(document, Key.parse(key));
         }
 
-        // if value wasn't found using the literal key, the key could be fully qualified
-        if (value == null && Key.isFullyQualified(key)) value = get(document, Key.parse(key));
+        cursor.destroy();
 
         return value;
     }
