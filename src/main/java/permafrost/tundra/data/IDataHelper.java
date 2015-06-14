@@ -148,8 +148,8 @@ public class IDataHelper {
     /**
      * Returns the number of top-level key value pairs in the given IData document.
      *
-     * @param document An IData document.
-     * @return The number of key value pairs in the given IData document.
+     * @param document  An IData document.
+     * @return          The number of key value pairs in the given IData document.
      */
     public static int size(IData document) {
         int size = 0;
