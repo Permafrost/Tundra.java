@@ -140,6 +140,75 @@ public class IDataHelperTest {
         assertEquals(4, IDataHelper.size(map));
     }
 
+
+    @Test
+    public void testSizeWithMissingKey() throws Exception {
+        IData document = IDataFactory.create();
+        IDataCursor cursor = document.getCursor();
+        cursor.insertAfter("a", "a1");
+        cursor.insertAfter("b", "b1");
+        cursor.destroy();
+
+        assertEquals(0, IDataHelper.size(IDataFactory.create(), "c"));
+    }
+
+    @Test
+    public void testSizeWithKeyOccursOnce() throws Exception {
+        IData document = IDataFactory.create();
+        IDataCursor cursor = document.getCursor();
+        cursor.insertAfter("a", "a1");
+        cursor.insertAfter("b", "b1");
+        cursor.destroy();
+
+        assertEquals(1, IDataHelper.size(document, "a"));
+    }
+
+    @Test
+    public void testSizeWithKeyThatOccursMultipleTimes() throws Exception {
+        IData document = IDataFactory.create();
+        IDataCursor cursor = document.getCursor();
+        cursor.insertAfter("a", "a1");
+        cursor.insertAfter("a", "a2");
+        cursor.insertAfter("a", "a3");
+        cursor.insertAfter("b", "b1");
+        cursor.destroy();
+
+        assertEquals(3, IDataHelper.size(document, "a"));
+    }
+
+
+    @Test
+    public void testSizeWithFullyQualifiedKeyThatOccursMultipleTimes() throws Exception {
+        IData document = IDataFactory.create();
+        IDataCursor cursor = document.getCursor();
+        cursor.insertAfter("a", "a1");
+        cursor.insertAfter("a", "a2");
+        cursor.insertAfter("a", "a3");
+        cursor.insertAfter("b", "b1");
+        cursor.destroy();
+
+        IDataMap parent = new IDataMap();
+        parent.put("d", document);
+
+        assertEquals(3, IDataHelper.size(parent, "d/a"));
+    }
+
+    @Test
+    public void testSizeWithFullyQualifiedNthKeyThatOccursMultipleTimes() throws Exception {
+        IData document = IDataFactory.create();
+        IDataCursor cursor = document.getCursor();
+        cursor.insertAfter("a", "a1");
+        cursor.insertAfter("a", "a2");
+        cursor.insertAfter("a", "a3");
+        cursor.insertAfter("b", "b1");
+        cursor.destroy();
+
+        IDataMap parent = new IDataMap();
+        parent.put("d", document);
+
+        assertEquals(1, IDataHelper.size(parent, "d/a(1)"));
+    }
+
     @Test
     public void testRemoveElementThatDoesNotExist() throws Exception {
         Object value = IDataHelper.remove(new IDataMap(), "1");

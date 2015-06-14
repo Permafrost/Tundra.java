@@ -162,6 +162,90 @@ public class IDataHelper {
     }
 
     /**
+     * Returns the number of occurrences of the given key in the given IData document.
+     *
+     * @param document  An IData document.
+     * @param key       The key whose occurrences are to be counted.
+     * @return          The number of occurrences of the given key in the given IData document.
+     */
+    public static int size(IData document, String key) {
+        int size = 0;
+        if (document != null) {
+            IDataCursor cursor = document.getCursor();
+
+            if (cursor.first(key)) {
+                size++;
+                while(cursor.next(key)) size++;
+            } else if (Key.isFullyQualified(key)) {
+                size = size(document, Key.parse(key));
+            }
+
+            cursor.destroy();
+        }
+        return size;
+    }
+
+    /**
+     * Returns the number of occurrences of the given fully-qualified key in the given IData document.
+     *
+     * @param document  An IData document.
+     * @param keys      The parsed fully-qualified key whose occurrences are to be counted.
+     * @return          The number of occurrences of the given parsed fully-qualified key in the given IData document.
+     */
+    private static int size(IData document, java.util.Queue<Key> keys) {
+        int size = 0;
+        if (document != null && keys != null && keys.size() > 0) {
+            IDataCursor cursor = document.getCursor();
+            Key key = keys.remove();
+
+            if (keys.size() > 0) {
+                if (key.hasArrayIndex()) {
+                    size = size(ArrayHelper.get(toIDataArray(IDataUtil.get(cursor, key.getKey())), key.getIndex()), keys);
+                } else if (key.hasKeyIndex()) {
+                    size = size(toIData(get(document, key.getKey(), key.getIndex())), keys);
+                } else {
+                    size = size(toIData(IDataUtil.get(cursor, key.getKey())), keys);
+                }
+            } else {
+                if (key.hasArrayIndex()) {
+                    Object[] array = IDataUtil.getObjectArray(cursor, key.getKey());
+                    if (array != null && array.length > key.getIndex()) {
+                        size = 1;
+                    }
+                } else if (key.hasKeyIndex()) {
+                    size = size(document, key.getKey(), key.getIndex());
+                } else {
+                    while(cursor.next(key.getKey())) size++;
+                }
+            }
+            cursor.destroy();
+        }
+        return size;
+    }
+
+    /**
+     * Returns the number of occurrences of the given nth key in the given IData document.
+     *
+     * @param document  An IData document.
+     * @param key       The key whose occurrence is to be counted.
+     * @param n         The nth occurrence to be counted.
+     * @return          The number of occurrences of the given nth key in the given IData document.
+     */
+    private static int size(IData document, String key, int n) {
+        int size = 0;
+
+        if (document != null && key != null && n >= 0) {
+            int i = 0;
+            IDataCursor cursor = document.getCursor();
+            while(cursor.next(key) && i++ < n);
+            if (i > n) size = 1;
+            cursor.destroy();
+        }
+
+        return size;
+    }
+
+    /**
      * Removes the given key from the given IData document, returning the associated
      * value if one exists.
      *
