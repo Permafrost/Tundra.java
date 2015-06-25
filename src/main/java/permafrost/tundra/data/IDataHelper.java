@@ -117,7 +117,7 @@ public class IDataHelper {
      * @return The list of values present in the given IData document.
      */
     public static Object[] getValues(IData document) {
-        List values = new ArrayList();
+        List<Object> values = new ArrayList<Object>();
 
         for(Map.Entry<String, Object> entry : new IDataMap(document)) {
             values.add(entry.getValue());
