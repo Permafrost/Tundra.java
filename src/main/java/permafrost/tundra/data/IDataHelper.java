@@ -136,9 +136,9 @@ public class IDataHelper {
     public static IData merge(IData... documents) {
         IData output = IDataFactory.create();
         if (documents != null) {
-            for (int i = 0; i < documents.length; i++) {
-                if (documents[i] != null) {
-                    IDataUtil.merge(documents[i], output);
+            for (IData document : documents) {
+                if (document != null) {
+                    IDataUtil.merge(document, output);
                 }
             }
         }
