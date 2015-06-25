@@ -54,7 +54,7 @@ import java.util.regex.Pattern;
  */
 public class IDataHelper {
     /**
-     * Do not allow this class to be instantiated.
+     * Disallow this class to be instantiated.
      */
     private IDataHelper() {}
 
