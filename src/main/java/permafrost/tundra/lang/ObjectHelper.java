@@ -31,10 +31,10 @@ import com.wm.util.Table;
 import com.wm.util.coder.IDataCodable;
 import com.wm.util.coder.ValuesCodable;
 import permafrost.tundra.data.IDataHelper;
-import permafrost.tundra.data.IDataMap;
 import permafrost.tundra.io.StreamHelper;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.nio.charset.Charset;
 import java.util.*;
 
@@ -115,6 +115,51 @@ public class ObjectHelper {
         }
 
         return output;
+    }
+
+    /**
+     * Returns the given item if it is already an array, or a new
+     * array with the given type whose first element is the given
+     * item.
+     *
+     * @param item  The item to be converted to an array.
+     * @return      Either the item itself if it is already an array
+     *              or a new array containing the item as its only
+     *              element.
+     */
+    public static Object[] arrayify(Object item) {
+        Object[] array = null;
+
+        if (item instanceof Object[]) {
+            array = (Object[])item;
+        } else if (item != null) {
+            array = (Object[]) Array.newInstance(item.getClass(), 1);
+            array[0] = item;
+        }
+
+        return array;
+    }
+
+    /**
+     * Returns a List containing all elements in the given item if
+     * it is an array, or a List containing the item itself if
+     * it is not an array.
+     *
+     * @param item  The item to be converted to a List.
+     * @return      Either a List containing all elements in the given
+     *              item if it is an array, or a List containing the
+     *              item itself if it is not an array.
+     */
+    public static List<Object> listify(Object item) {
+        List<Object> list = new LinkedList<Object>();
+
+        if (item instanceof Object[]) {
+            list.addAll(ArrayHelper.toList((Object[]) item));
+        } else if (item != null) {
+            list.add(item);
+        }
+
+        return list;
     }
 
     /**
