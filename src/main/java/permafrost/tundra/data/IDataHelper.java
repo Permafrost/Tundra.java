@@ -35,6 +35,7 @@ import permafrost.tundra.flow.VariableSubstitutor;
 import permafrost.tundra.lang.ArrayHelper;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
+import permafrost.tundra.lang.ObjectHelper;
 import permafrost.tundra.lang.StringHelper;
 
 import java.io.IOException;
@@ -1240,7 +1241,7 @@ public class IDataHelper {
         if (cursor.next(key)) {
             List<Object> list = new LinkedList<Object>();
             do {
-                list.add(cursor.getValue());
+                list.addAll(ObjectHelper.listify(cursor.getValue()));
             } while(cursor.next(key));
             output = ArrayHelper.toArray(list);
         } else if (Key.isFullyQualified(key)) {
@@ -1287,12 +1288,12 @@ public class IDataHelper {
                             value = null;
                         }
                     }
-                    list.add(value);
+                    list.addAll(ObjectHelper.listify(value));
                 } else if (key.hasKeyIndex()) {
-                    list.add(get(document, key.getKey(), key.getIndex()));
+                    list.addAll(ObjectHelper.listify(get(document, key.getKey(), key.getIndex())));
                 } else {
                     while(cursor.next(key.getKey())) {
-                        list.add(cursor.getValue());
+                        list.addAll(ObjectHelper.listify(cursor.getValue()));
                     }
                 }
                 output = ArrayHelper.toArray(list);

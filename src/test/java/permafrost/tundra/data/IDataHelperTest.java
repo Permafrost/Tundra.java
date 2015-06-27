@@ -7,7 +7,6 @@ import com.wm.data.IDataUtil;
 import org.junit.Before;
 import org.junit.Test;
 import permafrost.tundra.io.StreamHelper;
-import permafrost.tundra.lang.ObjectHelper;
 
 import java.util.regex.Pattern;
 
@@ -770,6 +769,31 @@ public class IDataHelperTest {
         cursor.insertAfter("c", "2");
         cursor.insertAfter("c", "3");
         cursor.insertAfter("c", "4");
+        cursor.destroy();
+
+        IDataMap parent = new IDataMap();
+        parent.put("a", child);
+
+        Object[] actual = IDataHelper.getAsArray(parent, "a/c");
+
+        assertArrayEquals(expected, actual);
+        assertTrue(actual instanceof String[]);
+    }
+
+    @Test
+    public void testGetAsArrayWithQualifiedKeyAndMultipleArrays() throws Exception {
+        Object[] expected = new String[] {"1", "2", "3", "4", "5", "6", "7"};
+
+        Object[] array1 = new String[] {"1", "2", "3"};
+        Object[] array2 = new String[] {"4", "5", "6"};
+
+        IData child = IDataFactory.create();
+        IDataCursor cursor = child.getCursor();
+        cursor.insertAfter("b", "1");
+        cursor.insertAfter("c", array1);
+        cursor.insertAfter("c", array2);
+        cursor.insertAfter("c", "7");
+
         cursor.destroy();
 
         IDataMap parent = new IDataMap();
