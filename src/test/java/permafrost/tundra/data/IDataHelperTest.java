@@ -669,4 +669,135 @@ public class IDataHelperTest {
         assertEquals("z", third.get("string"));
         assertEquals("99", third.get("integer"));
     }
+
+    @Test
+    public void testGetAsArrayWithSingleOccurrence() throws Exception {
+        Object[] expected = new String[] {"1"};
+
+        IData document = IDataFactory.create();
+        IDataCursor cursor = document.getCursor();
+        IDataUtil.put(cursor, "a", "1");
+        IDataUtil.put(cursor, "b", "4");
+        cursor.destroy();
+
+        Object[] actual = IDataHelper.getAsArray(document, "a");
+
+        assertArrayEquals(expected, actual);
+        assertTrue(actual instanceof String[]);
+    }
+
+    @Test
+    public void testGetAsArrayWithArrayIndex() throws Exception {
+        Object[] expected = new String[] {"2"};
+        Object[] array = new String[] {"1", "2", "3"};
+
+        IData document = IDataFactory.create();
+        IDataCursor cursor = document.getCursor();
+        IDataUtil.put(cursor, "a", array);
+        IDataUtil.put(cursor, "b", "4");
+        cursor.destroy();
+
+        Object[] actual = IDataHelper.getAsArray(document, "a[1]");
+
+        assertArrayEquals(expected, actual);
+        assertTrue(actual instanceof String[]);
+    }
+
+    @Test
+    public void testGetAsArrayWithMultipleOccurrence() throws Exception {
+        Object[] expected = new String[] {"1", "2", "3"};
+
+        IData document = IDataFactory.create();
+        IDataCursor cursor = document.getCursor();
+        cursor.insertAfter("a", "1");
+        cursor.insertAfter("a", "2");
+        cursor.insertAfter("a", "3");
+        cursor.insertAfter("b", "4");
+        cursor.destroy();
+
+        Object[] actual = IDataHelper.getAsArray(document, "a");
+
+        assertArrayEquals(expected, actual);
+        assertTrue(actual instanceof String[]);
+    }
+
+    @Test
+    public void testGetAsArrayWithNthKeyAndMultipleOccurrence() throws Exception {
+        Object[] expected = new String[] {"2"};
+
+        IData document = IDataFactory.create();
+        IDataCursor cursor = document.getCursor();
+        cursor.insertAfter("a", "1");
+        cursor.insertAfter("a", "2");
+        cursor.insertAfter("a", "3");
+        cursor.insertAfter("b", "4");
+        cursor.destroy();
+
+        Object[] actual = IDataHelper.getAsArray(document, "a(1)");
+
+        assertArrayEquals(expected, actual);
+        assertTrue(actual instanceof String[]);
+    }
+
+    @Test
+    public void testGetAsArrayWithQualifiedKeyAndSingleOccurrence() throws Exception {
+        Object[] expected = new String[] {"1"};
+
+        IData child = IDataFactory.create();
+        IDataCursor cursor = child.getCursor();
+        cursor.insertAfter("b", "1");
+        cursor.insertAfter("c", "2");
+        cursor.insertAfter("c", "3");
+        cursor.insertAfter("c", "4");
+        cursor.destroy();
+
+        IDataMap parent = new IDataMap();
+        parent.put("a", child);
+
+        Object[] actual = IDataHelper.getAsArray(parent, "a/b");
+
+        assertArrayEquals(expected, actual);
+        assertTrue(actual instanceof String[]);
+    }
+
+    @Test
+    public void testGetAsArrayWithQualifiedKeyAndMultipleOccurrence() throws Exception {
+        Object[] expected = new String[] {"2", "3", "4"};
+
+        IData child = IDataFactory.create();
+        IDataCursor cursor = child.getCursor();
+        cursor.insertAfter("b", "1");
+        cursor.insertAfter("c", "2");
+        cursor.insertAfter("c", "3");
+        cursor.insertAfter("c", "4");
+        cursor.destroy();
+
+        IDataMap parent = new IDataMap();
+        parent.put("a", child);
+
+        Object[] actual = IDataHelper.getAsArray(parent, "a/c");
+
+        assertArrayEquals(expected, actual);
+        assertTrue(actual instanceof String[]);
+    }
+
+    @Test
+    public void testListify() throws Exception {
+        Object[] expected = new String[] {"2", "3", "4"};
+
+        IData child = IDataFactory.create();
+        IDataCursor cursor = child.getCursor();
+        cursor.insertAfter("b", "1");
+        cursor.insertAfter("c", "2");
+        cursor.insertAfter("c", "3");
+        cursor.insertAfter("c", "4");
+        cursor.destroy();
+
+        IDataMap parent = new IDataMap();
+        parent.put("a", child);
+
+        IDataHelper.listify(parent, "a/c");
+
+        assertArrayEquals(expected, (Object[])IDataHelper.get(parent, "a/c"));
+    }
 }
