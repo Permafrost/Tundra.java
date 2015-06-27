@@ -706,6 +706,18 @@ public class IDataHelper {
     }
 
     /**
+     * Converts the value associated with the given key to an array in the given IData document.
+     *
+     * @param document   An IData document.
+     * @param key        The key whose associated value is to be converted to an array.
+     */
+    public static void listify(IData document, String key) {
+        Object[] value = getAsArray(document, key);
+        dropAll(document, key);
+        put(document, key, value);
+    }
+
+    /**
      * Removes all null values from the given IData document.
      *
      * @param document  The IData document to be compacted.
