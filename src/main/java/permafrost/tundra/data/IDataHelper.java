@@ -1194,6 +1194,91 @@ public class IDataHelper {
         return value;
     }
 
+
+    /**
+     * Returns the value associated with the given key from the given IData document as an array.
+     *
+     * @param document     An IData document.
+     * @param key          A simple or fully-qualified key identifying the value in the given
+     *                     IData document to be returned.
+     * @return             The value associated with the given key in the given IData document as
+     *                     an array.
+     */
+    public static Object[] getAsArray(IData document, String key) {
+        if (document == null || key == null) return null;
+
+        Object[] output = null;
+        IDataCursor cursor = document.getCursor();
+
+        // try finding a value that matches the literal key, and if not found try finding a value
+        // associated with the leaf key if the key is considered fully-qualified
+        if (cursor.next(key)) {
+            List<Object> list = new LinkedList<Object>();
+            do {
+                list.add(cursor.getValue());
+            } while(cursor.next(key));
+            output = ArrayHelper.toArray(list);
+        } else if (Key.isFullyQualified(key)) {
+            output = getAsArray(document, Key.parse(key));
+        }
+
+        cursor.destroy();
+
+        return output;
+    }
+
+    /**
+     * Returns the value associated with the given fully-qualified key from the given IData
+     * document as an array.
+     *
+     * @param document  An IData document.
+     * @param keys      A fully-qualified key identifying the value in the given IData document to be returned.
+     * @return          The value associated with the given key in the given IData document as an array.
+     */
+    private static Object[] getAsArray(IData document, java.util.Queue<Key> keys) {
+        Object[] output = null;
+
+        if (document != null && keys != null && keys.size() > 0) {
+            IDataCursor cursor = document.getCursor();
+            Key key = keys.remove();
+
+            if (keys.size() > 0) {
+                if (key.hasArrayIndex()) {
+                    output = getAsArray(ArrayHelper.get(toIDataArray(IDataUtil.get(cursor, key.getKey())), key.getIndex()), keys);
+                } else if (key.hasKeyIndex()) {
+                    output = getAsArray(toIData(get(document, key.getKey(), key.getIndex())), keys);
+                } else {
+                    output = getAsArray(IDataUtil.getIData(cursor, key.getKey()), keys);
+                }
+            } else {
+                List<Object> list = new LinkedList<Object>();
+                if (key.hasArrayIndex()) {
+                    Object value = IDataUtil.get(cursor, key.getKey());
+                    if (value != null) {
+                        if (value instanceof Object[] || value instanceof Table) {
+                            Object[] array = value instanceof Object[] ? (Object[]) value : ((Table) value).getValues();
+                            value = ArrayHelper.get(array, key.getIndex());
+                        } else {
+                            value = null;
+                        }
+                    }
+                    list.add(value);
+                } else if (key.hasKeyIndex()) {
+                    list.add(get(document, key.getKey(), key.getIndex()));
+                } else {
+                    while(cursor.next(key.getKey())) {
+                        list.add(cursor.getValue());
+                    }
+                }
+                output = ArrayHelper.toArray(list);
+            }
+
+            cursor.destroy();
+        }
+
+        return output;
+    }
+
     /**
      * Sets the value associated with the given key in the given IData document. Note
      * that this method mutates the given IData document in place.
