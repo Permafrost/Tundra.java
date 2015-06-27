@@ -375,6 +375,66 @@ public class IDataHelper {
     }
 
     /**
+     * Removes all occurrences of the given key from the given IData document.
+     *
+     * @param document The IData document to remove the key from.
+     * @param key      The key to be removed.
+     */
+    public static IData dropAll(IData document, String key) {
+        if (document != null && key != null) {
+            IDataCursor cursor = document.getCursor();
+
+            if (cursor.next(key)) {
+                do {
+                    cursor.delete();
+                } while(cursor.next(key));
+            } else if (Key.isFullyQualified(key)) {
+                dropAll(document, Key.parse(key));
+            }
+
+            cursor.destroy();
+        }
+        return document;
+    }
+
+    /**
+     * Removes all occurrences of the given key from the given IData document.
+     *
+     * @param document An IData document.
+     * @param keys     A fully-qualified key identifying the values to
+     *                 be removed from the given IData document.
+     * @return         The given IData document.
+     */
+    private static IData dropAll(IData document, java.util.Queue<Key> keys) {
+        if (document != null && keys != null && keys.size() > 0) {
+            IDataCursor cursor = document.getCursor();
+            Key key = keys.remove();
+
+            if (keys.size() > 0) {
+                if (key.hasArrayIndex()) {
+                    dropAll(ArrayHelper.get(toIDataArray(IDataUtil.get(cursor, key.getKey())), key.getIndex()), keys);
+                } else if (key.hasKeyIndex()) {
+                    dropAll(toIData(get(document, key.getKey(), key.getIndex())), keys);
+                } else {
+                    dropAll(toIData(IDataUtil.get(cursor, key.getKey())), keys);
+                }
+            } else {
+                if (key.hasArrayIndex()) {
+                    IDataUtil.put(cursor, key.getKey(), ArrayHelper.drop(IDataUtil.getObjectArray(cursor, key.getKey()), key.getIndex()));
+                } else if (key.hasKeyIndex()) {
+                    drop(document, key.getKey(), key.getIndex());
+                } else {
+                    while (cursor.next(key.getKey())) {
+                        cursor.delete();
+                    }
+                }
+            }
+            cursor.destroy();
+        }
+        return document;
+    }
+
+    /**
      * Renames a key from source to target within the given IData document.
      *
      * @param document  An IData document.
