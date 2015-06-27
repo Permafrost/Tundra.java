@@ -260,6 +260,20 @@ public class IDataHelper {
     }
 
     /**
+     * Removes all occurrences of the given key from the given IData document, returning
+     * the associated values if there were any.
+     *
+     * @param document  The document to remove the key from.
+     * @param key       The key to remove.
+     * @return          The values that were associated with the given key.
+     */
+    public static Object[] removeAll(IData document, String key) {
+        Object[] value = getAsArray(document, key);
+        dropAll(document, key);
+        return value;
+    }
+
+    /**
      *  Returns a recursive clone of the given IData document.
      *
      *  @param document     An IData document to be duplicated.
@@ -359,6 +373,7 @@ public class IDataHelper {
 
     /**
      * Removes the element with the given nth key from the given IData document.
+     *
      * @param document The IData document to remove the key value pair from.
      * @param key      The key to be removed.
      * @param n        Determines which occurrence of the key to remove.
@@ -1103,8 +1118,7 @@ public class IDataHelper {
      * @param document     An IData document.
      * @param key          A simple or fully-qualified key identifying the value in the given
      *                     IData document to be returned.
-     * @return             Either the value associated with the given key in the given IData
-     *                     document.
+     * @return             The value associated with the given key in the given IData document.
      */
     public static Object get(IData document, String key) {
         if (document == null || key == null) return null;
@@ -1126,12 +1140,11 @@ public class IDataHelper {
     }
 
     /**
-     * Returns the value associated with the given fully-qualified key from the given IData
-     * document.
+     * Returns the value associated with the given fully-qualified key from the given IData document.
      *
      * @param document  An IData document.
      * @param keys      A fully-qualified key identifying the value in the given IData document to be returned.
-     * @return          Either the value associated with the given key in the given IData document.
+     * @return          The value associated with the given key in the given IData document.
      */
     private static Object get(IData document, java.util.Queue<Key> keys) {
         Object value = null;
