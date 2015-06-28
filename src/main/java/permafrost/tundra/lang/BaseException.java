@@ -59,7 +59,7 @@ public class BaseException extends ServiceException {
      */
     public BaseException(String message, Throwable cause) {
         super(message);
-        initCause(cause);
+        if (cause != null) initCause(cause);
     }
 
     /**
