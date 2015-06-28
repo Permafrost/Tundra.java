@@ -722,11 +722,15 @@ public class IDataHelper {
      *
      * @param document   An IData document.
      * @param key        The key whose associated value is to be converted to an array.
+     * @return           The given IData with the given key's value converted to an array.
      */
-    public static void arrayify(IData document, String key) {
-        Object[] value = getAsArray(document, key);
-        dropAll(document, key);
-        put(document, key, value);
+    public static IData arrayify(IData document, String key) {
+        if (exists(document, key)) {
+            Object[] value = getAsArray(document, key);
+            dropAll(document, key);
+            put(document, key, value);
+        }
+        return document;
     }
 
     /**
