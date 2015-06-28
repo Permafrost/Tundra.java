@@ -171,7 +171,7 @@ public class IDataHelper {
      */
     public static int size(IData document, String key) {
         int size = 0;
-        if (document != null) {
+        if (document != null && key != null) {
             IDataCursor cursor = document.getCursor();
 
             if (cursor.first(key)) {
