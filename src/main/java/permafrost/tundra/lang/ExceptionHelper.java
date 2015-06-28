@@ -90,7 +90,7 @@ public class ExceptionHelper {
      * @throws BaseException Always throws a new BaseException using the given message.
      */
     public static void raise(String message) throws BaseException {
-        throw new BaseException(message == null ? "" : message);
+        throw new BaseException(message);
     }
 
     /**
