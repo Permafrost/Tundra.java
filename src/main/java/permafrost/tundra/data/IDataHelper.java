@@ -247,6 +247,17 @@ public class IDataHelper {
     }
 
     /**
+     * Returns true if the given key exists in the given IData document.
+     *
+     * @param document  An IData document.
+     * @param key       The key to check the existence of.
+     * @return          True if the given key exists in the given IData document.
+     */
+    public static boolean exists(IData document, String key) {
+        return size(document, key) > 0;
+    }
+
+    /**
      * Removes the given key from the given IData document, returning the associated
      * value if one exists.
      *
