@@ -712,7 +712,7 @@ public class IDataHelper {
      * @param document   An IData document.
      * @param key        The key whose associated value is to be converted to an array.
      */
-    public static void listify(IData document, String key) {
+    public static void arrayify(IData document, String key) {
         Object[] value = getAsArray(document, key);
         dropAll(document, key);
         put(document, key, value);

@@ -806,7 +806,7 @@ public class IDataHelperTest {
     }
 
     @Test
-    public void testListify() throws Exception {
+    public void testArrayify() throws Exception {
         Object[] expected = new String[] {"2", "3", "4"};
 
         IData child = IDataFactory.create();
@@ -820,7 +820,7 @@ public class IDataHelperTest {
         IDataMap parent = new IDataMap();
         parent.put("a", child);
 
-        IDataHelper.listify(parent, "a/c");
+        IDataHelper.arrayify(parent, "a/c");
 
         assertArrayEquals(expected, (Object[])IDataHelper.get(parent, "a/c"));
     }
