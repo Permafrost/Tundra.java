@@ -153,6 +153,7 @@ public class ExceptionHelper {
      * @return A message describing all exceptions in the given list.
      */
     public static Collection<String> getMessages(Collection<Throwable> exceptions) {
+        if (exceptions == null) return null;
         return Arrays.asList(getMessages(exceptions.toArray(new Throwable[exceptions.size()])));
     }
 
