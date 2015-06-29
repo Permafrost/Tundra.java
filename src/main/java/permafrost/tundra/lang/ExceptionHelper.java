@@ -56,7 +56,7 @@ public class ExceptionHelper {
      * @param causes The list of exceptions which caused this new BaseException to be thrown.
      * @throws BaseException Always throws a new BaseException using the given list of causes.
      */
-    public static void raise(java.util.Collection<Throwable> causes) throws BaseException {
+    public static void raise(Collection<Throwable> causes) throws BaseException {
         raise(getMessage(causes == null ? null : causes.toArray(new Throwable[causes.size()])));
     }
 
@@ -132,7 +132,7 @@ public class ExceptionHelper {
      * @param exceptions A list of exceptions whose messages are to be retrieved.
      * @return A message describing all exceptions in the given list.
      */
-    public static String getMessage(java.util.Collection<Throwable> exceptions) {
+    public static String getMessage(Collection<Throwable> exceptions) {
         if (exceptions == null) return "";
         return getMessage(exceptions.toArray(new Throwable[exceptions.size()]));
     }
