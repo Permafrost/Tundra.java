@@ -133,6 +133,7 @@ public class ExceptionHelper {
      * @return A message describing all exceptions in the given list.
      */
     public static String getMessage(java.util.Collection<Throwable> exceptions) {
+        if (exceptions == null) return "";
         return getMessage(exceptions.toArray(new Throwable[exceptions.size()]));
     }
 
