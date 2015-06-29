@@ -38,6 +38,7 @@ public class ExceptionHelper {
      * Disallow instantiation of this class.
      */
     private ExceptionHelper() {}
+    
     /**
      * Throws a new BaseException whose message is constructed from the given
      * list of causes.
@@ -61,7 +62,7 @@ public class ExceptionHelper {
     }
 
     /**
-     * Throws a new Exception whose message is constructed from the given
+     * Throws a new BaseException whose message is constructed from the given
      * cause.
      *
      * @param message A message describing why this new BaseException was thrown.
@@ -74,13 +75,21 @@ public class ExceptionHelper {
 
     /**
      * Throws a new BaseException whose message is constructed from the given
-     * cause.
+     * cause, unless the cause is already a BaseException in which case it is
+     * rethrown without modification.
      *
-     * @param cause The exception which caused this new BaseException to be thrown.
-     * @throws BaseException Always throws a new BaseException using the given cause.
+     * @param cause          The exception which caused this new BaseException to
+     *                       be thrown.
+     * @throws BaseException The given Throwable if it is already a BaseException,
+     *                       otherwise a new BaseException constructed with the
+     *                       given Throwable as its cause.
      */
     public static void raise(Throwable cause) throws BaseException {
-        throw new BaseException(cause);
+        if (cause instanceof BaseException) {
+            throw (BaseException)cause;
+        } else {
+            throw new BaseException(cause);
+        }
     }
 
     /**
