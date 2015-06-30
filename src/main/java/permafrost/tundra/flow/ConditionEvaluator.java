@@ -54,7 +54,6 @@ public class ConditionEvaluator {
      * @param condition The conditional statement to be evaluated.
      */
     public ConditionEvaluator(String condition) {
-        if (condition == null) throw new IllegalArgumentException("condition must not be null");
         this.condition = condition;
     }
 
