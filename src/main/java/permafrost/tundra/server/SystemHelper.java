@@ -27,6 +27,7 @@ package permafrost.tundra.server;
 import com.wm.app.b2b.server.Build;
 import com.wm.app.b2b.server.Resources;
 import com.wm.app.b2b.server.Server;
+import com.wm.data.IData;
 import permafrost.tundra.data.IDataMap;
 import permafrost.tundra.io.FileHelper;
 
@@ -49,7 +50,7 @@ public class SystemHelper {
      *
      * @return Integration Server properties.
      */
-    public static IDataMap getIntegrationServerProperties() {
+    public static IData getIntegrationServerProperties() {
         IDataMap output = new IDataMap();
         output.put("version", Build.getVersion());
         output.put("environment", getSystemEnvironment());
@@ -64,7 +65,7 @@ public class SystemHelper {
      * Returns the current system environment variables.
      * @return The current system environment variables.
      */
-    public static IDataMap getSystemEnvironment() {
+    public static IData getSystemEnvironment() {
         return new IDataMap(new TreeMap(System.getenv()));
     }
 
@@ -72,7 +73,7 @@ public class SystemHelper {
      * Returns the current system properties.
      * @return The current system properties.
      */
-    public static IDataMap getSystemProperties() {
+    public static IData getSystemProperties() {
         Properties properties = System.getProperties();
 
         String mailFrom = properties.getProperty("mail.from");
@@ -92,7 +93,7 @@ public class SystemHelper {
      * Returns the locations of well-known Integration Server directories.
      * @return The locations of well-known Integration Server directories.
      */
-    public static IDataMap getSystemDirectories() {
+    public static IData getSystemDirectories() {
         Resources resources = Server.getResources();
 
         IDataMap output = new IDataMap();
@@ -116,7 +117,7 @@ public class SystemHelper {
      * Returns the Java heap memory usage for the currently executing JVM process.
      * @return The Java heap memory usage for the currently executing JVM process.
      */
-    public static IDataMap getMemoryUsage() {
+    public static IData getMemoryUsage() {
         Runtime runtime = Runtime.getRuntime();
 
         long freeMemory = runtime.freeMemory();
