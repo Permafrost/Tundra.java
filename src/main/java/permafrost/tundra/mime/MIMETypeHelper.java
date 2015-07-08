@@ -24,12 +24,12 @@
 
 package permafrost.tundra.mime;
 
+import com.wm.app.b2b.server.ServiceException;
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataUtil;
 import permafrost.tundra.data.IDataHelper;
 import permafrost.tundra.data.IDataMap;
-import permafrost.tundra.lang.BaseException;
 import permafrost.tundra.lang.ExceptionHelper;
 
 import javax.activation.MimeType;
@@ -131,12 +131,12 @@ public class MIMETypeHelper {
      * Returns true if the given string is a valid MIME type, optionally throwing an
      * exception if the string is invalid.
      *
-     * @param string    The string to validate.
-     * @param raise     Whether an exception should be thrown if the string is an invalid MIME type.
-     * @return          True if the string is a well-formed MIME type.
-     * @throws BaseException If raise is true and the given string is an invalid MIME type.
+     * @param string            The string to validate.
+     * @param raise             Whether an exception should be thrown if the string is an invalid MIME type.
+     * @return                  True if the string is a well-formed MIME type.
+     * @throws ServiceException If raise is true and the given string is an invalid MIME type.
      */
-    public static boolean validate(String string, boolean raise) throws BaseException {
+    public static boolean validate(String string, boolean raise) throws ServiceException {
         boolean valid = false;
         if (string != null) {
             try {
@@ -159,7 +159,7 @@ public class MIMETypeHelper {
         boolean result = false;
         try {
             result = validate(string, false);
-        } catch(BaseException ex) {
+        } catch(ServiceException ex) {
             // ignore as this exception will never be thrown
         }
         return result;

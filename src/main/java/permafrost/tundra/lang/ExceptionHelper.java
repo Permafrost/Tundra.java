@@ -24,6 +24,7 @@
 
 package permafrost.tundra.lang;
 
+import com.wm.app.b2b.server.ServiceException;
 import com.wm.data.IData;
 import org.xml.sax.SAXParseException;
 
@@ -31,7 +32,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 /**
- * A collection of convenience methods for working with exceptions.
+ * A collection of convenience methods for working with Integration Server service exceptions.
  */
 public class ExceptionHelper {
     /**
@@ -40,74 +41,74 @@ public class ExceptionHelper {
     private ExceptionHelper() {}
     
     /**
-     * Throws a new BaseException whose message is constructed from the given
+     * Throws a new ServiceException whose message is constructed from the given
      * list of causes.
      *
-     * @param causes The list of exceptions which caused this new BaseException to be thrown.
-     * @throws BaseException Always throws a new BaseException using the given list of causes.
+     * @param causes            The list of exceptions which caused this new ServiceException to be thrown.
+     * @throws ServiceException Always throws a new ServiceException using the given list of causes.
      */
-    public static void raise(Throwable ... causes) throws BaseException {
+    public static void raise(Throwable ... causes) throws ServiceException {
         raise(getMessage(causes));
     }
 
     /**
-     * Throws a new BaseException whose message is constructed from the given
+     * Throws a new ServiceException whose message is constructed from the given
      * list of causes.
      *
-     * @param causes The list of exceptions which caused this new BaseException to be thrown.
-     * @throws BaseException Always throws a new BaseException using the given list of causes.
+     * @param causes            The list of exceptions which caused this new ServiceException to be thrown.
+     * @throws ServiceException Always throws a new ServiceException using the given list of causes.
      */
-    public static void raise(Collection<Throwable> causes) throws BaseException {
+    public static void raise(Collection<Throwable> causes) throws ServiceException {
         raise(getMessage(causes == null ? null : causes.toArray(new Throwable[causes.size()])));
     }
 
     /**
-     * Throws a new BaseException whose message is constructed from the given
+     * Throws a new ServiceException whose message is constructed from the given
      * cause.
      *
-     * @param message A message describing why this new BaseException was thrown.
-     * @param cause The exception which caused this new BaseException to be thrown.
-     * @throws BaseException Always throws a new BaseException using the given message and cause.
+     * @param message           A message describing why this new ServiceException was thrown.
+     * @param cause             The exception which caused this new ServiceException to be thrown.
+     * @throws ServiceException Always throws a new ServiceException using the given message and cause.
      */
-    public static void raise(String message, Throwable cause) throws BaseException {
+    public static void raise(String message, Throwable cause) throws ServiceException {
         throw new BaseException(message, cause);
     }
 
     /**
-     * Throws a new BaseException whose message is constructed from the given
-     * cause, unless the cause is already a BaseException in which case it is
+     * Throws a new ServiceException whose message is constructed from the given
+     * cause, unless the cause is already a ServiceException in which case it is
      * rethrown without modification.
      *
-     * @param cause          The exception which caused this new BaseException to
-     *                       be thrown.
-     * @throws BaseException The given Throwable if it is already a BaseException,
-     *                       otherwise a new BaseException constructed with the
-     *                       given Throwable as its cause.
+     * @param cause             The exception which caused this new ServiceException to
+     *                          be thrown.
+     * @throws ServiceException The given Throwable if it is already a ServiceException,
+     *                          otherwise a new ServiceException constructed with the
+     *                          given Throwable as its cause.
      */
-    public static void raise(Throwable cause) throws BaseException {
-        if (cause instanceof BaseException) {
-            throw (BaseException)cause;
+    public static void raise(Throwable cause) throws ServiceException {
+        if (cause instanceof ServiceException) {
+            throw (ServiceException)cause;
         } else {
             throw new BaseException(cause);
         }
     }
 
     /**
-     * Throws a new BaseException with the given message.
+     * Throws a new ServiceException with the given message.
      *
-     * @param message A message describing why this new BaseException was thrown.
-     * @throws BaseException Always throws a new BaseException using the given message.
+     * @param message           A message describing why this new ServiceException was thrown.
+     * @throws ServiceException Always throws a new ServiceException using the given message.
      */
-    public static void raise(String message) throws BaseException {
+    public static void raise(String message) throws ServiceException {
         throw new BaseException(message);
     }
 
     /**
-     * Throws a new BaseException.
+     * Throws a new ServiceException with an empty message.
      *
-     * @throws BaseException Always throws a new BaseException.
+     * @throws ServiceException Always throws a new ServiceException.
      */
-    public static void raise() throws BaseException {
+    public static void raise() throws ServiceException {
         throw new BaseException();
     }
 
@@ -115,7 +116,7 @@ public class ExceptionHelper {
      * Returns a message describing the given exception.
      *
      * @param exception An exception whose message is to be retrieved.
-     * @return A message describing the given exception.
+     * @return          A message describing the given exception.
      */
     public static String getMessage(Throwable exception) {
         if (exception == null) return "";
@@ -139,7 +140,7 @@ public class ExceptionHelper {
      * Returns a message describing the given list of exceptions.
      *
      * @param exceptions A list of exceptions whose messages are to be retrieved.
-     * @return A message describing all exceptions in the given list.
+     * @return           A message describing all exceptions in the given list.
      */
     public static String getMessage(Collection<Throwable> exceptions) {
         if (exceptions == null) return "";
@@ -150,7 +151,7 @@ public class ExceptionHelper {
      * Returns a message describing the given list of exceptions.
      *
      * @param exceptions A list of exceptions whose messages are to be retrieved.
-     * @return A message describing all exceptions in the given list.
+     * @return           A message describing all exceptions in the given list.
      */
     public static String getMessage(Throwable ... exceptions) {
         return ArrayHelper.join(getMessages(exceptions), "\n");
@@ -160,7 +161,7 @@ public class ExceptionHelper {
      * Returns a message describing the given list of exceptions.
      *
      * @param exceptions A list of exceptions whose messages are to be retrieved.
-     * @return A message describing all exceptions in the given list.
+     * @return           A message describing all exceptions in the given list.
      */
     public static Collection<String> getMessages(Collection<Throwable> exceptions) {
         if (exceptions == null) return null;
@@ -171,7 +172,7 @@ public class ExceptionHelper {
      * Returns a message describing the given list of exceptions.
      *
      * @param exceptions A list of exceptions whose messages are to be retrieved.
-     * @return A message describing all exceptions in the given list.
+     * @return           A message describing all exceptions in the given list.
      */
     public static String[] getMessages(Throwable ... exceptions) {
         if (exceptions == null) return null;
@@ -190,7 +191,7 @@ public class ExceptionHelper {
      * Returns the call stack associated with the given exception as an IData[] document list.
      *
      * @param exception An exception to retrieve the call stack from.
-     * @return The call stack associated with the given exception as an IData[] document list.
+     * @return          The call stack associated with the given exception as an IData[] document list.
      */
     public static IData[] getStackTrace(Throwable exception) {
         if (exception == null) return null;

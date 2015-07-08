@@ -24,10 +24,10 @@
 
 package permafrost.tundra.server;
 
+import com.wm.app.b2b.server.ServiceException;
 import com.wm.data.IData;
 import com.wm.util.coder.IDataCodable;
 import permafrost.tundra.data.IDataMap;
-import permafrost.tundra.lang.BaseException;
 import permafrost.tundra.lang.ExceptionHelper;
 
 import java.net.InetAddress;
@@ -46,9 +46,9 @@ public class NameHelper {
      * @param name              The domain name or internet address to be resolved.
      * @return                  An IData representation of the resolved address,
      *                          containing the following keys: $domain, $host, $ip.
-     * @throws BaseException    If the address could not be resolved.
+     * @throws ServiceException If the address could not be resolved.
      */
-    public static IData resolve(String name) throws BaseException {
+    public static IData resolve(String name) throws ServiceException {
         IData output = null;
         try {
             output = InternetAddress.resolve(name).getIData();
@@ -63,9 +63,9 @@ public class NameHelper {
      * and address.
      * @return                  An IData representation of the localhost address,
      *                          containing the following keys: $domain, $host, $ip.
-     * @throws BaseException    If the localhost address could not be resolved.
+     * @throws ServiceException If the localhost address could not be resolved.
      */
-    public static IData localhost() throws BaseException {
+    public static IData localhost() throws ServiceException {
         IData output = null;
         try {
             output = InternetAddress.localhost().getIData();

@@ -26,13 +26,13 @@ package permafrost.tundra.server;
 
 import com.wm.app.b2b.server.ServerAPI;
 import com.wm.app.b2b.server.Service;
+import com.wm.app.b2b.server.ServiceException;
 import com.wm.app.b2b.server.ServiceSetupException;
 import com.wm.data.IData;
 import com.wm.lang.ns.NSName;
 import com.wm.lang.ns.NSServiceType;
 import com.wm.net.HttpHeader;
 import permafrost.tundra.data.IDataMap;
-import permafrost.tundra.lang.BaseException;
 import permafrost.tundra.lang.BytesHelper;
 import permafrost.tundra.lang.ExceptionHelper;
 import permafrost.tundra.lang.StringHelper;
@@ -63,9 +63,9 @@ public class ServiceHelper {
      * @param serviceName       The fully-qualified name of the service to be created.
      * @param type              The type of service to be created.
      * @param subtype           The subtype of service to be created.
-     * @throws BaseException    If an error creating the service occurs.
+     * @throws ServiceException If an error creating the service occurs.
      */
-    private static void create(String packageName, String serviceName, String type, String subtype) throws BaseException {
+    private static void create(String packageName, String serviceName, String type, String subtype) throws ServiceException {
         if (!PackageHelper.exists(packageName)) throw new IllegalArgumentException("package does not exist: " + packageName);
         if (NodeHelper.exists(serviceName)) throw new IllegalArgumentException("node already exists: " + serviceName);
 
@@ -87,9 +87,9 @@ public class ServiceHelper {
      *
      * @param packageName       The name of the package to create the service in.
      * @param serviceName       The fully-qualified name of the service to be created.
-     * @throws BaseException    If an error creating the service occurs.
+     * @throws ServiceException If an error creating the service occurs.
      */
-    public static void create(String packageName, String serviceName) throws BaseException {
+    public static void create(String packageName, String serviceName) throws ServiceException {
         create(packageName, serviceName, null, null);
     }
 
@@ -104,9 +104,9 @@ public class ServiceHelper {
      * @param content           The HTTP response body to be returned.
      * @param contentType       The MIME content type of the response body being returned.
      * @param charset           The character set used if a text response is being returned.
-     * @throws BaseException    If an I/O error occurs.
+     * @throws ServiceException If an I/O error occurs.
      */
-    public static void respond(int code, String message, IData headers, InputStream content, String contentType, Charset charset) throws BaseException {
+    public static void respond(int code, String message, IData headers, InputStream content, String contentType, Charset charset) throws ServiceException {
         try {
             HttpHeader response = Service.getHttpResponseHeader();
 
@@ -129,9 +129,9 @@ public class ServiceHelper {
      *
      * @param response          The HTTP response to set the response body in.
      * @param content           The content to set the response body to.
-     * @throws BaseException    If an I/O error occurs.
+     * @throws ServiceException If an I/O error occurs.
      */
-    private static void setResponseBody(HttpHeader response, InputStream content) throws BaseException {
+    private static void setResponseBody(HttpHeader response, InputStream content) throws ServiceException {
         if (response == null) return;
 
         try {
@@ -162,9 +162,9 @@ public class ServiceHelper {
      * @param response          The HTTP response to set the header in.
      * @param contentType       The MIME content type.
      * @param charset           The character set used by the content, or null if not applicable.
-     * @throws BaseException    If the MIME content type is malformed.
+     * @throws ServiceException If the MIME content type is malformed.
      */
-    private static void setContentType(HttpHeader response, String contentType, Charset charset) throws BaseException {
+    private static void setContentType(HttpHeader response, String contentType, Charset charset) throws ServiceException {
         if (contentType == null) contentType = MIMETypeHelper.DEFAULT_MIME_TYPE;
 
         try {

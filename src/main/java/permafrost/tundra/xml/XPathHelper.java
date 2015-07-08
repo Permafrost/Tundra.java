@@ -24,12 +24,12 @@
 
 package permafrost.tundra.xml;
 
+import com.wm.app.b2b.server.ServiceException;
 import com.wm.data.IData;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import permafrost.tundra.io.StreamHelper;
-import permafrost.tundra.lang.BaseException;
 import permafrost.tundra.lang.ExceptionHelper;
 import permafrost.tundra.xml.namespace.IDataNamespaceContext;
 
@@ -59,10 +59,9 @@ public class XPathHelper {
      * @param expression        The XPath expression to query against the give content.
      * @param namespaceContext  Any namespace declarations required to query the given content.
      * @return                  True if the given XPath expression is found in the given XML content.
-     * @throws BaseException    If a parsing error occurs.
-     * @throws IOException      If an I/O error occurs.
+     * @throws ServiceException If a parsing error occurs.
      */
-    public static boolean exists(InputStream content, String expression, IData namespaceContext) throws BaseException, IOException {
+    public static boolean exists(InputStream content, String expression, IData namespaceContext) throws ServiceException {
         return exists(content, expression, new IDataNamespaceContext(namespaceContext));
     }
 
@@ -72,10 +71,9 @@ public class XPathHelper {
      * @param expression        The XPath expression to query against the give content.
      * @param namespaceContext  Any namespace declarations required to query the given content.
      * @return                  True if the given XPath expression is found in the given XML content.
-     * @throws BaseException    If a parsing error occurs.
-     * @throws IOException      If an I/O error occurs.
+     * @throws ServiceException If a parsing error occurs.
      */
-    public static boolean exists(InputStream content, String expression, NamespaceContext namespaceContext) throws BaseException, IOException {
+    public static boolean exists(InputStream content, String expression, NamespaceContext namespaceContext) throws ServiceException {
         boolean result = false;
 
         try {
@@ -93,10 +91,9 @@ public class XPathHelper {
      * @param expression        The XPath expression to query against the give content.
      * @param namespaceContext  Any namespace declarations required to query the given content.
      * @return                  True if the given XPath expression is found in the given XML content.
-     * @throws BaseException    If a parsing error occurs.
-     * @throws IOException      If an I/O error occurs.
+     * @throws ServiceException If a parsing error occurs.
      */
-    public static boolean exists(InputSource content, String expression, NamespaceContext namespaceContext) throws BaseException, IOException {
+    public static boolean exists(InputSource content, String expression, NamespaceContext namespaceContext) throws ServiceException {
         boolean result = false;
 
         try {
@@ -107,6 +104,8 @@ public class XPathHelper {
         } catch(ParserConfigurationException ex) {
             ExceptionHelper.raise(ex);
         } catch(SAXException ex) {
+            ExceptionHelper.raise(ex);
+        } catch(IOException ex) {
             ExceptionHelper.raise(ex);
         }
 
@@ -119,9 +118,9 @@ public class XPathHelper {
      * @param expression        The XPath expression to query against the give content.
      * @param namespaceContext  Any namespace declarations required to query the given content.
      * @return                  True if the given XPath expression is found in the given XML content.
-     * @throws BaseException    If a parsing error occurs.
+     * @throws ServiceException If a parsing error occurs.
      */
-    public static boolean exists(Document content, String expression, NamespaceContext namespaceContext) throws BaseException {
+    public static boolean exists(Document content, String expression, NamespaceContext namespaceContext) throws ServiceException {
         boolean result = false;
 
         try {
