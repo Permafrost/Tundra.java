@@ -29,6 +29,7 @@ import javax.xml.datatype.Duration;
 import javax.xml.datatype.DatatypeConfigurationException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -83,13 +84,34 @@ public class DurationHelper {
     }
 
     /**
-     * Formats a duration string to the desired pattern.
+     * Formats a duration in milliseconds to the desired pattern.
      * @param milliseconds    The duration to be formatted, specified as milliseconds.
      * @param pattern         The pattern the duration will be reformatted to.
-     * @return                The duration string reformatted according to the outPattern.
+     * @return                The duration reformatted according to the given pattern.
      */
     public static String format(long milliseconds, DurationPattern pattern) {
         return emit(parse(milliseconds), pattern);
+    }
+
+    /**
+     * Formats a duration in fractional seconds to the desired pattern.
+     * @param seconds    The duration to be formatted, specified as fractional seconds.
+     * @param pattern    The pattern the duration will be reformatted to.
+     * @return           The duration reformatted according to the given pattern.
+     */
+    public static String format(double seconds, DurationPattern pattern) {
+        return emit(parse(seconds), pattern);
+    }
+
+    /**
+     * Formats a duration in fractional seconds to the desired pattern.
+     * @param seconds    The duration to be formatted, specified as fractional seconds.
+     * @param precision  The number of decimal places to be respected in the given fraction.
+     * @param pattern    The pattern the duration will be reformatted to.
+     * @return           The duration reformatted according to the given pattern.
+     */
+    public static String format(double seconds, int precision, DurationPattern pattern) {
+        return emit(parse(seconds, precision), pattern);
     }
 
     /**
@@ -271,6 +293,25 @@ public class DurationHelper {
      */
     public static Duration parse(long milliseconds) {
         return DATATYPE_FACTORY.newDuration(milliseconds);
+    }
+
+    /**
+     * Returns a new Duration given a duration in fractional seconds.
+     * @param seconds  The duration in fractional seconds.
+     * @return         A Duration object representing the duration in fractional seconds.
+     */
+    public static Duration parse(double seconds) {
+        return DATATYPE_FACTORY.newDuration(seconds >= 0.0, null, null, null, null, null, new BigDecimal(seconds).abs());
+    }
+
+    /**
+     * Returns a new Duration given a duration in fractional seconds.
+     * @param seconds   The duration in fractional seconds.
+     * @param precision The number of decimal places to respect int the given fraction.
+     * @return          A Duration object representing the duration in fractional seconds.
+     */
+    public static Duration parse(double seconds, int precision) {
+        return DATATYPE_FACTORY.newDuration(seconds >= 0.0, null, null, null, null, null, (new BigDecimal(seconds)).abs().setScale(precision, RoundingMode.HALF_UP));
     }
 
     /**
