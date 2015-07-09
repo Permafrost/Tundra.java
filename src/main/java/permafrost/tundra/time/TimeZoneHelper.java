@@ -24,8 +24,12 @@
 
 package permafrost.tundra.time;
 
+import com.wm.data.IData;
+import permafrost.tundra.data.IDataMap;
+
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.SortedSet;
 import java.util.TimeZone;
 import java.util.TreeSet;
@@ -223,5 +227,79 @@ public class TimeZoneHelper {
         output.setTimeInMillis(instant);
 
         return output;
+    }
+
+    /**
+     * Returns an IData representation of the given TimeZone object, using the given
+     * datetime to resolve whether daylight savings is active.
+     *
+     * @param timezone  The TimeZone object to be converted to an IData representation.
+     * @param instant   The datetime used to resolve the status of daylight savings.
+     * @return          An IData representation of the given TimeZone object.
+     */
+    public static IData toIData(TimeZone timezone, Calendar instant) {
+        if (timezone == null) return null;
+        if (instant == null) instant = Calendar.getInstance();
+
+        Date dateInstant = instant.getTime();
+        IDataMap output = new IDataMap();
+
+        boolean dstActive = timezone.inDaylightTime(dateInstant);
+
+        output.put("id", timezone.getID());
+        output.put("name", timezone.getDisplayName(dstActive, TimeZone.SHORT));
+        output.put("description", timezone.getDisplayName(dstActive, TimeZone.LONG));
+        output.put("utc.offset", DurationHelper.format(timezone.getOffset(dateInstant.getTime()), DurationPattern.XML));
+        output.put("dst.used?", "" + timezone.useDaylightTime());
+        output.put("dst.active?", "" + dstActive);
+        output.put("dst.offset", DurationHelper.format(timezone.getDSTSavings(), DurationPattern.XML));
+
+        return output;
+    }
+
+    /**
+     * Returns an IData representation of the given TimeZone object, using the given
+     * datetime string to resolve whether daylight savings is active.
+     *
+     * @param timezone  The TimeZone object to be converted to an IData representation.
+     * @param datetime  The datetime string used to resolve the status of daylight savings.
+     * @param pattern   The pattern to use to parse the given datetime string.
+     * @return          An IData representation of the given TimeZone object.
+     */
+    public static IData toIData(TimeZone timezone, String datetime, String pattern) {
+        return toIData(timezone, DateTimeHelper.parse(datetime, pattern));
+    }
+
+    /**
+     * Returns an IData representation of the given TimeZone objects, using the given
+     * datetime to resolve whether daylight savings is active.
+     *
+     * @param timezones A list of TimeZone objects to be converted to an IData representation.
+     * @param instant   The datetime used to resolve the status of daylight savings.
+     * @return          An IData[] representation of the given TimeZone objects.
+     */
+    public static IData[] toIDataArray(TimeZone[] timezones, Calendar instant) {
+        if (timezones == null) return null;
+
+        IData[] output = new IData[timezones.length];
+
+        for (int i = 0; i < timezones.length; i++) {
+            output[i] = toIData(timezones[i], instant);
+        }
+
+        return output;
+    }
+
+    /**
+     * Returns an IData representation of the given TimeZone objects, using the given
+     * datetime string to resolve whether daylight savings is active.
+     *
+     * @param timezones A list of TimeZone objects to be converted to an IData representation.
+     * @param datetime  The datetime string used to resolve the status of daylight savings.
+     * @param pattern   The pattern to use to parse the given datetime string.
+     * @return          An IData[] representation of the given TimeZone objects.
+     */
+    public static IData[] toIDataArray(TimeZone[] timezones, String datetime, String pattern) {
+        return toIDataArray(timezones, DateTimeHelper.parse(datetime, pattern));
     }
 }
