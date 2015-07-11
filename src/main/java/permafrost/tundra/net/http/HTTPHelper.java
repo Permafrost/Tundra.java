@@ -111,7 +111,7 @@ public class HTTPHelper {
      */
     public static String getResponseStatusMessage(int code) {
         String message = RESPONSE_STATUSES.get(code);
-        if (message == null) message = "Unassigned";
+        if (message == null) message = DEFAULT_RESPONSE_MESSAGE;
         return message;
     }
 }
