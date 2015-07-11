@@ -76,18 +76,20 @@ public class ExceptionHelper {
 
     /**
      * Throws a new ServiceException whose message is constructed from the given
-     * cause, unless the cause is already a ServiceException in which case it is
-     * rethrown without modification.
+     * cause, unless the cause is already a ServiceException or is an unchecked
+     * exception, in which case it is rethrown without modification.
      *
      * @param cause             The exception which caused this new ServiceException to
      *                          be thrown.
-     * @throws ServiceException The given Throwable if it is already a ServiceException,
-     *                          otherwise a new ServiceException constructed with the
-     *                          given Throwable as its cause.
+     * @throws ServiceException The given Throwable if it is already a ServiceException
+     *                          or an unchecked exception, otherwise a new ServiceException
+     *                          constructed with the given Throwable as its cause.
      */
     public static void raise(Throwable cause) throws ServiceException {
         if (cause instanceof ServiceException) {
-            throw (ServiceException)cause;
+            throw (ServiceException) cause;
+        } else if (cause instanceof RuntimeException) {
+            throw (RuntimeException) cause;
         } else {
             throw new BaseException(cause);
         }

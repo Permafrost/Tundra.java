@@ -44,7 +44,7 @@ public class ExceptionHelperTest {
 
     @Test(expected = BaseException.class)
     public void testRaiseWithCause() throws Exception {
-        ExceptionHelper.raise(new IllegalArgumentException("test"));
+        ExceptionHelper.raise(new Exception("test"));
     }
 
     @Test(expected = BaseException.class)
@@ -52,7 +52,7 @@ public class ExceptionHelperTest {
         Throwable[] throwables = new Throwable[2];
 
         for (int i = 0; i < throwables.length; i++) {
-            throwables[i] = new IllegalArgumentException("test:" + i);
+            throwables[i] = new Exception("test:" + i);
         }
 
         ExceptionHelper.raise(throwables);
@@ -63,7 +63,7 @@ public class ExceptionHelperTest {
         List<Throwable> throwables = new ArrayList<Throwable>(2);
 
         for (int i = 0; i < 2; i++) {
-            throwables.add(new IllegalArgumentException("test:" + i));
+            throwables.add(new Exception("test:" + i));
         }
 
         ExceptionHelper.raise(throwables);
