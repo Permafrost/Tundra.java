@@ -99,7 +99,7 @@ public class HTTPRouteTable extends TreeMap<String, HTTPRouteList> {
         files.add(new File(ServerAPI.getServerConfigDir(), CONFIGURATION_FILE_NAME));
 
         String[] packageNames = ServerAPI.getEnabledPackages();
-        Arrays.sort(packageNames); // make sure list is in a predicatable order
+        Arrays.sort(packageNames); // make sure list is in a predictable order
         for (String packageName : packageNames) {
             files.add(new File(ServerAPI.getPackageConfigDir(packageName), CONFIGURATION_FILE_NAME));
         }
