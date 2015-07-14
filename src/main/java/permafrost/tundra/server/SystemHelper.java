@@ -31,6 +31,7 @@ import com.wm.data.IData;
 import permafrost.tundra.data.IDataMap;
 import permafrost.tundra.io.FileHelper;
 
+import java.util.Hashtable;
 import java.util.Properties;
 import java.util.TreeMap;
 
@@ -73,20 +74,19 @@ public class SystemHelper {
      * Returns the current system properties.
      * @return The current system properties.
      */
+    @SuppressWarnings("unchecked")
     public static IData getSystemProperties() {
         Properties properties = System.getProperties();
+        if (properties == null) properties = new Properties();
 
         String mailFrom = properties.getProperty("mail.from");
         if (mailFrom == null || mailFrom.equals("")) {
-            String domain = "unknown";
-            try {
-                java.net.InetAddress address = java.net.InetAddress.getLocalHost();
-                domain = address.getCanonicalHostName().toLowerCase();
-            } catch (java.net.UnknownHostException ex) { }
-            properties.setProperty("mail.from", "Integration-Server@" + domain);
+            properties.setProperty("mail.from", getDefaultFromEmailAddress());
         }
 
-        return new IDataMap(new TreeMap(properties));
+        // protect against concurrent modification exceptions by cloning the hashtable
+        // and sort keys in natural ascending order via a TreeMap
+        return new IDataMap(new TreeMap((Hashtable)properties.clone()));
     }
 
     /**
@@ -130,5 +130,18 @@ public class SystemHelper {
         output.put("total", "" + totalMemory);
 
         return output;
+    }
+
+    /**
+     * Returns the default from email address of this Integration Server.
+     * @return the default from email address of this Integration Server.
+     */
+    private static String getDefaultFromEmailAddress() {
+        String domain = "unknown";
+        try {
+            java.net.InetAddress address = java.net.InetAddress.getLocalHost();
+            domain = address.getCanonicalHostName().toLowerCase();
+        } catch (java.net.UnknownHostException ex) { }
+        return "Integration-Server@" + domain;
     }
 }
