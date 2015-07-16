@@ -32,11 +32,11 @@ are required to be included on the project's classpath:
 * `xmlsec-1.5.8.jar` - http://santuario.apache.org
 
 [JUnit] 4 is required for the unit tests in the project. The
-following [JAR] libraries are required to be included on the test
+following libraries are required to be included on the test
 classpath:
 
-* `junit.jar` - http://search.maven.org/#search|gav|1|g:"junit" AND a:"junit"
-* `hamecrest-core.jar` - http://search.maven.org/#search|gav|1|g:"org.hamcrest" AND a:"hamcrest-core"
+* `junit.jar`
+* `hamcrest-core.jar`
 
 ## Contributions
 
