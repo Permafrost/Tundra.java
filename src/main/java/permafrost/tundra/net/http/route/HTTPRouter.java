@@ -123,14 +123,12 @@ public class HTTPRouter implements HTTPHandler {
     /**
      * Reloads the HTTP routing table from the package HTTP route configuration files.
      */
-    public void refresh() {
-        synchronized(this) {
-            HTTPRouteTable newRoutes = HTTPRouteTable.newInstance();
-            HTTPRouteTable oldRoutes = routes;
+    public synchronized void refresh() {
+        HTTPRouteTable newRoutes = HTTPRouteTable.newInstance();
+        HTTPRouteTable oldRoutes = routes;
 
-            routes = newRoutes;
-            refreshDirectives(oldRoutes.getDirectives(), newRoutes.getDirectives());
-        }
+        routes = newRoutes;
+        refreshDirectives(oldRoutes.getDirectives(), newRoutes.getDirectives());
     }
 
     /**
@@ -189,11 +187,9 @@ public class HTTPRouter implements HTTPHandler {
      * Unregisters this object as the handler of all directives in the current route table from the Integration Server
      * dispatcher, and then clears the route table.
      */
-    public void clear() {
-        synchronized(this) {
-            unregister(routes.getDirectives());
-            routes = new HTTPRouteTable();
-        }
+    public synchronized void clear() {
+        unregister(routes.getDirectives());
+        routes = new HTTPRouteTable();
     }
 
     /**
