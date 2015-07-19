@@ -688,7 +688,9 @@ public class DurationHelper {
 
         if (durations != null) {
             for (int i = 0; i < durations.length; i++) {
-                if (durations[i] != null) result.add(durations[i]);
+                if (durations[i] != null) {
+                    result = result.add(durations[i]);
+                }
             }
         }
 
