@@ -24,6 +24,7 @@
 
 package permafrost.tundra.time;
 
+import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.Duration;
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -277,13 +278,7 @@ public class DurationHelper {
      * @return                The duration strings reformatted according to the outPattern.
      */
     public static String[] format(String[] durations, DurationPattern inPattern, DurationPattern outPattern, Date instant) {
-        if (durations == null) return null;
-
-        String[] results = new String[durations.length];
-        for (int i = 0; i < durations.length; i++) {
-            results[i] = format(durations[i], inPattern, outPattern, instant);
-        }
-        return results;
+        return emit(parse(durations, inPattern), outPattern, instant);
     }
 
     /**
@@ -321,7 +316,7 @@ public class DurationHelper {
      *                 given duration string.
      */
     public static Duration parse(String input) {
-        return parse(input, (DurationPattern)null);
+        return parse(input, (DurationPattern) null);
     }
 
     /**
@@ -395,12 +390,52 @@ public class DurationHelper {
     }
 
     /**
+     * Parses the given duration strings to Duration objects.
+     * @param input   The list of duration strings to be parsed.
+     * @return        A list of Duration objects which represents the
+     *                given duration strings.
+     */
+    public static Duration[] parse(String[] input) {
+        return parse(input, (DurationPattern) null);
+    }
+
+    /**
+     * Parses the given duration strings to Duration objects.
+     * @param input   The list of duration strings to be parsed.
+     * @param pattern The pattern the duration strings adhere to.
+     * @return        A list of Duration objects which represents the
+     *                given duration strings.
+     */
+    public static Duration[] parse(String[] input, String pattern) {
+        return parse(input, DurationPattern.normalize(pattern));
+    }
+
+    /**
+     * Parses the given duration strings to Duration objects.
+     * @param input   The list of duration strings to be parsed.
+     * @param pattern The pattern the duration strings adhere to.
+     * @return        A list of Duration objects which represents the
+     *                given duration strings.
+     */
+    public static Duration[] parse(String[] input, DurationPattern pattern) {
+        if (input == null) return null;
+        pattern = DurationPattern.normalize(pattern);
+
+        Duration[] output = new Duration[input.length];
+        for (int i = 0; i < input.length; i++) {
+            output[i] = parse(input[i], pattern);
+        }
+
+        return output;
+    }
+
+    /**
      * Returns the given duration as an XML duration string.
      * @param input The duration to be serialized.
      * @return      An XML duration string representing the given duration.
      */
     public static String emit(Duration input) {
-        return emit(input, (String)null);
+        return emit(input, (DurationPattern) null);
     }
 
     /**
@@ -422,7 +457,7 @@ public class DurationHelper {
      *                        representing the given duration.
      */
     public static String emit(Duration input, DurationPattern pattern) {
-        return emit(input, pattern, (Date)null);
+        return emit(input, pattern, (Date) null);
     }
 
     /**
@@ -528,5 +563,250 @@ public class DurationHelper {
         }
 
         return output;
+    }
+
+    /**
+     * Returns the given durations as XML duration strings.
+     * @param input The list of durations to be serialized.
+     * @return      XML duration strings representing the given durations.
+     */
+    public static String[] emit(Duration[] input) {
+        return emit(input, (String)null);
+    }
+
+    /**
+     * Returns the given durations as duration strings formatted to the desired pattern.
+     * @param input   The list of durations to be serialized.
+     * @param pattern The pattern to use to format the duration strings.
+     * @return        The duration strings formatted according to the pattern representing
+     *                the given durations.
+     */
+    public static String[] emit(Duration[] input, String pattern) {
+        return emit(input, pattern, null);
+    }
+
+    /**
+     * Returns the given durations as duration strings formatted to the desired pattern.
+     * @param input   The list of durations to be serialized.
+     * @param pattern The pattern to use to format the duration strings.
+     * @return        The duration strings formatted according to the pattern representing
+     *                the given durations.
+     */
+    public static String[] emit(Duration[] input, DurationPattern pattern) {
+        return emit(input, pattern, (Date)null);
+    }
+
+    /**
+     * Returns the given durations as duration strings formatted to the desired pattern.
+     * @param input    The list of durations to be serialized.
+     * @param pattern  The pattern to use to format the duration strings.
+     * @param datetime A datetime string used as a starting instant
+     *                 to resolve indeterminate values (such as the number
+     *                 of days in a month).
+     * @return         The duration strings formatted according to the pattern representing
+     *                 the given duration.
+     */
+    public static String[] emit(Duration[] input, String pattern, String datetime) {
+        return emit(input, pattern, datetime, null);
+    }
+
+    /**
+     * Returns the given durations as duration strings formatted to the desired pattern.
+     * @param input           The list of durations to be serialized.
+     * @param pattern         The pattern to use to format the duration strings.
+     * @param datetime        A datetime string used as a starting instant
+     *                        to resolve indeterminate values (such as the number
+     *                        of days in a month).
+     * @param datetimePattern The pattern the given datetime adheres to.
+     * @return                The duration strings formatted according to the pattern
+     *                        representing the given durations.
+     */
+    public static String[] emit(Duration[] input, String pattern, String datetime, String datetimePattern) {
+        return emit(input, DurationPattern.normalize(pattern), datetime, datetimePattern);
+    }
+
+    /**
+     * Returns the given durations as duration strings formatted to the desired pattern.
+     * @param input           The list of durations to be serialized.
+     * @param pattern         The pattern to use to format the duration strings.
+     * @param datetime        A datetime string used as a starting instant
+     *                        to resolve indeterminate values (such as the number
+     *                        of days in a month).
+     * @param datetimePattern The pattern the given datetime adheres to.
+     * @return                The duration strings formatted according to the pattern
+     *                        representing the given durations.
+     */
+    public static String[] emit(Duration[] input, DurationPattern pattern, String datetime, String datetimePattern) {
+        return emit(input, pattern, DateTimeHelper.parse(datetime, datetimePattern));
+    }
+
+    /**
+     * Returns the given durations as duration strings formatted to the desired pattern.
+     * @param input           The list of durations to be serialized.
+     * @param pattern         The pattern to use to format the duration strings.
+     * @param instant         A java.util.Calendar used as a starting instant
+     *                        to resolve indeterminate values (such as the number
+     *                        of days in a month).
+     * @return                The duration strings formatted according to the pattern
+     *                        representing the given durations.
+     */
+    public static String[] emit(Duration input[], DurationPattern pattern, Calendar instant) {
+        return emit(input, pattern, instant == null ? null : instant.getTime());
+    }
+
+
+    /**
+     * Returns the given durations as duration strings formatted to the desired pattern.
+     * @param input           The list of durations to be serialized.
+     * @param pattern         The pattern to use to format the duration strings.
+     * @param instant         A java.util.Date used as a starting instant
+     *                        to resolve indeterminate values (such as the number
+     *                        of days in a month).
+     * @return                The duration strings formatted according to the pattern
+     *                        representing the given durations.
+     */
+    public static String[] emit(Duration[] input, DurationPattern pattern, Date instant) {
+        if (input == null) return null;
+        if (instant == null) instant = new Date();
+        pattern = DurationPattern.normalize(pattern);
+
+        String[] output = new String[input.length];
+        for (int i = 0; i < input.length; i++) {
+            output[i] = emit(input[i], pattern, instant);
+        }
+
+        return output;
+    }
+
+    /**
+     * Adds the given list of durations together, returning the result.
+     * @param durations The list of durations to be added.
+     * @return          The result of all the given durations added together.
+     */
+    public static Duration add(Duration ...durations) {
+        Duration result = DATATYPE_FACTORY.newDuration(0);
+
+        if (durations != null) {
+            for (int i = 0; i < durations.length; i++) {
+                if (durations[i] != null) result.add(durations[i]);
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Subtracts the tail of the given list of durations from the head of the list,
+     * returning the result.
+     * @param durations The list of durations whose tail is to be subtracted from the head.
+     * @return          The result of subtracting the tail of the list of durations from the
+     *                  head of the list.
+     */
+    public static Duration subtract(Duration ...durations) {
+        Duration result = DATATYPE_FACTORY.newDuration(0);
+
+        if (durations != null && durations.length > 0)  {
+            for (int i = 0; i < durations.length; i++) {
+                if (i == 0) {
+                    result = durations[i]; // initialize result to first duration
+                } else {
+                    result = result.subtract(durations[i]);
+                }
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Compares two durations, returning whether the first is less than, greater than, equal
+     * to, or cannot be compared (indeterminate) to the second duration.
+     * @param x The first duration to be compared.
+     * @param y The second duration to be compared.
+     * @return  javax.xml.datatype.DatatypeConstants.LESSER if less than,
+     *          javax.xml.datatype.DatatypeConstants.EQUAL if equal,
+     *          javax.xml.datatype.DatatypeConstants.GREATER if greater than,
+     *          javax.xml.datatype.DatatypeConstants.INDETERMINATE if durations cannot be compared.
+     */
+    public static int compare(Duration x, Duration y) {
+        if (x == null && y == null) return DatatypeConstants.EQUAL;
+        if (x == null || y == null) return DatatypeConstants.INDETERMINATE;
+
+        return x.compare(y);
+    }
+
+    /**
+     * Negates the given duration.
+     * @param input The duration to be negated.
+     * @return      The negated duration.
+     */
+    public static Duration negate(Duration input) {
+        if (input == null) return null;
+        return input.negate();
+    }
+
+    /**
+     * Returns the given duration multiplied by the given factor.
+     * @param input  The duration to be multiplied.
+     * @param factor The factor to multiply the duration by.
+     * @return       The duration multiplied by the factor.
+     */
+    public static Duration multiply(Duration input, BigDecimal factor) {
+        return multiply(input, factor, null, null);
+    }
+
+    /**
+     * Returns the given duration multiplied by the given factor.
+     * @param input     The duration to be multiplied.
+     * @param factor    The factor to multiply the duration by.
+     * @param datetime  A datetime string used as a starting instant
+     *                  to resolve indeterminate values (such as the number
+     *                  of days in a month).
+     * @return          The duration multiplied by the factor.
+     */
+    public static Duration multiply(Duration input, BigDecimal factor, String datetime) {
+        return multiply(input, factor, datetime, null);
+    }
+
+    /**
+     * Returns the given duration multiplied by the given factor.
+     * @param input             The duration to be multiplied.
+     * @param factor            The factor to multiply the duration by.
+     * @param datetime          A datetime string used as a starting instant
+     *                          to resolve indeterminate values (such as the number
+     *                          of days in a month).
+     * @param datetimePattern   The pattern the given datetime adheres to.
+     * @return                  The duration multiplied by the factor.
+     */
+    public static Duration multiply(Duration input, BigDecimal factor, String datetime, String datetimePattern) {
+        return multiply(input, factor, DateTimeHelper.parse(datetime, datetimePattern));
+    }
+
+    /**
+     * Returns the given duration multiplied by the given factor.
+     * @param input             The duration to be multiplied.
+     * @param factor            The factor to multiply the duration by.
+     * @param instant           A java.util.Date used as a starting instant
+     *                          to resolve indeterminate values (such as the number
+     *                          of days in a month).
+     * @return                  The duration multiplied by the factor.
+     */
+    public static Duration multiply(Duration input, BigDecimal factor, Date instant) {
+        return multiply(input, factor, DateTimeHelper.toCalendar(instant));
+    }
+
+    /**
+     * Returns the given duration multiplied by the given factor.
+     * @param input             The duration to be multiplied.
+     * @param factor            The factor to multiply the duration by.
+     * @param instant           A java.util.Calendar used as a starting instant
+     *                          to resolve indeterminate values (such as the number
+     *                          of days in a month).
+     * @return                  The duration multiplied by the factor.
+     */
+    public static Duration multiply(Duration input, BigDecimal factor, Calendar instant) {
+        if (input == null || factor == null) return input;
+        if (instant == null) instant = Calendar.getInstance();
+        return input.normalizeWith(instant).multiply(factor);
     }
 }
