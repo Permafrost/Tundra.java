@@ -235,7 +235,7 @@ public class DurationHelper {
      * @return                The duration strings reformatted according to the outPattern.
      */
     public static String[] format(String[] durations, DurationPattern inPattern, DurationPattern outPattern) {
-        return format(durations, inPattern, outPattern, (Date)null);
+        return format(durations, inPattern, outPattern, (Date) null);
     }
 
     /**
@@ -704,13 +704,18 @@ public class DurationHelper {
      */
     public static Duration subtract(Duration ...durations) {
         Duration result = DATATYPE_FACTORY.newDuration(0);
+        boolean first = true;
 
         if (durations != null && durations.length > 0)  {
             for (int i = 0; i < durations.length; i++) {
-                if (i == 0) {
-                    result = durations[i]; // initialize result to first duration
-                } else {
-                    result = result.subtract(durations[i]);
+
+                if (durations[i] != null) {
+                    if (first) {
+                        result = durations[i]; // initialize result to first duration
+                        first = false;
+                    } else {
+                        result = result.subtract(durations[i]);
+                    }
                 }
             }
         }
