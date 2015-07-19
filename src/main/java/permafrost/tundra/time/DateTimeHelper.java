@@ -822,7 +822,7 @@ public class DateTimeHelper {
      * @param input The Date object to be converted.
      * @return      The Calendar object representing the given Date object.
      */
-    private static Calendar toCalendar(Date input) {
+    public static Calendar toCalendar(Date input) {
         if (input == null) return null;
 
         Calendar calendar = Calendar.getInstance();
@@ -835,7 +835,7 @@ public class DateTimeHelper {
      * @param input The Calendar object to be converted.
      * @return      The Date object representing the given Calendar object.
      */
-    private static Date toDate(Calendar input) {
+    public static Date toDate(Calendar input) {
         if (input == null) return null;
         return input.getTime();
     }
