@@ -406,6 +406,7 @@ public class IDataHelper {
      *
      * @param document The IData document to remove the key from.
      * @param key      The key to be removed.
+     * @return         The given IData document, to allow for method chaining.
      */
     public static IData dropAll(IData document, String key) {
         if (document != null && key != null) {
