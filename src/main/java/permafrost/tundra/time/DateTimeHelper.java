@@ -26,12 +26,15 @@ package permafrost.tundra.time;
 
 import permafrost.tundra.lang.ArrayHelper;
 
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.SortedSet;
 import java.util.TimeZone;
+import java.util.TreeSet;
 import java.util.Date;
 import javax.xml.datatype.Duration;
 
@@ -393,6 +396,17 @@ public class DateTimeHelper {
         }
         return outputs;
     }
+
+    /**
+     * Parses a milliseconds since epoch value into a Calendar object.
+     * @param milliseconds  The milliseconds since epoch value.
+     * @return              A Calendar object representing the parsed value.
+     */
+    public static Calendar parse(long milliseconds) {
+        Calendar output = Calendar.getInstance();
+        output.setTimeInMillis(milliseconds);
+        return output;
+    }
     
     /**
      * Parses an XML datetime string and returns a Calendar object.
@@ -557,6 +571,22 @@ public class DateTimeHelper {
     }
 
     /**
+     * Parses a list of milliseconds since epoch values and returns a list of Calendar
+     * objects.
+     * @param inputs   The list of milliseconds since epoch values to be parsed.
+     * @return         A list of Calendar objects representing the parsed values.
+     */
+    public static Calendar[] parse(long[] inputs) {
+        if (inputs == null) return null;
+
+        Calendar[] outputs = new Calendar[inputs.length];
+        for (int i = 0; i < inputs.length; i++) {
+            outputs[i] = parse(inputs[i]);
+        }
+        return outputs;
+    }
+
+    /**
      * Parses a list of datetime strings that adhere to the given pattern and
      * returns a list of Calendar objects.
      * @param inputs   The list of datetime strings to be parsed.
@@ -658,6 +688,53 @@ public class DateTimeHelper {
     }
 
     /**
+     * Reformats the given milliseconds since epoch value as an XML datetime string.
+     * @param milliseconds  The milliseconds since epoch value to be formatted.
+     * @return              The given milliseconds since epoch value formatted as an
+     *                      XML datetime string.
+     */
+    public static String format(long milliseconds) {
+        return format(milliseconds, null, (TimeZone) null);
+    }
+
+    /**
+     * Reformats the given milliseconds since epoch value according to the desired pattern.
+     * @param milliseconds  The milliseconds since epoch value to be formatted.
+     * @param pattern       The pattern the resulting datetime string should be formatted as.
+     * @return              The given milliseconds since epoch value formatted according to
+     *                      the given pattern.
+     */
+    public static String format(long milliseconds, String pattern) {
+        return format(milliseconds, pattern, (TimeZone) null);
+    }
+
+    /**
+     * Reformats the given milliseconds since epoch value according to the desired pattern.
+     * @param milliseconds  The milliseconds since epoch value to be formatted.
+     * @param pattern       The pattern the resulting datetime string should be formatted as.
+     * @param timezone      The time zone ID identifying the time zone the returned datetime
+     *                      string should be in.
+     * @return              The given milliseconds since epoch value formatted according to
+     *                      the given pattern.
+     */
+    public static String format(long milliseconds, String pattern, String timezone) {
+        return format(milliseconds, pattern, TimeZoneHelper.get(timezone));
+    }
+
+    /**
+     * Reformats the given milliseconds since epoch value according to the desired pattern.
+     * @param milliseconds  The milliseconds since epoch value to be formatted.
+     * @param pattern       The pattern the resulting datetime string should be formatted as.
+     * @param timezone      The time zone ID identifying the time zone the returned datetime
+     *                      string should be in.
+     * @return              The given milliseconds since epoch value formatted according to
+     *                      the given pattern.
+     */
+    public static String format(long milliseconds, String pattern, TimeZone timezone) {
+        return emit(parse(milliseconds), pattern, timezone);
+    }
+
+    /**
      * Reformats the given datetime string according to the desired pattern.
      * @param input      The datetime string to be reformatted.
      * @param inPattern  The pattern the given input datetime string adheres to.
@@ -729,6 +806,59 @@ public class DateTimeHelper {
      */
     public static String format(String input, String[] inPatterns, TimeZone inTimeZone, String outPattern, TimeZone outTimeZone) {
         return emit(parse(input, inPatterns, inTimeZone), outPattern, outTimeZone);
+    }
+
+    /**
+     * Reformats the given list of milliseconds since epoch values to XML datetime strings.
+     * @param inputs        The list of milliseconds since epoch value to be formatted.
+     * @return              The given milliseconds since epoch value formatted to XML datetime
+     *                      strings.
+     */
+    public static String[] format(long[] inputs) {
+        return format(inputs, null, (TimeZone) null);
+    }
+
+    /**
+     * Reformats the given list of milliseconds since epoch values according to the desired pattern.
+     * @param inputs        The list of milliseconds since epoch value to be formatted.
+     * @param pattern       The pattern the resulting datetime string should be formatted as.
+     * @return              The given milliseconds since epoch value formatted according to
+     *                      the given pattern.
+     */
+    public static String[] format(long[] inputs, String pattern) {
+        return format(inputs, pattern, (TimeZone) null);
+    }
+
+    /**
+     * Reformats the given list of milliseconds since epoch values according to the desired pattern.
+     * @param inputs        The list of milliseconds since epoch values to be formatted.
+     * @param pattern       The pattern the resulting datetime string should be formatted as.
+     * @param timezone      The time zone ID identifying the time zone the returned datetime
+     *                      string should be in.
+     * @return              The given milliseconds since epoch value formatted according to
+     *                      the given pattern.
+     */
+    public static String[] format(long[] inputs, String pattern, String timezone) {
+        return format(inputs, pattern, TimeZoneHelper.get(timezone));
+    }
+
+    /**
+     * Reformats the given list of milliseconds since epoch values according to the desired pattern.
+     * @param inputs        The list of milliseconds since epoch values to be formatted.
+     * @param pattern       The pattern the resulting datetime string should be formatted as.
+     * @param timezone      The time zone ID identifying the time zone the returned datetime
+     *                      string should be in.
+     * @return              The given milliseconds since epoch value formatted according to
+     *                      the given pattern.
+     */
+    public static String[] format(long[] inputs, String pattern, TimeZone timezone) {
+        if (inputs == null) return null;
+
+        String[] outputs = new String[inputs.length];
+        for (int i = 0; i < inputs.length; i++) {
+            outputs[i] = format(inputs[i], pattern, timezone);
+        }
+        return outputs;
     }
 
     /**
@@ -868,5 +998,47 @@ public class DateTimeHelper {
         String dateString = emit(date, "yyyy-MM-dd");
         String timeString = emit(time, "HH:mm:ss.SSS");
         return parse(dateString + "T" + timeString, "datetime", timezone);
+    }
+
+    /**
+     * Returns the largest datetime from the given list.
+     * @param calendars The list of datetimes to find the maximum in.
+     * @return          The maximum datetime in the given list.
+     */
+    public static Calendar maximum(Calendar ...calendars) {
+        if (calendars == null || calendars.length == 0) return null;
+        return maximum(Arrays.asList(calendars));
+    }
+
+    /**
+     * Returns the largest datetime from the given list.
+     * @param calendars The list of datetimes to find the maximum in.
+     * @return          The maximum datetime in the given list.
+     */
+    public static Calendar maximum(Collection<Calendar> calendars) {
+        if (calendars == null || calendars.size() == 0) return null;
+        SortedSet<Calendar> set = new TreeSet<Calendar>(calendars);
+        return set.last();
+    }
+
+    /**
+     * Returns the smallest datetime from the given list.
+     * @param calendars The list of datetimes to find the minimum in.
+     * @return          The minimum datetime in the given list.
+     */
+    public static Calendar minimum(Calendar ...calendars) {
+        if (calendars == null || calendars.length == 0) return null;
+        return minimum(Arrays.asList(calendars));
+    }
+
+    /**
+     * Returns the smallest datetime from the given list.
+     * @param calendars The list of datetimes to find the minimum in.
+     * @return          The minimum datetime in the given list.
+     */
+    public static Calendar minimum(Collection<Calendar> calendars) {
+        if (calendars == null || calendars.size() == 0) return null;
+        SortedSet<Calendar> set = new TreeSet<Calendar>(calendars);
+        return set.first();
     }
 }
