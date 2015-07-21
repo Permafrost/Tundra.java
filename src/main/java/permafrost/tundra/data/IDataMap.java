@@ -54,7 +54,7 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
      * @param document The IData document to be wrapped.
      */
     public IDataMap(IData document) {
-        super(document instanceof IDataMap ? ((IDataMap)document).getIData() : document);
+        super(document instanceof IDataMap ? ((IDataMap) document).getIData() : document);
     }
 
     /**
@@ -295,7 +295,11 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
      * @return         A new IDataMap wrapping the given IData document.
      */
     public static IDataMap of(IData document) {
-        return new IDataMap(document);
+        if (document instanceof IDataMap) {
+            return (IDataMap) document;
+        } else {
+            return new IDataMap(document);
+        }
     }
 
     /**
@@ -304,7 +308,11 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
      * @return         A new IDataMap that includes all the key value pairs from the given Map.
      */
     public static IDataMap of(Map<? extends String, ? extends Object> map) {
-        return new IDataMap(map);
+        if (map instanceof IDataMap) {
+            return (IDataMap) map;
+        } else {
+            return new IDataMap(map);
+        }
     }
 
     /**
