@@ -34,8 +34,11 @@ import org.springframework.web.util.UriTemplate;
 import permafrost.tundra.data.IDataMap;
 import permafrost.tundra.io.FileHelper;
 import permafrost.tundra.net.http.HTTPMethod;
+import permafrost.tundra.net.uri.URIHelper;
 
 import java.io.File;
+import java.util.Map;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -230,7 +233,39 @@ public class HTTPRoute implements IDataCodable {
      * @return       An IData document containing the matched URI template parameters, or null if not matched.
      */
     public IData match(HTTPMethod method, String uri) {
-        return matches(method, uri) ? new IDataMap(this.uri.match(uri)) : null;
+        return matches(method, uri) ? normalize(this.uri.match(uri)) : null;
+    }
+
+    /**
+     * Regular expression pattern for matching key=value URI template constants
+     */
+    private static final Pattern KEY_EQUALS_VALUE_PATTERN = Pattern.compile("([^=]+?)=(.*)");
+
+    /**
+     * Converts a UriTemplate result set to an IData document. Supports converting URI template
+     * variables specified in the form {key=value} to key value tuples in resulting IData.
+     * @param results   The UriTemplate matched result set.
+     * @return          An IData representing the matched results.
+     */
+    private static IData normalize(Map<String, String> results) {
+        if (results == null) return null;
+
+        IDataMap inputMap = IDataMap.of(results);
+        IDataMap outputMap = new IDataMap();
+
+        for (Map.Entry<String, Object> entry : inputMap) {
+            String key = entry.getKey();
+            String value = (String)entry.getValue();
+
+            // support URI templates that contain {key=value} constants
+            Matcher matcher = KEY_EQUALS_VALUE_PATTERN.matcher(key);
+            if (matcher.matches()) {
+                outputMap.put(URIHelper.decode(matcher.group(1)), URIHelper.decode(matcher.group(2)));
+            }
+            outputMap.put(key, value);
+        }
+
+        return outputMap;
     }
 
     /**
