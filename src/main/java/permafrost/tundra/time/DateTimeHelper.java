@@ -839,4 +839,34 @@ public class DateTimeHelper {
         if (input == null) return null;
         return input.getTime();
     }
+
+    /**
+     * Returns a new calendar that is constructed from the date part of
+     * the given date, and the time part from the given time.
+     * @param date The date part to be concatenated.
+     * @param time The time part to be concatenated.
+     * @return     The resulting calendar with date and time parts from
+     *             the given date and time calendars.
+     */
+    public static Calendar concatenate(Calendar date, Calendar time) {
+        return concatenate(date, time, null);
+    }
+
+    /**
+     * Returns a new calendar that is constructed from the date part of
+     * the given date, and the time part from the given time.
+     * @param date      The date part to be concatenated.
+     * @param time      The time part to be concatenated.
+     * @param timezone  The time zone ID identifying the time zone into which the
+     *                  concatenated calendar will be forced.
+     * @return          The resulting calendar with date and time parts from
+     *                  the given date and time calendars.
+     */
+    public static Calendar concatenate(Calendar date, Calendar time, TimeZone timezone) {
+        if (date == null || time == null) return null;
+
+        String dateString = emit(date, "yyyy-MM-dd");
+        String timeString = emit(time, "HH:mm:ss.SSS");
+        return parse(dateString + "T" + timeString, "datetime", timezone);
+    }
 }
