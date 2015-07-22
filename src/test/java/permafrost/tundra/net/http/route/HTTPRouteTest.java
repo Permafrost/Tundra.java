@@ -36,15 +36,27 @@ import static org.junit.Assert.*;
 public class HTTPRouteTest {
 
     @Test
-    public void testMatchWithTemplateConstant() throws Exception {
-        HTTPRoute route = new HTTPRoute("get", "/{a}/{b}/{c=foo.bar%3Abaz}", "service:name", "route description", new File("source file"));
+    public void testMatchWithTemplateConstantAssignedAValue() throws Exception {
+        HTTPRoute route = new HTTPRoute("get", "/{a%20}/{b}/{c=foo.bar%3Abaz}", "service:name", "route description", new File("source file"));
 
         IDataMap result = IDataMap.of(route.match("get", "/foo/bar/baz"));
 
         assertEquals(4, result.size());
-        assertEquals("foo", result.get("a"));
+        assertEquals("foo", result.get("a "));
         assertEquals("bar", result.get("b"));
         assertEquals("foo.bar:baz", result.get("c"));
         assertEquals("baz", result.get("c=foo.bar%3Abaz"));
+    }
+
+    @Test
+    public void testMatchWithTemplateConstantAssignedNoValue() throws Exception {
+        HTTPRoute route = new HTTPRoute("get", "/{a%20}/{b}/{c=foo.bar%3Abaz}", "service:name", "route description", new File("source file"));
+
+        IDataMap result = IDataMap.of(route.match("get", "/foo/bar/"));
+
+        assertEquals(3, result.size());
+        assertEquals("foo", result.get("a "));
+        assertEquals("bar", result.get("b"));
+        assertEquals("foo.bar:baz", result.get("c"));
     }
 }

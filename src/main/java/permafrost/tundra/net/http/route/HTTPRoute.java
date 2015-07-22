@@ -250,19 +250,24 @@ public class HTTPRoute implements IDataCodable {
     private static IData normalize(Map<String, String> results) {
         if (results == null) return null;
 
-        IDataMap inputMap = IDataMap.of(results);
         IDataMap outputMap = new IDataMap();
 
-        for (Map.Entry<String, Object> entry : inputMap) {
+        for (Map.Entry<String, String> entry : results.entrySet()) {
             String key = entry.getKey();
-            String value = (String)entry.getValue();
+            String value = entry.getValue();
 
             // support URI templates that contain {key=value} constants
             Matcher matcher = KEY_EQUALS_VALUE_PATTERN.matcher(key);
             if (matcher.matches()) {
                 outputMap.put(URIHelper.decode(matcher.group(1)), URIHelper.decode(matcher.group(2)));
+                if (!(value == null || value.equals(""))) {
+                    // also add the original matched key value tuple to the output map if there was a non-null
+                    // non-empty value
+                    outputMap.put(key, value);
+                }
+            } else {
+                outputMap.put(URIHelper.decode(key), value);
             }
-            outputMap.put(key, value);
         }
 
         return outputMap;
