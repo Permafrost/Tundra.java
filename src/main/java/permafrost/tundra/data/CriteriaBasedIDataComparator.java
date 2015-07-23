@@ -24,6 +24,7 @@
 
 package permafrost.tundra.data;
 
+import com.wm.data.IData;
 import permafrost.tundra.math.DecimalHelper;
 import permafrost.tundra.math.IntegerHelper;
 import permafrost.tundra.time.DateTimeHelper;
@@ -90,7 +91,7 @@ public class CriteriaBasedIDataComparator implements IDataComparator {
      *                       criteria the IDataComparator was constructed with.
      */
     @SuppressWarnings("unchecked")
-    public int compare(com.wm.data.IData firstDocument, com.wm.data.IData secondDocument) {
+    public int compare(IData firstDocument, IData secondDocument) {
         int result = 0;
 
         for (IDataComparisonCriterion criterion : criteria) {
