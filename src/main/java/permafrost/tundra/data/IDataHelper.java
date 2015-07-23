@@ -2096,7 +2096,7 @@ public class IDataHelper {
      * @return          A new IData[] array sorted by the given criteria.
      */
     public static IData[] sort(IData[] array, IData[] criteria) {
-        return sort(array, IDataComparisonCriterion.valueOf(criteria));
+        return sort(array, IDataComparisonCriterion.of(criteria));
     }
 
     /**

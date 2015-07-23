@@ -301,7 +301,7 @@ public class IDataComparisonCriterion implements IDataCodable {
      * @param criteria  The comparison criteria specified as an IData[].
      * @return          An IDataComparisonCriterion[] representing the given criteria.
      */
-    public static IDataComparisonCriterion[] valueOf(IData[] criteria) {
+    public static IDataComparisonCriterion[] of(IData[] criteria) {
         if (criteria == null) return null;
 
         IDataComparisonCriterion[] output = new IDataComparisonCriterion[criteria.length];
