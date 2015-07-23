@@ -7,6 +7,7 @@ import com.wm.data.IDataUtil;
 import org.junit.Before;
 import org.junit.Test;
 import permafrost.tundra.io.StreamHelper;
+import permafrost.tundra.lang.ArrayHelper;
 
 import java.util.regex.Pattern;
 
@@ -667,6 +668,353 @@ public class IDataHelperTest {
         IDataMap third = new IDataMap(result[2]);
         assertEquals("z", third.get("string"));
         assertEquals("99", third.get("integer"));
+    }
+
+    @Test
+    public void testSortWithMultipleStringKeysAscending() throws Exception {
+        IData[] array = new IData[6];
+
+        IDataMap item1 = new IDataMap();
+        item1.put("key1", "z");
+        item1.put("key2", "z");
+
+        IDataMap item2 = new IDataMap();
+        item2.put("key1", "z");
+        item2.put("key2", "y");
+
+        IDataMap item3 = new IDataMap();
+        item3.put("key1", "z");
+        item3.put("key2", "x");
+
+        IDataMap item4 = new IDataMap();
+        item4.put("key1", "a");
+        item4.put("key2", "z");
+
+        IDataMap item5 = new IDataMap();
+        item5.put("key1", "a");
+        item5.put("key2", "y");
+
+        IDataMap item6 = new IDataMap();
+        item6.put("key1", "a");
+        item6.put("key2", "x");
+
+        array[0] = item1;
+        array[1] = item2;
+        array[2] = item3;
+        array[3] = item4;
+        array[4] = item5;
+        array[5] = item6;
+
+        IDataComparisonCriterion c1 = new IDataComparisonCriterion("key1", "string", false);
+        IDataComparisonCriterion c2 = new IDataComparisonCriterion("key2", "string", false);
+
+        IData[] result = IDataHelper.sort(array, c1, c2);
+
+        assertEquals(6, result.length);
+
+        IDataMap first = IDataMap.of(result[0]);
+        assertEquals("a", first.get("key1"));
+        assertEquals("x", first.get("key2"));
+
+        IDataMap second = IDataMap.of(result[1]);
+        assertEquals("a", second.get("key1"));
+        assertEquals("y", second.get("key2"));
+
+        IDataMap third = IDataMap.of(result[2]);
+        assertEquals("a", third.get("key1"));
+        assertEquals("z", third.get("key2"));
+
+        IDataMap fourth = IDataMap.of(result[3]);
+        assertEquals("z", fourth.get("key1"));
+        assertEquals("x", fourth.get("key2"));
+
+        IDataMap fifth = IDataMap.of(result[4]);
+        assertEquals("z", fifth.get("key1"));
+        assertEquals("y", fifth.get("key2"));
+
+        IDataMap sixth = IDataMap.of(result[5]);
+        assertEquals("z", sixth.get("key1"));
+        assertEquals("z", sixth.get("key2"));
+    }
+
+    @Test
+    public void testSortWithMultipleStringKeysDescending() throws Exception {
+        IData[] array = new IData[6];
+
+        IDataMap item1 = new IDataMap();
+        item1.put("key1", "z");
+        item1.put("key2", "z");
+
+        IDataMap item2 = new IDataMap();
+        item2.put("key1", "z");
+        item2.put("key2", "y");
+
+        IDataMap item3 = new IDataMap();
+        item3.put("key1", "z");
+        item3.put("key2", "x");
+
+        IDataMap item4 = new IDataMap();
+        item4.put("key1", "a");
+        item4.put("key2", "z");
+
+        IDataMap item5 = new IDataMap();
+        item5.put("key1", "a");
+        item5.put("key2", "y");
+
+        IDataMap item6 = new IDataMap();
+        item6.put("key1", "a");
+        item6.put("key2", "x");
+
+        array[0] = item1;
+        array[1] = item2;
+        array[2] = item3;
+        array[3] = item4;
+        array[4] = item5;
+        array[5] = item6;
+
+        IDataComparisonCriterion c1 = new IDataComparisonCriterion("key1", "string", true);
+        IDataComparisonCriterion c2 = new IDataComparisonCriterion("key2", "string", true);
+
+        IData[] result = IDataHelper.sort(array, c1, c2);
+
+        assertEquals(6, result.length);
+
+        IDataMap first = IDataMap.of(result[0]);
+        assertEquals("z", first.get("key1"));
+        assertEquals("z", first.get("key2"));
+
+        IDataMap second = IDataMap.of(result[1]);
+        assertEquals("z", second.get("key1"));
+        assertEquals("y", second.get("key2"));
+
+        IDataMap third = IDataMap.of(result[2]);
+        assertEquals("z", third.get("key1"));
+        assertEquals("x", third.get("key2"));
+
+        IDataMap fourth = IDataMap.of(result[3]);
+        assertEquals("a", fourth.get("key1"));
+        assertEquals("z", fourth.get("key2"));
+
+        IDataMap fifth = IDataMap.of(result[4]);
+        assertEquals("a", fifth.get("key1"));
+        assertEquals("y", fifth.get("key2"));
+
+        IDataMap sixth = IDataMap.of(result[5]);
+        assertEquals("a", sixth.get("key1"));
+        assertEquals("x", sixth.get("key2"));
+    }
+
+    @Test
+    public void testSortWithMultipleStringKeysAscendingDescending() throws Exception {
+        IData[] array = new IData[6];
+
+        IDataMap item1 = new IDataMap();
+        item1.put("key1", "z");
+        item1.put("key2", "z");
+
+        IDataMap item2 = new IDataMap();
+        item2.put("key1", "z");
+        item2.put("key2", "y");
+
+        IDataMap item3 = new IDataMap();
+        item3.put("key1", "z");
+        item3.put("key2", "x");
+
+        IDataMap item4 = new IDataMap();
+        item4.put("key1", "a");
+        item4.put("key2", "z");
+
+        IDataMap item5 = new IDataMap();
+        item5.put("key1", "a");
+        item5.put("key2", "y");
+
+        IDataMap item6 = new IDataMap();
+        item6.put("key1", "a");
+        item6.put("key2", "x");
+
+        array[0] = item1;
+        array[1] = item2;
+        array[2] = item3;
+        array[3] = item4;
+        array[4] = item5;
+        array[5] = item6;
+
+        IDataComparisonCriterion c1 = new IDataComparisonCriterion("key1", "string", false);
+        IDataComparisonCriterion c2 = new IDataComparisonCriterion("key2", "string", true);
+
+        IData[] result = IDataHelper.sort(array, c1, c2);
+
+        assertEquals(6, result.length);
+
+        IDataMap first = IDataMap.of(result[0]);
+        assertEquals("a", first.get("key1"));
+        assertEquals("z", first.get("key2"));
+
+        IDataMap second = IDataMap.of(result[1]);
+        assertEquals("a", second.get("key1"));
+        assertEquals("y", second.get("key2"));
+
+        IDataMap third = IDataMap.of(result[2]);
+        assertEquals("a", third.get("key1"));
+        assertEquals("x", third.get("key2"));
+
+        IDataMap fourth = IDataMap.of(result[3]);
+        assertEquals("z", fourth.get("key1"));
+        assertEquals("z", fourth.get("key2"));
+
+        IDataMap fifth = IDataMap.of(result[4]);
+        assertEquals("z", fifth.get("key1"));
+        assertEquals("y", fifth.get("key2"));
+
+        IDataMap sixth = IDataMap.of(result[5]);
+        assertEquals("z", sixth.get("key1"));
+        assertEquals("x", sixth.get("key2"));
+    }
+
+    @Test
+    public void testSortWithMultipleStringKeysDescendingAscending() throws Exception {
+        IData[] array = new IData[6];
+
+        IDataMap item1 = new IDataMap();
+        item1.put("key1", "z");
+        item1.put("key2", "z");
+
+        IDataMap item2 = new IDataMap();
+        item2.put("key1", "z");
+        item2.put("key2", "y");
+
+        IDataMap item3 = new IDataMap();
+        item3.put("key1", "z");
+        item3.put("key2", "x");
+
+        IDataMap item4 = new IDataMap();
+        item4.put("key1", "a");
+        item4.put("key2", "z");
+
+        IDataMap item5 = new IDataMap();
+        item5.put("key1", "a");
+        item5.put("key2", "y");
+
+        IDataMap item6 = new IDataMap();
+        item6.put("key1", "a");
+        item6.put("key2", "x");
+
+        array[0] = item1;
+        array[1] = item2;
+        array[2] = item3;
+        array[3] = item4;
+        array[4] = item5;
+        array[5] = item6;
+
+        IDataComparisonCriterion c1 = new IDataComparisonCriterion("key1", "string", true);
+        IDataComparisonCriterion c2 = new IDataComparisonCriterion("key2", "string", false);
+
+        IData[] result = IDataHelper.sort(array, c1, c2);
+
+        assertEquals(6, result.length);
+
+        IDataMap first = IDataMap.of(result[0]);
+        assertEquals("z", first.get("key1"));
+        assertEquals("x", first.get("key2"));
+
+        IDataMap second = IDataMap.of(result[1]);
+        assertEquals("z", second.get("key1"));
+        assertEquals("y", second.get("key2"));
+
+        IDataMap third = IDataMap.of(result[2]);
+        assertEquals("z", third.get("key1"));
+        assertEquals("z", third.get("key2"));
+
+        IDataMap fourth = IDataMap.of(result[3]);
+        assertEquals("a", fourth.get("key1"));
+        assertEquals("x", fourth.get("key2"));
+
+        IDataMap fifth = IDataMap.of(result[4]);
+        assertEquals("a", fifth.get("key1"));
+        assertEquals("y", fifth.get("key2"));
+
+        IDataMap sixth = IDataMap.of(result[5]);
+        assertEquals("a", sixth.get("key1"));
+        assertEquals("z", sixth.get("key2"));
+    }
+
+    @Test
+    public void testSortWithIDataArrayCriteria() throws Exception {
+        IData[] array = new IData[6];
+
+        IDataMap item1 = new IDataMap();
+        item1.put("key1", "z");
+        item1.put("key2", "z");
+
+        IDataMap item2 = new IDataMap();
+        item2.put("key1", "z");
+        item2.put("key2", "y");
+
+        IDataMap item3 = new IDataMap();
+        item3.put("key1", "z");
+        item3.put("key2", "x");
+
+        IDataMap item4 = new IDataMap();
+        item4.put("key1", "a");
+        item4.put("key2", "z");
+
+        IDataMap item5 = new IDataMap();
+        item5.put("key1", "a");
+        item5.put("key2", "y");
+
+        IDataMap item6 = new IDataMap();
+        item6.put("key1", "a");
+        item6.put("key2", "x");
+
+        array[0] = item1;
+        array[1] = item2;
+        array[2] = item3;
+        array[3] = item4;
+        array[4] = item5;
+        array[5] = item6;
+
+        IData[] criteria = new IData[2];
+
+        IDataMap criteria1 = new IDataMap();
+        criteria1.put("key", "key1");
+        criteria1.put("type", "string");
+        criteria1.put("descending?", "true");
+
+        IDataMap criteria2 = new IDataMap();
+        criteria2.put("key", "key2");
+        criteria2.put("type", "string");
+        criteria2.put("descending?", "false");
+
+        criteria[0] = criteria1;
+        criteria[1] = criteria2;
+
+        IData[] result = IDataHelper.sort(array, criteria);
+
+        assertEquals(6, result.length);
+
+        IDataMap first = IDataMap.of(result[0]);
+        assertEquals("z", first.get("key1"));
+        assertEquals("x", first.get("key2"));
+
+        IDataMap second = IDataMap.of(result[1]);
+        assertEquals("z", second.get("key1"));
+        assertEquals("y", second.get("key2"));
+
+        IDataMap third = IDataMap.of(result[2]);
+        assertEquals("z", third.get("key1"));
+        assertEquals("z", third.get("key2"));
+
+        IDataMap fourth = IDataMap.of(result[3]);
+        assertEquals("a", fourth.get("key1"));
+        assertEquals("x", fourth.get("key2"));
+
+        IDataMap fifth = IDataMap.of(result[4]);
+        assertEquals("a", fifth.get("key1"));
+        assertEquals("y", fifth.get("key2"));
+
+        IDataMap sixth = IDataMap.of(result[5]);
+        assertEquals("a", sixth.get("key1"));
+        assertEquals("z", sixth.get("key2"));
     }
 
     @Test
