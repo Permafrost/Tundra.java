@@ -303,6 +303,26 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
     }
 
     /**
+     * Returns a new IDataMap[] representation of the given IData[] document list.
+     * @param array    An IData[] document list.
+     * @return         A new IDataMap[] representation of the given IData[] document list.
+     */
+    public static IDataMap[] of(IData[] array) {
+        IDataMap[] output = null;
+
+        if (array instanceof IDataMap[]) {
+            output = (IDataMap[]) array;
+        } else if (array != null) {
+            output = new IDataMap[array.length];
+            for (int i = 0; i < array.length; i++) {
+                output[i] = new IDataMap(array[i]);
+            }
+        }
+
+        return output;
+    }
+
+    /**
      * Returns a new IDataMap that includes all the key value pairs from the given Map.
      * @param map      The Map to seed the new IDataMap with.
      * @return         A new IDataMap that includes all the key value pairs from the given Map.
