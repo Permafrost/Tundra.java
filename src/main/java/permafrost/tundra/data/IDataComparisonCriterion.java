@@ -312,4 +312,13 @@ public class IDataComparisonCriterion implements IDataCodable {
 
         return output;
     }
+
+    /**
+     * Returns a string representation of this criterion object.
+     * @return a string representation of this criterion object.
+     */
+    @Override
+    public String toString() {
+        return String.format(">>>%s:key=%s,type=%s,pattern=%s,descending=%s<<<", this.getClass().getSimpleName(), key, type, pattern, descending);
+    }
 }
