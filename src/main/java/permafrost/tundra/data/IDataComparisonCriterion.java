@@ -307,7 +307,7 @@ public class IDataComparisonCriterion implements IDataCodable {
         IDataComparisonCriterion[] output = new IDataComparisonCriterion[criteria.length];
 
         for (int i = 0; i < criteria.length; i++) {
-            output[i] = new IDataComparisonCriterion(criteria[0]);
+            output[i] = new IDataComparisonCriterion(criteria[i]);
         }
 
         return output;
