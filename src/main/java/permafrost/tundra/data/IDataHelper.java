@@ -25,6 +25,8 @@
 package permafrost.tundra.data;
 
 import com.wm.data.IData;
+import com.wm.data.IDataCursor;
+import com.wm.data.IDataFactory;
 import com.wm.data.IDataPortable;
 import com.wm.data.IDataUtil;
 import com.wm.util.Table;
@@ -33,8 +35,6 @@ import com.wm.util.coder.ValuesCodable;
 import permafrost.tundra.flow.ConditionEvaluator;
 import permafrost.tundra.flow.VariableSubstitutor;
 import permafrost.tundra.lang.ArrayHelper;
-import com.wm.data.IDataCursor;
-import com.wm.data.IDataFactory;
 import permafrost.tundra.lang.ObjectHelper;
 import permafrost.tundra.lang.StringHelper;
 
@@ -2275,14 +2275,15 @@ public class IDataHelper {
                 if (array[i] != null) {
                     CompoundKey key = new CompoundKey(keys, array[i]);
                     List<IData> list = groups.get(key);
-                    if (list == null) list = new LinkedList<IData>();
+                    if (list == null) {
+                        list = new LinkedList<IData>();
+                        groups.put(key, list);
+                    }
                     list.add(array[i]);
-                    groups.put(key, list);
                 }
             }
 
             List<IData> result = new ArrayList<IData>(groups.size());
-            java.util.Iterator<CompoundKey> iterator = groups.keySet().iterator();
 
             for (Map.Entry<CompoundKey, List<IData>> entry : groups.entrySet()) {
                 CompoundKey key = entry.getKey();
@@ -2298,6 +2299,52 @@ public class IDataHelper {
             }
 
             output = result.toArray(new IData[result.size()]);
+        }
+
+        return output;
+    }
+
+    /**
+     * Returns a new IData[] document list that only contains unique IData objects
+     * from the input IData[] document list.
+     * @param array The IData[] document list to find the unique set of.
+     * @return      A new IData[] document list only containing the first occurrence
+     *              of each IData containing a distinct set of values.
+     */
+    public static IData[] unique(IData[] array) {
+        return unique(array, (String[])null);
+    }
+
+    /**
+     * Returns a new IData[] document list that only contains unique IData objects
+     * from the input IData[] document list, where uniqueness is determined by the
+     * values associated with the given list of keys.
+     * @param array The IData[] document list to find the unique set of.
+     * @param keys  The keys whose associated values will be used to determine
+     *              uniqueness. If not specified, all keys will be used to determine
+     *              uniqueness.
+     * @return      A new IData[] document list only containing the first occurrence
+     *              of each IData containing a distinct set of values associated with
+     *              the given list of keys.
+     */
+    public static IData[] unique(IData[] array, String... keys) {
+        IData[] output = null;
+
+        if (array != null) {
+            if (array.length <= 1)  {
+                output = Arrays.copyOf(array, array.length);
+            } else {
+                if (keys == null || keys.length == 0) keys = getKeys(array);
+
+                Map<CompoundKey, IData> set = new TreeMap<CompoundKey, IData>();
+                for (int i = 0; i < array.length; i++) {
+                    if (array[i] != null) {
+                        CompoundKey key = new CompoundKey(keys, array[i]);
+                        if (!set.containsKey(key)) set.put(key, array[i]);
+                    }
+                }
+                output = set.values().toArray(new IData[set.size()]);
+            }
         }
 
         return output;
@@ -2328,8 +2375,10 @@ public class IDataHelper {
             // seed with key value pairs
             for (int i = 0; i < keys.length; i++) {
                 Object value = IDataHelper.get(document, keys[i]);
-                if (value != null && value instanceof Comparable) {
+                if (value instanceof Comparable) {
                     this.put(keys[i], (Comparable)value);
+                } else if (value != null) {
+                    this.put(keys[i], System.identityHashCode(value));
                 } else {
                     this.put(keys[i], null);
                 }

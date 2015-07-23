@@ -1170,6 +1170,189 @@ public class IDataHelperTest {
 
         IDataHelper.arrayify(parent, "a/c");
 
-        assertArrayEquals(expected, (Object[])IDataHelper.get(parent, "a/c"));
+        assertArrayEquals(expected, (Object[]) IDataHelper.get(parent, "a/c"));
+    }
+
+    @Test
+    public void testUniqueWithOneKey() throws Exception {
+        IData[] array = new IData[6];
+
+        IDataMap item1 = new IDataMap();
+        item1.put("key1", "z");
+        item1.put("key2", "z");
+
+        IDataMap item2 = new IDataMap();
+        item2.put("key1", "z");
+        item2.put("key2", "y");
+
+        IDataMap item3 = new IDataMap();
+        item3.put("key1", "z");
+        item3.put("key2", "x");
+
+        IDataMap item4 = new IDataMap();
+        item4.put("key1", "a");
+        item4.put("key2", "z");
+
+        IDataMap item5 = new IDataMap();
+        item5.put("key1", "a");
+        item5.put("key2", "y");
+
+        IDataMap item6 = new IDataMap();
+        item6.put("key1", "a");
+        item6.put("key2", "x");
+
+        array[0] = item1;
+        array[1] = item2;
+        array[2] = item3;
+        array[3] = item4;
+        array[4] = item5;
+        array[5] = item6;
+
+        IData[] result = IDataHelper.unique(array, "key1");
+
+        assertEquals(2, result.length);
+
+        IDataMap first = IDataMap.of(result[0]);
+        assertEquals("a", first.get("key1"));
+        assertEquals("z", first.get("key2"));
+
+        IDataMap second = IDataMap.of(result[1]);
+        assertEquals("z", second.get("key1"));
+        assertEquals("z", second.get("key2"));
+    }
+
+    @Test
+    public void testUniqueWithTwoKeys() throws Exception {
+        IData[] array = new IData[6];
+
+        IDataMap item1 = new IDataMap();
+        item1.put("key1", "z");
+        item1.put("key2", "z");
+        item1.put("key3", "1");
+
+        IDataMap item2 = new IDataMap();
+        item2.put("key1", "z");
+        item2.put("key2", "y");
+        item2.put("key3", "1");
+
+        IDataMap item3 = new IDataMap();
+        item3.put("key1", "z");
+        item3.put("key2", "x");
+        item3.put("key3", "1");
+
+        IDataMap item4 = new IDataMap();
+        item4.put("key1", "z");
+        item4.put("key2", "z");
+        item4.put("key3", "2");
+
+        IDataMap item5 = new IDataMap();
+        item5.put("key1", "z");
+        item5.put("key2", "y");
+        item5.put("key3", "2");
+
+        IDataMap item6 = new IDataMap();
+        item6.put("key1", "a");
+        item6.put("key2", "x");
+        item6.put("key3", "1");
+
+
+        array[0] = item1;
+        array[1] = item2;
+        array[2] = item3;
+        array[3] = item4;
+        array[4] = item5;
+        array[5] = item6;
+
+        IData[] result = IDataHelper.unique(array, "key1", "key2");
+
+        assertEquals(4, result.length);
+
+        IDataMap first = IDataMap.of(result[0]);
+        assertEquals("a", first.get("key1"));
+        assertEquals("x", first.get("key2"));
+        assertEquals("1", first.get("key3"));
+
+        IDataMap second = IDataMap.of(result[1]);
+        assertEquals("z", second.get("key1"));
+        assertEquals("x", second.get("key2"));
+        assertEquals("1", second.get("key3"));
+
+        IDataMap third = IDataMap.of(result[2]);
+        assertEquals("z", third.get("key1"));
+        assertEquals("y", third.get("key2"));
+        assertEquals("1", third.get("key3"));
+
+        IDataMap fourth = IDataMap.of(result[3]);
+        assertEquals("z", fourth.get("key1"));
+        assertEquals("z", fourth.get("key2"));
+        assertEquals("1", fourth.get("key3"));
+    }
+
+    @Test
+    public void testUniqueWithNoKeys() throws Exception {
+        IData[] array = new IData[6];
+
+        IDataMap item1 = new IDataMap();
+        item1.put("key1", "z");
+        item1.put("key2", "z");
+        item1.put("key3", "z");
+
+        IDataMap item2 = new IDataMap();
+        item2.put("key1", "z");
+        item2.put("key2", "y");
+        item2.put("key3", new Object());
+
+        IDataMap item3 = new IDataMap();
+        item3.put("key1", "z");
+        item3.put("key2", "x");
+        item3.put("key3", new Object());
+
+        IDataMap item4 = new IDataMap();
+        item4.put("key1", "z");
+        item4.put("key2", "z");
+        item4.put("key3", "z");
+
+        IDataMap item5 = new IDataMap();
+        item5.put("key1", "z");
+        item5.put("key2", "y");
+        item5.put("key3", new Object());
+
+        IDataMap item6 = new IDataMap();
+        item6.put("key1", "a");
+        item6.put("key2", "x");
+        item6.put("key3", new Object());
+
+
+        array[0] = item1;
+        array[1] = item2;
+        array[2] = item3;
+        array[3] = item4;
+        array[4] = item5;
+        array[5] = item6;
+
+        IData[] result = IDataHelper.unique(array);
+
+        assertEquals(5, result.length);
+
+        IDataMap first = IDataMap.of(result[0]);
+        assertEquals("a", first.get("key1"));
+        assertEquals("x", first.get("key2"));
+
+        IDataMap second = IDataMap.of(result[1]);
+        assertEquals("z", second.get("key1"));
+        assertEquals("x", second.get("key2"));
+
+        IDataMap third = IDataMap.of(result[2]);
+        assertEquals("z", third.get("key1"));
+        assertEquals("y", third.get("key2"));
+
+        IDataMap fourth = IDataMap.of(result[3]);
+        assertEquals("z", fourth.get("key1"));
+        assertEquals("y", fourth.get("key2"));
+
+        IDataMap fifth = IDataMap.of(result[4]);
+        assertEquals("z", fifth.get("key1"));
+        assertEquals("z", fifth.get("key2"));
+        assertEquals("z", fifth.get("key3"));
     }
 }
