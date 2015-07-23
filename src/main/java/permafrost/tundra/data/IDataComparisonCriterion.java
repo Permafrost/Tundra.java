@@ -253,19 +253,17 @@ public class IDataComparisonCriterion implements IDataCodable {
      *                  type, pattern, descending?
      */
     public void setIData(IData document) {
-        if (document != null) {
-            IDataCursor cursor = document.getCursor();
+        if (document == null) throw new NullPointerException("document must not be null");
 
-            String key = IDataUtil.getString(cursor, "key");
-            String type = IDataUtil.getString(cursor, "type");
-            String pattern = IDataUtil.getString(cursor, "pattern");
-            String descending = IDataUtil.getString(cursor, "descending?");
-            if (descending == null) descending = IDataUtil.getString(cursor, "descending");
+        IDataCursor cursor = document.getCursor();
+        String key = IDataUtil.getString(cursor, "key");
+        String type = IDataUtil.getString(cursor, "type");
+        String pattern = IDataUtil.getString(cursor, "pattern");
+        String descending = IDataUtil.getString(cursor, "descending?");
+        if (descending == null) descending = IDataUtil.getString(cursor, "descending");
+        cursor.destroy();
 
-            cursor.destroy();
-
-            initialize(key, type, pattern, descending);
-        }
+        initialize(key, type, pattern, descending);
     }
 
     /**
@@ -289,6 +287,8 @@ public class IDataComparisonCriterion implements IDataCodable {
      * @param descending    True if the comparison should be in descending order.
      */
     protected void initialize(String key, IDataComparisonType type, String pattern, boolean descending) {
+        if (key == null) throw new NullPointerException("key must not be null");
+
         this.key = key;
         this.type = IDataComparisonType.normalize(type);
         this.pattern = pattern;
