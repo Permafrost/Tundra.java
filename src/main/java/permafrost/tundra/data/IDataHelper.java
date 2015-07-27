@@ -39,6 +39,7 @@ import permafrost.tundra.lang.ObjectHelper;
 import permafrost.tundra.lang.StringHelper;
 
 import java.io.IOException;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -46,6 +47,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -170,6 +172,19 @@ public class IDataHelper {
      * @return          The number of occurrences of the given key in the given IData document.
      */
     public static int size(IData document, String key) {
+        return size(document, key, false);
+    }
+
+    /**
+     * Returns the number of occurrences of the given key in the given IData document.
+     *
+     * @param document  An IData document.
+     * @param key       The key whose occurrences are to be counted.
+     * @param literal   If true, the key will be treated as a literal key, rather than
+     *                  potentially as a fully-qualified key.
+     * @return          The number of occurrences of the given key in the given IData document.
+     */
+    public static int size(IData document, String key, boolean literal) {
         int size = 0;
         if (document != null && key != null) {
             IDataCursor cursor = document.getCursor();
@@ -177,7 +192,7 @@ public class IDataHelper {
             if (cursor.first(key)) {
                 size++;
                 while(cursor.next(key)) size++;
-            } else if (Key.isFullyQualified(key)) {
+            } else if (Key.isFullyQualified(key, literal)) {
                 size = size(document, Key.parse(key));
             }
 
@@ -193,7 +208,7 @@ public class IDataHelper {
      * @param keys      The parsed fully-qualified key whose occurrences are to be counted.
      * @return          The number of occurrences of the given parsed fully-qualified key in the given IData document.
      */
-    private static int size(IData document, java.util.Queue<Key> keys) {
+    private static int size(IData document, Queue<Key> keys) {
         int size = 0;
         if (document != null && keys != null && keys.size() > 0) {
             IDataCursor cursor = document.getCursor();
@@ -254,7 +269,20 @@ public class IDataHelper {
      * @return          True if the given key exists in the given IData document.
      */
     public static boolean exists(IData document, String key) {
-        return size(document, key) > 0;
+        return exists(document, key, false);
+    }
+
+    /**
+     * Returns true if the given key exists in the given IData document.
+     *
+     * @param document  An IData document.
+     * @param key       The key to check the existence of.
+     * @param literal   If true, the key will be treated as a literal key, rather than
+     *                  potentially as a fully-qualified key.
+     * @return          True if the given key exists in the given IData document.
+     */
+    public static boolean exists(IData document, String key, boolean literal) {
+        return size(document, key, literal) > 0;
     }
 
     /**
@@ -266,8 +294,22 @@ public class IDataHelper {
      * @return          The value that was associated with the given key.
      */
     public static Object remove(IData document, String key) {
-        Object value = get(document, key);
-        drop(document, key);
+        return remove(document, key, false);
+    }
+
+    /**
+     * Removes the given key from the given IData document, returning the associated
+     * value if one exists.
+     *
+     * @param document  The document to remove the key from.
+     * @param key       The key to remove.
+     * @param literal   If true, the key will be treated as a literal key, rather than
+     *                  potentially as a fully-qualified key.
+     * @return          The value that was associated with the given key.
+     */
+    public static Object remove(IData document, String key, boolean literal) {
+        Object value = get(document, key, literal);
+        drop(document, key, literal);
         return value;
     }
 
@@ -280,8 +322,22 @@ public class IDataHelper {
      * @return          The values that were associated with the given key.
      */
     public static Object[] removeAll(IData document, String key) {
-        Object[] value = getAsArray(document, key);
-        dropAll(document, key);
+        return removeAll(document, key, false);
+    }
+
+    /**
+     * Removes all occurrences of the given key from the given IData document, returning
+     * the associated values if there were any.
+     *
+     * @param document  The document to remove the key from.
+     * @param key       The key to remove.
+     * @param literal   If true, the key will be treated as a literal key, rather than
+     *                  potentially as a fully-qualified key.
+     * @return          The values that were associated with the given key.
+     */
+    public static Object[] removeAll(IData document, String key, boolean literal) {
+        Object[] value = getAsArray(document, key, literal);
+        dropAll(document, key, literal);
         return value;
     }
 
@@ -334,12 +390,26 @@ public class IDataHelper {
      * @return         The given IData document.
      */
     public static IData drop(IData document, String key) {
+        return drop(document, key, false);
+    }
+
+    /**
+     * Removes the value with the given key from the given IData document.
+     *
+     * @param document An IData document.
+     * @param key      A simple or fully-qualified key identifying the value to
+     *                 be removed from the given IData document.
+     * @param literal  If true, the key will be treated as a literal key, rather than
+     *                 potentially as a fully-qualified key.
+     * @return         The given IData document.
+     */
+    public static IData drop(IData document, String key, boolean literal) {
         if (document != null && key != null) {
             IDataCursor cursor = document.getCursor();
 
             if (cursor.first(key)) {
                 cursor.delete();
-            } else if (Key.isFullyQualified(key)) {
+            } else if (Key.isFullyQualified(key, literal)) {
                 drop(document, Key.parse(key));
             }
 
@@ -356,7 +426,7 @@ public class IDataHelper {
      *                 be removed from the given IData document.
      * @return         The given IData document.
      */
-    private static IData drop(IData document, java.util.Queue<Key> keys) {
+    private static IData drop(IData document, Queue<Key> keys) {
         if (document != null && keys != null && keys.size() > 0) {
             IDataCursor cursor = document.getCursor();
             Key key = keys.remove();
@@ -409,6 +479,19 @@ public class IDataHelper {
      * @return         The given IData document, to allow for method chaining.
      */
     public static IData dropAll(IData document, String key) {
+        return dropAll(document, key, false);
+    }
+
+    /**
+     * Removes all occurrences of the given key from the given IData document.
+     *
+     * @param document The IData document to remove the key from.
+     * @param key      The key to be removed.
+     * @param literal  If true, the key will be treated as a literal key, rather than
+     *                 potentially as a fully-qualified key.
+     * @return         The given IData document, to allow for method chaining.
+     */
+    public static IData dropAll(IData document, String key, boolean literal) {
         if (document != null && key != null) {
             IDataCursor cursor = document.getCursor();
 
@@ -416,8 +499,8 @@ public class IDataHelper {
                 do {
                     cursor.delete();
                 } while(cursor.next(key));
-            } else if (Key.isFullyQualified(key)) {
-                dropAll(document, Key.parse(key));
+            } else if (Key.isFullyQualified(key, literal)) {
+                dropAll(document, Key.parse(key, literal));
             }
 
             cursor.destroy();
@@ -433,7 +516,7 @@ public class IDataHelper {
      *                 be removed from the given IData document.
      * @return         The given IData document.
      */
-    private static IData dropAll(IData document, java.util.Queue<Key> keys) {
+    private static IData dropAll(IData document, Queue<Key> keys) {
         if (document != null && keys != null && keys.size() > 0) {
             IDataCursor cursor = document.getCursor();
             Key key = keys.remove();
@@ -472,9 +555,24 @@ public class IDataHelper {
      * @return          The given IData document.
      */
     public static IData rename(IData document, String source, String target) {
+        return rename(document, source, target, false);
+    }
+
+    /**
+     * Renames a key from source to target within the given IData document.
+     *
+     * @param document  An IData document.
+     * @param source    A simple or fully-qualified key identifying the value in
+     *                  the given IData document to be renamed.
+     * @param target    The new simple or fully-qualified key for the renamed value.
+     * @param literal   If true, the key will be treated as a literal key, rather than
+     *                  potentially as a fully-qualified key.
+     * @return          The given IData document.
+     */
+    public static IData rename(IData document, String source, String target, boolean literal) {
         if (document != null && source != null && target != null && !source.equals(target)) {
-            document = copy(document, source, target);
-            document = drop(document, source);
+            document = copy(document, source, target, literal);
+            document = drop(document, source, literal);
         }
         return document;
     }
@@ -489,8 +587,23 @@ public class IDataHelper {
      * @return          The given IData document.
      */
     public static IData copy(IData document, String source, String target) {
+        return copy(document, source, target, false);
+    }
+
+    /**
+     * Copies a value from source key to target key within the given IData document.
+     *
+     * @param document  An IData document.
+     * @param source    A simple or fully-qualified key identifying the value in the given
+     *                  IData document to be copied.
+     * @param target    A simple or fully-qualified key the source value will be copied to.
+     * @param literal   If true, the key will be treated as a literal key, rather than
+     *                  potentially as a fully-qualified key.
+     * @return          The given IData document.
+     */
+    public static IData copy(IData document, String source, String target, boolean literal) {
         if (document != null && source != null && target != null && !source.equals(target)) {
-            document = put(document, target, get(document, source));
+            document = put(document, target, get(document, source, literal), literal);
         }
         return document;
     }
@@ -955,7 +1068,7 @@ public class IDataHelper {
 
         IData output = IDataFactory.create();
 
-        for(Map.Entry<String, Object> entry : new IDataMap(document)) {
+        for(Map.Entry<String, Object> entry : IDataMap.of(document)) {
             // normalize fully-qualified keys by using IDataHelper.put() rather than IDataUtil.put()
             put(output, entry.getKey(), normalize(entry.getValue()));
         }
@@ -1135,8 +1248,55 @@ public class IDataHelper {
      *                     document, or the given defaultValue if null.
      */
     public static Object get(IData document, String key, Object defaultValue) {
-        Object value = get(document, key);
+        return get(document, key, defaultValue, false);
+    }
+
+    /**
+     * Returns the value associated with the given key from the given IData document, or
+     * if null the specified default value.
+     *
+     * @param document     An IData document.
+     * @param key          A simple or fully-qualified key identifying the value in the given
+     *                     IData document to be returned.
+     * @param defaultValue A default value to be returned if the existing value
+     *                     associated with the given key is null.
+     * @param literal      If true, the key will be treated as a literal key, rather than
+     *                     potentially as a fully-qualified key.
+     * @return             Either the value associated with the given key in the given IData
+     *                     document, or the given defaultValue if null.
+     */
+    public static Object get(IData document, String key, Object defaultValue, boolean literal) {
+        Object value = get(document, key, literal);
         if (value == null) value = defaultValue;
+
+        return value;
+    }
+
+    /**
+     * Returns the value associated with the given key from the given IData document.
+     *
+     * @param document     An IData document.
+     * @param key          A simple or fully-qualified key identifying the value in the given
+     *                     IData document to be returned.
+     * @param literal      If true, the key will be treated as a literal key, rather than
+     *                     potentially as a fully-qualified key.
+     * @return             The value associated with the given key in the given IData document.
+     */
+    public static Object get(IData document, String key, boolean literal) {
+        if (document == null || key == null) return null;
+
+        Object value = null;
+        IDataCursor cursor = document.getCursor();
+
+        // try finding a value that matches the literal key, and if not found try finding a value
+        // associated with the leaf key if the key is considered fully-qualified
+        if (cursor.first(key)) {
+            value = cursor.getValue();
+        } else if (!literal && Key.isFullyQualified(key)) {
+            value = get(document, Key.parse(key));
+        }
+
+        cursor.destroy();
 
         return value;
     }
@@ -1150,22 +1310,7 @@ public class IDataHelper {
      * @return             The value associated with the given key in the given IData document.
      */
     public static Object get(IData document, String key) {
-        if (document == null || key == null) return null;
-
-        Object value = null;
-        IDataCursor cursor = document.getCursor();
-
-        // try finding a value that matches the literal key, and if not found try finding a value
-        // associated with the leaf key if the key is considered fully-qualified
-        if (cursor.first(key)) {
-            value = cursor.getValue();
-        } else if (Key.isFullyQualified(key)) {
-            value = get(document, Key.parse(key));
-        }
-
-        cursor.destroy();
-
-        return value;
+        return get(document, key, false);
     }
 
     /**
@@ -1175,7 +1320,7 @@ public class IDataHelper {
      * @param keys      A fully-qualified key identifying the value in the given IData document to be returned.
      * @return          The value associated with the given key in the given IData document.
      */
-    private static Object get(IData document, java.util.Queue<Key> keys) {
+    private static Object get(IData document, Queue<Key> keys) {
         Object value = null;
 
         if (document != null && keys != null && keys.size() > 0) {
@@ -1247,6 +1392,21 @@ public class IDataHelper {
      *                     an array.
      */
     public static Object[] getAsArray(IData document, String key) {
+        return getAsArray(document, key, false);
+    }
+
+    /**
+     * Returns the value associated with the given key from the given IData document as an array.
+     *
+     * @param document     An IData document.
+     * @param key          A simple or fully-qualified key identifying the value in the given
+     *                     IData document to be returned.
+     * @param literal      If true, the key will be treated as a literal key, rather than
+     *                     potentially as a fully-qualified key.
+     * @return             The value associated with the given key in the given IData document as
+     *                     an array.
+     */
+    public static Object[] getAsArray(IData document, String key, boolean literal) {
         if (document == null || key == null) return null;
 
         Object[] output = null;
@@ -1260,8 +1420,8 @@ public class IDataHelper {
                 list.addAll(ObjectHelper.listify(cursor.getValue()));
             } while(cursor.next(key));
             output = ArrayHelper.toArray(list);
-        } else if (Key.isFullyQualified(key)) {
-            output = getAsArray(document, Key.parse(key));
+        } else if (Key.isFullyQualified(key, literal)) {
+            output = getAsArray(document, Key.parse(key, literal));
         }
 
         cursor.destroy();
@@ -1277,7 +1437,7 @@ public class IDataHelper {
      * @param keys      A fully-qualified key identifying the value in the given IData document to be returned.
      * @return          The value associated with the given key in the given IData document as an array.
      */
-    private static Object[] getAsArray(IData document, java.util.Queue<Key> keys) {
+    private static Object[] getAsArray(IData document, Queue<Key> keys) {
         Object[] output = null;
 
         if (document != null && keys != null && keys.size() > 0) {
@@ -1331,7 +1491,7 @@ public class IDataHelper {
      * @return          The input IData document with the value set.
      */
     public static IData put(IData document, String key, Object value) {
-        return put(document, key, value, true);
+        return put(document, key, value, true, false);
     }
 
     /**
@@ -1346,7 +1506,24 @@ public class IDataHelper {
      * @return              The input IData document with the value set.
      */
     public static IData put(IData document, String key, Object value, boolean includeNull) {
-        return put(document, key == null ? null : Key.parse(key), value, includeNull);
+        return put(document, key, value, includeNull, false);
+    }
+
+    /**
+     * Sets the value associated with the given key in the given IData document. Note
+     * that this method mutates the given IData document in place.
+     *
+     * @param document      An IData document.
+     * @param key           A simple or fully-qualified key identifying the value to be set.
+     * @param value         The value to be set.
+     * @param includeNull   When true the value is set even when null, otherwise the value
+     *                      is only set when it is not null.
+     * @param literal       If true, the key will be treated as a literal key, rather than
+     *                      potentially as a fully-qualified key.
+     * @return              The input IData document with the value set.
+     */
+    public static IData put(IData document, String key, Object value, boolean includeNull, boolean literal) {
+        return put(document, Key.parse(key, literal), value, includeNull);
     }
 
     /**
@@ -1360,7 +1537,7 @@ public class IDataHelper {
      *                          is only set when it is not null.
      * @return                  The input IData document with the value set.
      */
-    private static IData put(IData document, java.util.Queue<Key> fullyQualifiedKey, Object value, boolean includeNull) {
+    private static IData put(IData document, Queue<Key> fullyQualifiedKey, Object value, boolean includeNull) {
         if (!includeNull && value == null) return document;
 
         if (fullyQualifiedKey != null && fullyQualifiedKey.size() > 0) {
@@ -2226,14 +2403,38 @@ public class IDataHelper {
          * Parses a fully-qualified IData key string into its constituent parts.
          *
          * @param key A fully-qualified IData key string.
-         * @return    The parsed key as a java.util.Queue of individual key parts.
+         * @return    The parsed key as a Queue of individual key parts.
          */
-        public static java.util.Queue<Key> parse(String key) {
-            String[] parts = key.split(SEPARATOR);
-            java.util.Queue<Key> queue = new java.util.ArrayDeque<Key>(parts.length);
+        public static Queue<Key> parse(String key) {
+            return parse(key, false);
+        }
+
+        /**
+         * Parses a fully-qualified IData key string into its constituent parts.
+         *
+         * @param key     A fully-qualified IData key string.
+         * @param literal If true, the key will be treated as a literal key, rather than
+         *                potentially as a fully-qualified key.
+         * @return        The parsed key as a Queue of individual key parts.
+         */
+        public static Queue<Key> parse(String key, boolean literal) {
+            if (key == null) return null;
+
+            String[] parts;
+
+            if (literal) {
+                parts = new String[1];
+                parts[0] = key;
+            } else {
+                parts = key.split(SEPARATOR);
+            }
+
+            Queue<Key> queue = new ArrayDeque<Key>(parts.length);
+
             for (String part : parts) {
                 queue.add(new Key(part));
             }
+
             return queue;
         }
 
@@ -2245,7 +2446,20 @@ public class IDataHelper {
          * @return    True if the given key is considered fully-qualified.
          */
         public static boolean isFullyQualified(String key) {
-            return key != null && (key.contains(SEPARATOR) || INDEX_PATTERN.matcher(key).find());
+            return isFullyQualified(key, false);
+        }
+
+        /**
+         * Returns true if the given IData key is considered fully-qualified (because
+         * it contains either an array index, key index, or path separated components).
+         *
+         * @param key     An IData key string.
+         * @param literal If true, the key will be treated as a literal key, rather than
+         *                potentially as a fully-qualified key.
+         * @return        True if the given key is considered fully-qualified.
+         */
+        public static boolean isFullyQualified(String key, boolean literal) {
+            return !literal && key != null && (key.contains(SEPARATOR) || INDEX_PATTERN.matcher(key).find());
         }
     }
 
