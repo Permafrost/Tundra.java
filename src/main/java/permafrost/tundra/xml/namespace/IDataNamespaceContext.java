@@ -47,7 +47,7 @@ public class IDataNamespaceContext implements NamespaceContext {
      * @param document  The IData document used as a source of namespace prefix URI mappings.
      */
     public IDataNamespaceContext(IData document) {
-        IDataMap map = new IDataMap(document);
+        IDataMap map = IDataMap.of(document);
         for (Map.Entry<String, Object> entry : map) {
             String key = entry.getKey();
             Object value = entry.getValue();
