@@ -531,6 +531,14 @@ public class IDataHelperTest {
         assertArrayEquals(expected, (String[]) IDataHelper.get(document, "a/b"));
     }
 
+
+    @Test
+    public void testPutWithLiteralKeyThatIncludesPathAndArrayIndex() throws Exception {
+        document = IDataHelper.put(document, "a/b[0]", "1", true);
+        assertEquals("1", (String) IDataHelper.get(document, "a/b[0]", true));
+        assertEquals("1", (String) IDataHelper.get(document, "a/b[0]", false));
+    }
+
     @Test
     public void testPutWithIndex() throws Exception {
         document = IDataHelper.put(document, "a(2)", "4");

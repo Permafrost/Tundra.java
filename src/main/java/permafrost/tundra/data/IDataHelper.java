@@ -1223,7 +1223,7 @@ public class IDataHelper {
         IData saved = IDataFactory.create();
         if (keysToBePreserved != null) {
             for (String key : keysToBePreserved) {
-                if (key != null) put(saved, key, get(document, key), false);
+                if (key != null) put(saved, key, get(document, key), false, false);
             }
         }
 
@@ -1491,7 +1491,7 @@ public class IDataHelper {
      * @return          The input IData document with the value set.
      */
     public static IData put(IData document, String key, Object value) {
-        return put(document, key, value, true, false);
+        return put(document, key, value, false);
     }
 
     /**
@@ -1501,28 +1501,28 @@ public class IDataHelper {
      * @param document      An IData document.
      * @param key           A simple or fully-qualified key identifying the value to be set.
      * @param value         The value to be set.
-     * @param includeNull   When true the value is set even when null, otherwise the value
-     *                      is only set when it is not null.
-     * @return              The input IData document with the value set.
-     */
-    public static IData put(IData document, String key, Object value, boolean includeNull) {
-        return put(document, key, value, includeNull, false);
-    }
-
-    /**
-     * Sets the value associated with the given key in the given IData document. Note
-     * that this method mutates the given IData document in place.
-     *
-     * @param document      An IData document.
-     * @param key           A simple or fully-qualified key identifying the value to be set.
-     * @param value         The value to be set.
-     * @param includeNull   When true the value is set even when null, otherwise the value
-     *                      is only set when it is not null.
      * @param literal       If true, the key will be treated as a literal key, rather than
      *                      potentially as a fully-qualified key.
      * @return              The input IData document with the value set.
      */
-    public static IData put(IData document, String key, Object value, boolean includeNull, boolean literal) {
+    public static IData put(IData document, String key, Object value, boolean literal) {
+        return put(document, key, value, literal, true);
+    }
+
+    /**
+     * Sets the value associated with the given key in the given IData document. Note
+     * that this method mutates the given IData document in place.
+     *
+     * @param document      An IData document.
+     * @param key           A simple or fully-qualified key identifying the value to be set.
+     * @param value         The value to be set.
+     * @param literal       If true, the key will be treated as a literal key, rather than
+     *                      potentially as a fully-qualified key.
+     * @param includeNull   When true the value is set even when null, otherwise the value
+     *                      is only set when it is not null.
+     * @return              The input IData document with the value set.
+     */
+    public static IData put(IData document, String key, Object value, boolean literal, boolean includeNull) {
         return put(document, Key.parse(key, literal), value, includeNull);
     }
 
