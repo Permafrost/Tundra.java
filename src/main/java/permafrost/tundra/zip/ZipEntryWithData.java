@@ -180,7 +180,7 @@ public class ZipEntryWithData extends ZipEntry implements IDataCodable {
      */
     public static ZipEntryWithData valueOf(IData document) throws IOException {
         if (document == null) return null;
-        IDataMap map = new IDataMap(document);
+        IDataMap map = IDataMap.of(document);
         return new ZipEntryWithData((String)map.get("name"), StreamHelper.normalize(map.get("content"), (String)map.get("encoding")));
     }
 
