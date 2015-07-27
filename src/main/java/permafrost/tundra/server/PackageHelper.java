@@ -155,7 +155,7 @@ public class PackageHelper {
         map.put("name", pkg.getName());
         map.merge(toIData(pkg.getManifest()));
 
-        IDataMap services = new IDataMap((IData)map.get("services"));
+        IDataMap services = IDataMap.of((IData)map.get("services"));
         services.merge(toIData(pkg.getState()));
         map.put("services", services);
 
