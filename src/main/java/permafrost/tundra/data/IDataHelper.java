@@ -193,7 +193,7 @@ public class IDataHelper {
                 size++;
                 while(cursor.next(key)) size++;
             } else if (Key.isFullyQualified(key, literal)) {
-                size = size(document, Key.parse(key));
+                size = size(document, Key.parse(key, literal));
             }
 
             cursor.destroy();
@@ -410,7 +410,7 @@ public class IDataHelper {
             if (cursor.first(key)) {
                 cursor.delete();
             } else if (Key.isFullyQualified(key, literal)) {
-                drop(document, Key.parse(key));
+                drop(document, Key.parse(key, literal));
             }
 
             cursor.destroy();
@@ -1292,8 +1292,8 @@ public class IDataHelper {
         // associated with the leaf key if the key is considered fully-qualified
         if (cursor.first(key)) {
             value = cursor.getValue();
-        } else if (!literal && Key.isFullyQualified(key)) {
-            value = get(document, Key.parse(key));
+        } else if (Key.isFullyQualified(key, literal)) {
+            value = get(document, Key.parse(key, literal));
         }
 
         cursor.destroy();
@@ -2328,27 +2328,43 @@ public class IDataHelper {
          * @param key An IData key as a string.
          */
         public Key(String key) {
+            this(key, false);
+        }
+
+        /**
+         * Constructs a new key object given a key string.
+         *
+         * @param key       An IData key as a string.
+         * @param literal   If true, the key is treated literally rather than
+         *                  as a fully-qualified key that could contain array
+         *                  or key indexing.
+         */
+        public Key(String key, boolean literal) {
             if (key == null) throw new NullPointerException("key must not be null");
 
-            StringBuffer buffer = new StringBuffer();
+            if (literal) {
+                this.key = key;
+            } else {
+                StringBuffer buffer = new StringBuffer();
 
-            Matcher matcher = INDEX_PATTERN.matcher(key);
-            while(matcher.find()) {
-                String arrayIndexString = matcher.group(2);
-                String keyIndexString = matcher.group(3);
+                Matcher matcher = INDEX_PATTERN.matcher(key);
+                while (matcher.find()) {
+                    String arrayIndexString = matcher.group(2);
+                    String keyIndexString = matcher.group(3);
 
-                if (arrayIndexString != null) {
-                    hasArrayIndex = true;
-                    index = Integer.parseInt(arrayIndexString);
-                } else {
-                    hasKeyIndex = true;
-                    index = Integer.parseInt(keyIndexString);
+                    if (arrayIndexString != null) {
+                        hasArrayIndex = true;
+                        index = Integer.parseInt(arrayIndexString);
+                    } else {
+                        hasKeyIndex = true;
+                        index = Integer.parseInt(keyIndexString);
+                    }
+                    matcher.appendReplacement(buffer, "");
                 }
-                matcher.appendReplacement(buffer, "");
-            }
-            matcher.appendTail(buffer);
+                matcher.appendTail(buffer);
 
-            this.key = buffer.toString();
+                this.key = buffer.toString();
+            }
         }
 
         /**
@@ -2432,7 +2448,7 @@ public class IDataHelper {
             Queue<Key> queue = new ArrayDeque<Key>(parts.length);
 
             for (String part : parts) {
-                queue.add(new Key(part));
+                queue.add(new Key(part, literal));
             }
 
             return queue;
