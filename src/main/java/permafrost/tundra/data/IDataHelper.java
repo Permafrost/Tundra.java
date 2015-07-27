@@ -97,7 +97,7 @@ public class IDataHelper {
      */
     public static String[] getKeys(IData document, Pattern pattern) {
         java.util.List<String> keys = new java.util.ArrayList<String>();
-        for (Map.Entry<String, Object> entry : new IDataMap(document)) {
+        for (Map.Entry<String, Object> entry : IDataMap.of(document)) {
             String key = entry.getKey();
 
             if (pattern == null) {
@@ -120,7 +120,7 @@ public class IDataHelper {
     public static Object[] getValues(IData document) {
         List<Object> values = new ArrayList<Object>();
 
-        for(Map.Entry<String, Object> entry : new IDataMap(document)) {
+        for(Map.Entry<String, Object> entry : IDataMap.of(document)) {
             values.add(entry.getValue());
         }
 
@@ -1466,7 +1466,7 @@ public class IDataHelper {
 
         Map<String, Object> output = new java.util.LinkedHashMap<String, Object>(size);
 
-        for(Map.Entry<String, Object> entry : new IDataMap(document)) {
+        for(Map.Entry<String, Object> entry : IDataMap.of(document)) {
             String key = entry.getKey();
             Object value = entry.getValue();
             if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
@@ -1820,7 +1820,7 @@ public class IDataHelper {
         if (array != null) {
             for (IData document : array) {
                 if (document != null) {
-                    for (Map.Entry<String, Object> entry : new IDataMap(document)) {
+                    for (Map.Entry<String, Object> entry : IDataMap.of(document)) {
                         String key = entry.getKey();
                         if (pattern == null) {
                             keys.add(key);
