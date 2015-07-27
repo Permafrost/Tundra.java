@@ -270,7 +270,7 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
      * @param document Mappings to be stored in this map.
      */
     public void putAll(IData document) {
-        putAll((Map)new IDataMap(document));
+        putAll((Map)IDataMap.of(document));
     }
 
     /**
