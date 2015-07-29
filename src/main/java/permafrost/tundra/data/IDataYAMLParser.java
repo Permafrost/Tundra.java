@@ -168,7 +168,7 @@ public class IDataYAMLParser extends IDataTextParser {
          * Default constructor.
          */
         public Representer() {
-            this.multiRepresenters.put(InputStream.class, new RepresentInputStream());
+            this.multiRepresenters.put(ByteArrayInputStream.class, new RepresentInputStream());
             this.representers.put(null, new RepresentObject());
         }
 
