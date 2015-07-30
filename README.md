@@ -25,6 +25,7 @@ It is also dependent on the following open source libraries, which
 are required to be included on the project's classpath:
 
 * `commons-csv-1.0.jar` - https://commons.apache.org/proper/commons-csv/
+* `jakarta-oro-2.0.8.jar` - http://archive.apache.org/dist/jakarta/oro/
 * `javax.json-1.0.4.jar` - https://jsonp.java.net
 * `snakeyaml-1.15.jar` - http://www.snakeyaml.org
 * `spring-core-4.1.2.RELEASE.jar` - http://projects.spring.io/spring-framework/

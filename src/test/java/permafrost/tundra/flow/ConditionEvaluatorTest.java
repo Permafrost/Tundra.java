@@ -43,8 +43,7 @@ public class ConditionEvaluatorTest {
 
         assertTrue(result);
     }
-    /* Commented out because the SAG Integration Server libraries require an Apache regex library
-     * TODO: fix this by finding and including the appropriate library in the classpath
+
     @Test
     public void testEvaluateNullScope() throws Exception {
         String condition = "%a% == 1";
@@ -77,7 +76,7 @@ public class ConditionEvaluatorTest {
 
         boolean result = ConditionEvaluator.evaluate(condition, map);
 
-        assertTrue(result);
+        assertFalse(result);
     }
 
     @Test
@@ -131,5 +130,4 @@ public class ConditionEvaluatorTest {
 
         assertTrue(!result);
     }
-    */
 }
