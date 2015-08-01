@@ -24,6 +24,8 @@
 
 package permafrost.tundra.html;
 
+import org.springframework.web.util.HtmlUtils;
+
 /**
  * A collection of convenience methods for working with HTML.
  */
@@ -40,7 +42,7 @@ public class HTMLHelper {
      */
     public static String decode(String input) {
         if (input == null) return null;
-        return org.springframework.web.util.HtmlUtils.htmlUnescape(input);
+        return HtmlUtils.htmlUnescape(input);
     }
 
     /**
@@ -50,6 +52,6 @@ public class HTMLHelper {
      */
     public static String encode(String input) {
         if (input == null) return null;
-        return org.springframework.web.util.HtmlUtils.htmlEscape(input);
+        return HtmlUtils.htmlEscape(input);
     }
 }
