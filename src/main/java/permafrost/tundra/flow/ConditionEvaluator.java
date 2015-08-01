@@ -31,6 +31,9 @@ import com.wm.data.IDataUtil;
 import com.wm.lang.flow.ExpressionEvaluator;
 import com.wm.lang.flow.MalformedExpressionException;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * Performs webMethods Integration Server flow language conditional statement evaluation against a specified scope.
  */
@@ -40,9 +43,9 @@ public class ConditionEvaluator {
      * ANTLR-based implementation of the evaluate function, which allowed use of the key
      * words: null, true and false
      */
-    protected static final java.util.regex.Pattern NULL_PATTERN = java.util.regex.Pattern.compile("((=|==|!=|<>|>|>=|<|<=)\\s*null(\\s|$))|((^|\\s)null\\s*(=|==|!=|<>|>|>=|<|<=))");
-    protected static final java.util.regex.Pattern TRUE_PATTERN = java.util.regex.Pattern.compile("((=|==|!=|<>|>|>=|<|<=)\\s*true(\\s|$))|((^|\\s)true\\s*(=|==|!=|<>|>|>=|<|<=))");
-    protected static final java.util.regex.Pattern FALSE_PATTERN = java.util.regex.Pattern.compile("((=|==|!=|<>|>|>=|<|<=)\\s*false(\\s|$))|((^|\\s)false\\s*(=|==|!=|<>|>|>=|<|<=))");
+    protected static final Pattern NULL_PATTERN = Pattern.compile("((=|==|!=|<>|>|>=|<|<=)\\s*null(\\s|$))|((^|\\s)null\\s*(=|==|!=|<>|>|>=|<|<=))");
+    protected static final Pattern TRUE_PATTERN = Pattern.compile("((=|==|!=|<>|>|>=|<|<=)\\s*true(\\s|$))|((^|\\s)true\\s*(=|==|!=|<>|>|>=|<|<=))");
+    protected static final Pattern FALSE_PATTERN = Pattern.compile("((=|==|!=|<>|>|>=|<|<=)\\s*false(\\s|$))|((^|\\s)false\\s*(=|==|!=|<>|>|>=|<|<=))");
 
     /**
      * The conditional statement to be evaluated by this object.
@@ -67,9 +70,9 @@ public class ConditionEvaluator {
         boolean result = true;
 
         if (condition != null) {
-            java.util.regex.Matcher nullMatcher = NULL_PATTERN.matcher(condition);
-            java.util.regex.Matcher trueMatcher = TRUE_PATTERN.matcher(condition);
-            java.util.regex.Matcher falseMatcher = FALSE_PATTERN.matcher(condition);
+            Matcher nullMatcher = NULL_PATTERN.matcher(condition);
+            Matcher trueMatcher = TRUE_PATTERN.matcher(condition);
+            Matcher falseMatcher = FALSE_PATTERN.matcher(condition);
 
             boolean nullFound = nullMatcher.find();
             boolean trueFound = trueMatcher.find();
