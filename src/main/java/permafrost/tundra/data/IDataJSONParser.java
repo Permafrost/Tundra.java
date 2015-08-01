@@ -28,22 +28,29 @@ import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
 import com.wm.data.IDataUtil;
+import com.wm.util.Table;
 import permafrost.tundra.io.StreamHelper;
 import permafrost.tundra.lang.ArrayHelper;
 import permafrost.tundra.lang.CharsetHelper;
 
 import javax.json.Json;
 import javax.json.JsonArray;
+import javax.json.JsonArrayBuilder;
 import javax.json.JsonNumber;
 import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import javax.json.JsonReader;
 import javax.json.JsonReaderFactory;
 import javax.json.JsonString;
 import javax.json.JsonStructure;
 import javax.json.JsonValue;
+import javax.json.JsonWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.StringWriter;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.List;
@@ -235,8 +242,8 @@ public class IDataJSONParser extends IDataTextParser {
      */
     @Override
     public String encodeToString(IData input) throws IOException {
-        java.io.StringWriter stringWriter = new java.io.StringWriter();
-        javax.json.JsonWriter writer = Json.createWriter(stringWriter);
+        StringWriter stringWriter = new StringWriter();
+        JsonWriter writer = Json.createWriter(stringWriter);
 
         IDataCursor cursor = input.getCursor();
         Object[] array = IDataUtil.getObjectArray(cursor, "recordWithNoID");
@@ -260,7 +267,7 @@ public class IDataJSONParser extends IDataTextParser {
      * @return      A JSON object.
      */
     protected static JsonObject toJsonObject(IData input) {
-        javax.json.JsonObjectBuilder builder = Json.createObjectBuilder();
+        JsonObjectBuilder builder = Json.createObjectBuilder();
 
         if (input != null) {
             IDataCursor cursor = input.getCursor();
@@ -273,8 +280,8 @@ public class IDataJSONParser extends IDataTextParser {
                     builder.addNull(key);
                 } else if (value instanceof IData) {
                     builder.add(key, toJsonObject((IData)value));
-                } else if (value instanceof com.wm.util.Table) {
-                    value = ((com.wm.util.Table)value).getValues();
+                } else if (value instanceof Table) {
+                    value = ((Table)value).getValues();
                     builder.add(key, toJsonArray((IData[])value));
                 } else if (value instanceof Object[]) {
                     builder.add(key, toJsonArray((Object[])value));
@@ -284,14 +291,14 @@ public class IDataJSONParser extends IDataTextParser {
                     builder.add(key, ((Integer)value).intValue());
                 } else if (value instanceof Long) {
                     builder.add(key, ((Long)value).longValue());
-                } else if (value instanceof java.math.BigInteger) {
-                    builder.add(key, (java.math.BigInteger)value);
+                } else if (value instanceof BigInteger) {
+                    builder.add(key, (BigInteger)value);
                 } else if (value instanceof Float) {
                     builder.add(key, ((Float)value));
                 } else if (value instanceof Double) {
                     builder.add(key, ((Double)value));
-                } else if (value instanceof java.math.BigDecimal) {
-                    builder.add(key, (java.math.BigDecimal)value);
+                } else if (value instanceof BigDecimal) {
+                    builder.add(key, (BigDecimal)value);
                 } else {
                     builder.add(key, value.toString());
                 }
@@ -308,7 +315,7 @@ public class IDataJSONParser extends IDataTextParser {
      * @return      A JSON array.
      */
     protected static JsonArray toJsonArray(Object[] input) {
-        javax.json.JsonArrayBuilder builder = Json.createArrayBuilder();
+        JsonArrayBuilder builder = Json.createArrayBuilder();
 
         if (input != null) {
             for (int i = 0; i < input.length; i++) {
@@ -317,8 +324,8 @@ public class IDataJSONParser extends IDataTextParser {
                     builder.addNull();
                 } else if (value instanceof IData) {
                     builder.add(toJsonObject((IData)value));
-                } else if (value instanceof com.wm.util.Table) {
-                    value = ((com.wm.util.Table)value).getValues();
+                } else if (value instanceof Table) {
+                    value = ((Table)value).getValues();
                     builder.add(toJsonArray((IData[])value));
                 } else if (value instanceof Object[]) {
                     builder.add(toJsonArray((Object[])value));
@@ -328,14 +335,14 @@ public class IDataJSONParser extends IDataTextParser {
                     builder.add(((Integer)value).intValue());
                 } else if (value instanceof Long) {
                     builder.add(((Long)value).longValue());
-                } else if (value instanceof java.math.BigInteger) {
-                    builder.add((java.math.BigInteger)value);
+                } else if (value instanceof BigInteger) {
+                    builder.add((BigInteger)value);
                 } else if (value instanceof Float) {
                     builder.add(((Float)value));
                 } else if (value instanceof Double) {
                     builder.add(((Double)value));
-                } else if (value instanceof java.math.BigDecimal) {
-                    builder.add((java.math.BigDecimal)value);
+                } else if (value instanceof BigDecimal) {
+                    builder.add((BigDecimal)value);
                 } else {
                     builder.add(value.toString());
                 }
