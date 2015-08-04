@@ -430,6 +430,29 @@ public class StringHelper {
     }
 
     /**
+     * Removes all occurrences of the given regular expression in the given string.
+     *
+     * @param string        The string to remove the pattern from.
+     * @param pattern       The regular expression pattern to be removed.
+     * @return              The given string with all occurrences of the given pattern removed.
+     */
+    public static String remove(String string, String pattern) {
+        return remove(string, pattern, false);
+    }
+
+    /**
+     * Removes either the first or all occurrences of the given regular expression in the given string.
+     *
+     * @param string        The string to remove the pattern from.
+     * @param pattern       The regular expression pattern to be removed.
+     * @param firstOnly     If true, only the first occurrence is removed, otherwise all occurrences are removed.
+     * @return              The given string with either the first or all occurrences of the given pattern removed.
+     */
+    public static String remove(String string, String pattern, boolean firstOnly) {
+        return replace(string, pattern, "", true, firstOnly);
+    }
+
+    /**
      * Replaces all occurrences of the given regular expression in the given string with the given replacement.
      *
      * @param string        The string to be replaced.
@@ -439,11 +462,29 @@ public class StringHelper {
      * @return              The replaced string.
      */
     public static String replace(String string, String pattern, String replacement, boolean literal) {
+        return replace(string, pattern, replacement, literal, false);
+    }
+
+    /**
+     * Replaces either the first or all occurrences of the given regular expression in the given string with the given replacement.
+     *
+     * @param string        The string to be replaced.
+     * @param pattern       The regular expression pattern.
+     * @param replacement   The replacement string.
+     * @param literal       Whether the replacement string is literal and therefore requires quoting.
+     * @param firstOnly     If true, only the first occurrence is replaced, otherwise all occurrences are replaced.
+     * @return              The replaced string.
+     */
+    public static String replace(String string, String pattern, String replacement, boolean literal, boolean firstOnly) {
         String output = string;
         if (string != null && pattern != null && replacement != null) {
             if (literal) replacement = Matcher.quoteReplacement(replacement);
             Matcher matcher = Pattern.compile(pattern).matcher(string);
-            output = matcher.replaceAll(replacement);
+            if (firstOnly) {
+                output = matcher.replaceFirst(replacement);
+            } else {
+                output = matcher.replaceAll(replacement);
+            }
         }
         return output;
     }
