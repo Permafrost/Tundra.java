@@ -25,7 +25,7 @@
 package permafrost.tundra.html;
 
 public enum HTMLEntity {
-    NULL("&#x2400;"), EMPTY("&empty");
+    NULL("&#x2400;"), EMPTY("&empty;");
 
     private String value;
 
