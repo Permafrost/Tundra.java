@@ -24,25 +24,23 @@
 
 package permafrost.tundra.math;
 
-import java.math.BigDecimal;
+import org.junit.Test;
 
-/**
- * A collection of convenience methods for working with decimals.
- */
-public class DecimalHelper {
-    /**
-     * Disallow instantiation of this class.
-     */
-    private DecimalHelper() {}
+import static org.junit.Assert.*;
 
-    /**
-     * Parses the given string and returns a decimal representation.
-     *
-     * @param string A string to be parsed as a decimal.
-     * @return       A decimal representation of the given string.
-     */
-    public static BigDecimal parse(String string) {
-        if (string == null) return null;
-        return new BigDecimal(string);
+public class BigDecimalHelperTest {
+    @Test
+    public void testParseNullArgument() throws Exception {
+        assertNull(BigDecimalHelper.parse(null));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testParseUnparseableArgument() throws Exception {
+        assertNull(BigDecimalHelper.parse("test"));
+    }
+
+    @Test
+    public void testParseParseableArgument() throws Exception {
+        assertEquals(123.456, BigDecimalHelper.parse("123.456").doubleValue(), 0.001);
     }
 }

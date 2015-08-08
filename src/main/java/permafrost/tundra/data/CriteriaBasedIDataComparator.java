@@ -25,7 +25,7 @@
 package permafrost.tundra.data;
 
 import com.wm.data.IData;
-import permafrost.tundra.math.DecimalHelper;
+import permafrost.tundra.math.BigDecimalHelper;
 import permafrost.tundra.math.IntegerHelper;
 import permafrost.tundra.time.DateTimeHelper;
 import permafrost.tundra.time.DurationHelper;
@@ -111,8 +111,8 @@ public class CriteriaBasedIDataComparator implements IDataComparator {
                         secondValue = IntegerHelper.parse(secondValue.toString());
                         break;
                     case DECIMAL:
-                        firstValue = DecimalHelper.parse(firstValue.toString());
-                        secondValue = DecimalHelper.parse(secondValue.toString());
+                        firstValue = BigDecimalHelper.parse(firstValue.toString());
+                        secondValue = BigDecimalHelper.parse(secondValue.toString());
                         break;
                     case DATETIME:
                         firstValue = DateTimeHelper.parse(firstValue.toString(), criterion.getPattern());
