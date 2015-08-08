@@ -29,11 +29,11 @@ import java.math.BigInteger;
 /**
  * A collection of convenience methods for working with integers.
  */
-public class IntegerHelper {
+public class BigIntegerHelper {
     /**
      * Disallow instantiation of this class.
      */
-    private IntegerHelper() {}
+    private BigIntegerHelper() {}
 
     /**
      * Returns a java.math.BigInteger object by parsing the given an integer string.

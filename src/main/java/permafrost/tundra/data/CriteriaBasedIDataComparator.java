@@ -26,7 +26,7 @@ package permafrost.tundra.data;
 
 import com.wm.data.IData;
 import permafrost.tundra.math.BigDecimalHelper;
-import permafrost.tundra.math.IntegerHelper;
+import permafrost.tundra.math.BigIntegerHelper;
 import permafrost.tundra.time.DateTimeHelper;
 import permafrost.tundra.time.DurationHelper;
 
@@ -107,8 +107,8 @@ public class CriteriaBasedIDataComparator implements IDataComparator {
             } else {
                 switch(criterion.getType()) {
                     case INTEGER:
-                        firstValue = IntegerHelper.parse(firstValue.toString());
-                        secondValue = IntegerHelper.parse(secondValue.toString());
+                        firstValue = BigIntegerHelper.parse(firstValue.toString());
+                        secondValue = BigIntegerHelper.parse(secondValue.toString());
                         break;
                     case DECIMAL:
                         firstValue = BigDecimalHelper.parse(firstValue.toString());
@@ -119,8 +119,8 @@ public class CriteriaBasedIDataComparator implements IDataComparator {
                         secondValue = DateTimeHelper.parse(secondValue.toString(), criterion.getPattern());
                         break;
                     case DURATION:
-                        firstValue = IntegerHelper.parse(DurationHelper.format(firstValue.toString(), criterion.getPattern(), "milliseconds"));
-                        secondValue = IntegerHelper.parse(DurationHelper.format(secondValue.toString(), criterion.getPattern(), "milliseconds"));
+                        firstValue = BigIntegerHelper.parse(DurationHelper.format(firstValue.toString(), criterion.getPattern(), "milliseconds"));
+                        secondValue = BigIntegerHelper.parse(DurationHelper.format(secondValue.toString(), criterion.getPattern(), "milliseconds"));
                         break;
                     case STRING:
                         firstValue = firstValue.toString();

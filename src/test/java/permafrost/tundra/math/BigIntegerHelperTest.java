@@ -28,24 +28,24 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class IntegerHelperTest {
+public class BigIntegerHelperTest {
     @Test
     public void testParseNullArgument() throws Exception {
-        assertNull(IntegerHelper.parse(null));
+        assertNull(BigIntegerHelper.parse(null));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testParseUnparseableArgument() throws Exception {
-        IntegerHelper.parse("test");
+        BigIntegerHelper.parse("test");
     }
 
     @Test
     public void testParseParseableArgument() throws Exception {
-        assertEquals(123, IntegerHelper.parse("123").intValue());
+        assertEquals(123, BigIntegerHelper.parse("123").intValue());
     }
 
     @Test
     public void testParseWithRadix() throws Exception {
-        assertEquals(255, IntegerHelper.parse("FF", 16).intValue());
+        assertEquals(255, BigIntegerHelper.parse("FF", 16).intValue());
     }
 }
