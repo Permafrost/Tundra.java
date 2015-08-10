@@ -1363,4 +1363,55 @@ public class IDataHelperTest {
         assertEquals("z", fifth.get("key2"));
         assertEquals("z", fifth.get("key3"));
     }
+
+    @Test
+    public void testFlattenIDataToStringArray() throws Exception {
+        String[] expected = new String[] { "1", "2", "3", "4", "6" };
+
+        IDataMap parent = new IDataMap();
+        parent.put("a", "1");
+
+        IDataMap child = new IDataMap();
+        child.put("c", "2");
+        child.put("d", new String[]{"3", "4"});
+        child.put("e", new Integer("5"));
+        child.put("f", "6");
+
+        parent.put("b", child);
+
+        Object[] actual = IDataHelper.flatten(parent, String.class);
+
+        assertArrayEquals(expected, actual);
+    }
+
+    @Test
+    public void testFlattenIDataArrayToStringArray() throws Exception {
+        String[] expected = new String[] { "1", "2", "3", "4", "6", "7", "8", "9" };
+
+        IData[] array = new IData[2];
+
+        IDataMap parent = new IDataMap();
+        parent.put("a", "1");
+        IDataMap child = new IDataMap();
+        child.put("c", "2");
+        child.put("d", new String[] { "3", "4" });
+        child.put("e", new Integer("5"));
+        child.put("f", "6");
+        parent.put("b", child);
+
+        array[0] = parent;
+
+        parent = new IDataMap();
+        child = new IDataMap();
+        child.put("h", "7");
+        child.put("i", new String[] { "8", "9" });
+        child.put("j", new Integer("10"));
+        parent.put("g", child);
+
+        array[1] = parent;
+
+        Object[] actual = IDataHelper.flatten(array, String.class);
+
+        assertArrayEquals(expected, actual);
+    }
 }
