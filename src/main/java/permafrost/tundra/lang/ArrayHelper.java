@@ -771,4 +771,15 @@ public class ArrayHelper {
 
         return stringArray;
     }
+
+    /**
+     * Converts varargs to an array.
+     *
+     * @param args A varargs list of arguments.
+     * @param <T>  The type of arguments.
+     * @return     An array representation of the given varargs argument.
+     */
+    public static <T> T[] arrayify(T ...args) {
+        return args;
+    }
 }
