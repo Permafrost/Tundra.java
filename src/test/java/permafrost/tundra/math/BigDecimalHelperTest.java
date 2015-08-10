@@ -31,7 +31,7 @@ import static org.junit.Assert.*;
 public class BigDecimalHelperTest {
     @Test
     public void testParseNullArgument() throws Exception {
-        assertNull(BigDecimalHelper.parse(null));
+        assertNull(BigDecimalHelper.parse((String)null));
     }
 
     @Test(expected = IllegalArgumentException.class)
