@@ -31,6 +31,11 @@ import java.math.BigInteger;
  */
 public class BigIntegerHelper {
     /**
+     * The default radix used by methods in this class.
+     */
+    public static int DEFAULT_RADIX = 10;
+
+    /**
      * Disallow instantiation of this class.
      */
     private BigIntegerHelper() {}
@@ -41,7 +46,7 @@ public class BigIntegerHelper {
      * @return       A java.math.BigInteger representation of the given string.
      */
     public static BigInteger parse(String string) {
-        return parse(string, 10);
+        return parse(string, DEFAULT_RADIX);
     }
 
     /**
@@ -55,5 +60,32 @@ public class BigIntegerHelper {
     public static BigInteger parse(String string, int radix) {
         if (string == null) return null;
         return new BigInteger(string, radix);
+    }
+
+    /**
+     * Returns java.math.BigInteger representations of the given String[].
+     * @param strings A list of strings to parse.
+     * @return        A list of java.math.BigDecimal representations of the given strings.
+     */
+    public static BigInteger[] parse(String[] strings) {
+        return parse(strings, DEFAULT_RADIX);
+    }
+
+    /**
+     * Returns java.math.BigInteger representations of the given String[].
+     * @param strings A list of strings to parse.
+     * @param radix   The radix to use when interpreting the given strings.
+     * @return        A list of java.math.BigDecimal representations of the given strings.
+     */
+    public static BigInteger[] parse(String[] strings, int radix) {
+        if (strings == null) return null;
+
+        BigInteger[] integers = new BigInteger[strings.length];
+
+        for (int i = 0; i < strings.length; i++) {
+            integers[i] = parse(strings[i], radix);
+        }
+
+        return integers;
     }
 }
