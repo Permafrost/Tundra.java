@@ -131,52 +131,52 @@ public class IDataHelper {
 
     /**
      * Returns all leaf values from the given document.
-     * @param document The document to flatten.
+     * @param document The document to getLeafValues.
      * @return         All leaf values recursively collected from the given document and its children.
      */
-    public static Object[] flatten(IData document) {
-        return flatten(document, new Class[0]);
+    public static Object[] getLeafValues(IData document) {
+        return getLeafValues(document, new Class[0]);
     }
 
     /**
      * Returns all leaf values that are instances of the given classes from the given document.
-     * @param document The document to flatten.
+     * @param document The document to getLeafValues.
      * @param classes  List of classes the returned values must be instances of.
      * @return         All leaf values recursively collected from the given document and its children.
      */
-    public static Object[] flatten(IData document, Class ...classes) {
-        return ArrayHelper.normalize(flatten(new LinkedList<Object>(), document, classes).toArray());
+    public static Object[] getLeafValues(IData document, Class... classes) {
+        return ArrayHelper.normalize(getLeafValues(new LinkedList<Object>(), document, classes).toArray());
     }
 
     /**
      * Returns all leaf values from the given document list.
-     * @param array The document list to flatten.
+     * @param array The document list to getLeafValues.
      * @return      All leaf values recursively collected from the given document list and its children.
      */
-    public static Object[] flatten(IData[] array) {
-        return flatten(array, new Class[0]);
+    public static Object[] getLeafValues(IData[] array) {
+        return getLeafValues(array, new Class[0]);
     }
 
     /**
      * Returns all leaf values that are instances of the given classes from the given document list.
-     * @param array    The document list to flatten.
+     * @param array    The document list to getLeafValues.
      * @param classes  List of classes the returned values must be instances of.
      * @return         All leaf values recursively collected from the given document list and its children.
      */
-    public static Object[] flatten(IData[] array, Class ...classes) {
-        return ArrayHelper.normalize(flatten(new LinkedList<Object>(), array, classes).toArray());
+    public static Object[] getLeafValues(IData[] array, Class... classes) {
+        return ArrayHelper.normalize(getLeafValues(new LinkedList<Object>(), array, classes).toArray());
     }
 
     /**
      * Returns all leaf values that are instances of the given classes from the given IData.
      * @param values   The list to add the flattened values to.
-     * @param value    The IData to flatten.
+     * @param value    The IData to getLeafValues.
      * @param classes  List of classes the returned values must be instances of.
      * @return         The list of flattened values.
      */
-    private static List<Object> flatten(List<Object> values, IData value, Class ...classes) {
+    private static List<Object> getLeafValues(List<Object> values, IData value, Class... classes) {
         for(Map.Entry<String, Object> entry : IDataMap.of(value)) {
-            values = flatten(values, entry.getValue(), classes);
+            values = getLeafValues(values, entry.getValue(), classes);
         }
 
         return values;
@@ -185,13 +185,13 @@ public class IDataHelper {
     /**
      * Returns all leaf values that are instances of the given classes from the given IData[].
      * @param values   The list to add the flattened values to.
-     * @param value    The IData[] to flatten.
+     * @param value    The IData[] to getLeafValues.
      * @param classes  List of classes the returned values must be instances of.
      * @return         The list of flattened values.
      */
-    private static List<Object> flatten(List<Object> values, IData[] value, Class ...classes) {
+    private static List<Object> getLeafValues(List<Object> values, IData[] value, Class... classes) {
         for(IData item : value) {
-            values = flatten(values, item, classes);
+            values = getLeafValues(values, item, classes);
         }
 
         return values;
@@ -200,13 +200,13 @@ public class IDataHelper {
     /**
      * Returns all leaf values that are instances of the given classes from the given Object[][].
      * @param values   The list to add the flattened values to.
-     * @param value    The Object[][] to flatten.
+     * @param value    The Object[][] to getLeafValues.
      * @param classes  List of classes the returned values must be instances of.
      * @return         The list of flattened values.
      */
-    private static List<Object> flatten(List<Object> values, Object[][] value, Class ...classes) {
+    private static List<Object> getLeafValues(List<Object> values, Object[][] value, Class... classes) {
         for (Object[] array : value) {
-            values = flatten(values, array, classes);
+            values = getLeafValues(values, array, classes);
         }
 
         return values;
@@ -215,13 +215,13 @@ public class IDataHelper {
     /**
      * Returns all leaf values that are instances of the given classes from the given Object[].
      * @param values   The list to add the flattened values to.
-     * @param value    The Object[] to flatten.
+     * @param value    The Object[] to getLeafValues.
      * @param classes  List of classes the returned values must be instances of.
      * @return         The list of flattened values.
      */
-    private static List<Object> flatten(List<Object> values, Object[] value, Class ...classes) {
+    private static List<Object> getLeafValues(List<Object> values, Object[] value, Class... classes) {
         for (Object item : value) {
-            values = flatten(values, item, classes);
+            values = getLeafValues(values, item, classes);
         }
 
         return values;
@@ -230,25 +230,25 @@ public class IDataHelper {
     /**
      * Returns all leaf values that are instances of the given classes from the given Object.
      * @param values   The list to add the flattened values to.
-     * @param value    The Object to flatten.
+     * @param value    The Object to getLeafValues.
      * @param classes  List of classes the returned values must be instances of.
      * @return         The list of flattened values.
      */
-    private static List<Object> flatten(List<Object> values, Object value, Class ...classes) {
+    private static List<Object> getLeafValues(List<Object> values, Object value, Class... classes) {
         if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
-            values = flatten(values, toIData(value), classes);
+            values = getLeafValues(values, toIData(value), classes);
         } else if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
-            values = flatten(values, toIDataArray(value), classes);
+            values = getLeafValues(values, toIDataArray(value), classes);
         } else if (value instanceof Object[][]) {
-            values = flatten(values, (Object[][]) value, classes);
+            values = getLeafValues(values, (Object[][]) value, classes);
         } else if (value instanceof Object[]) {
-            values = flatten(values, (Object[]) value, classes);
+            values = getLeafValues(values, (Object[]) value, classes);
         } else {
             if (classes == null || classes.length == 0) {
                 values.add(value);
             } else {
                 for (Class klass : classes) {
-                    if (klass.isInstance(value)) {
+                    if (klass != null && klass.isInstance(value)) {
                         values.add(value);
                         break;
                     }

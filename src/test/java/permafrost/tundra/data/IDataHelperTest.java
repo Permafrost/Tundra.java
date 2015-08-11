@@ -7,7 +7,6 @@ import com.wm.data.IDataUtil;
 import org.junit.Before;
 import org.junit.Test;
 import permafrost.tundra.io.StreamHelper;
-import permafrost.tundra.lang.ArrayHelper;
 
 import java.util.regex.Pattern;
 
@@ -1365,7 +1364,7 @@ public class IDataHelperTest {
     }
 
     @Test
-    public void testFlattenIDataToStringArray() throws Exception {
+    public void testGetLeafValuesForIData() throws Exception {
         String[] expected = new String[] { "1", "2", "3", "4", "6" };
 
         IDataMap parent = new IDataMap();
@@ -1379,13 +1378,13 @@ public class IDataHelperTest {
 
         parent.put("b", child);
 
-        Object[] actual = IDataHelper.flatten(parent, String.class);
+        Object[] actual = IDataHelper.getLeafValues(parent, String.class);
 
         assertArrayEquals(expected, actual);
     }
 
     @Test
-    public void testFlattenIDataArrayToStringArray() throws Exception {
+    public void testGetLeafValuesForIDataArray() throws Exception {
         String[] expected = new String[] { "1", "2", "3", "4", "6", "7", "8", "9" };
 
         IData[] array = new IData[2];
@@ -1410,7 +1409,7 @@ public class IDataHelperTest {
 
         array[1] = parent;
 
-        Object[] actual = IDataHelper.flatten(array, String.class);
+        Object[] actual = IDataHelper.getLeafValues(array, String.class);
 
         assertArrayEquals(expected, actual);
     }
