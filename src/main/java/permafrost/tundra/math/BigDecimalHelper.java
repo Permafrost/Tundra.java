@@ -259,7 +259,7 @@ public class BigDecimalHelper {
         } else if (object instanceof Number) {
             decimal = new BigDecimal(((Number)object).doubleValue());
         } else if (object instanceof String) {
-            decimal = parse((String) object);
+            decimal = parse((String)object);
         }
 
         return decimal;
