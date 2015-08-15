@@ -27,7 +27,6 @@ package permafrost.tundra.data;
 import com.wm.data.IData;
 import com.wm.util.coder.IDataXMLCoder;
 import permafrost.tundra.lang.CharsetHelper;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -54,6 +53,7 @@ public class IDataXMLParser extends IDataTextParser {
 
     /**
      * Returns the singleton instance of this class.
+     *
      * @return The singleton instance of this class.
      */
     public static IDataXMLParser getInstance() {
@@ -62,6 +62,7 @@ public class IDataXMLParser extends IDataTextParser {
 
     /**
      * Returns the MIME type this parser handles.
+     *
      * @return The MIME type this parser handles.
      */
     public String getContentType() {
@@ -71,10 +72,10 @@ public class IDataXMLParser extends IDataTextParser {
     /**
      * Returns an IData representation of the XML data read from the given input stream.
      *
-     * @param inputStream                       The input stream to be decoded.
-     * @param charset                           The character set to use.
-     * @return                                  An IData representation of the given input stream data.
-     * @throws IOException                      If there is a problem reading from the stream.
+     * @param inputStream The input stream to be decoded.
+     * @param charset     The character set to use.
+     * @return An IData representation of the given input stream data.
+     * @throws IOException If there is a problem reading from the stream.
      */
     public IData decode(InputStream inputStream, Charset charset) throws IOException {
         IDataXMLCoder parser = new IDataXMLCoder(CharsetHelper.normalize(charset).displayName());
@@ -84,10 +85,10 @@ public class IDataXMLParser extends IDataTextParser {
     /**
      * Serializes the given IData document as XML to the given output stream.
      *
-     * @param outputStream  The stream to write the encoded IData to.
-     * @param document      The IData document to be encoded.
-     * @param charset       The character set to use.
-     * @throws IOException  If there is a problem writing to the stream.
+     * @param outputStream The stream to write the encoded IData to.
+     * @param document     The IData document to be encoded.
+     * @param charset      The character set to use.
+     * @throws IOException If there is a problem writing to the stream.
      */
     public void encode(OutputStream outputStream, IData document, Charset charset) throws IOException {
         IDataXMLCoder parser = new IDataXMLCoder(CharsetHelper.normalize(charset).displayName());

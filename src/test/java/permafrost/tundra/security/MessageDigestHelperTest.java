@@ -24,16 +24,17 @@
 
 package permafrost.tundra.security;
 
+import static org.junit.Assert.assertArrayEquals;
 import org.junit.Before;
 import org.junit.Test;
 import permafrost.tundra.io.FileHelper;
 import permafrost.tundra.io.StreamHelper;
 import permafrost.tundra.lang.BytesHelper;
-
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.Map;
-
-import static org.junit.Assert.*;
 
 public class MessageDigestHelperTest {
     byte[] sha256;

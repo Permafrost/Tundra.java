@@ -50,8 +50,9 @@ public enum ObjectConvertMode {
 
     /**
      * Returns an ConvertMode for the given integer value.
+     *
      * @param value The value to be converted to an ConvertMode.
-     * @return      The ConvertMode representing the given value.
+     * @return The ConvertMode representing the given value.
      */
     public static ObjectConvertMode valueOf(int value) {
         return map.get(value);
@@ -59,8 +60,9 @@ public enum ObjectConvertMode {
 
     /**
      * Returns an ConvertMode for the given string value.
+     *
      * @param value The value to be converted to an ConvertMode.
-     * @return      The ConvertMode representing the given value.
+     * @return The ConvertMode representing the given value.
      */
     public static ObjectConvertMode normalize(String value) {
         return normalize(value == null ? (ObjectConvertMode)null : valueOf(value.trim().toUpperCase()));
@@ -68,8 +70,9 @@ public enum ObjectConvertMode {
 
     /**
      * Normalizes the given ConvertMode.
-     * @param mode  The ConvertMode to be normalized.
-     * @return      The default ConvertMode if mode is null, otherwise null.
+     *
+     * @param mode The ConvertMode to be normalized.
+     * @return The default ConvertMode if mode is null, otherwise null.
      */
     public static ObjectConvertMode normalize(ObjectConvertMode mode) {
         return mode == null ? DEFAULT_CONVERT_MODE : mode;

@@ -28,7 +28,6 @@ import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
 import com.wm.data.IDataUtil;
-
 import java.util.Arrays;
 
 /**
@@ -42,6 +41,7 @@ public class ThreadHelper {
 
     /**
      * Returns the currently executing thread.
+     *
      * @return The currently executing thread.
      */
     public static Thread getCurrentThread() {
@@ -50,6 +50,7 @@ public class ThreadHelper {
 
     /**
      * Returns the currently executing thread in an IData representation.
+     *
      * @return The currently executing thread in an IData representation.
      */
     public static IData getCurrentThreadAsIData() {
@@ -58,6 +59,7 @@ public class ThreadHelper {
 
     /**
      * Returns a list of all the threads in the current context.
+     *
      * @return A list of all the threads in the current context.
      */
     public static Thread[] listThreads() {
@@ -70,7 +72,7 @@ public class ThreadHelper {
         // enumerate for up to 10 times until we happen to have an array
         // large enough to hold all the threads that exist at the moment
         // enumerate is called
-        while(iteration < 10 && threadCount >= list.length) {
+        while (iteration < 10 && threadCount >= list.length) {
             list = new Thread[root.activeCount() + (500 * ++iteration)];
             threadCount = root.enumerate(list, true);
         }
@@ -80,6 +82,7 @@ public class ThreadHelper {
 
     /**
      * Returns a list of all threads in the current context in an IData[] representation.
+     *
      * @return A list of all threads in the current context in an IData[] representation.
      */
     public static IData[] listThreadsAsIDataArray() {
@@ -88,13 +91,14 @@ public class ThreadHelper {
 
     /**
      * Returns the root thread group.
+     *
      * @return The root thread group.
      */
     public static ThreadGroup getRootThreadGroup() {
         ThreadGroup group = getCurrentThread().getThreadGroup();
         ThreadGroup parent = group.getParent();
 
-        while(parent != null) {
+        while (parent != null) {
             group = parent;
             parent = group.getParent();
         }
@@ -106,7 +110,7 @@ public class ThreadHelper {
      * Converts a Thread object to an IData representation.
      *
      * @param thread The Thread to be converted.
-     * @return       An IData representation of the given Thread.
+     * @return An IData representation of the given Thread.
      */
     public static IData toIData(Thread thread) {
         if (thread == null) return null;
@@ -145,10 +149,10 @@ public class ThreadHelper {
     /**
      * Converts the given Thread[] to an IData[] representation.
      *
-     * @param threads   The Thread[] to be converted.
-     * @return          An IData[] representation of the given Thread[].
+     * @param threads The Thread[] to be converted.
+     * @return An IData[] representation of the given Thread[].
      */
-    public static IData[] toIDataArray(Thread ... threads) {
+    public static IData[] toIDataArray(Thread... threads) {
         if (threads == null) return null;
 
         IData[] output = new IData[threads.length];

@@ -24,10 +24,10 @@
 
 package permafrost.tundra.io.filter;
 
+import permafrost.tundra.io.FileHelper;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.regex.Pattern;
-import permafrost.tundra.io.FileHelper;
 
 /**
  * A FilenameFilter that only accepts objects whose names match the given regular expression.
@@ -37,6 +37,7 @@ public class RegularExpressionFilter implements FilenameFilter {
 
     /**
      * Constructs a new RegularExpressionFilter using the given pattern.
+     *
      * @param pattern A regular expression pattern to be used to filter files.
      */
     public RegularExpressionFilter(String pattern) {
@@ -45,6 +46,7 @@ public class RegularExpressionFilter implements FilenameFilter {
 
     /**
      * Constructs a new RegularExpressionFilter using the given pattern.
+     *
      * @param pattern A regular expression pattern to be used to filter files.
      */
     public RegularExpressionFilter(Pattern pattern) {
@@ -59,9 +61,10 @@ public class RegularExpressionFilter implements FilenameFilter {
 
     /**
      * Returns true if the given child matches the specified regular expression.
+     *
      * @param parent The parent directory being filtered.
      * @param child  The child filename being filtered.
-     * @return       True if the given child matches the specified regular expression.
+     * @return True if the given child matches the specified regular expression.
      */
     public boolean accept(File parent, String child) {
         return pattern.matcher(child).matches();

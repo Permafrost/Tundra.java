@@ -24,16 +24,23 @@
 
 package permafrost.tundra.data;
 
-import com.wm.data.*;
+import com.wm.data.IData;
+import com.wm.data.IDataCursor;
+import com.wm.data.IDataPortable;
+import com.wm.data.IDataUtil;
 import com.wm.util.coder.IDataCodable;
 import com.wm.util.coder.ValuesCodable;
 import permafrost.tundra.lang.ObjectHelper;
-
-import java.util.*;
+import java.util.AbstractMap;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
 
 /**
- * Wraps an IData document in an implementation of the Iterable, Comparable,
- * and Map interfaces.
+ * Wraps an IData document in an implementation of the Iterable, Comparable, and Map interfaces.
  */
 public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String, Object>>, Comparable<IData>, Map<String, Object> {
     /**
@@ -51,17 +58,18 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
 
     /**
      * Construct a new IDataMap object.
+     *
      * @param document The IData document to be wrapped.
      */
     public IDataMap(IData document) {
-        super(document instanceof IDataMap ? ((IDataMap) document).getIData() : document);
+        super(document instanceof IDataMap ? ((IDataMap)document).getIData() : document);
     }
 
     /**
      * Construct a new IDataMap object.
-     * @param document The IData document to be wrapped.
-     * @param comparator The IDataComparator to be used to compare IData objects.
      *
+     * @param document   The IData document to be wrapped.
+     * @param comparator The IDataComparator to be used to compare IData objects.
      */
     public IDataMap(IData document, IDataComparator comparator) {
         this(document);
@@ -70,6 +78,7 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
 
     /**
      * Constructs a new IDataMap wrapping the given IDataCodable object.
+     *
      * @param codable The IDataCodable object to be wrapped.
      */
     public IDataMap(IDataCodable codable) {
@@ -78,9 +87,9 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
 
     /**
      * Constructs a new IDataMap wrapping the given IDataCodable object.
-     * @param codable The IDataCodable object to be wrapped.
-     * @param comparator The IDataComparator to be used to compare IData objects.
      *
+     * @param codable    The IDataCodable object to be wrapped.
+     * @param comparator The IDataComparator to be used to compare IData objects.
      */
     public IDataMap(IDataCodable codable, IDataComparator comparator) {
         this(codable);
@@ -89,6 +98,7 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
 
     /**
      * Constructs a new IDataMap wrapping the given IDataPortable object.
+     *
      * @param portable The IDataPortable object to be wrapped.
      */
     public IDataMap(IDataPortable portable) {
@@ -97,7 +107,8 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
 
     /**
      * Constructs a new IDataMap wrapping the given IDataPortable object.
-     * @param portable The IDataPortable object to be wrapped.
+     *
+     * @param portable   The IDataPortable object to be wrapped.
      * @param comparator The IDataComparator to be used to compare IData objects.
      */
     public IDataMap(IDataPortable portable, IDataComparator comparator) {
@@ -107,6 +118,7 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
 
     /**
      * Constructs a new IDataMap wrapping the given ValuesCodable object.
+     *
      * @param codable The ValuesCodable object to be wrapped.
      */
     public IDataMap(ValuesCodable codable) {
@@ -115,7 +127,8 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
 
     /**
      * Constructs a new IDataMap wrapping the given ValuesCodable object.
-     * @param codable The ValuesCodable object to be wrapped.
+     *
+     * @param codable    The ValuesCodable object to be wrapped.
      * @param comparator The IDataComparator to be used to compare IData objects.
      */
     public IDataMap(ValuesCodable codable, IDataComparator comparator) {
@@ -125,6 +138,7 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
 
     /**
      * Constructs a new IDataMap seeded with the given Map of key value entries.
+     *
      * @param map The map to see this new object with.
      */
     public IDataMap(Map<? extends Object, ? extends Object> map) {
@@ -138,8 +152,9 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
 
     /**
      * Constructs a new IDataMap seeded with the given Map of key value entries.
-     * @param map           The map to see this new object with.
-     * @param comparator    The IDataComparator to be used to compare IData objects.
+     *
+     * @param map        The map to see this new object with.
+     * @param comparator The IDataComparator to be used to compare IData objects.
      */
     public IDataMap(Map<? extends Object, ? extends Object> map, IDataComparator comparator) {
         this(map);
@@ -148,6 +163,7 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
 
     /**
      * Returns a Collection view of the values contained in this map.
+     *
      * @return A collection view of the values contained in this map.
      */
     @Override
@@ -157,6 +173,7 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
 
     /**
      * Returns a Set view of the keys contained in this map.
+     *
      * @return A set view of the keys contained in this map.
      */
     @Override
@@ -170,8 +187,9 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
 
     /**
      * Returns true if this map contains a mapping for the specified key.
+     *
      * @param key A key whose presence in this map is to be tested.
-     * @return    True if this map contains a mapping for the specified key.
+     * @return True if this map contains a mapping for the specified key.
      */
     @Override
     public boolean containsKey(Object key) {
@@ -184,8 +202,9 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
 
     /**
      * Returns true if this map maps one or more keys to the specified value.
+     *
      * @param value The value whose presence in this map is to be tested.
-     * @return      True if this map maps one or more keys to the specified value.
+     * @return True if this map maps one or more keys to the specified value.
      */
     @Override
     public boolean containsValue(Object value) {
@@ -194,19 +213,21 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
 
     /**
      * Removes the mapping for a key from this map if it is present (optional operation).
+     *
      * @param key A key whose mapping is to be removed from the map.
-     * @return    The previous value associated with key, or null if there was no mapping for key.
+     * @return The previous value associated with key, or null if there was no mapping for key.
      */
     @Override
     public Object remove(Object key) {
         IDataCursor cursor = this.getCursor();
         Object value = get(key);
-        IDataUtil.remove(cursor, (String) key);
+        IDataUtil.remove(cursor, (String)key);
         return value;
     }
 
     /**
      * Returns true if this map contains no key-value mappings.
+     *
      * @return True if this map contains no key-value mappings.
      */
     @Override
@@ -216,6 +237,7 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
 
     /**
      * Returns the number of key-value mappings in this map.
+     *
      * @return The number of key-value mappings in this map.
      */
     @Override
@@ -225,6 +247,7 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
 
     /**
      * Returns a Set view of the mappings contained in this map.
+     *
      * @return A set view of the mappings contained in this map.
      */
     @Override
@@ -240,9 +263,10 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
 
     /**
      * Associates the specified value with the specified key in this map.
+     *
      * @param key   Key with which the specified value is to be associated.
      * @param value Value to be associated with the specified key.
-     * @return      The previous value associated with key, or null if there was no mapping for key.
+     * @return The previous value associated with key, or null if there was no mapping for key.
      */
     @Override
     public Object put(String key, Object value) {
@@ -256,10 +280,11 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
 
     /**
      * Copies all of the mappings from the specified map to this map.
+     *
      * @param map Mappings to be stored in this map.
      */
     @Override
-    public void putAll(Map<? extends String,? extends Object> map) {
+    public void putAll(Map<? extends String, ? extends Object> map) {
         for (Map.Entry<? extends String, ? extends Object> entry : map.entrySet()) {
             put(entry.getKey(), entry.getValue());
         }
@@ -267,6 +292,7 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
 
     /**
      * Copies all of the mappings from the specified document to this map.
+     *
      * @param document Mappings to be stored in this map.
      */
     public void putAll(IData document) {
@@ -275,6 +301,7 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
 
     /**
      * Copies all of the mappings from the specified document to this map.
+     *
      * @param document Mappings to be stored in this map.
      */
     public void merge(IData document) {
@@ -283,6 +310,7 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
 
     /**
      * Copies all of the mappings from the specified Map to this IDataMap.
+     *
      * @param map A Map containing key value pairs to be stored in this IDataMap.
      */
     public void merge(Map<? extends String, ? extends Object> map) {
@@ -291,12 +319,13 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
 
     /**
      * Returns a new IDataMap wrapping the given IData document.
+     *
      * @param document The document to be wrapped.
-     * @return         A new IDataMap wrapping the given IData document.
+     * @return A new IDataMap wrapping the given IData document.
      */
     public static IDataMap of(IData document) {
         if (document instanceof IDataMap) {
-            return (IDataMap) document;
+            return (IDataMap)document;
         } else {
             return new IDataMap(document);
         }
@@ -304,14 +333,15 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
 
     /**
      * Returns a new IDataMap[] representation of the given IData[] document list.
-     * @param array    An IData[] document list.
-     * @return         A new IDataMap[] representation of the given IData[] document list.
+     *
+     * @param array An IData[] document list.
+     * @return A new IDataMap[] representation of the given IData[] document list.
      */
     public static IDataMap[] of(IData[] array) {
         IDataMap[] output = null;
 
         if (array instanceof IDataMap[]) {
-            output = (IDataMap[]) array;
+            output = (IDataMap[])array;
         } else if (array != null) {
             output = new IDataMap[array.length];
             for (int i = 0; i < array.length; i++) {
@@ -324,36 +354,35 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
 
     /**
      * Returns a new IDataMap that includes all the key value pairs from the given Map.
-     * @param map      The Map to seed the new IDataMap with.
-     * @return         A new IDataMap that includes all the key value pairs from the given Map.
+     *
+     * @param map The Map to seed the new IDataMap with.
+     * @return A new IDataMap that includes all the key value pairs from the given Map.
      */
     public static IDataMap of(Map<? extends String, ? extends Object> map) {
         if (map instanceof IDataMap) {
-            return (IDataMap) map;
+            return (IDataMap)map;
         } else {
             return new IDataMap(map);
         }
     }
 
     /**
-     * Returns the value to which the specified key is mapped, or null if this
-     * map contains no mapping for the key.
+     * Returns the value to which the specified key is mapped, or null if this map contains no mapping for the key.
+     *
      * @param key The key whose associated value is to be returned.
-     * @return    The value to which the specified key is mapped, or null if
-     *            this map contains no mapping for the key
+     * @return The value to which the specified key is mapped, or null if this map contains no mapping for the key
      */
     @Override
     public Object get(Object key) {
         IDataCursor cursor = this.getCursor();
-        Object value = IDataUtil.get(cursor, (String) key);
+        Object value = IDataUtil.get(cursor, (String)key);
         cursor.destroy();
 
         return value;
     }
 
     /**
-     * Removes all of the mappings from this map. The map will be empty after
-     * this call returns.
+     * Removes all of the mappings from this map. The map will be empty after this call returns.
      */
     @Override
     public void clear() {
@@ -362,6 +391,7 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
 
     /**
      * Returns an iterator over a set of elements of type Map.Entry.
+     *
      * @return An iterator.
      */
     @Override
@@ -371,9 +401,10 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
 
     /**
      * Compares this object with the specified object for order.
+     *
      * @param other The object to be compared with this object.
-     * @return      A negative integer, zero, or a positive integer as this object is
-     *              less than, equal to, or greater than the specified object.
+     * @return A negative integer, zero, or a positive integer as this object is less than, equal to, or greater than
+     * the specified object.
      */
     @Override
     public int compareTo(IData other) {
@@ -382,8 +413,9 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
 
     /**
      * Returns true if this object is equal to the given object.
+     *
      * @param other The object to compare to.
-     * @return      True if this object is equal to the given object.
+     * @return True if this object is equal to the given object.
      */
     @Override
     public boolean equals(Object other) {
@@ -393,6 +425,7 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
 
     /**
      * Returns the IDataComparator used to compare IData objects.
+     *
      * @return The IDataComparator used to compare IData objects.
      */
     public IDataComparator getComparator() {
@@ -401,6 +434,7 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
 
     /**
      * Sets the IDataComparator to be used when comparing IData objects.
+     *
      * @param comparator The IDataComparator to be used when comparing IData objects.
      */
     public void setComparator(IDataComparator comparator) {
@@ -416,6 +450,7 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
 
         /**
          * Constructs a new IDataIterator object for iterating over the given IData document.
+         *
          * @param document The document to be iterated over.
          */
         public IDataIteratorImplementation(IData document) {
@@ -423,8 +458,9 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
         }
 
         /**
-         * Returns true if the iteration has more elements. (In other words, returns true if next()
-         * would return an element rather than throwing an exception.)
+         * Returns true if the iteration has more elements. (In other words, returns true if next() would return an
+         * element rather than throwing an exception.)
+         *
          * @return True if the iteration has more elements.
          */
         @Override
@@ -434,6 +470,7 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
 
         /**
          * Returns the next element in the iteration.
+         *
          * @return The next element in the iteration.
          * @throws NoSuchElementException If the iteration has no more elements.
          */
@@ -447,8 +484,8 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
         }
 
         /**
-         * Throws an UnsupportedOperationException because the remove operation is not supported by this
-         * iterator.
+         * Throws an UnsupportedOperationException because the remove operation is not supported by this iterator.
+         *
          * @throws UnsupportedOperationException The remove operation is not supported by this iterator.
          */
         @Override

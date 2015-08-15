@@ -39,6 +39,7 @@ public class ChainFilter implements FilenameFilter {
 
     /**
      * Constructs a new ChainFilter from the given list of FilenameFilter objects.
+     *
      * @param filters A list of FilenameFilter objects to be chained together.
      */
     public ChainFilter(FilenameFilter... filters) {
@@ -47,6 +48,7 @@ public class ChainFilter implements FilenameFilter {
 
     /**
      * Constructs a new ChainFilter from the given list of FilenameFilter objects.
+     *
      * @param filters A list of FilenameFilter objects to be chained together.
      */
     public ChainFilter(Collection<FilenameFilter> filters) {
@@ -56,9 +58,10 @@ public class ChainFilter implements FilenameFilter {
 
     /**
      * Returns true if the given parent and child passes all chained filters.
+     *
      * @param parent The parent directory being filtered.
      * @param child  The child filename being filtered.
-     * @return       True if the given parent and child passes all chained filters.
+     * @return True if the given parent and child passes all chained filters.
      */
     public boolean accept(File parent, String child) {
         boolean accept = true;

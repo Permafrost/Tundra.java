@@ -43,11 +43,12 @@ public class DeleteOnCloseFileInputStream extends MarkableFileInputStream {
     private File file = null;
 
     /**
-     * Constructs a new AutoDeleteFileInputStream by opening a connection to an actual file, the file
-     * named by the File object file in the file system.
-     * @param file                      The file to be opened for reading.
-     * @throws FileNotFoundException    If the file does not exist, is a directory rather than a regular
-     *                                  file, or for some other reason cannot be opened for reading.
+     * Constructs a new AutoDeleteFileInputStream by opening a connection to an actual file, the file named by the File
+     * object file in the file system.
+     *
+     * @param file The file to be opened for reading.
+     * @throws FileNotFoundException If the file does not exist, is a directory rather than a regular file, or for some
+     *                               other reason cannot be opened for reading.
      */
     public DeleteOnCloseFileInputStream(File file) throws FileNotFoundException {
         super(file);
@@ -55,11 +56,12 @@ public class DeleteOnCloseFileInputStream extends MarkableFileInputStream {
     }
 
     /**
-     * Constructs a new AutoDeleteFileInputStream by opening a connection to an actual file, the file
-     * named by the path name in the file system.
-     * @param name                      The file to be opened for reading.
-     * @throws FileNotFoundException    If the file does not exist, is a directory rather than a regular
-     *                                  file, or for some other reason cannot be opened for reading.
+     * Constructs a new AutoDeleteFileInputStream by opening a connection to an actual file, the file named by the path
+     * name in the file system.
+     *
+     * @param name The file to be opened for reading.
+     * @throws FileNotFoundException If the file does not exist, is a directory rather than a regular file, or for some
+     *                               other reason cannot be opened for reading.
      */
     public DeleteOnCloseFileInputStream(String name) throws FileNotFoundException {
         super(name);
@@ -67,8 +69,9 @@ public class DeleteOnCloseFileInputStream extends MarkableFileInputStream {
     }
 
     /**
-     * Closes this file input stream and releases any system resources associated with the stream, then
-     * deletes the file.
+     * Closes this file input stream and releases any system resources associated with the stream, then deletes the
+     * file.
+     *
      * @throws IOException If the file cannot be deleted, or if an I/O error occurs.
      */
     @Override
@@ -88,6 +91,7 @@ public class DeleteOnCloseFileInputStream extends MarkableFileInputStream {
 
     /**
      * Returns the file this input stream reads from.
+     *
      * @return The file this input stream reads from.
      */
     public File getFile() {

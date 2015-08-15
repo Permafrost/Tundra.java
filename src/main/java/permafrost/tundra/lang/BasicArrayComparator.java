@@ -45,6 +45,7 @@ public class BasicArrayComparator implements ArrayComparator {
 
     /**
      * Returns the singleton instance of this class.
+     *
      * @return The singleton instance of this class.
      */
     public static BasicArrayComparator getInstance() {
@@ -54,14 +55,11 @@ public class BasicArrayComparator implements ArrayComparator {
     /**
      * Compares two Object[] objects.
      *
-     * @param array1         The first Object[] to be compared.
-     * @param array2         The second Object[] to be compared.
-     * @return               A value less than zero if the first Object[]
-     *                       comes before the second Object[], a value of
-     *                       zero if they are equal, or a value of greater
-     *                       than zero if the first Object[] comes after the
-     *                       second Object[] according to the comparison
-     *                       of all the keys and values in each document.
+     * @param array1 The first Object[] to be compared.
+     * @param array2 The second Object[] to be compared.
+     * @return A value less than zero if the first Object[] comes before the second Object[], a value of zero if they
+     * are equal, or a value of greater than zero if the first Object[] comes after the second Object[] according to the
+     * comparison of all the keys and values in each document.
      */
     public int compare(Object[] array1, Object[] array2) {
         int result = 0;
@@ -69,7 +67,7 @@ public class BasicArrayComparator implements ArrayComparator {
         if (array1 == null || array2 == null) {
             if (array1 != null) {
                 result = 1;
-            } else if (array2 != null){
+            } else if (array2 != null) {
                 result = -1;
             }
         } else {

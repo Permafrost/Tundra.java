@@ -28,7 +28,6 @@ import permafrost.tundra.io.StreamHelper;
 import permafrost.tundra.lang.BytesHelper;
 import permafrost.tundra.lang.ObjectConvertMode;
 import permafrost.tundra.lang.ObjectHelper;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,9 +48,10 @@ public class ZipHelper {
 
     /**
      * Compresses the given contents into a zip archive.
-     * @param contents      The contents to be compressed.
-     * @return              The zip archive containing the compressed contents.
-     * @throws IOException  If an I/O exception occurs reading from the streams.
+     *
+     * @param contents The contents to be compressed.
+     * @return The zip archive containing the compressed contents.
+     * @throws IOException If an I/O exception occurs reading from the streams.
      */
     public static InputStream compress(ZipEntryWithData... contents) throws IOException {
         if (contents == null) return null;
@@ -86,8 +86,9 @@ public class ZipHelper {
 
     /**
      * Decompresses the given zip archive.
-     * @param inputStream  The zip archive to decompress.
-     * @return             The decompressed contents of the zip archive.
+     *
+     * @param inputStream The zip archive to decompress.
+     * @return The decompressed contents of the zip archive.
      * @throws IOException If an I/O problem occurs while reading from the stream.
      */
     public static ZipEntryWithData[] decompress(InputStream inputStream) throws IOException {
@@ -100,12 +101,12 @@ public class ZipHelper {
         try {
             zipInputStream = new ZipInputStream(StreamHelper.normalize(inputStream));
             ZipEntry zipEntry;
-            while((zipEntry = zipInputStream.getNextEntry()) != null) {
+            while ((zipEntry = zipInputStream.getNextEntry()) != null) {
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                 //StreamHelper.copy(zipInputStream, byteArrayOutputStream, false);
 
                 int count;
-                while((count = zipInputStream.read(buffer)) > 0) {
+                while ((count = zipInputStream.read(buffer)) > 0) {
                     byteArrayOutputStream.write(buffer, 0, count);
                 }
                 byteArrayOutputStream.close();
@@ -121,8 +122,9 @@ public class ZipHelper {
 
     /**
      * Decompresses the given zip archive.
-     * @param bytes        The zip archive to decompress.
-     * @return             The decompressed contents of the zip archive.
+     *
+     * @param bytes The zip archive to decompress.
+     * @return The decompressed contents of the zip archive.
      * @throws IOException If an I/O problem occurs while reading from the stream.
      */
     public static ZipEntryWithData[] decompress(byte[] bytes) throws IOException {
@@ -131,8 +133,9 @@ public class ZipHelper {
 
     /**
      * Decompresses the given zip archive.
-     * @param base64       The zip archive as a base64-encoded string.
-     * @return             The decompressed contents of the zip archive.
+     *
+     * @param base64 The zip archive as a base64-encoded string.
+     * @return The decompressed contents of the zip archive.
      * @throws IOException If an I/O problem occurs while reading from the stream.
      */
     public static ZipEntryWithData[] decompress(String base64) throws IOException {

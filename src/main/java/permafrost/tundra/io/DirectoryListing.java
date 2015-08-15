@@ -33,48 +33,56 @@ import java.util.List;
 public interface DirectoryListing {
     /**
      * Returns all the files and directories in this listing.
+     *
      * @return All the files and directories in this listing.
      */
     List<File> listAll();
 
     /**
      * Returns all the files and directories in this listing as a String[].
+     *
      * @return All the files and directories in this listing as a String[].
      */
     String[] listAllAsStringArray();
 
     /**
      * Returns all the directories in this listing.
+     *
      * @return All the directories in this listing.
      */
     List<File> listDirectories();
 
     /**
      * Returns all the directories in this listing as a String[].
+     *
      * @return All the directories in this listing as a String[].
      */
     String[] listDirectoriesAsStringArray();
 
     /**
      * Returns all the files in this listing.
+     *
      * @return All the files in this listing.
      */
     List<File> listFiles();
 
     /**
      * Returns all the files in this listing as a String[].
+     *
      * @return All the files in this listing as a String[].
      */
     String[] listFilesAsStringArray();
 
     /**
      * Returns the directory which produced this listing.
+     *
      * @return The directory which produced this listing.
      */
     File getDirectory();
 
     /**
      * Returns the directory which produced this listing as a String.
+     *
      * @return The directory which produced this listing as a String.
      */
     String getDirectoryAsString();

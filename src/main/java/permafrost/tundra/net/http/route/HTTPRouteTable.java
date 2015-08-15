@@ -31,7 +31,6 @@ import com.wm.data.IDataFactory;
 import com.wm.data.IDataUtil;
 import permafrost.tundra.io.FileHelper;
 import permafrost.tundra.net.http.HTTPMethod;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -73,6 +72,7 @@ public class HTTPRouteTable extends TreeMap<String, HTTPRouteList> {
 
     /**
      * Returns all the HTTP dispatch directives registered in this route table.
+     *
      * @return All the HTTP dispatch directives registered in this route table.
      */
     public Set<String> getDirectives() {
@@ -81,6 +81,7 @@ public class HTTPRouteTable extends TreeMap<String, HTTPRouteList> {
 
     /**
      * Add an HTTP route instruction to the this routing table.
+     *
      * @param route The route instruction to add to the table.
      */
     public void put(HTTPRoute route) {
@@ -92,6 +93,7 @@ public class HTTPRouteTable extends TreeMap<String, HTTPRouteList> {
 
     /**
      * Creates a new HTTP route table from the the route configuration files in each package.
+     *
      * @return The new HTTP route table.
      */
     public static HTTPRouteTable newInstance() {
@@ -107,7 +109,7 @@ public class HTTPRouteTable extends TreeMap<String, HTTPRouteList> {
         Map<File, String> contents = new LinkedHashMap<File, String>();
         for (File file : files) {
             try {
-                if (file.exists() && file.isFile()) contents.put(file, (String) FileHelper.readToString(file));
+                if (file.exists() && file.isFile()) contents.put(file, (String)FileHelper.readToString(file));
             } catch (IOException ex) {
                 // do nothing
             }
@@ -118,8 +120,9 @@ public class HTTPRouteTable extends TreeMap<String, HTTPRouteList> {
 
     /**
      * Creates a new HTTP route table from the given list of route configuration file contents.
+     *
      * @param contents A list of route configuration file contents.
-     * @return         The new HTTP route table.
+     * @return The new HTTP route table.
      */
     protected static HTTPRouteTable newInstance(Map<File, String> contents) {
         HTTPRouteTable table = new HTTPRouteTable();
@@ -146,9 +149,10 @@ public class HTTPRouteTable extends TreeMap<String, HTTPRouteList> {
 
     /**
      * Returns the matching route for the given HTTP request method and URI, or null if no matching route is found.
+     *
      * @param method The HTTP method to match.
      * @param uri    The URI to match.
-     * @return       The matching route for the given method and uri, or null if no matching route is found.
+     * @return The matching route for the given method and uri, or null if no matching route is found.
      */
     public Map.Entry<HTTPRoute, IData> match(HTTPMethod method, String uri) {
         String directive = HTTPRoute.getDirective(uri);
@@ -162,9 +166,10 @@ public class HTTPRouteTable extends TreeMap<String, HTTPRouteList> {
 
     /**
      * Returns the matching route for the given HTTP request method and URI, or null if no matching route is found.
+     *
      * @param method The HTTP method to match.
      * @param uri    The URI to match.
-     * @return       The matching route for the given method and uri, or null if no matching route is found.
+     * @return The matching route for the given method and uri, or null if no matching route is found.
      */
     public Map.Entry<HTTPRoute, IData> match(String method, String uri) {
         return match(HTTPMethod.normalize(method), uri);
@@ -172,6 +177,7 @@ public class HTTPRouteTable extends TreeMap<String, HTTPRouteList> {
 
     /**
      * Returns an IData[] representation of this HTTP route table.
+     *
      * @return An IData[] representation of this HTTP route table.
      */
     public IData[] toIDataArray() {

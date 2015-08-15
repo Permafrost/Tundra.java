@@ -25,7 +25,6 @@
 package permafrost.tundra.lang;
 
 import com.wm.app.b2b.server.ServiceException;
-
 import java.util.Collection;
 
 public class BaseException extends ServiceException {
@@ -38,6 +37,7 @@ public class BaseException extends ServiceException {
 
     /**
      * Constructs a new BaseException with the given message.
+     *
      * @param message A message describing why the BaseException was thrown.
      */
     public BaseException(String message) {
@@ -46,6 +46,7 @@ public class BaseException extends ServiceException {
 
     /**
      * Constructs a new BaseException with the given cause.
+     *
      * @param cause The cause of this BaseException.
      */
     public BaseException(Throwable cause) {
@@ -54,8 +55,9 @@ public class BaseException extends ServiceException {
 
     /**
      * Constructs a new BaseException with the given message and cause.
+     *
      * @param message A message describing why the BaseException was thrown.
-     * @param cause The cause of this Exception.
+     * @param cause   The cause of this Exception.
      */
     public BaseException(String message, Throwable cause) {
         super(message);
@@ -64,6 +66,7 @@ public class BaseException extends ServiceException {
 
     /**
      * Constructs a new BaseException with the given list of exceptions.
+     *
      * @param exceptions A collection of exceptions this exception will wrap.
      */
     public BaseException(Collection<Throwable> exceptions) {
@@ -72,6 +75,7 @@ public class BaseException extends ServiceException {
 
     /**
      * Constructs a new BaseException with the given list of exceptions.
+     *
      * @param exceptions A collection of exceptions this exception will wrap.
      */
     public BaseException(Throwable... exceptions) {

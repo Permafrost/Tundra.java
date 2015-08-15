@@ -31,7 +31,7 @@ public enum NodePermission {
      * Returns the NodePermission representing the given String.
      *
      * @param permission The permission to be normalized as a String.
-     * @return           The NodePermission representing the given String.
+     * @return The NodePermission representing the given String.
      */
     public static NodePermission normalize(String permission) {
         if (permission == null) return null;

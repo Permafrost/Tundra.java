@@ -24,7 +24,11 @@
 
 package permafrost.tundra.io;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 /**
  * A file input stream which supports the mark and reset methods.
@@ -36,21 +40,21 @@ public class MarkableFileInputStream extends FileInputStream {
     protected long markPosition = 0;
 
     /**
-     * Creates a MarkableFileInputStream by opening a connection to an actual file named by the
-     * given File object.
-     * @param file                      The file to read from.
-     * @throws FileNotFoundException    If the file does not exist, is a directory rather
-     *                                  than a regular file, or for some other reason cannot
-     *                                  be opened for reading.
+     * Creates a MarkableFileInputStream by opening a connection to an actual file named by the given File object.
+     *
+     * @param file The file to read from.
+     * @throws FileNotFoundException If the file does not exist, is a directory rather than a regular file, or for some
+     *                               other reason cannot be opened for reading.
      */
     public MarkableFileInputStream(File file) throws FileNotFoundException {
         super(file);
     }
 
     /**
-     * Creates a MarkableFileInputStream by opening a connection to an actual file named by the
-     * given FileDescriptor object.
-     * @param descriptor                The file descriptor to read from.
+     * Creates a MarkableFileInputStream by opening a connection to an actual file named by the given FileDescriptor
+     * object.
+     *
+     * @param descriptor The file descriptor to read from.
      */
     public MarkableFileInputStream(FileDescriptor descriptor) {
         super(descriptor);
@@ -58,10 +62,10 @@ public class MarkableFileInputStream extends FileInputStream {
 
     /**
      * Creates a MarkableFileInputStream by opening a connection to an actual file with the given name.
-     * @param filename                  The file to read from.
-     * @throws FileNotFoundException    If the file does not exist, is a directory rather
-     *                                  than a regular file, or for some other reason cannot
-     *                                  be opened for reading.
+     *
+     * @param filename The file to read from.
+     * @throws FileNotFoundException If the file does not exist, is a directory rather than a regular file, or for some
+     *                               other reason cannot be opened for reading.
      */
     public MarkableFileInputStream(String filename) throws FileNotFoundException {
         super(filename);
@@ -69,6 +73,7 @@ public class MarkableFileInputStream extends FileInputStream {
 
     /**
      * Returns true because this class supports marking and resetting the stream.
+     *
      * @return True because this class supports marking and resetting the stream.
      */
     @Override
@@ -77,9 +82,9 @@ public class MarkableFileInputStream extends FileInputStream {
     }
 
     /**
-     * Marks the current position in this input stream. A subsequent call to the reset
-     * method repositions this stream at the last marked position so that subsequent
-     * reads re-read the same bytes.
+     * Marks the current position in this input stream. A subsequent call to the reset method repositions this stream at
+     * the last marked position so that subsequent reads re-read the same bytes.
+     *
      * @param readLimit This parameter is ignored.
      */
     @Override
@@ -92,8 +97,9 @@ public class MarkableFileInputStream extends FileInputStream {
     }
 
     /**
-     * Repositions this stream to the position at the time the mark method was last called on
-     * this input stream, or to the start of the stream if the mark method has never been called.
+     * Repositions this stream to the position at the time the mark method was last called on this input stream, or to
+     * the start of the stream if the mark method has never been called.
+     *
      * @throws IOException If an I/O error occurs.
      */
     @Override
@@ -103,6 +109,7 @@ public class MarkableFileInputStream extends FileInputStream {
 
     /**
      * Closes this file input stream and releases any system resources associated with the stream.
+     *
      * @throws IOException If an I/O error occurs.
      */
     @Override

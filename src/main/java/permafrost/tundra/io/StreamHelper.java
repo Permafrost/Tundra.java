@@ -24,11 +24,23 @@
 
 package permafrost.tundra.io;
 
-import java.io.*;
-import java.nio.charset.Charset;
-
 import permafrost.tundra.lang.BytesHelper;
 import permafrost.tundra.lang.CharsetHelper;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.Closeable;
+import java.io.FilterInputStream;
+import java.io.FilterOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Reader;
+import java.io.Writer;
+import java.nio.charset.Charset;
 
 /**
  * A collection of convenience methods for working with streams.
@@ -45,12 +57,11 @@ public class StreamHelper {
     private StreamHelper() {}
 
     /**
-     * Closes all given closeable objects, suppressing any encountered
-     * java.io.IOExceptions.
+     * Closes all given closeable objects, suppressing any encountered java.io.IOExceptions.
      *
      * @param closeables One or more java.io.Closeable object to be closed.
      */
-    public static void close(Closeable ... closeables) {
+    public static void close(Closeable... closeables) {
         if (closeables != null) {
             for (Closeable closeable : closeables) {
                 try {
@@ -63,11 +74,10 @@ public class StreamHelper {
     }
 
     /**
-     * Normalizes the given java.io.InputStream, by wrapping it in a
-     * java.io.BufferedInputStream where appropriate.
+     * Normalizes the given java.io.InputStream, by wrapping it in a java.io.BufferedInputStream where appropriate.
      *
-     * @param inputStream   A java.io.InputStream to be normalized.
-     * @return              The normalized java.io.InputStream.
+     * @param inputStream A java.io.InputStream to be normalized.
+     * @return The normalized java.io.InputStream.
      */
     public static InputStream normalize(InputStream inputStream) {
         if (inputStream == null) return null;
@@ -80,11 +90,10 @@ public class StreamHelper {
     }
 
     /**
-     * Normalizes the given java.io.OutputStream, by wrapping it in a
-     * java.io.BufferedOutputStream where appropriate.
+     * Normalizes the given java.io.OutputStream, by wrapping it in a java.io.BufferedOutputStream where appropriate.
      *
-     * @param outputStream  A java.io.OutputStream to be normalized.
-     * @return              The normalized java.io.OutputStream.
+     * @param outputStream A java.io.OutputStream to be normalized.
+     * @return The normalized java.io.OutputStream.
      */
     public static OutputStream normalize(OutputStream outputStream) {
         if (outputStream == null) return null;
@@ -97,11 +106,10 @@ public class StreamHelper {
     }
 
     /**
-     * Normalizes the given java.io.Reader, by wrapping it in a
-     * java.io.BufferedReader where appropriate.
+     * Normalizes the given java.io.Reader, by wrapping it in a java.io.BufferedReader where appropriate.
      *
-     * @param reader    A java.io.Reader to be normalized.
-     * @return          The normalized java.io.Reader.
+     * @param reader A java.io.Reader to be normalized.
+     * @return The normalized java.io.Reader.
      */
     public static Reader normalize(Reader reader) {
         if (reader == null) return null;
@@ -114,11 +122,10 @@ public class StreamHelper {
     }
 
     /**
-     * Normalizes the given java.io.Writer, by wrapping it in a
-     * java.io.BufferedWriter where appropriate.
+     * Normalizes the given java.io.Writer, by wrapping it in a java.io.BufferedWriter where appropriate.
      *
-     * @param writer    A java.io.Writer to be normalized.
-     * @return          The normalized java.io.Writer.
+     * @param writer A java.io.Writer to be normalized.
+     * @return The normalized java.io.Writer.
      */
     public static Writer normalize(Writer writer) {
         if (writer == null) return null;
@@ -133,8 +140,8 @@ public class StreamHelper {
     /**
      * Converts the given string to a java.io.InputStream.
      *
-     * @param string    A string to be converted.
-     * @return          A java.io.InputStream representation of the given string.
+     * @param string A string to be converted.
+     * @return A java.io.InputStream representation of the given string.
      */
     public static InputStream normalize(String string) {
         return normalize(string, CharsetHelper.DEFAULT_CHARSET);
@@ -143,9 +150,9 @@ public class StreamHelper {
     /**
      * Converts the given string to a java.io.InputStream.
      *
-     * @param string        A string to be converted.
-     * @param charsetName   The character encoding set to use.
-     * @return              A java.io.InputStream representation of the given string.
+     * @param string      A string to be converted.
+     * @param charsetName The character encoding set to use.
+     * @return A java.io.InputStream representation of the given string.
      */
     public static InputStream normalize(String string, String charsetName) {
         return normalize(string, CharsetHelper.normalize(charsetName));
@@ -154,9 +161,9 @@ public class StreamHelper {
     /**
      * Converts the given string to a java.io.InputStream.
      *
-     * @param string    A string to be converted.
-     * @param charset   The character encoding set to use.
-     * @return          A java.io.InputStream representation of the given string.
+     * @param string  A string to be converted.
+     * @param charset The character encoding set to use.
+     * @return A java.io.InputStream representation of the given string.
      */
     public static InputStream normalize(String string, Charset charset) {
         return normalize(BytesHelper.normalize(string, CharsetHelper.normalize(charset)));
@@ -166,7 +173,7 @@ public class StreamHelper {
      * Converts the given byte[] to a java.io.InputStream.
      *
      * @param bytes A byte[] to be converted.
-     * @return      A java.io.InputStream representation of the given byte[].
+     * @return A java.io.InputStream representation of the given byte[].
      */
     public static InputStream normalize(byte[] bytes) {
         if (bytes == null) return null;
@@ -176,8 +183,8 @@ public class StreamHelper {
     /**
      * Converts the given Object to a java.io.InputStream.
      *
-     * @param object    A String, byte[], or java.io.InputStream object to be converted.
-     * @return          A java.io.InputStream representation of the given object.
+     * @param object A String, byte[], or java.io.InputStream object to be converted.
+     * @return A java.io.InputStream representation of the given object.
      */
     public static InputStream normalize(Object object) {
         return normalize(object, CharsetHelper.DEFAULT_CHARSET);
@@ -186,9 +193,9 @@ public class StreamHelper {
     /**
      * Converts the given Object to a java.io.InputStream.
      *
-     * @param object        A String, byte[], or java.io.InputStream object to be converted.
-     * @param charsetName   The character encoding set to use.
-     * @return              A java.io.InputStream representation of the given object.
+     * @param object      A String, byte[], or java.io.InputStream object to be converted.
+     * @param charsetName The character encoding set to use.
+     * @return A java.io.InputStream representation of the given object.
      */
     public static InputStream normalize(Object object, String charsetName) {
         return normalize(object, CharsetHelper.normalize(charsetName));
@@ -197,9 +204,9 @@ public class StreamHelper {
     /**
      * Converts the given Object to a java.io.InputStream.
      *
-     * @param object    A String, byte[], or java.io.InputStream object to be converted.
-     * @param charset   The character encoding set to use.
-     * @return          A java.io.InputStream representation of the given object.
+     * @param object  A String, byte[], or java.io.InputStream object to be converted.
+     * @param charset The character encoding set to use.
+     * @return A java.io.InputStream representation of the given object.
      */
     public static InputStream normalize(Object object, Charset charset) {
         if (object == null) return null;
@@ -220,41 +227,41 @@ public class StreamHelper {
     }
 
     /**
-     * Copies all data from the given input String, byte[] or InputStream to the given output stream,
-     * and optionally closes both streams.
+     * Copies all data from the given input String, byte[] or InputStream to the given output stream, and optionally
+     * closes both streams.
      *
-     * @param inputObject       An input String, byte[] or InputStream containing data to be copied.
-     * @param outputObject      An OutputStream to where the copied data will be written.
-     * @param close             When true, both the input and output streams will be closed when done.
-     * @throws IOException      If there is a problem reading from or writing to the streams.
+     * @param inputObject  An input String, byte[] or InputStream containing data to be copied.
+     * @param outputObject An OutputStream to where the copied data will be written.
+     * @param close        When true, both the input and output streams will be closed when done.
+     * @throws IOException If there is a problem reading from or writing to the streams.
      */
     public static void copy(Object inputObject, Object outputObject, boolean close) throws IOException {
-        if (outputObject != null && (!(outputObject instanceof OutputStream)))
+        if (outputObject != null && (!(outputObject instanceof OutputStream))) {
             throw new IllegalArgumentException("output object must be an instance of java.io.OutputStream");
+        }
 
-        copy(normalize(inputObject), normalize((OutputStream) outputObject), close);
+        copy(normalize(inputObject), normalize((OutputStream)outputObject), close);
     }
 
     /**
-     * Copies all data from the given input String, byte[] or InputStream to the given output stream,
-     * and then closes both streams.
+     * Copies all data from the given input String, byte[] or InputStream to the given output stream, and then closes
+     * both streams.
      *
-     * @param inputObject       An input String, byte[] or InputStream containing data to be copied.
-     * @param outputObject      An OutputStream to where the copied data will be written.
-     * @throws IOException      If there is a problem reading from or writing to the streams.
+     * @param inputObject  An input String, byte[] or InputStream containing data to be copied.
+     * @param outputObject An OutputStream to where the copied data will be written.
+     * @throws IOException If there is a problem reading from or writing to the streams.
      */
     public static void copy(Object inputObject, Object outputObject) throws IOException {
         copy(inputObject, outputObject, true);
     }
 
     /**
-     * Copies all data from the given input stream to the given output stream, and optionally
-     * closes both streams.
+     * Copies all data from the given input stream to the given output stream, and optionally closes both streams.
      *
-     * @param inputStream       An input stream containing data to be copied.
-     * @param outputStream      An output stream to where the copied data will be written.
-     * @param close             When true, both the input and output streams will be closed when done.
-     * @throws IOException      If there is a problem reading from or writing to the streams.
+     * @param inputStream  An input stream containing data to be copied.
+     * @param outputStream An output stream to where the copied data will be written.
+     * @param close        When true, both the input and output streams will be closed when done.
+     * @throws IOException If there is a problem reading from or writing to the streams.
      */
     public static void copy(InputStream inputStream, OutputStream outputStream, boolean close) throws IOException {
         if (inputStream == null || outputStream == null) return;
@@ -275,12 +282,11 @@ public class StreamHelper {
     }
 
     /**
-     * Copies all data from the given input stream to the given output stream, and then
-     * closes both streams.
+     * Copies all data from the given input stream to the given output stream, and then closes both streams.
      *
-     * @param inputStream    An input stream containing data to be copied.
-     * @param outputStream   An output stream to where the copied data will be written.
-     * @throws IOException   If there is a problem reading from or writing to the streams.
+     * @param inputStream  An input stream containing data to be copied.
+     * @param outputStream An output stream to where the copied data will be written.
+     * @throws IOException If there is a problem reading from or writing to the streams.
      */
     public static void copy(InputStream inputStream, OutputStream outputStream) throws IOException {
         copy(inputStream, outputStream, true);
@@ -289,10 +295,10 @@ public class StreamHelper {
     /**
      * Copies all the data from the given reader to the given writer, then closes both.
      *
-     * @param reader            The reader to copy data from.
-     * @param writer            The writer to copy data to.
-     * @param close             When true, both the reader and writer will be closed when done.
-     * @throws IOException      If there is a problem reading from the reader or writing to the writer.
+     * @param reader The reader to copy data from.
+     * @param writer The writer to copy data to.
+     * @param close  When true, both the reader and writer will be closed when done.
+     * @throws IOException If there is a problem reading from the reader or writing to the writer.
      */
     public static void copy(Reader reader, Writer writer, boolean close) throws IOException {
         if (reader == null || writer == null) return;
@@ -315,9 +321,9 @@ public class StreamHelper {
     /**
      * Copies all the data from the given reader to the given writer, then closes both.
      *
-     * @param reader            The reader to copy data from.
-     * @param writer            The writer to copy data to.
-     * @throws IOException      If there is a problem reading from the reader or writing to the writer.
+     * @param reader The reader to copy data from.
+     * @param writer The writer to copy data to.
+     * @throws IOException If there is a problem reading from the reader or writing to the writer.
      */
     public static void copy(Reader reader, Writer writer) throws IOException {
         copy(reader, writer, true);
@@ -326,10 +332,10 @@ public class StreamHelper {
     /**
      * Reads all data from the given input stream, and optionally closes it when done.
      *
-     * @param inputStream       An input stream containing data to be read.
-     * @param close             When true the input stream will be closed when done.
-     * @return                  Returns a byte[] containing all the data read from the given inputStream.
-     * @throws IOException      If there is a problem reading from the stream.
+     * @param inputStream An input stream containing data to be read.
+     * @param close       When true the input stream will be closed when done.
+     * @return Returns a byte[] containing all the data read from the given inputStream.
+     * @throws IOException If there is a problem reading from the stream.
      */
     public static byte[] readToBytes(InputStream inputStream, boolean close) throws IOException {
         if (inputStream == null) return null;
@@ -342,9 +348,9 @@ public class StreamHelper {
     /**
      * Reads all data from the given input stream, and then closes it when done.
      *
-     * @param inputStream       An input stream containing data to be read.
-     * @return                  Returns a byte[] containing all the data read from the given inputStream.
-     * @throws IOException      If there is a problem reading from the stream.
+     * @param inputStream An input stream containing data to be read.
+     * @return Returns a byte[] containing all the data read from the given inputStream.
+     * @throws IOException If there is a problem reading from the stream.
      */
     public static byte[] readToBytes(InputStream inputStream) throws IOException {
         return readToBytes(inputStream, true);

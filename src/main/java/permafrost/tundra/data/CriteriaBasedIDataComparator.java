@@ -29,12 +29,10 @@ import permafrost.tundra.math.BigDecimalHelper;
 import permafrost.tundra.math.BigIntegerHelper;
 import permafrost.tundra.time.DateTimeHelper;
 import permafrost.tundra.time.DurationHelper;
-
 import java.util.Arrays;
 
 /**
- * Compares two IData objects using the values associated with the given
- * list of keys in precedence order.
+ * Compares two IData objects using the values associated with the given list of keys in precedence order.
  */
 public class CriteriaBasedIDataComparator implements IDataComparator {
     protected java.util.List<IDataComparisonCriterion> criteria;
@@ -54,18 +52,19 @@ public class CriteriaBasedIDataComparator implements IDataComparator {
      * @param criteria The comparison criteria to be used when comparing IData objects.
      */
     public CriteriaBasedIDataComparator(java.util.List<IDataComparisonCriterion> criteria) {
-        if (criteria == null || criteria.size() == 0) throw new IllegalArgumentException("At least one comparison criteria is required to construct an CriteriaBasedIDataComparator object");
+        if (criteria == null || criteria.size() == 0) {
+            throw new IllegalArgumentException("At least one comparison criteria is required to construct an CriteriaBasedIDataComparator object");
+        }
         this.criteria = criteria;
     }
 
     /**
-     * Normalizes the given comparison result for when the comparison should
-     * be in descending order.
+     * Normalizes the given comparison result for when the comparison should be in descending order.
      *
      * @param result     A comparison result.
      * @param descending Whether the comparison should be in descending order.
-     * @return           If descending is true, returns the given comparison
-     *                   result negated, otherwise returns the result unchanged.
+     * @return If descending is true, returns the given comparison result negated, otherwise returns the result
+     * unchanged.
      */
     protected static int normalize(int result, boolean descending) {
         if (descending) {
@@ -83,12 +82,9 @@ public class CriteriaBasedIDataComparator implements IDataComparator {
      *
      * @param firstDocument  The first IData document to be compared.
      * @param secondDocument The second IData document to be compared.
-     * @return               A value less than zero if the first document
-     *                       comes before the second document, a value of
-     *                       zero if they are equal, or a value of greater
-     *                       than zero if the first document comes after the
-     *                       second document according to the comparison
-     *                       criteria the IDataComparator was constructed with.
+     * @return A value less than zero if the first document comes before the second document, a value of zero if they
+     * are equal, or a value of greater than zero if the first document comes after the second document according to the
+     * comparison criteria the IDataComparator was constructed with.
      */
     @SuppressWarnings("unchecked")
     public int compare(IData firstDocument, IData secondDocument) {
@@ -105,7 +101,7 @@ public class CriteriaBasedIDataComparator implements IDataComparator {
             } else if (secondValue == null) {
                 result = normalize(1, criterion.isDescending());
             } else {
-                switch(criterion.getType()) {
+                switch (criterion.getType()) {
                     case INTEGER:
                         firstValue = BigIntegerHelper.parse(firstValue.toString());
                         secondValue = BigIntegerHelper.parse(secondValue.toString());

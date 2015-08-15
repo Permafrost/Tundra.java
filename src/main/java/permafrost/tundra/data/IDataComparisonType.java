@@ -36,8 +36,9 @@ public enum IDataComparisonType {
 
     /**
      * Returns an IDataKeyComparisonType for the given string value.
+     *
      * @param value The value to be converted to an IDataKeyComparisonType.
-     * @return      The IDataKeyComparisonType representing the given value.
+     * @return The IDataKeyComparisonType representing the given value.
      */
     public static IDataComparisonType normalize(String value) {
         return normalize(value == null ? null : valueOf(value.trim().toUpperCase()));
@@ -45,8 +46,9 @@ public enum IDataComparisonType {
 
     /**
      * Normalizes an IDataKeyComparisonType.
-     * @param type  The IDataKeyComparisonType to be normalized.
-     * @return      If the given type is null the default type, otherwise the given type.
+     *
+     * @param type The IDataKeyComparisonType to be normalized.
+     * @return If the given type is null the default type, otherwise the given type.
      */
     public static IDataComparisonType normalize(IDataComparisonType type) {
         return type == null ? DEFAULT_COMPARISON_TYPE : type;

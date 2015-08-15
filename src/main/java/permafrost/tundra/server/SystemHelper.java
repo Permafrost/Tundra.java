@@ -30,7 +30,6 @@ import com.wm.app.b2b.server.Server;
 import com.wm.data.IData;
 import permafrost.tundra.data.IDataMap;
 import permafrost.tundra.io.FileHelper;
-
 import java.util.Hashtable;
 import java.util.Properties;
 import java.util.TreeMap;
@@ -45,9 +44,8 @@ public class SystemHelper {
     private SystemHelper() {}
 
     /**
-     * Returns information about Integration Server such as the software version,
-     * environment settings, Java properties, well-known directory locations, and
-     * memory usage.
+     * Returns information about Integration Server such as the software version, environment settings, Java properties,
+     * well-known directory locations, and memory usage.
      *
      * @return Integration Server properties.
      */
@@ -64,6 +62,7 @@ public class SystemHelper {
 
     /**
      * Returns the current system environment variables.
+     *
      * @return The current system environment variables.
      */
     public static IData getSystemEnvironment() {
@@ -72,6 +71,7 @@ public class SystemHelper {
 
     /**
      * Returns the current system properties.
+     *
      * @return The current system properties.
      */
     @SuppressWarnings("unchecked")
@@ -91,6 +91,7 @@ public class SystemHelper {
 
     /**
      * Returns the locations of well-known Integration Server directories.
+     *
      * @return The locations of well-known Integration Server directories.
      */
     public static IData getSystemDirectories() {
@@ -115,6 +116,7 @@ public class SystemHelper {
 
     /**
      * Returns the Java heap memory usage for the currently executing JVM process.
+     *
      * @return The Java heap memory usage for the currently executing JVM process.
      */
     public static IData getMemoryUsage() {
@@ -134,6 +136,7 @@ public class SystemHelper {
 
     /**
      * Returns the default from email address of this Integration Server.
+     *
      * @return the default from email address of this Integration Server.
      */
     private static String getDefaultFromEmailAddress() {

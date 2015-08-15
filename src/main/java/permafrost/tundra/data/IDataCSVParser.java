@@ -34,7 +34,6 @@ import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
 import permafrost.tundra.io.StreamHelper;
 import permafrost.tundra.lang.CharsetHelper;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -63,37 +62,33 @@ public class IDataCSVParser extends IDataTextParser {
     protected String contentType = "text/csv";
 
     /**
-     * Construct a new IDataCSVCoder, using the default delimiter ',' and
-     * default content type "text/csv".
+     * Construct a new IDataCSVCoder, using the default delimiter ',' and default content type "text/csv".
      */
     public IDataCSVParser() {}
 
     /**
-     * Construct a new IDataCSVCoder, using the given delimiter and
-     * default content type "text/csv".
+     * Construct a new IDataCSVCoder, using the given delimiter and default content type "text/csv".
      *
-     * @param delimiter     The delimiter character to use.
+     * @param delimiter The delimiter character to use.
      */
     public IDataCSVParser(char delimiter) {
         this(delimiter, null);
     }
 
     /**
-     * Construct a new IDataCSVCoder, using the given delimiter and
-     * default content type "text/csv".
+     * Construct a new IDataCSVCoder, using the given delimiter and default content type "text/csv".
      *
-     * @param delimiter     The delimiter character to use.
+     * @param delimiter The delimiter character to use.
      */
     public IDataCSVParser(String delimiter) {
         this(delimiter, null);
     }
 
     /**
-     * Construct a new IDataCSVCoder, using the given delimiter and
-     * given content type.
+     * Construct a new IDataCSVCoder, using the given delimiter and given content type.
      *
-     * @param delimiter     The delimiter character to use.
-     * @param contentType   The content type to use.
+     * @param delimiter   The delimiter character to use.
+     * @param contentType The content type to use.
      */
     public IDataCSVParser(char delimiter, String contentType) {
         this.delimiter = delimiter;
@@ -101,11 +96,10 @@ public class IDataCSVParser extends IDataTextParser {
     }
 
     /**
-     * Construct a new IDataCSVCoder, using the given delimiter and
-     * given content type.
+     * Construct a new IDataCSVCoder, using the given delimiter and given content type.
      *
-     * @param delimiter     The delimiter character to use.
-     * @param contentType   The content type to use.
+     * @param delimiter   The delimiter character to use.
+     * @param contentType The content type to use.
      */
     public IDataCSVParser(String delimiter, String contentType) {
         if (delimiter != null && delimiter.length() >= 1) this.delimiter = delimiter.charAt(0);
@@ -114,6 +108,7 @@ public class IDataCSVParser extends IDataTextParser {
 
     /**
      * Returns a default instance of this class with default settings.
+     *
      * @return The default instance of this class.
      */
     public static IDataCSVParser getInstance() {
@@ -123,10 +118,10 @@ public class IDataCSVParser extends IDataTextParser {
     /**
      * Encodes the given IData document as CSV to the given output stream.
      *
-     * @param outputStream  The stream to write the encoded IData to.
-     * @param document      The IData document to be encoded.
-     * @param charset       The character set to use.
-     * @throws IOException  If there is a problem writing to the stream.
+     * @param outputStream The stream to write the encoded IData to.
+     * @param document     The IData document to be encoded.
+     * @param charset      The character set to use.
+     * @throws IOException If there is a problem writing to the stream.
      */
     public void encode(OutputStream outputStream, IData document, Charset charset) throws IOException {
         StreamHelper.copy(StreamHelper.normalize(encodeToString(document), charset), outputStream);
@@ -134,6 +129,7 @@ public class IDataCSVParser extends IDataTextParser {
 
     /**
      * The MIME media type for CSV.
+     *
      * @return CSV MIME media type.
      */
     public String getContentType() {
@@ -143,10 +139,10 @@ public class IDataCSVParser extends IDataTextParser {
     /**
      * Returns an IData representation of the CSV data in the given input stream.
      *
-     * @param inputStream                       The input stream to be decoded.
-     * @param charset                           The character set to use.
-     * @return                                  An IData representation of the given input stream data.
-     * @throws IOException                      If there is a problem reading from the stream.
+     * @param inputStream The input stream to be decoded.
+     * @param charset     The character set to use.
+     * @return An IData representation of the given input stream data.
+     * @throws IOException If there is a problem reading from the stream.
      */
     @Override
     public IData decode(InputStream inputStream, Charset charset) throws IOException {
@@ -182,8 +178,8 @@ public class IDataCSVParser extends IDataTextParser {
     /**
      * Returns a CSV representation of the given IData object.
      *
-     * @param document  The IData to convert to CSV.
-     * @return          The CSV representation of the IData.
+     * @param document The IData to convert to CSV.
+     * @return The CSV representation of the IData.
      */
     @Override
     public String encodeToString(IData document) throws IOException {

@@ -24,7 +24,9 @@
 
 package permafrost.tundra.io;
 
-import permafrost.tundra.io.filter.*;
+import permafrost.tundra.io.filter.ChainFilter;
+import permafrost.tundra.io.filter.DirectoryFilter;
+import permafrost.tundra.io.filter.FileFilter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
@@ -41,6 +43,7 @@ public class DirectoryLister {
 
     /**
      * Constructs a new DirectoryLister for listing the contents of a given directory.
+     *
      * @param directory The directory whose contents are to be listed.
      * @param recurse   If true, all child directories will be recursively listed also.
      */
@@ -50,6 +53,7 @@ public class DirectoryLister {
 
     /**
      * Constructs a new DirectoryLister for listing the contents of a given directory.
+     *
      * @param directory The directory whose contents are to be listed.
      * @param recurse   If true, all child directories will be recursively listed also.
      */
@@ -59,23 +63,25 @@ public class DirectoryLister {
 
     /**
      * Constructs a new DirectoryLister for listing the contents of a given directory.
+     *
      * @param directory The directory whose contents are to be listed.
      * @param recurse   If true, all child directories will be recursively listed also.
-     * @param filters   One or more filename filters which will restrict which files
-     *                  and directories are returned in the list results.
+     * @param filters   One or more filename filters which will restrict which files and directories are returned in the
+     *                  list results.
      */
-    public DirectoryLister(String directory, boolean recurse, FilenameFilter ...filters) {
+    public DirectoryLister(String directory, boolean recurse, FilenameFilter... filters) {
         this(FileHelper.construct(directory), recurse, filters);
     }
 
     /**
      * Constructs a new DirectoryLister for listing the contents of a given directory.
+     *
      * @param directory The directory whose contents are to be listed.
      * @param recurse   If true, all child directories will be recursively listed also.
-     * @param filters   One or more filename filters which will restrict which files
-     *                  and directories are returned in the list results.
+     * @param filters   One or more filename filters which will restrict which files and directories are returned in the
+     *                  list results.
      */
-    public DirectoryLister(File directory, boolean recurse, FilenameFilter ...filters) {
+    public DirectoryLister(File directory, boolean recurse, FilenameFilter... filters) {
         if (directory == null) throw new IllegalArgumentException("directory must not be null");
 
         this.directory = directory;
@@ -92,6 +98,7 @@ public class DirectoryLister {
 
     /**
      * Returns the directory that will be listed.
+     *
      * @return The directory that will be listed.
      */
     public File getDirectory() {
@@ -100,6 +107,7 @@ public class DirectoryLister {
 
     /**
      * Returns whether the listing will be recursive.
+     *
      * @return If true, child directories will be recursively listed also.
      */
     public boolean getRecurse() {
@@ -108,8 +116,9 @@ public class DirectoryLister {
 
     /**
      * Lists the directory.
-     * @return                          A list of files and directories that match the specified filters.
-     * @throws FileNotFoundException    If the directory does not exist.
+     *
+     * @return A list of files and directories that match the specified filters.
+     * @throws FileNotFoundException If the directory does not exist.
      */
     public DirectoryListing list() throws FileNotFoundException {
         return list(directory, recurse);
@@ -117,13 +126,16 @@ public class DirectoryLister {
 
     /**
      * Lists the given directory.
-     * @param directory                 The directory to be listed.
-     * @param recurse                   If true, child directories will be recursively listed also.
-     * @return                          A list of files and directories that match the specified filters.
-     * @throws FileNotFoundException    If the directory does not exist.
+     *
+     * @param directory The directory to be listed.
+     * @param recurse   If true, child directories will be recursively listed also.
+     * @return A list of files and directories that match the specified filters.
+     * @throws FileNotFoundException If the directory does not exist.
      */
     protected DirectoryListing list(File directory, boolean recurse) throws FileNotFoundException {
-        if (!DirectoryHelper.exists(directory)) throw new FileNotFoundException("Unable to list directory as it does not exist: " + FileHelper.normalize(directory));
+        if (!DirectoryHelper.exists(directory)) {
+            throw new FileNotFoundException("Unable to list directory as it does not exist: " + FileHelper.normalize(directory));
+        }
 
         String[] listing = directory.list();
 
@@ -160,6 +172,7 @@ public class DirectoryLister {
 
         /**
          * Constructs a new DirectoryListing given a list of files and directories.
+         *
          * @param directory     The directory which produced this listing.
          * @param directoryList A list of directories to include in the listing results.
          * @param fileList      A list of files to include in the listing results.
@@ -176,6 +189,7 @@ public class DirectoryLister {
 
         /**
          * Returns all the files and directories in this listing.
+         *
          * @return All the files and directories in this listing.
          */
         @Override
@@ -190,6 +204,7 @@ public class DirectoryLister {
 
         /**
          * Returns all the directories in this listing.
+         *
          * @return All the directories in this listing.
          */
         @Override
@@ -199,6 +214,7 @@ public class DirectoryLister {
 
         /**
          * Returns all the files in this listing.
+         *
          * @return All the files in this listing.
          */
         @Override
@@ -208,6 +224,7 @@ public class DirectoryLister {
 
         /**
          * Returns the directory which produced this listing.
+         *
          * @return The directory which produced this listing.
          */
         @Override

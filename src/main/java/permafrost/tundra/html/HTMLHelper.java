@@ -37,8 +37,9 @@ public class HTMLHelper {
 
     /**
      * HTML decodes the given string.
+     *
      * @param input The string to be decoded.
-     * @return      The decoded string.
+     * @return The decoded string.
      */
     public static String decode(String input) {
         if (input == null) return null;
@@ -47,8 +48,9 @@ public class HTMLHelper {
 
     /**
      * HTML encodes the given string.
+     *
      * @param input The string to be encoded.
-     * @return      The encoded string.
+     * @return The encoded string.
      */
     public static String encode(String input) {
         if (input == null) return null;

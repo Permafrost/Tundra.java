@@ -47,6 +47,7 @@ public class BasicIDataArrayComparator implements IDataArrayComparator {
 
     /**
      * Returns the singleton instance of this class.
+     *
      * @return The singleton instance of this class.
      */
     public static BasicIDataArrayComparator getInstance() {
@@ -56,14 +57,11 @@ public class BasicIDataArrayComparator implements IDataArrayComparator {
     /**
      * Compares two IData[] objects.
      *
-     * @param array1         The first IData[] to be compared.
-     * @param array2         The second IData[] to be compared.
-     * @return               A value less than zero if the first array
-     *                       comes before the second array, a value of
-     *                       zero if they are equal, or a value of greater
-     *                       than zero if the first array comes after the
-     *                       second array according to the comparison
-     *                       of each item.
+     * @param array1 The first IData[] to be compared.
+     * @param array2 The second IData[] to be compared.
+     * @return A value less than zero if the first array comes before the second array, a value of zero if they are
+     * equal, or a value of greater than zero if the first array comes after the second array according to the
+     * comparison of each item.
      */
     public int compare(IData[] array1, IData[] array2) {
         int result = 0;
@@ -71,7 +69,7 @@ public class BasicIDataArrayComparator implements IDataArrayComparator {
         if (array1 == null || array2 == null) {
             if (array1 != null) {
                 result = 1;
-            } else if (array2 != null){
+            } else if (array2 != null) {
                 result = -1;
             }
         } else {

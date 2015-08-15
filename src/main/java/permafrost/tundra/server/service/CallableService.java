@@ -28,7 +28,6 @@ import com.wm.app.b2b.server.Service;
 import com.wm.app.b2b.server.Session;
 import com.wm.data.IData;
 import com.wm.lang.ns.NSName;
-
 import java.util.concurrent.Callable;
 
 /**
@@ -51,22 +50,24 @@ public class CallableService implements Callable<IData> {
     private Session session;
 
     /**
-     * Constructs a new CallableService for invoking a webMethods Integration Server
-     * service via the Callable interface.
-     * @param service   The fully-qualified service name to be invoked.
-     * @param session   The session to invoke the service under.
-     * @param pipeline  The input pipeline the service is invoked with.
+     * Constructs a new CallableService for invoking a webMethods Integration Server service via the Callable
+     * interface.
+     *
+     * @param service  The fully-qualified service name to be invoked.
+     * @param session  The session to invoke the service under.
+     * @param pipeline The input pipeline the service is invoked with.
      */
     public CallableService(String service, Session session, IData pipeline) {
         this(NSName.create(service), session, pipeline);
     }
 
     /**
-     * Constructs a new CallableService for invoking a webMethods Integration Server
-     * service via the Callable interface.
-     * @param service   The service to be invoked.
-     * @param session   The session to invoke the service under.
-     * @param pipeline  The input pipeline the service is invoked with.
+     * Constructs a new CallableService for invoking a webMethods Integration Server service via the Callable
+     * interface.
+     *
+     * @param service  The service to be invoked.
+     * @param session  The session to invoke the service under.
+     * @param pipeline The input pipeline the service is invoked with.
      */
     public CallableService(NSName service, Session session, IData pipeline) {
         this.service = service;
@@ -76,6 +77,7 @@ public class CallableService implements Callable<IData> {
 
     /**
      * Invokes the specified service with the provided pipeline and session.
+     *
      * @return The output pipeline returned by the invocation.
      * @throws Exception if the service encounters an error.
      */

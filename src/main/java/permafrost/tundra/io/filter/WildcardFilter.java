@@ -30,6 +30,7 @@ package permafrost.tundra.io.filter;
 public class WildcardFilter extends RegularExpressionFilter {
     /**
      * Constructs a new WilcardFilter using the given wildcard pattern.
+     *
      * @param pattern A wildcard pattern to use for filtering files.
      */
     public WildcardFilter(String pattern) {
@@ -38,8 +39,9 @@ public class WildcardFilter extends RegularExpressionFilter {
 
     /**
      * Returns a regular expression representation of the given wildcard pattern.
+     *
      * @param wildcardPattern The wildcardPattern to be converted to a regular expression.
-     * @return                A regular expression representation of the given wildcard pattern.
+     * @return A regular expression representation of the given wildcard pattern.
      */
     protected static String toRegularExpression(String wildcardPattern) {
         StringBuilder buffer = new StringBuilder();

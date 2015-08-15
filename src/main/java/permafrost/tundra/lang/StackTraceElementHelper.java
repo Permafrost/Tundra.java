@@ -42,7 +42,7 @@ public class StackTraceElementHelper {
      * Converts a StackTraceElement[] to an IData[] representation.
      *
      * @param array The StackTraceElement[] to be converted.
-     * @return      The IData[] representation of the given StackTraceElement[].
+     * @return The IData[] representation of the given StackTraceElement[].
      */
     public static IData[] toIDataArray(StackTraceElement[] array) {
         if (array == null) return null;
@@ -60,7 +60,7 @@ public class StackTraceElementHelper {
      * Converts a StackTraceElement to an IData representation.
      *
      * @param stackTraceElement The StackTraceElement to be converted.
-     * @return                  The IData representation of the given StackTraceElement.
+     * @return The IData representation of the given StackTraceElement.
      */
     public static IData toIData(StackTraceElement stackTraceElement) {
         if (stackTraceElement == null) return null;

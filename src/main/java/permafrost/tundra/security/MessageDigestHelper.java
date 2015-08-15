@@ -28,7 +28,6 @@ import permafrost.tundra.io.MarkableInputStream;
 import permafrost.tundra.io.StreamHelper;
 import permafrost.tundra.lang.BytesHelper;
 import permafrost.tundra.lang.CharsetHelper;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -47,8 +46,9 @@ public class MessageDigestHelper {
 
     /**
      * Returns a MessageDigest object for the given algorithm.
+     *
      * @param algorithmName The algorithm to use when calculating a message digest.
-     * @return              A MessageDigest that implements the given algorithm.
+     * @return A MessageDigest that implements the given algorithm.
      */
     private static MessageDigest getInstance(String algorithmName) {
         return getInstance(MessageDigestAlgorithm.normalize(algorithmName));
@@ -56,23 +56,25 @@ public class MessageDigestHelper {
 
     /**
      * Returns a MessageDigest object for the given algorithm.
-     * @param algorithm     The algorithm to use when calculating a message digest.
-     * @return              A MessageDigest that implements the given algorithm.
+     *
+     * @param algorithm The algorithm to use when calculating a message digest.
+     * @return A MessageDigest that implements the given algorithm.
      */
     private static MessageDigest getInstance(MessageDigestAlgorithm algorithm) {
         try {
             return MessageDigest.getInstance(MessageDigestAlgorithm.normalize(algorithm).toString());
-        } catch(NoSuchAlgorithmException ex) {
+        } catch (NoSuchAlgorithmException ex) {
             throw new RuntimeException(ex);
         }
     }
 
     /**
      * Calculates a message digest for the given data using the given algorithm.
+     *
      * @param algorithmName The algorithm to use when calculating the message digest.
      * @param data          The data to calculate the digest for.
-     * @return              The message digest calculated for the given data using the given algorithm.
-     * @throws IOException  If an I/O exception occurs reading from the stream.
+     * @return The message digest calculated for the given data using the given algorithm.
+     * @throws IOException If an I/O exception occurs reading from the stream.
      */
     public static Map.Entry<InputStream, byte[]> getDigest(String algorithmName, InputStream data) throws IOException {
         return getDigest(MessageDigestAlgorithm.normalize(algorithmName), data);
@@ -80,10 +82,11 @@ public class MessageDigestHelper {
 
     /**
      * Calculates a message digest for the given data using the given algorithm.
-     * @param algorithm     The algorithm to use when calculating the message digest.
-     * @param data          The data to calculate the digest for.
-     * @return              The message digest calculated for the given data using the given algorithm.
-     * @throws IOException  If an I/O exception occurs reading from the stream.
+     *
+     * @param algorithm The algorithm to use when calculating the message digest.
+     * @param data      The data to calculate the digest for.
+     * @return The message digest calculated for the given data using the given algorithm.
+     * @throws IOException If an I/O exception occurs reading from the stream.
      */
     public static Map.Entry<InputStream, byte[]> getDigest(MessageDigestAlgorithm algorithm, InputStream data) throws IOException {
         if (data == null) return null;
@@ -107,9 +110,10 @@ public class MessageDigestHelper {
 
     /**
      * Calculates a message digest for the given data using the given algorithm.
+     *
      * @param algorithmName The algorithm to use when calculating the message digest.
      * @param data          The data to calculate the digest for.
-     * @return              The message digest calculated for the given data using the given algorithm.
+     * @return The message digest calculated for the given data using the given algorithm.
      */
     public static byte[] getDigest(String algorithmName, byte[] data) {
         return getDigest(MessageDigestAlgorithm.normalize(algorithmName), data);
@@ -117,9 +121,10 @@ public class MessageDigestHelper {
 
     /**
      * Calculates a message digest for the given data using the given algorithm.
-     * @param algorithm     The algorithm to use when calculating the message digest.
-     * @param data          The data to calculate the digest for.
-     * @return              The message digest calculated for the given data using the given algorithm.
+     *
+     * @param algorithm The algorithm to use when calculating the message digest.
+     * @param data      The data to calculate the digest for.
+     * @return The message digest calculated for the given data using the given algorithm.
      */
     public static byte[] getDigest(MessageDigestAlgorithm algorithm, byte[] data) {
         return data == null ? null : getInstance(algorithm).digest(data);
@@ -127,20 +132,22 @@ public class MessageDigestHelper {
 
     /**
      * Calculates a message digest for the given data using the given algorithm.
+     *
      * @param algorithmName The algorithm to use when calculating the message digest.
      * @param data          The data to calculate the digest for.
-     * @return              The message digest calculated for the given data using the given algorithm.
+     * @return The message digest calculated for the given data using the given algorithm.
      */
     public static byte[] getDigest(String algorithmName, String data) {
-        return getDigest(algorithmName, data, (Charset) null);
+        return getDigest(algorithmName, data, (Charset)null);
     }
 
     /**
      * Calculates a message digest for the given data using the given algorithm.
+     *
      * @param algorithmName The algorithm to use when calculating the message digest.
      * @param data          The data to calculate the digest for.
      * @param charsetName   The charset to use.
-     * @return              The message digest calculated for the given data using the given algorithm.
+     * @return The message digest calculated for the given data using the given algorithm.
      */
     public static byte[] getDigest(String algorithmName, String data, String charsetName) {
         return getDigest(algorithmName, data, CharsetHelper.normalize(charsetName));
@@ -148,10 +155,11 @@ public class MessageDigestHelper {
 
     /**
      * Calculates a message digest for the given data using the given algorithm.
+     *
      * @param algorithmName The algorithm to use when calculating the message digest.
      * @param data          The data to calculate the digest for.
      * @param charset       The charset to use.
-     * @return              The message digest calculated for the given data using the given algorithm.
+     * @return The message digest calculated for the given data using the given algorithm.
      */
     public static byte[] getDigest(String algorithmName, String data, Charset charset) {
         return getDigest(MessageDigestAlgorithm.normalize(algorithmName), data, charset);
@@ -159,9 +167,10 @@ public class MessageDigestHelper {
 
     /**
      * Calculates a message digest for the given data using the given algorithm.
-     * @param algorithm     The algorithm to use when calculating the message digest.
-     * @param data          The data to calculate the digest for.
-     * @return              The message digest calculated for the given data using the given algorithm.
+     *
+     * @param algorithm The algorithm to use when calculating the message digest.
+     * @param data      The data to calculate the digest for.
+     * @return The message digest calculated for the given data using the given algorithm.
      */
     public static byte[] getDigest(MessageDigestAlgorithm algorithm, String data) {
         return getDigest(algorithm, data, (Charset)null);
@@ -169,10 +178,11 @@ public class MessageDigestHelper {
 
     /**
      * Calculates a message digest for the given data using the given algorithm.
-     * @param algorithm     The algorithm to use when calculating the message digest.
-     * @param data          The data to calculate the digest for.
-     * @param charsetName   The charset to use.
-     * @return              The message digest calculated for the given data using the given algorithm.
+     *
+     * @param algorithm   The algorithm to use when calculating the message digest.
+     * @param data        The data to calculate the digest for.
+     * @param charsetName The charset to use.
+     * @return The message digest calculated for the given data using the given algorithm.
      */
     public static byte[] getDigest(MessageDigestAlgorithm algorithm, String data, String charsetName) {
         return getDigest(algorithm, data, CharsetHelper.normalize(charsetName));
@@ -180,10 +190,11 @@ public class MessageDigestHelper {
 
     /**
      * Calculates a message digest for the given data using the given algorithm.
-     * @param algorithm     The algorithm to use when calculating the message digest.
-     * @param data          The data to calculate the digest for.
-     * @param charset       The charset to use.
-     * @return              The message digest calculated for the given data using the given algorithm.
+     *
+     * @param algorithm The algorithm to use when calculating the message digest.
+     * @param data      The data to calculate the digest for.
+     * @param charset   The charset to use.
+     * @return The message digest calculated for the given data using the given algorithm.
      */
     public static byte[] getDigest(MessageDigestAlgorithm algorithm, String data, Charset charset) {
         return getDigest(algorithm, BytesHelper.normalize(data, charset));

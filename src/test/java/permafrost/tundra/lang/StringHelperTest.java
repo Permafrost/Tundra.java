@@ -24,9 +24,10 @@
 
 package permafrost.tundra.lang;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class StringHelperTest {
 
@@ -71,8 +72,8 @@ public class StringHelperTest {
 
     @Test
     public void testQuoteWithNull() throws Exception {
-        assertEquals(null, StringHelper.quote((String) null));
-        assertEquals(null, StringHelper.quote((String[]) null));
+        assertEquals(null, StringHelper.quote((String)null));
+        assertEquals(null, StringHelper.quote((String[])null));
     }
 
     @Test
@@ -95,28 +96,28 @@ public class StringHelperTest {
 
     @Test
     public void testLinesWithSingleLine() throws Exception {
-        assertArrayEquals(new String[]{"abc"}, StringHelper.lines("abc"));
+        assertArrayEquals(new String[] { "abc" }, StringHelper.lines("abc"));
     }
 
     @Test
     public void testLinesWithMultipleLines() throws Exception {
-        assertArrayEquals(new String[]{"abc", "def"}, StringHelper.lines("abc\ndef"));
+        assertArrayEquals(new String[] { "abc", "def" }, StringHelper.lines("abc\ndef"));
     }
 
     @Test
     public void testSplitWithNull() throws Exception {
         assertArrayEquals(null, StringHelper.split(null, null));
         assertArrayEquals(null, StringHelper.split(null, "a"));
-        assertArrayEquals(new String[]{"a"}, StringHelper.split("a", null));
+        assertArrayEquals(new String[] { "a" }, StringHelper.split("a", null));
     }
 
     @Test
     public void testSplitWithLiteral() throws Exception {
-        assertArrayEquals(new String[]{"a", "c", "d", "e"}, StringHelper.split("abcbdbe", "b", true));
+        assertArrayEquals(new String[] { "a", "c", "d", "e" }, StringHelper.split("abcbdbe", "b", true));
     }
 
     @Test
     public void testSplitWithRegularExpression() throws Exception {
-        assertArrayEquals(new String[]{"a", "", "be"}, StringHelper.split("abcbdbe", "(bc|bd)", false));
+        assertArrayEquals(new String[] { "a", "", "be" }, StringHelper.split("abcbdbe", "(bc|bd)", false));
     }
 }

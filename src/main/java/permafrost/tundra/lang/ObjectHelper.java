@@ -32,11 +32,16 @@ import com.wm.util.coder.IDataCodable;
 import com.wm.util.coder.ValuesCodable;
 import permafrost.tundra.data.IDataHelper;
 import permafrost.tundra.io.StreamHelper;
-
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * A collection of convenience methods for working with Objects.
@@ -52,7 +57,7 @@ public class ObjectHelper {
      *
      * @param firstObject  The first object in the comparison.
      * @param secondObject The seconds object in the comparison.
-     * @return             True if the two objects are equal, otherwise false.
+     * @return True if the two objects are equal, otherwise false.
      */
     public static boolean equal(Object firstObject, Object secondObject) {
         boolean result = true;
@@ -74,7 +79,7 @@ public class ObjectHelper {
      *
      * @param object    The object to be checked against the given class.
      * @param className The name of the class the given object will be tested against.
-     * @return          True if the given object is an instance of the given class.
+     * @return True if the given object is an instance of the given class.
      * @throws ClassNotFoundException If the given class name is not found.
      */
     public static boolean instance(Object object, String className) throws ClassNotFoundException {
@@ -84,9 +89,9 @@ public class ObjectHelper {
     /**
      * Returns true if the given object is an instance of the given class.
      *
-     * @param object    The object to be checked against the given class.
-     * @param klass     The class the given object will be tested against.
-     * @return          True if the given object is an instance of the given class.
+     * @param object The object to be checked against the given class.
+     * @param klass  The class the given object will be tested against.
+     * @return True if the given object is an instance of the given class.
      */
     public static boolean instance(Object object, Class klass) {
         return object != null && klass != null && klass.isInstance(object);
@@ -94,8 +99,9 @@ public class ObjectHelper {
 
     /**
      * Returns a string representation of the given object.
+     *
      * @param object The object to stringify.
-     * @return       A string representation of the given object.
+     * @return A string representation of the given object.
      */
     public static String stringify(Object object) {
         if (object == null) return null;
@@ -103,9 +109,9 @@ public class ObjectHelper {
         String output;
 
         if (object instanceof Object[][]) {
-            output = ArrayHelper.stringify((Object[][]) object);
+            output = ArrayHelper.stringify((Object[][])object);
         } else if (object instanceof Object[]) {
-            output = ArrayHelper.stringify((Object[]) object);
+            output = ArrayHelper.stringify((Object[])object);
         } else if (object instanceof IData || object instanceof IDataCodable || object instanceof IDataPortable || object instanceof ValuesCodable) {
             output = IDataHelper.toIData(object).toString();
         } else if (object instanceof IData[] || object instanceof Table || object instanceof IDataCodable[] || object instanceof IDataPortable[] || object instanceof ValuesCodable[]) {
@@ -118,14 +124,11 @@ public class ObjectHelper {
     }
 
     /**
-     * Returns the given item if it is already an array, or a new
-     * array with the given type whose first element is the given
-     * item.
+     * Returns the given item if it is already an array, or a new array with the given type whose first element is the
+     * given item.
      *
-     * @param item  The item to be converted to an array.
-     * @return      Either the item itself if it is already an array
-     *              or a new array containing the item as its only
-     *              element.
+     * @param item The item to be converted to an array.
+     * @return Either the item itself if it is already an array or a new array containing the item as its only element.
      */
     public static Object[] arrayify(Object item) {
         Object[] array = null;
@@ -133,7 +136,7 @@ public class ObjectHelper {
         if (item instanceof Object[]) {
             array = (Object[])item;
         } else if (item != null) {
-            array = (Object[]) Array.newInstance(item.getClass(), 1);
+            array = (Object[])Array.newInstance(item.getClass(), 1);
             array[0] = item;
         }
 
@@ -141,20 +144,18 @@ public class ObjectHelper {
     }
 
     /**
-     * Returns a List containing all elements in the given item if
-     * it is an array, or a List containing the item itself if
-     * it is not an array.
+     * Returns a List containing all elements in the given item if it is an array, or a List containing the item itself
+     * if it is not an array.
      *
-     * @param item  The item to be converted to a List.
-     * @return      Either a List containing all elements in the given
-     *              item if it is an array, or a List containing the
-     *              item itself if it is not an array.
+     * @param item The item to be converted to a List.
+     * @return Either a List containing all elements in the given item if it is an array, or a List containing the item
+     * itself if it is not an array.
      */
     public static List<Object> listify(Object item) {
         List<Object> list = new LinkedList<Object>();
 
         if (item instanceof Object[]) {
-            list.addAll(ArrayHelper.toList((Object[]) item));
+            list.addAll(ArrayHelper.toList((Object[])item));
         } else if (item != null) {
             list.add(item);
         }
@@ -164,17 +165,19 @@ public class ObjectHelper {
 
     /**
      * Returns the nearest class which is an ancestor to the classes of the given objects.
+     *
      * @param objects One or more objects to return the nearest ancestor for.
-     * @return        The nearest ancestor class which is an ancestor to the classes of the given objects.
+     * @return The nearest ancestor class which is an ancestor to the classes of the given objects.
      */
-    public static Class<?> getNearestAncestor(Object ...objects) {
+    public static Class<?> getNearestAncestor(Object... objects) {
         return getNearestAncestor(toClassSet(objects));
     }
 
     /**
      * Returns the nearest class which is an ancestor to all the classes in the given set.
+     *
      * @param classes A set of classes for which the nearest ancestor will be returned.
-     * @return        The nearest ancestor class which is an ancestor to all the classes in the given set.
+     * @return The nearest ancestor class which is an ancestor to all the classes in the given set.
      */
     public static Class<?> getNearestAncestor(Collection<Class<?>> classes) {
         Class<?> nearest = null;
@@ -192,8 +195,9 @@ public class ObjectHelper {
 
     /**
      * Returns the nearest class which is an ancestor to all the classes in the given set.
+     *
      * @param classes A set of classes for which the nearest ancestor will be returned.
-     * @return        The nearest ancestor class which is an ancestor to all the classes in the given set.
+     * @return The nearest ancestor class which is an ancestor to all the classes in the given set.
      */
     public static Class<?> getNearestAncestor(Class<?>... classes) {
         return getNearestAncestor(java.util.Arrays.asList(classes));
@@ -201,8 +205,9 @@ public class ObjectHelper {
 
     /**
      * Returns the nearest class which is an ancestor to all the classes in the given set.
+     *
      * @param classNames A set of class names for which the nearest ancestor will be returned.
-     * @return           The nearest ancestor class which is an ancestor to all the classes in the given set.
+     * @return The nearest ancestor class which is an ancestor to all the classes in the given set.
      * @throws ClassNotFoundException If any of the class names cannot be found.
      */
     public static Class<?> getNearestAncestor(String... classNames) throws ClassNotFoundException {
@@ -211,8 +216,9 @@ public class ObjectHelper {
 
     /**
      * Returns all the common ancestor classes from the given set of classes.
-     * @param classes    A collection of classes.
-     * @return           All the common ancestor classes from the given set of class names.
+     *
+     * @param classes A collection of classes.
+     * @return All the common ancestor classes from the given set of class names.
      */
     public static Set<Class<?>> getAncestors(Collection<Class<?>> classes) {
         Set<Class<?>> intersection = new LinkedHashSet<Class<?>>();
@@ -230,8 +236,9 @@ public class ObjectHelper {
 
     /**
      * Returns all the common ancestor classes from the given set of classes.
-     * @param classes    A list of classes.
-     * @return           All the common ancestor classes from the given set of class names.
+     *
+     * @param classes A list of classes.
+     * @return All the common ancestor classes from the given set of class names.
      */
     public static Class<?>[] getAncestors(Class<?>... classes) {
         Set<Class<?>> ancestors = getAncestors(java.util.Arrays.asList(classes));
@@ -240,8 +247,9 @@ public class ObjectHelper {
 
     /**
      * Returns all the common ancestor classes from the given set of class names.
+     *
      * @param classNames A list of class names.
-     * @return           All the common ancestor classes from the given set of class names.
+     * @return All the common ancestor classes from the given set of class names.
      * @throws ClassNotFoundException If a class name cannot be found.
      */
     public static Class<?>[] getAncestors(String... classNames) throws ClassNotFoundException {
@@ -250,17 +258,19 @@ public class ObjectHelper {
 
     /**
      * Returns all the ancestor classes from nearest to furthest for the given class.
-     * @param objects   One or more objects to fetch the ancestors classes of.
-     * @return          All the ancestor classes from nearest to furthest for the class of the given object.
+     *
+     * @param objects One or more objects to fetch the ancestors classes of.
+     * @return All the ancestor classes from nearest to furthest for the class of the given object.
      */
-    public static Set<Class<?>> getAncestors(Object ...objects) {
+    public static Set<Class<?>> getAncestors(Object... objects) {
         return getAncestors(toClassSet(objects));
     }
 
     /**
      * Returns all the ancestor classes from nearest to furthest for the given class.
+     *
      * @param object An object to fetch the ancestors classes of.
-     * @return       All the ancestor classes from nearest to furthest for the class of the given object.
+     * @return All the ancestor classes from nearest to furthest for the class of the given object.
      */
     public static Set<Class<?>> getAncestors(Object object) {
         return object == null ? new TreeSet<Class<?>>() : getAncestors(object.getClass());
@@ -268,8 +278,9 @@ public class ObjectHelper {
 
     /**
      * Returns all the ancestor classes from nearest to furthest for the given class.
+     *
      * @param klass A class to fetch the ancestors of.
-     * @return      All the ancestor classes from nearest to furthest for the given class.
+     * @return All the ancestor classes from nearest to furthest for the given class.
      */
     private static Set<Class<?>> getAncestors(Class<?> klass) {
         Set<Class<?>> ancestors = new LinkedHashSet<Class<?>>();
@@ -295,8 +306,9 @@ public class ObjectHelper {
 
     /**
      * Converts the given list of class names to a list of classes.
+     *
      * @param classNames A list of class names.
-     * @return           A list of classes that correspond to the given names.
+     * @return A list of classes that correspond to the given names.
      * @throws ClassNotFoundException If a class name cannot be not found.
      */
     private static Class<?>[] toClassArray(String[] classNames) throws ClassNotFoundException {
@@ -313,10 +325,11 @@ public class ObjectHelper {
 
     /**
      * Converts the given list of objects to a set of classes.
-     * @param objects    One or more objects to return a set of classes for.
-     * @return           The set of classes for the given list of objects.
+     *
+     * @param objects One or more objects to return a set of classes for.
+     * @return The set of classes for the given list of objects.
      */
-    private static Set<Class<?>> toClassSet(Object ...objects) {
+    private static Set<Class<?>> toClassSet(Object... objects) {
         Set<Class<?>> classes = new LinkedHashSet<Class<?>>();
 
         for (Object object : objects) {
@@ -328,11 +341,12 @@ public class ObjectHelper {
 
     /**
      * Converts a string, byte array or stream to a string, byte array or stream.
-     * @param object        The object to be converted.
-     * @param charsetName   The character set to use.
-     * @param mode          The desired return type of the object.
-     * @return              The converted object.
-     * @throws IOException  If an I/O problem occurs.
+     *
+     * @param object      The object to be converted.
+     * @param charsetName The character set to use.
+     * @param mode        The desired return type of the object.
+     * @return The converted object.
+     * @throws IOException If an I/O problem occurs.
      */
     public static Object convert(Object object, String charsetName, String mode) throws IOException {
         return convert(object, CharsetHelper.normalize(charsetName), mode);
@@ -340,11 +354,12 @@ public class ObjectHelper {
 
     /**
      * Converts a string, byte array or stream to a string, byte array or stream.
-     * @param object        The object to be converted.
-     * @param charset       The character set to use.
-     * @param mode          The desired return type of the object.
-     * @return              The converted object.
-     * @throws IOException  If an I/O problem occurs.
+     *
+     * @param object  The object to be converted.
+     * @param charset The character set to use.
+     * @param mode    The desired return type of the object.
+     * @return The converted object.
+     * @throws IOException If an I/O problem occurs.
      */
     public static Object convert(Object object, Charset charset, String mode) throws IOException {
         return convert(object, charset, ObjectConvertMode.normalize(mode));
@@ -352,10 +367,11 @@ public class ObjectHelper {
 
     /**
      * Converts a string, byte array or stream to a string, byte array or stream.
-     * @param object        The object to be converted.
-     * @param mode          The desired return type of the object.
-     * @return              The converted object.
-     * @throws IOException  If an I/O problem occurs.
+     *
+     * @param object The object to be converted.
+     * @param mode   The desired return type of the object.
+     * @return The converted object.
+     * @throws IOException If an I/O problem occurs.
      */
     public static Object convert(Object object, String mode) throws IOException {
         return convert(object, ObjectConvertMode.normalize(mode));
@@ -363,10 +379,11 @@ public class ObjectHelper {
 
     /**
      * Converts a string, byte array or stream to a string, byte array or stream.
-     * @param object        The object to be converted.
-     * @param mode          The desired return type of the object.
-     * @return              The converted object.
-     * @throws IOException  If an I/O problem occurs.
+     *
+     * @param object The object to be converted.
+     * @param mode   The desired return type of the object.
+     * @return The converted object.
+     * @throws IOException If an I/O problem occurs.
      */
     public static Object convert(Object object, ObjectConvertMode mode) throws IOException {
         return convert(object, CharsetHelper.DEFAULT_CHARSET, mode);
@@ -374,11 +391,12 @@ public class ObjectHelper {
 
     /**
      * Converts a string, byte array or stream to a string, byte array or stream.
-     * @param object        The object to be converted.
-     * @param charset       The character set to use.
-     * @param mode          The desired return type of the object.
-     * @return              The converted object.
-     * @throws IOException  If an I/O problem occurs.
+     *
+     * @param object  The object to be converted.
+     * @param charset The character set to use.
+     * @param mode    The desired return type of the object.
+     * @return The converted object.
+     * @throws IOException If an I/O problem occurs.
      */
     public static Object convert(Object object, Charset charset, ObjectConvertMode mode) throws IOException {
         if (object == null) return null;
@@ -391,7 +409,7 @@ public class ObjectHelper {
             object = StringHelper.normalize(object, charset);
         } else if (mode == ObjectConvertMode.BASE64) {
             object = BytesHelper.base64Encode(BytesHelper.normalize(object, charset));
-        } else if (mode == ObjectConvertMode.STREAM){
+        } else if (mode == ObjectConvertMode.STREAM) {
             object = StreamHelper.normalize(object, charset);
         } else {
             throw new IllegalArgumentException("Unsupported conversion mode specified: " + mode);

@@ -24,12 +24,10 @@
 
 package permafrost.tundra.time;
 
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
-
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.Duration;
-
-import static org.junit.Assert.*;
 
 public class DurationHelperTest {
 

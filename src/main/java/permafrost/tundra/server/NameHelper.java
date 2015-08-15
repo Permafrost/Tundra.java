@@ -29,7 +29,6 @@ import com.wm.data.IData;
 import com.wm.util.coder.IDataCodable;
 import permafrost.tundra.data.IDataMap;
 import permafrost.tundra.lang.ExceptionHelper;
-
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -40,12 +39,10 @@ public class NameHelper {
     private NameHelper() {}
 
     /**
-     * Resolves the given domain name or internet address, returning
-     * an IData representation.
+     * Resolves the given domain name or internet address, returning an IData representation.
      *
-     * @param name              The domain name or internet address to be resolved.
-     * @return                  An IData representation of the resolved address,
-     *                          containing the following keys: $domain, $host, $ip.
+     * @param name The domain name or internet address to be resolved.
+     * @return An IData representation of the resolved address, containing the following keys: $domain, $host, $ip.
      * @throws ServiceException If the address could not be resolved.
      */
     public static IData resolve(String name) throws ServiceException {
@@ -59,17 +56,16 @@ public class NameHelper {
     }
 
     /**
-     * Returns an IData representation of the localhost internet domain name
-     * and address.
-     * @return                  An IData representation of the localhost address,
-     *                          containing the following keys: $domain, $host, $ip.
+     * Returns an IData representation of the localhost internet domain name and address.
+     *
+     * @return An IData representation of the localhost address, containing the following keys: $domain, $host, $ip.
      * @throws ServiceException If the localhost address could not be resolved.
      */
     public static IData localhost() throws ServiceException {
         IData output = null;
         try {
             output = InternetAddress.localhost().getIData();
-        } catch(UnknownHostException ex) {
+        } catch (UnknownHostException ex) {
             ExceptionHelper.raise(ex);
         }
         return output;
@@ -80,8 +76,8 @@ public class NameHelper {
      */
     private static class InternetAddress implements IDataCodable {
         /**
-         * Cache localhost in volatile class member to optimize performance by avoiding the thread synchronization
-         * in the java.net.InetAddress class.
+         * Cache localhost in volatile class member to optimize performance by avoiding the thread synchronization in
+         * the java.net.InetAddress class.
          */
         protected static final long LOCALHOST_EXPIRE_DURATION = 5 * 60 * 1000; // 5 minutes
         protected static volatile long localhostExpireTime = 0;
@@ -91,6 +87,7 @@ public class NameHelper {
 
         /**
          * Create a new InternetAddress from the given InetAddress object.
+         *
          * @param address The address to use to create this object.
          */
         public InternetAddress(InetAddress address) {
@@ -102,6 +99,7 @@ public class NameHelper {
 
         /**
          * Returns the domain name associated with this internet address.
+         *
          * @return The domain name associated with this internet address.
          */
         public String getDomain() {
@@ -110,6 +108,7 @@ public class NameHelper {
 
         /**
          * Returns the host name associated with this internet address.
+         *
          * @return The host name associated with this internet address.
          */
         public String getHost() {
@@ -118,6 +117,7 @@ public class NameHelper {
 
         /**
          * Returns the IP address associated with this internet address.
+         *
          * @return The IP address associated with this internet address.
          */
         public String getIPAddress() {
@@ -126,8 +126,8 @@ public class NameHelper {
 
         /**
          * Returns an IData representation of this internet address.
-         * @return        An IData representation of this internet address,
-         *                containing the following keys: $domain, $host, $ip.
+         *
+         * @return An IData representation of this internet address, containing the following keys: $domain, $host, $ip.
          */
         public IData getIData() {
             IDataMap output = new IDataMap();
@@ -139,6 +139,7 @@ public class NameHelper {
 
         /**
          * This method is not implemented by this class.
+         *
          * @param input An IData to use to set the member variables of this class.
          * @throws UnsupportedOperationException Because this method is not implemented by this class.
          */
@@ -148,6 +149,7 @@ public class NameHelper {
 
         /**
          * Returns the localhost address.
+         *
          * @return The localhost address.
          * @throws UnknownHostException If the localhost cannot be resolved.
          */
@@ -162,8 +164,9 @@ public class NameHelper {
 
         /**
          * Returns the internet address that the given name resolves to.
-         * @param name  The name to be resolved.
-         * @return      The internet address which resolves to the given name.
+         *
+         * @param name The name to be resolved.
+         * @return The internet address which resolves to the given name.
          * @throws UnknownHostException If the name cannot be resolved.
          */
         public static InternetAddress resolve(String name) throws UnknownHostException {

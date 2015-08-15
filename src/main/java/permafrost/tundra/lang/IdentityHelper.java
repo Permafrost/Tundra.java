@@ -35,7 +35,8 @@ public class IdentityHelper {
 
     /**
      * Returns a new random UUID as a string.
-     * @return     The new random UUID.
+     *
+     * @return The new random UUID.
      */
     public static String generate() {
         return generate((ObjectConvertMode)null);
@@ -43,9 +44,9 @@ public class IdentityHelper {
 
     /**
      * Returns a new random UUID as a string.
-     * @param mode Determines how the UUID is represented, either as a
-     *             UUID string or as a base64-encoded byte array.
-     * @return     The new random UUID.
+     *
+     * @param mode Determines how the UUID is represented, either as a UUID string or as a base64-encoded byte array.
+     * @return The new random UUID.
      */
     public static String generate(String mode) {
         return generate(mode == null ? (ObjectConvertMode)null : ObjectConvertMode.normalize(mode));
@@ -53,9 +54,9 @@ public class IdentityHelper {
 
     /**
      * Returns a new random UUID as a string.
-     * @param mode Determines how the UUID is represented, either as a
-     *             UUID string or as a base64-encoded byte array.
-     * @return     The new random UUID.
+     *
+     * @param mode Determines how the UUID is represented, either as a UUID string or as a base64-encoded byte array.
+     * @return The new random UUID.
      */
     public static String generate(ObjectConvertMode mode) {
         java.util.UUID uuid = java.util.UUID.randomUUID();
@@ -84,10 +85,10 @@ public class IdentityHelper {
     }
 
     /**
-     * Converts the given identifier name to a legal Java identifier by replacing
-     * illegal characters with underscores.
+     * Converts the given identifier name to a legal Java identifier by replacing illegal characters with underscores.
+     *
      * @param input The string to be converted.
-     * @return      The given string converted to a legal Java identifier.
+     * @return The given string converted to a legal Java identifier.
      */
     public static String normalize(String input) {
         if (input == null) return null;
@@ -97,7 +98,7 @@ public class IdentityHelper {
 
         for (int i = 0; i < characters.length; i++) {
             char character = characters[i];
-            if ((i == 0 && !Character.isJavaIdentifierStart(character))||(i > 0 && !Character.isJavaIdentifierPart(character))) {
+            if ((i == 0 && !Character.isJavaIdentifierStart(character)) || (i > 0 && !Character.isJavaIdentifierPart(character))) {
                 character = '_';
             }
             output.append(character);

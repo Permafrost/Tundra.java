@@ -31,14 +31,16 @@ public enum HTMLEntity {
 
     /**
      * Construct a new HTMLEntity.
+     *
      * @param value The HTML value of the entity.
      */
     HTMLEntity(String value) {
-        this.value=value;
+        this.value = value;
     }
 
     /**
      * Returns string representation of the object.
+     *
      * @return The string representation of the object.
      */
     @Override

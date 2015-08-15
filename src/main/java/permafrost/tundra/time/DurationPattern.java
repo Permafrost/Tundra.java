@@ -53,9 +53,10 @@ public enum DurationPattern {
 
     /**
      * Returns the enumeration value associated with the given integer.
+     *
      * @param value The integer identifying the enumeration value to be returned.
-     * @return      Null if the given integer does not identify an enumeration constant, otherwise
-     *              the associated enumeration constant.
+     * @return Null if the given integer does not identify an enumeration constant, otherwise the associated enumeration
+     * constant.
      */
     public static DurationPattern valueOf(int value) {
         return map.get(value);
@@ -63,9 +64,10 @@ public enum DurationPattern {
 
     /**
      * Returns the enumeration value associated with the given name.
-     * @param name  The name of the enumeration constant to be returned.
-     * @return      The enumeration value associated with the given name, or the default value if no value
-     *              is associated with the given name.
+     *
+     * @param name The name of the enumeration constant to be returned.
+     * @return The enumeration value associated with the given name, or the default value if no value is associated with
+     * the given name.
      */
     public static DurationPattern normalize(String name) {
         return normalize(name == null ? (DurationPattern)null : valueOf(name.trim().toUpperCase()));
@@ -73,8 +75,9 @@ public enum DurationPattern {
 
     /**
      * Normalizes the given pattern.
+     *
      * @param pattern The pattern to be normalized.
-     * @return        The given pattern if not null, or the default pattern.
+     * @return The given pattern if not null, or the default pattern.
      */
     public static DurationPattern normalize(DurationPattern pattern) {
         return pattern == null ? DEFAULT_DURATION_PATTERN : pattern;

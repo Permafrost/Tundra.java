@@ -32,20 +32,22 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 import permafrost.tundra.io.StreamHelper;
-import permafrost.tundra.lang.*;
-
-import javax.xml.XMLConstants;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.SchemaFactory;
+import permafrost.tundra.lang.BaseException;
+import permafrost.tundra.lang.BytesHelper;
+import permafrost.tundra.lang.CharsetHelper;
+import permafrost.tundra.lang.ExceptionHelper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import javax.xml.XMLConstants;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.SchemaFactory;
 
 /**
  * A collection of convenience methods for working with XML.
@@ -57,16 +59,16 @@ public class XMLHelper {
     private XMLHelper() {}
 
     /**
-     * Validates the given content as XML, optionally against the given XML schema (XSD); throws an
-     * exception if the content is malformed and raise is true, otherwise returns a list of errors if
-     * there were any, or null if the XML is considered well-formed and valid.
+     * Validates the given content as XML, optionally against the given XML schema (XSD); throws an exception if the
+     * content is malformed and raise is true, otherwise returns a list of errors if there were any, or null if the XML
+     * is considered well-formed and valid.
      *
-     * @param content           The XML content to be validated.
-     * @param schema            Optional XML schema to validate against. If null, the XML will be checked for
-     *                          well-formedness only.
-     * @param raise             If true, and the XML is invalid, an exception will be thrown. If false, no
-     *                          exception is thrown when the XML is invalid.
-     * @return                  The list of validation errors if the XMl is invalid, or null if the XML is valid.
+     * @param content The XML content to be validated.
+     * @param schema  Optional XML schema to validate against. If null, the XML will be checked for well-formedness
+     *                only.
+     * @param raise   If true, and the XML is invalid, an exception will be thrown. If false, no exception is thrown
+     *                when the XML is invalid.
+     * @return The list of validation errors if the XMl is invalid, or null if the XML is valid.
      * @throws ServiceException If an I/O error occurs.
      */
     public static String[] validate(InputStream content, InputStream schema, boolean raise) throws ServiceException {
@@ -106,16 +108,16 @@ public class XMLHelper {
     }
 
     /**
-     * Validates the given content as XML, optionally against the given XML schema (XSD); throws an
-     * exception if the content is malformed and raise is true, otherwise returns a list of errors if
-     * there were any, or null if the XML is considered well-formed and valid.
+     * Validates the given content as XML, optionally against the given XML schema (XSD); throws an exception if the
+     * content is malformed and raise is true, otherwise returns a list of errors if there were any, or null if the XML
+     * is considered well-formed and valid.
      *
-     * @param content           The XML content to be validated.
-     * @param schema            Optional XML schema to validate against. If null, the XML will be checked for
-     *                          well-formedness only.
-     * @param raise             If true, and the XML is invalid, an exception will be thrown. If false, no
-     *                          exception is thrown when the XML is invalid.
-     * @return                  The list of validation errors if the XMl is invalid, or null if the XML is valid.
+     * @param content The XML content to be validated.
+     * @param schema  Optional XML schema to validate against. If null, the XML will be checked for well-formedness
+     *                only.
+     * @param raise   If true, and the XML is invalid, an exception will be thrown. If false, no exception is thrown
+     *                when the XML is invalid.
+     * @return The list of validation errors if the XMl is invalid, or null if the XML is valid.
      * @throws ServiceException If an I/O error occurs.
      */
     public static String[] validate(byte[] content, byte[] schema, boolean raise) throws ServiceException {
@@ -123,16 +125,16 @@ public class XMLHelper {
     }
 
     /**
-     * Validates the given content as XML, optionally against the given XML schema (XSD); throws an
-     * exception if the content is malformed and raise is true, otherwise returns a list of errors if
-     * there were any, or null if the XML is considered well-formed and valid.
+     * Validates the given content as XML, optionally against the given XML schema (XSD); throws an exception if the
+     * content is malformed and raise is true, otherwise returns a list of errors if there were any, or null if the XML
+     * is considered well-formed and valid.
      *
-     * @param content           The XML content to be validated.
-     * @param schema            Optional XML schema to validate against. If null, the XML will be checked for
-     *                          well-formedness only.
-     * @param raise             If true, and the XML is invalid, an exception will be thrown. If false, no
-     *                          exception is thrown when the XML is invalid.
-     * @return                  The list of validation errors if the XMl is invalid, or null if the XML is valid.
+     * @param content The XML content to be validated.
+     * @param schema  Optional XML schema to validate against. If null, the XML will be checked for well-formedness
+     *                only.
+     * @param raise   If true, and the XML is invalid, an exception will be thrown. If false, no exception is thrown
+     *                when the XML is invalid.
+     * @return The list of validation errors if the XMl is invalid, or null if the XML is valid.
      * @throws ServiceException If an I/O error occurs.
      */
     public static String[] validate(String content, String schema, boolean raise) throws ServiceException {
@@ -142,10 +144,10 @@ public class XMLHelper {
     /**
      * Canonicalizes the given XML content using the given algorithm.
      *
-     * @param input             The XML content to canonicalize.
-     * @param charset           The character set the XML content is encoded with.
-     * @param algorithm         The canonicalization algorithm to use.
-     * @return                  The given XML content canonicalized with the specified algorithm.
+     * @param input     The XML content to canonicalize.
+     * @param charset   The character set the XML content is encoded with.
+     * @param algorithm The canonicalization algorithm to use.
+     * @return The given XML content canonicalized with the specified algorithm.
      * @throws ServiceException If a canonicalization error occurs.
      */
     public static byte[] canonicalize(byte[] input, Charset charset, XMLCanonicalizationAlgorithm algorithm) throws ServiceException {
@@ -155,13 +157,13 @@ public class XMLHelper {
             Init.init();
             input = CharsetHelper.convert(input, charset, CharsetHelper.normalize(Canonicalizer.ENCODING));
             output = Canonicalizer.getInstance(XMLCanonicalizationAlgorithm.normalize(algorithm).getID()).canonicalize(input);
-        } catch(XMLSecurityException ex) {
+        } catch (XMLSecurityException ex) {
             ExceptionHelper.raise(ex);
-        } catch(ParserConfigurationException ex) {
+        } catch (ParserConfigurationException ex) {
             ExceptionHelper.raise(ex);
-        } catch(SAXException ex) {
+        } catch (SAXException ex) {
             ExceptionHelper.raise(ex);
-        } catch(IOException ex) {
+        } catch (IOException ex) {
             ExceptionHelper.raise(ex);
         }
 
@@ -171,10 +173,10 @@ public class XMLHelper {
     /**
      * Canonicalizes the given XML content using the given algorithm.
      *
-     * @param input             The XML content to canonicalize.
-     * @param charset           The character set the XML content is encoded with.
-     * @param algorithm         The canonicalization algorithm to use.
-     * @return                  The given XML content canonicalized with the specified algorithm.
+     * @param input     The XML content to canonicalize.
+     * @param charset   The character set the XML content is encoded with.
+     * @param algorithm The canonicalization algorithm to use.
+     * @return The given XML content canonicalized with the specified algorithm.
      * @throws ServiceException If a canonicalization error occurs.
      */
     public static byte[] canonicalize(byte[] input, Charset charset, String algorithm) throws ServiceException {
@@ -184,10 +186,10 @@ public class XMLHelper {
     /**
      * Canonicalizes the given XML content using the given algorithm.
      *
-     * @param input             The XML content to canonicalize.
-     * @param charsetName       The character set the XML content is encoded with.
-     * @param algorithm         The canonicalization algorithm to use.
-     * @return                  The given XML content canonicalized with the specified algorithm.
+     * @param input       The XML content to canonicalize.
+     * @param charsetName The character set the XML content is encoded with.
+     * @param algorithm   The canonicalization algorithm to use.
+     * @return The given XML content canonicalized with the specified algorithm.
      * @throws ServiceException If a canonicalization error occurs.
      */
     public static byte[] canonicalize(byte[] input, String charsetName, XMLCanonicalizationAlgorithm algorithm) throws ServiceException {
@@ -197,10 +199,10 @@ public class XMLHelper {
     /**
      * Canonicalizes the given XML content using the given algorithm.
      *
-     * @param input             The XML content to canonicalize.
-     * @param charsetName       The character set the XML content is encoded with.
-     * @param algorithm         The canonicalization algorithm to use.
-     * @return                  The given XML content canonicalized with the specified algorithm.
+     * @param input       The XML content to canonicalize.
+     * @param charsetName The character set the XML content is encoded with.
+     * @param algorithm   The canonicalization algorithm to use.
+     * @return The given XML content canonicalized with the specified algorithm.
      * @throws ServiceException If a canonicalization error occurs.
      */
     public static byte[] canonicalize(byte[] input, String charsetName, String algorithm) throws ServiceException {
@@ -210,10 +212,10 @@ public class XMLHelper {
     /**
      * Canonicalizes the given XML content using the given algorithm.
      *
-     * @param input             The XML content to canonicalize.
-     * @param charset           The character set the XML content is encoded with.
-     * @param algorithm         The canonicalization algorithm to use.
-     * @return                  The given XML content canonicalized with the specified algorithm.
+     * @param input     The XML content to canonicalize.
+     * @param charset   The character set the XML content is encoded with.
+     * @param algorithm The canonicalization algorithm to use.
+     * @return The given XML content canonicalized with the specified algorithm.
      * @throws ServiceException If a canonicalization error occurs.
      * @throws IOException      If an I/O error occurs.
      */
@@ -224,10 +226,10 @@ public class XMLHelper {
     /**
      * Canonicalizes the given XML content using the given algorithm.
      *
-     * @param input             The XML content to canonicalize.
-     * @param charset           The character set the XML content is encoded with.
-     * @param algorithm         The canonicalization algorithm to use.
-     * @return                  The given XML content canonicalized with the specified algorithm.
+     * @param input     The XML content to canonicalize.
+     * @param charset   The character set the XML content is encoded with.
+     * @param algorithm The canonicalization algorithm to use.
+     * @return The given XML content canonicalized with the specified algorithm.
      * @throws ServiceException If a canonicalization error occurs.
      * @throws IOException      If an I/O error occurs.
      */
@@ -238,10 +240,10 @@ public class XMLHelper {
     /**
      * Canonicalizes the given XML content using the given algorithm.
      *
-     * @param input             The XML content to canonicalize.
-     * @param charsetName       The character set the XML content is encoded with.
-     * @param algorithm         The canonicalization algorithm to use.
-     * @return                  The given XML content canonicalized with the specified algorithm.
+     * @param input       The XML content to canonicalize.
+     * @param charsetName The character set the XML content is encoded with.
+     * @param algorithm   The canonicalization algorithm to use.
+     * @return The given XML content canonicalized with the specified algorithm.
      * @throws ServiceException If a canonicalization error occurs.
      * @throws IOException      If an I/O error occurs.
      */
@@ -252,10 +254,10 @@ public class XMLHelper {
     /**
      * Canonicalizes the given XML content using the given algorithm.
      *
-     * @param input             The XML content to canonicalize.
-     * @param charsetName       The character set the XML content is encoded with.
-     * @param algorithm         The canonicalization algorithm to use.
-     * @return                  The given XML content canonicalized with the specified algorithm.
+     * @param input       The XML content to canonicalize.
+     * @param charsetName The character set the XML content is encoded with.
+     * @param algorithm   The canonicalization algorithm to use.
+     * @return The given XML content canonicalized with the specified algorithm.
      * @throws ServiceException If a canonicalization error occurs.
      * @throws IOException      If an I/O error occurs.
      */
@@ -278,6 +280,7 @@ public class XMLHelper {
 
         /**
          * Returns the list of formatted error messages encountered while parsing XML.
+         *
          * @return The list of formatted error messages encountered while parsing XML.
          */
         public Collection<Throwable> getErrors() {
@@ -286,7 +289,8 @@ public class XMLHelper {
 
         /**
          * Handles an XML error by appending it to the list of errors encountered while parsing.
-         * @param exception     The exception to be appended to the error list.
+         *
+         * @param exception The exception to be appended to the error list.
          * @throws SAXException Not thrown by this implementation.
          */
         public void error(SAXParseException exception) throws SAXException {
@@ -295,7 +299,8 @@ public class XMLHelper {
 
         /**
          * Handles a fatal XML error by appending it to the list of errors encountered while parsing.
-         * @param exception     The exception to be appended to the error list.
+         *
+         * @param exception The exception to be appended to the error list.
          * @throws SAXException Not thrown by this implementation.
          */
         public void fatalError(SAXParseException exception) throws SAXException {
@@ -304,7 +309,8 @@ public class XMLHelper {
 
         /**
          * Appends the given exception to the list of errors encountered while parsing.
-         * @param exception     The exception to be appended to the error list.
+         *
+         * @param exception The exception to be appended to the error list.
          */
         protected void append(SAXParseException exception) {
             errors.add(exception);

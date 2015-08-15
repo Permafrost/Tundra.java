@@ -24,12 +24,6 @@
 
 package permafrost.tundra.io;
 
-import java.io.*;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.charset.Charset;
-import java.util.Date;
-
 import com.wm.app.b2b.server.MimeTypes;
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;
@@ -42,6 +36,18 @@ import permafrost.tundra.lang.StringHelper;
 import permafrost.tundra.mime.MIMETypeHelper;
 import permafrost.tundra.net.uri.URIHelper;
 import permafrost.tundra.time.DateTimeHelper;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.charset.Charset;
+import java.util.Date;
 
 /**
  * A collection of convenience methods for working with files.
@@ -68,8 +74,9 @@ public class FileHelper {
 
     /**
      * Returns the MIME media type that describes the content of the given file.
+     *
      * @param file The file whose MIME type is to be returned.
-     * @return     The MIME media type that describes the content of the given file.
+     * @return The MIME media type that describes the content of the given file.
      */
     public static String getMIMEType(File file) {
         String type = null;
@@ -80,8 +87,9 @@ public class FileHelper {
 
     /**
      * Returns the MIME media type that describes the content of the given file.
-     * @param filename  The file whose MIME type is to be returned.
-     * @return          The MIME media type that describes the content of the given file.
+     *
+     * @param filename The file whose MIME type is to be returned.
+     * @return The MIME media type that describes the content of the given file.
      */
     public static String getMIMEType(String filename) {
         return getMIMEType(construct(filename));
@@ -89,8 +97,9 @@ public class FileHelper {
 
     /**
      * Returns true if the given file exists and is a file.
+     *
      * @param file The file to check existence of.
-     * @return     true if the given file exists and is a file.
+     * @return true if the given file exists and is a file.
      */
     public static boolean exists(File file) {
         return file == null ? false : file.exists() && file.isFile();
@@ -98,8 +107,9 @@ public class FileHelper {
 
     /**
      * Returns true if the given file exists and is a file.
-     * @param filename  The file to check existence of.
-     * @return          true if the given file exists and is a file.
+     *
+     * @param filename The file to check existence of.
+     * @return true if the given file exists and is a file.
      */
     public static boolean exists(String filename) {
         return exists(construct(filename));
@@ -107,18 +117,20 @@ public class FileHelper {
 
     /**
      * Creates a new, empty temporary file.
-     * @return              The file which was created.
-     * @throws IOException  If the file already exists.
+     *
+     * @return The file which was created.
+     * @throws IOException If the file already exists.
      */
     public static File create() throws IOException {
-        return create((File) null);
+        return create((File)null);
     }
 
     /**
      * Creates a new, empty file; if file is null, a temporary file is created.
-     * @param file          The file to be created.
-     * @return              The file which was created.
-     * @throws IOException  If the file already exists.
+     *
+     * @param file The file to be created.
+     * @return The file which was created.
+     * @throws IOException If the file already exists.
      */
     public static File create(File file) throws IOException {
         if (file == null) {
@@ -126,16 +138,19 @@ public class FileHelper {
         } else {
             File parent = file.getParentFile();
             if (parent != null) parent.mkdirs(); // automatically create directories if required
-            if (!file.createNewFile()) throw new IOException("Unable to create file because it already exists: " + normalize(file));
+            if (!file.createNewFile()) {
+                throw new IOException("Unable to create file because it already exists: " + normalize(file));
+            }
         }
         return file;
     }
 
     /**
      * Creates a new, empty file; if filename is null, a temporary file is created.
-     * @param filename      The name of the file to be created.
-     * @return              The name of the file which was created.
-     * @throws IOException  If the filename is unparseable or the file already exists.
+     *
+     * @param filename The name of the file to be created.
+     * @return The name of the file which was created.
+     * @throws IOException If the filename is unparseable or the file already exists.
      */
     public static String create(String filename) throws IOException {
         return normalize(create(construct(filename)));
@@ -143,8 +158,9 @@ public class FileHelper {
 
     /**
      * Deletes the given file.
-     * @param file          The file to be deleted.
-     * @throws IOException  If the file cannot be deleted.
+     *
+     * @param file The file to be deleted.
+     * @throws IOException If the file cannot be deleted.
      */
     public static void remove(File file) throws IOException {
         if (file != null && exists(file) && !file.delete()) {
@@ -154,18 +170,19 @@ public class FileHelper {
 
     /**
      * Deletes the given file.
-     * @param filename      The name of the file to be deleted.
-     * @throws IOException  If the filename is unparseable or the file cannot be deleted.
+     *
+     * @param filename The name of the file to be deleted.
+     * @throws IOException If the filename is unparseable or the file cannot be deleted.
      */
     public static void remove(String filename) throws IOException {
         remove(construct(filename));
     }
 
     /**
-     * Update the modified time of the given file to the current time,
-     * or create it if it does not exist.
-     * @param file          The file to be touched.
-     * @throws IOException  If the file cannot be created.
+     * Update the modified time of the given file to the current time, or create it if it does not exist.
+     *
+     * @param file The file to be touched.
+     * @throws IOException If the file cannot be created.
      */
     public static void touch(File file) throws IOException {
         if (file.exists()) {
@@ -176,10 +193,10 @@ public class FileHelper {
     }
 
     /**
-     * Update the modified time of the given file to the current time,
-     * or create it if it does not exist.
-     * @param filename      The name of the file to be touched.
-     * @throws IOException  If the filename is unparseable.
+     * Update the modified time of the given file to the current time, or create it if it does not exist.
+     *
+     * @param filename The name of the file to be touched.
+     * @throws IOException If the filename is unparseable.
      */
     public static void touch(String filename) throws IOException {
         touch(construct(filename));
@@ -187,9 +204,10 @@ public class FileHelper {
 
     /**
      * Renames the source file to the target name.
-     * @param source        The file to be renamed.
-     * @param target        The new name of the file.
-     * @throws IOException  If the file cannot be renamed.
+     *
+     * @param source The file to be renamed.
+     * @param target The new name of the file.
+     * @throws IOException If the file cannot be renamed.
      */
     public static void rename(File source, File target) throws IOException {
         if (source != null && target != null) {
@@ -201,9 +219,10 @@ public class FileHelper {
 
     /**
      * Renames the source file to the target name.
-     * @param source        The file to be renamed.
-     * @param target        The new name of the file.
-     * @throws IOException  If file cannot be renamed.
+     *
+     * @param source The file to be renamed.
+     * @param target The new name of the file.
+     * @throws IOException If file cannot be renamed.
      */
     public static void rename(String source, String target) throws IOException {
         rename(construct(source), construct(target));
@@ -211,9 +230,10 @@ public class FileHelper {
 
     /**
      * Reads the given file completely, returning the file's content as a byte[].
-     * @param filename          The name of the file to be read.
-     * @return                  A byte[] containing the file's content.
-     * @throws IOException      If there is a problem reading the file.
+     *
+     * @param filename The name of the file to be read.
+     * @return A byte[] containing the file's content.
+     * @throws IOException If there is a problem reading the file.
      */
     public static byte[] readToBytes(String filename) throws IOException {
         return readToBytes(construct(filename));
@@ -221,9 +241,10 @@ public class FileHelper {
 
     /**
      * Reads the given file completely, returning the file's content as a byte[].
-     * @param file          The file to be read.
-     * @return              A byte[] containing the file's content.
-     * @throws IOException  If there is a problem reading the file.
+     *
+     * @param file The file to be read.
+     * @return A byte[] containing the file's content.
+     * @throws IOException If there is a problem reading the file.
      */
     public static byte[] readToBytes(File file) throws IOException {
         byte[] content = null;
@@ -248,9 +269,10 @@ public class FileHelper {
 
     /**
      * Reads the given file completely, returning the file's content as a String.
-     * @param filename      The name of the file to be read.
-     * @return              A String containing the file's content.
-     * @throws IOException  If there is a problem reading the file.
+     *
+     * @param filename The name of the file to be read.
+     * @return A String containing the file's content.
+     * @throws IOException If there is a problem reading the file.
      */
     public static String readToString(String filename) throws IOException {
         return readToString(filename, CharsetHelper.DEFAULT_CHARSET);
@@ -258,10 +280,11 @@ public class FileHelper {
 
     /**
      * Reads the given file completely, returning the file's content as a String.
-     * @param filename      The name of the file to be read.
-     * @param charsetName      The character set the file's content is encoded with.
-     * @return              A String containing the file's content.
-     * @throws IOException  If there is a problem reading the file.
+     *
+     * @param filename    The name of the file to be read.
+     * @param charsetName The character set the file's content is encoded with.
+     * @return A String containing the file's content.
+     * @throws IOException If there is a problem reading the file.
      */
     public static String readToString(String filename, String charsetName) throws IOException {
         return readToString(filename, CharsetHelper.normalize(charsetName));
@@ -269,10 +292,11 @@ public class FileHelper {
 
     /**
      * Reads the given file completely, returning the file's content as a String.
-     * @param filename      The name of the file to be read.
-     * @param charset       The character set the file's content is encoded with.
-     * @return              A String containing the file's content.
-     * @throws IOException  If there is a problem reading the file.
+     *
+     * @param filename The name of the file to be read.
+     * @param charset  The character set the file's content is encoded with.
+     * @return A String containing the file's content.
+     * @throws IOException If there is a problem reading the file.
      */
     public static String readToString(String filename, Charset charset) throws IOException {
         return readToString(construct(filename), CharsetHelper.normalize(charset));
@@ -280,9 +304,10 @@ public class FileHelper {
 
     /**
      * Reads the given file completely, returning the file's content as a String.
-     * @param file          The file to be read.
-     * @return              A String containing the file's content.
-     * @throws IOException  If there is a problem reading the file.
+     *
+     * @param file The file to be read.
+     * @return A String containing the file's content.
+     * @throws IOException If there is a problem reading the file.
      */
     public static String readToString(File file) throws IOException {
         return readToString(file, CharsetHelper.DEFAULT_CHARSET);
@@ -290,10 +315,11 @@ public class FileHelper {
 
     /**
      * Reads the given file completely, returning the file's content as a String.
-     * @param file          The file to be read.
-     * @param charsetName   The character set the file's content is encoded with.
-     * @return              A String containing the file's content.
-     * @throws IOException  If there is a problem reading the file.
+     *
+     * @param file        The file to be read.
+     * @param charsetName The character set the file's content is encoded with.
+     * @return A String containing the file's content.
+     * @throws IOException If there is a problem reading the file.
      */
     public static String readToString(File file, String charsetName) throws IOException {
         return readToString(file, CharsetHelper.normalize(charsetName));
@@ -301,10 +327,11 @@ public class FileHelper {
 
     /**
      * Reads the given file completely, returning the file's content as a String.
-     * @param file          The file to be read.
-     * @param charset       The character set the file's content is encoded with.
-     * @return              A String containing the file's content.
-     * @throws IOException  If there is a problem reading the file.
+     *
+     * @param file    The file to be read.
+     * @param charset The character set the file's content is encoded with.
+     * @return A String containing the file's content.
+     * @throws IOException If there is a problem reading the file.
      */
     public static String readToString(File file, Charset charset) throws IOException {
         return StringHelper.normalize(readToBytes(file), CharsetHelper.normalize(charset));
@@ -312,9 +339,10 @@ public class FileHelper {
 
     /**
      * Reads the given file completely, returning the file's content as a java.io.InputStream.
-     * @param filename      The name of the file to be read.
-     * @return              A java.io.InputStream containing the file's content.
-     * @throws IOException  If there is a problem reading the file.
+     *
+     * @param filename The name of the file to be read.
+     * @return A java.io.InputStream containing the file's content.
+     * @throws IOException If there is a problem reading the file.
      */
     public static InputStream readToStream(String filename) throws IOException {
         return readToStream(construct(filename));
@@ -322,25 +350,24 @@ public class FileHelper {
 
     /**
      * Reads the given file completely, returning the file's content as a java.io.InputStream.
-     * @param file          The file to be read.
-     * @return              A java.io.InputStream containing the file's content.
-     * @throws IOException  If there is a problem reading the file.
+     *
+     * @param file The file to be read.
+     * @return A java.io.InputStream containing the file's content.
+     * @throws IOException If there is a problem reading the file.
      */
     public static InputStream readToStream(File file) throws IOException {
         return new ByteArrayInputStream(readToBytes(file));
     }
 
     /**
-     * Writes content to a file; if the given file is null, a new temporary
-     * file is automatically created.
-     * @param file          The file to be written to; if null, a new temporary
-     *                      file is automatically created.
-     * @param content       The content to be written.
-     * @param append        If true, the content will be appended to the file,
-     *                      otherwise the content will overwrite any previous
-     *                      content in the file.
-     * @return              The file which the content was written to.
-     * @throws IOException  If there is a problem writing to the file.
+     * Writes content to a file; if the given file is null, a new temporary file is automatically created.
+     *
+     * @param file    The file to be written to; if null, a new temporary file is automatically created.
+     * @param content The content to be written.
+     * @param append  If true, the content will be appended to the file, otherwise the content will overwrite any
+     *                previous content in the file.
+     * @return The file which the content was written to.
+     * @throws IOException If there is a problem writing to the file.
      */
     public static File writeFromStream(File file, InputStream content, boolean append) throws IOException {
         if (file == null || !exists(file)) file = create(file);
@@ -349,148 +376,131 @@ public class FileHelper {
     }
 
     /**
-     * Writes content to a file; if the given filename is null, a new temporary
-     * file is automatically created.
-     * @param filename      The name of the file to be written to; if null, a new temporary
-     *                      file is automatically created.
-     * @param content       The content to be written.
-     * @param append        If true, the content will be appended to the file,
-     *                      otherwise the content will overwrite any previous
-     *                      content in the file.
-     * @return              The name of the file which the content was written to.
-     * @throws IOException  If there is a problem writing to the file.
+     * Writes content to a file; if the given filename is null, a new temporary file is automatically created.
+     *
+     * @param filename The name of the file to be written to; if null, a new temporary file is automatically created.
+     * @param content  The content to be written.
+     * @param append   If true, the content will be appended to the file, otherwise the content will overwrite any
+     *                 previous content in the file.
+     * @return The name of the file which the content was written to.
+     * @throws IOException If there is a problem writing to the file.
      */
     public static String writeFromStream(String filename, InputStream content, boolean append) throws IOException {
         return normalize(writeFromStream(construct(filename), content, append));
     }
 
     /**
-     * Writes content to a file; if the given file is null, a new temporary
-     * file is automatically created.
-     * @param file          The file to be written to; if null, a new temporary
-     *                      file is automatically created.
-     * @param content       The content to be written.
-     * @param append        If true, the content will be appended to the file,
-     *                      otherwise the content will overwrite any previous
-     *                      content in the file.
-     * @return              The file which the content was written to.
-     * @throws IOException  If there is a problem writing to the file.
+     * Writes content to a file; if the given file is null, a new temporary file is automatically created.
+     *
+     * @param file    The file to be written to; if null, a new temporary file is automatically created.
+     * @param content The content to be written.
+     * @param append  If true, the content will be appended to the file, otherwise the content will overwrite any
+     *                previous content in the file.
+     * @return The file which the content was written to.
+     * @throws IOException If there is a problem writing to the file.
      */
     public static File writeFromBytes(File file, byte[] content, boolean append) throws IOException {
         return writeFromStream(file, StreamHelper.normalize(content), append);
     }
 
     /**
-     * Writes content to a file; if the given filename is null, a new temporary
-     * file is automatically created.
-     * @param filename      The name of the file to be written to; if null, a new temporary
-     *                      file is automatically created.
-     * @param content       The content to be written.
-     * @param append        If true, the content will be appended to the file,
-     *                      otherwise the content will overwrite any previous
-     *                      content in the file.
-     * @return              The name of the file which the content was written to.
-     * @throws IOException  If the filename is unparseable or there is a problem writing to the file.
+     * Writes content to a file; if the given filename is null, a new temporary file is automatically created.
+     *
+     * @param filename The name of the file to be written to; if null, a new temporary file is automatically created.
+     * @param content  The content to be written.
+     * @param append   If true, the content will be appended to the file, otherwise the content will overwrite any
+     *                 previous content in the file.
+     * @return The name of the file which the content was written to.
+     * @throws IOException If the filename is unparseable or there is a problem writing to the file.
      */
     public static String writeFromBytes(String filename, byte[] content, boolean append) throws IOException {
         return normalize(writeFromBytes(construct(filename), content, append));
     }
 
     /**
-     * Writes content to a file; if the given file is null, a new temporary
-     * file is automatically created.
-     * @param file          The file to be written to; if null, a new temporary
-     *                      file is automatically created.
-     * @param content       The content to be written.
-     * @param charsetName   The character set to encode the content with.
-     * @param append        If true, the content will be appended to the file,
-     *                      otherwise the content will overwrite any previous
-     *                      content in the file.
-     * @return              The file which the content was written to.
-     * @throws IOException  If there is a problem writing to the file.
+     * Writes content to a file; if the given file is null, a new temporary file is automatically created.
+     *
+     * @param file        The file to be written to; if null, a new temporary file is automatically created.
+     * @param content     The content to be written.
+     * @param charsetName The character set to encode the content with.
+     * @param append      If true, the content will be appended to the file, otherwise the content will overwrite any
+     *                    previous content in the file.
+     * @return The file which the content was written to.
+     * @throws IOException If there is a problem writing to the file.
      */
     public static File writeFromString(File file, String content, String charsetName, boolean append) throws IOException {
         return writeFromString(file, content, CharsetHelper.normalize(charsetName), append);
     }
 
     /**
-     * Writes content to a file; if the given file is null, a new temporary
-     * file is automatically created.
-     * @param file          The file to be written to; if null, a new temporary
-     *                      file is automatically created.
-     * @param content       The content to be written.
-     * @param charset       The character set to encode the content with.
-     * @param append        If true, the content will be appended to the file,
-     *                      otherwise the content will overwrite any previous
-     *                      content in the file.
-     * @return              The file which the content was written to.
-     * @throws IOException  If there is a problem writing to the file.
+     * Writes content to a file; if the given file is null, a new temporary file is automatically created.
+     *
+     * @param file    The file to be written to; if null, a new temporary file is automatically created.
+     * @param content The content to be written.
+     * @param charset The character set to encode the content with.
+     * @param append  If true, the content will be appended to the file, otherwise the content will overwrite any
+     *                previous content in the file.
+     * @return The file which the content was written to.
+     * @throws IOException If there is a problem writing to the file.
      */
     public static File writeFromString(File file, String content, Charset charset, boolean append) throws IOException {
         return writeFromStream(file, StreamHelper.normalize(content, charset), append);
     }
 
     /**
-     * Writes content to a file; if the given filename is null, a new temporary
-     * file is automatically created.
-     * @param filename      The name of the file to be written to; if null, a new temporary
-     *                      file is automatically created.
-     * @param content       The content to be written.
-     * @param charsetName   The character set to encode the content with.
-     * @param append        If true, the content will be appended to the file,
-     *                      otherwise the content will overwrite any previous
-     *                      content in the file.
-     * @return              The name of the file which the content was written to.
-     * @throws IOException  If the filename is unparseable or there is a problem writing to the file.
+     * Writes content to a file; if the given filename is null, a new temporary file is automatically created.
+     *
+     * @param filename    The name of the file to be written to; if null, a new temporary file is automatically
+     *                    created.
+     * @param content     The content to be written.
+     * @param charsetName The character set to encode the content with.
+     * @param append      If true, the content will be appended to the file, otherwise the content will overwrite any
+     *                    previous content in the file.
+     * @return The name of the file which the content was written to.
+     * @throws IOException If the filename is unparseable or there is a problem writing to the file.
      */
     public static String writeFromString(String filename, String content, String charsetName, boolean append) throws IOException {
         return writeFromString(filename, content, CharsetHelper.normalize(charsetName), append);
     }
 
     /**
-     * Writes content to a file; if the given filename is null, a new temporary
-     * file is automatically created.
-     * @param filename      The name of the file to be written to; if null, a new temporary
-     *                      file is automatically created.
-     * @param content       The content to be written.
-     * @param charset       The character set to encode the content with.
-     * @param append        If true, the content will be appended to the file,
-     *                      otherwise the content will overwrite any previous
-     *                      content in the file.
-     * @return              The name of the file which the content was written to.
-     * @throws IOException  If the filename is unparseable or there is a problem writing to the file.
+     * Writes content to a file; if the given filename is null, a new temporary file is automatically created.
+     *
+     * @param filename The name of the file to be written to; if null, a new temporary file is automatically created.
+     * @param content  The content to be written.
+     * @param charset  The character set to encode the content with.
+     * @param append   If true, the content will be appended to the file, otherwise the content will overwrite any
+     *                 previous content in the file.
+     * @return The name of the file which the content was written to.
+     * @throws IOException If the filename is unparseable or there is a problem writing to the file.
      */
     public static String writeFromString(String filename, String content, Charset charset, boolean append) throws IOException {
         return normalize(writeFromString(construct(filename), content, charset, append));
     }
 
     /**
-     * Writes content to a file; if the given file is null, a new temporary
-     * file is automatically created.
-     * @param file          The file to be written to; if null, a new temporary
-     *                      file is automatically created.
-     * @param content       The content to be written.
-     * @param append        If true, the content will be appended to the file,
-     *                      otherwise the content will overwrite any previous
-     *                      content in the file.
-     * @return              The file which the content was written to.
-     * @throws IOException  If there is a problem writing to the file.
+     * Writes content to a file; if the given file is null, a new temporary file is automatically created.
+     *
+     * @param file    The file to be written to; if null, a new temporary file is automatically created.
+     * @param content The content to be written.
+     * @param append  If true, the content will be appended to the file, otherwise the content will overwrite any
+     *                previous content in the file.
+     * @return The file which the content was written to.
+     * @throws IOException If there is a problem writing to the file.
      */
     public static File writeFromString(File file, String content, boolean append) throws IOException {
         return writeFromString(file, content, CharsetHelper.DEFAULT_CHARSET, append);
     }
 
     /**
-     * Writes content to a file; if the given filename is null, a new temporary
-     * file is automatically created.
-     * @param filename      The name of the file to be written to; if null, a new temporary
-     *                      file is automatically created.
-     * @param content       The content to be written.
-     * @param append        If true, the content will be appended to the file,
-     *                      otherwise the content will overwrite any previous
-     *                      content in the file.
-     * @return              The name of the file which the content was written to.
-     * @throws IOException  If there is a problem writing to the file.
+     * Writes content to a file; if the given filename is null, a new temporary file is automatically created.
+     *
+     * @param filename The name of the file to be written to; if null, a new temporary file is automatically created.
+     * @param content  The content to be written.
+     * @param append   If true, the content will be appended to the file, otherwise the content will overwrite any
+     *                 previous content in the file.
+     * @return The name of the file which the content was written to.
+     * @throws IOException If there is a problem writing to the file.
      */
     public static String writeFromString(String filename, String content, boolean append) throws IOException {
         return normalize(writeFromString(construct(filename), content, append));
@@ -498,11 +508,12 @@ public class FileHelper {
 
     /**
      * Copies the content in the source file to the target file.
-     * @param source        The file from which content will be copied.
-     * @param target        The file to which content will be copied.
-     * @param append        If true, the target content will be appended to,
-     *                      otherwise any previous content will be overwritten.
-     * @throws IOException  If the source file does not exist or there is a problem copying it.
+     *
+     * @param source The file from which content will be copied.
+     * @param target The file to which content will be copied.
+     * @param append If true, the target content will be appended to, otherwise any previous content will be
+     *               overwritten.
+     * @throws IOException If the source file does not exist or there is a problem copying it.
      */
     public static void copy(File source, File target, boolean append) throws IOException {
         if (source != null && target != null) {
@@ -514,12 +525,12 @@ public class FileHelper {
 
     /**
      * Copies the content in the source file to the target file.
-     * @param source        The file from which content will be copied.
-     * @param target        The file to which content will be copied.
-     * @param append        If true, the target content will be appended to,
-     *                      otherwise any previous content will be overwritten.
-     * @throws IOException  If the source file does not exist or there is a
-     *                      problem copying it.
+     *
+     * @param source The file from which content will be copied.
+     * @param target The file to which content will be copied.
+     * @param append If true, the target content will be appended to, otherwise any previous content will be
+     *               overwritten.
+     * @throws IOException If the source file does not exist or there is a problem copying it.
      */
     public static void copy(String source, String target, boolean append) throws IOException {
         copy(construct(source), construct(target), append);
@@ -527,8 +538,9 @@ public class FileHelper {
 
     /**
      * Returns a java.io.File object given a file name.
-     * @param filename  The name of the file, specified as a path or file:// URI.
-     * @return          The file representing the given name.
+     *
+     * @param filename The name of the file, specified as a path or file:// URI.
+     * @return The file representing the given name.
      */
     public static File construct(String filename) {
         File file = null;
@@ -537,7 +549,7 @@ public class FileHelper {
             if (filename.toLowerCase().startsWith("file:")) {
                 try {
                     file = new File(new URI(filename));
-                } catch(IllegalArgumentException ex) {
+                } catch (IllegalArgumentException ex) {
                     // work around java's weird handling of file://server/path style URIs on Windows, by changing the URI
                     // to be file:////server/path
                     if (filename.toLowerCase().startsWith("file://") && !filename.toLowerCase().startsWith("file:///")) {
@@ -545,7 +557,7 @@ public class FileHelper {
                     } else {
                         throw ex;
                     }
-                } catch(URISyntaxException ex) {
+                } catch (URISyntaxException ex) {
                     throw new IllegalArgumentException(ex);
                 }
             } else {
@@ -558,16 +570,17 @@ public class FileHelper {
 
     /**
      * Returns the canonical file:// URI representation of the given file.
-     * @param file                  The file to be normalized.
-     * @return                      The canonical file:// URI representation of the given file.
+     *
+     * @param file The file to be normalized.
+     * @return The canonical file:// URI representation of the given file.
      */
     public static String normalize(File file) {
         String filename = null;
         try {
             if (file != null) filename = URIHelper.normalize(file.getCanonicalFile().toURI().toString());
-        } catch(IOException ex) {
+        } catch (IOException ex) {
             throw new RuntimeException(ex);
-        } catch(URISyntaxException ex) {
+        } catch (URISyntaxException ex) {
             throw new RuntimeException(ex);
         }
         return filename;
@@ -575,8 +588,9 @@ public class FileHelper {
 
     /**
      * Returns the canonical file:// URI representation of the given file.
-     * @param filename  The name of the file to be normalized.
-     * @return          The canonical file:// URI representation of the given file.
+     *
+     * @param filename The name of the file to be normalized.
+     * @return The canonical file:// URI representation of the given file.
      */
     public static String normalize(String filename) {
         return normalize(construct(filename));
@@ -584,11 +598,12 @@ public class FileHelper {
 
     /**
      * Returns true if the given file matches the given pattern.
+     *
      * @param filename                   The name of the file to check against the pattern.
      * @param pattern                    Either a regular expression or wildcard pattern.
-     * @param patternIsRegularExpression Boolean indicating if the given pattern is a
-     *                                   regular expression or wildcard pattern.
-     * @return                           True if the given file matches the given pattern.
+     * @param patternIsRegularExpression Boolean indicating if the given pattern is a regular expression or wildcard
+     *                                   pattern.
+     * @return True if the given file matches the given pattern.
      */
     public static boolean match(String filename, String pattern, boolean patternIsRegularExpression) {
         return match(construct(filename), pattern, patternIsRegularExpression);
@@ -596,11 +611,12 @@ public class FileHelper {
 
     /**
      * Returns true if the given file matches the given pattern.
+     *
      * @param file                       The file to check against the pattern.
      * @param pattern                    Either a regular expression or wildcard pattern.
-     * @param patternIsRegularExpression Boolean indicating if the given pattern is a
-     *                                   regular expression or wildcard pattern.
-     * @return                           True if the given file matches the given pattern.
+     * @param patternIsRegularExpression Boolean indicating if the given pattern is a regular expression or wildcard
+     *                                   pattern.
+     * @return True if the given file matches the given pattern.
      */
     public static boolean match(File file, String pattern, boolean patternIsRegularExpression) {
         boolean match = false;
@@ -621,8 +637,8 @@ public class FileHelper {
     /**
      * Returns whether the given file can be written to by this process.
      *
-     * @param file      The file to check the permissions of.
-     * @return          Whether the given file is writable by this process.
+     * @param file The file to check the permissions of.
+     * @return Whether the given file is writable by this process.
      */
     public static boolean isWritable(File file) {
         if (file == null) return false;
@@ -632,8 +648,8 @@ public class FileHelper {
     /**
      * Returns whether the given file can be written to by this process.
      *
-     * @param filename  The file to check the permissions of.
-     * @return          Whether the given file is writable by this process.
+     * @param filename The file to check the permissions of.
+     * @return Whether the given file is writable by this process.
      */
     public static boolean isWritable(String filename) {
         return isWritable(construct(filename));
@@ -642,8 +658,8 @@ public class FileHelper {
     /**
      * Returns whether the given file can be read by this process.
      *
-     * @param file      The file to check the permissions of.
-     * @return          Whether the given file is readable by this process.
+     * @param file The file to check the permissions of.
+     * @return Whether the given file is readable by this process.
      */
     public static boolean isReadable(File file) {
         if (file == null) return false;
@@ -653,8 +669,8 @@ public class FileHelper {
     /**
      * Returns whether the given file can be read by this process.
      *
-     * @param filename  The file to check the permissions of.
-     * @return          Whether the given file is readable by this process.
+     * @param filename The file to check the permissions of.
+     * @return Whether the given file is readable by this process.
      */
     public static boolean isReadable(String filename) {
         return isReadable(construct(filename));
@@ -663,8 +679,8 @@ public class FileHelper {
     /**
      * Returns whether the given file can be executed by this process.
      *
-     * @param file      The file to check the permissions of.
-     * @return          Whether the given file is executable by this process.
+     * @param file The file to check the permissions of.
+     * @return Whether the given file is executable by this process.
      */
     public static boolean isExecutable(File file) {
         if (file == null) return false;
@@ -674,8 +690,8 @@ public class FileHelper {
     /**
      * Returns whether the given file can be executed by this process.
      *
-     * @param filename  The file to check the permissions of.
-     * @return          Whether the given file is executable by this process.
+     * @param filename The file to check the permissions of.
+     * @return Whether the given file is executable by this process.
      */
     public static boolean isExecutable(String filename) {
         return isExecutable(construct(filename));
@@ -684,8 +700,8 @@ public class FileHelper {
     /**
      * Returns the length of the given file in bytes.
      *
-     * @param file      The file to check the length of.
-     * @return          The length in bytes of the given file.
+     * @param file The file to check the length of.
+     * @return The length in bytes of the given file.
      */
     public static long length(File file) {
         if (file == null) return 0;
@@ -695,8 +711,8 @@ public class FileHelper {
     /**
      * Returns the length of the given file in bytes.
      *
-     * @param filename  The file to check the length of.
-     * @return          The length in bytes of the given file.
+     * @param filename The file to check the length of.
+     * @return The length in bytes of the given file.
      */
     public static long length(String filename) {
         return length(construct(filename));
@@ -705,8 +721,8 @@ public class FileHelper {
     /**
      * Returns only the name component of the given file.
      *
-     * @param file      The file to return the name of.
-     * @return          The name component only of the given file.
+     * @param file The file to return the name of.
+     * @return The name component only of the given file.
      */
     public static String getName(File file) {
         if (file == null || file.equals("")) return null;
@@ -716,8 +732,8 @@ public class FileHelper {
     /**
      * Returns only the name component of the given file.
      *
-     * @param filename  The file to return the name of.
-     * @return          The name component only of the given file.
+     * @param filename The file to return the name of.
+     * @return The name component only of the given file.
      */
     public static String getName(String filename) {
         return getName(construct(filename));
@@ -725,8 +741,9 @@ public class FileHelper {
 
     /**
      * Returns the base and extension parts of the given file's name.
-     * @param file      The file to get the name parts of.
-     * @return          The parts of the given file's name.
+     *
+     * @param file The file to get the name parts of.
+     * @return The parts of the given file's name.
      */
     public static String[] getNameParts(File file) {
         String[] parts = null;
@@ -741,8 +758,9 @@ public class FileHelper {
 
     /**
      * Returns the base and extension parts of the given file's name.
-     * @param filename  The file to get the name parts of.
-     * @return          The parts of the given file's name.
+     *
+     * @param filename The file to get the name parts of.
+     * @return The parts of the given file's name.
      */
     public static String[] getNameParts(String filename) {
         return getNameParts(construct(filename));
@@ -750,8 +768,9 @@ public class FileHelper {
 
     /**
      * Returns the parent directory containing the given file.
-     * @param file      The file to return the parent directory of.
-     * @return          The parent directory of the given file.
+     *
+     * @param file The file to return the parent directory of.
+     * @return The parent directory of the given file.
      */
     public static File getParentDirectory(File file) {
         if (file == null) return null;
@@ -760,8 +779,9 @@ public class FileHelper {
 
     /**
      * Returns the parent directory containing the given file.
-     * @param filename  The file to return the parent directory of.
-     * @return          The parent directory of the given file.
+     *
+     * @param filename The file to return the parent directory of.
+     * @return The parent directory of the given file.
      */
     public static File getParentDirectory(String filename) {
         return getParentDirectory(construct(filename));
@@ -769,8 +789,9 @@ public class FileHelper {
 
     /**
      * Returns the parent directory containing the given file as a string.
-     * @param file      The file to return the parent directory of.
-     * @return          The parent directory of the given file.
+     *
+     * @param file The file to return the parent directory of.
+     * @return The parent directory of the given file.
      */
     public static String getParentDirectoryAsString(File file) {
         return normalize(getParentDirectory(file));
@@ -778,8 +799,9 @@ public class FileHelper {
 
     /**
      * Returns the parent directory containing the given file as a string.
-     * @param filename  The file to return the parent directory of.
-     * @return          The parent directory of the given file.
+     *
+     * @param filename The file to return the parent directory of.
+     * @return The parent directory of the given file.
      */
     public static String getParentDirectoryAsString(String filename) {
         return getParentDirectoryAsString(construct(filename));
@@ -788,8 +810,8 @@ public class FileHelper {
     /**
      * Returns the last modified datetime of the given file.
      *
-     * @param file      The file to return the last modified datetime of.
-     * @return          The last modified datetime of the given file.
+     * @param file The file to return the last modified datetime of.
+     * @return The last modified datetime of the given file.
      */
     public static Date getLastModifiedDate(File file) {
         if (file == null) return null;
@@ -799,30 +821,28 @@ public class FileHelper {
     /**
      * Returns the last modified datetime of the given file.
      *
-     * @param filename  The file to return the last modified datetime of.
-     * @return          The last modified datetime of the given file.
+     * @param filename The file to return the last modified datetime of.
+     * @return The last modified datetime of the given file.
      */
     public static Date getLastModifiedDate(String filename) {
         return getLastModifiedDate(construct(filename));
     }
 
     /**
-     * Returns the last modified datetime of the given file as an ISO8601
-     * formatted datetime string.
+     * Returns the last modified datetime of the given file as an ISO8601 formatted datetime string.
      *
-     * @param file      The file to return the last modified datetime of.
-     * @return          The last modified datetime of the given file.
+     * @param file The file to return the last modified datetime of.
+     * @return The last modified datetime of the given file.
      */
     public static String getLastModifiedDateTimeString(File file) {
         return DateTimeHelper.emit(getLastModifiedDate(file));
     }
 
     /**
-     * Returns the last modified datetime of the given file as an ISO8601
-     * formatted datetime string.
+     * Returns the last modified datetime of the given file as an ISO8601 formatted datetime string.
      *
-     * @param filename  The file to return the last modified datetime of.
-     * @return          The last modified datetime of the given file.
+     * @param filename The file to return the last modified datetime of.
+     * @return The last modified datetime of the given file.
      */
     public static String getLastModifiedDateTimeString(String filename) {
         return getLastModifiedDateTimeString(construct(filename));
@@ -831,8 +851,8 @@ public class FileHelper {
     /**
      * Returns an IData document containing the properties of the given file.
      *
-     * @param filename  The file to return the properties for.
-     * @return          The properties of the given file as an IData document.
+     * @param filename The file to return the properties for.
+     * @return The properties of the given file as an IData document.
      */
     public static IData getPropertiesAsIData(String filename) {
         return getPropertiesAsIData(construct(filename));
@@ -841,8 +861,8 @@ public class FileHelper {
     /**
      * Returns an IData document containing the properties of the given file.
      *
-     * @param file      The file to return the properties for.
-     * @return          The properties of the given file as an IData document.
+     * @param file The file to return the properties for.
+     * @return The properties of the given file as an IData document.
      */
     public static IData getPropertiesAsIData(File file) {
         IData output = IDataFactory.create();

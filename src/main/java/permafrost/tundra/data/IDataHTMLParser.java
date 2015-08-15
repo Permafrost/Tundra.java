@@ -31,10 +31,9 @@ import com.wm.data.IDataUtil;
 import com.wm.util.Table;
 import com.wm.util.coder.IDataCodable;
 import com.wm.util.coder.ValuesCodable;
-import permafrost.tundra.io.StreamHelper;
 import permafrost.tundra.html.HTMLEntity;
 import permafrost.tundra.html.HTMLHelper;
-
+import permafrost.tundra.io.StreamHelper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -62,6 +61,7 @@ public class IDataHTMLParser extends IDataTextParser {
 
     /**
      * Returns the singleton instance of this class.
+     *
      * @return The singleton instance of this class.
      */
     public static IDataHTMLParser getInstance() {
@@ -71,10 +71,10 @@ public class IDataHTMLParser extends IDataTextParser {
     /**
      * Encodes the given IData document as HTML to the given output stream.
      *
-     * @param outputStream  The stream to write the encoded IData to.
-     * @param document      The IData document to be encoded.
-     * @param charset       The character set to use.
-     * @throws IOException  If there is a problem writing to the stream.
+     * @param outputStream The stream to write the encoded IData to.
+     * @param document     The IData document to be encoded.
+     * @param charset      The character set to use.
+     * @throws IOException If there is a problem writing to the stream.
      */
     public void encode(OutputStream outputStream, IData document, Charset charset) throws IOException {
         StreamHelper.copy(StreamHelper.normalize(encodeToString(document), charset), outputStream);
@@ -83,11 +83,11 @@ public class IDataHTMLParser extends IDataTextParser {
     /**
      * This method has not implemented.
      *
-     * @param inputStream                       The input stream to be decoded.
-     * @param charset                           The character set to use.
-     * @return                                  An IData representation of the given input stream data.
-     * @throws IOException                      If there is a problem reading from the stream.
-     * @throws UnsupportedOperationException    As this method has not been implemented.
+     * @param inputStream The input stream to be decoded.
+     * @param charset     The character set to use.
+     * @return An IData representation of the given input stream data.
+     * @throws IOException                   If there is a problem reading from the stream.
+     * @throws UnsupportedOperationException As this method has not been implemented.
      */
     public IData decode(InputStream inputStream, Charset charset) throws IOException {
         throw new UnsupportedOperationException("decode method not implemented");
@@ -95,6 +95,7 @@ public class IDataHTMLParser extends IDataTextParser {
 
     /**
      * The MIME media type for HTML.
+     *
      * @return HTML MIME media type.
      */
     public String getContentType() {
@@ -105,7 +106,7 @@ public class IDataHTMLParser extends IDataTextParser {
      * Returns an HTML representation of the given IData object.
      *
      * @param input The IData to convert to HTML.
-     * @return      The HTML representation of the IData.
+     * @return The HTML representation of the IData.
      */
     @Override
     public String encodeToString(IData input) {
@@ -152,13 +153,13 @@ public class IDataHTMLParser extends IDataTextParser {
                         buffer.append(HTMLEntity.NULL.toString());
                     } else {
                         if (value instanceof IData) {
-                            buffer.append(encodeToString((IData) value));
+                            buffer.append(encodeToString((IData)value));
                         } else if (value instanceof IData[]) {
-                            buffer.append(encodeToString((IData[]) value));
+                            buffer.append(encodeToString((IData[])value));
                         } else if (value instanceof Object[][]) {
-                            buffer.append(encodeToString((Object[][]) value));
+                            buffer.append(encodeToString((Object[][])value));
                         } else if (value instanceof Object[]) {
-                            buffer.append(encodeToString((Object[]) value));
+                            buffer.append(encodeToString((Object[])value));
                         } else {
                             buffer.append(HTMLHelper.encode(value.toString()));
                         }
@@ -178,7 +179,7 @@ public class IDataHTMLParser extends IDataTextParser {
      * Converts an IData[] to an HTML string.
      *
      * @param input The IData[] to be converted.
-     * @return      The HTML string that represents the given IData[].
+     * @return The HTML string that represents the given IData[].
      */
     public String encodeToString(IData[] input) {
         if (input == null) return HTMLEntity.NULL.toString();
@@ -219,9 +220,9 @@ public class IDataHTMLParser extends IDataTextParser {
                         } else if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
                             buffer.append(encodeToString(IDataHelper.toIDataArray(value)));
                         } else if (value instanceof Object[][]) {
-                            buffer.append(encodeToString((Object[][]) value));
+                            buffer.append(encodeToString((Object[][])value));
                         } else if (value instanceof Object[]) {
-                            buffer.append(encodeToString((Object[]) value));
+                            buffer.append(encodeToString((Object[])value));
                         } else {
                             buffer.append(HTMLHelper.encode(value.toString()));
                         }
@@ -241,7 +242,7 @@ public class IDataHTMLParser extends IDataTextParser {
      * Converts an Object[][] to an HTML string.
      *
      * @param input The Object[][] to be converted.
-     * @return      The HTML string that represents the given Object[][].
+     * @return The HTML string that represents the given Object[][].
      */
     protected String encodeToString(Object[][] input) {
         StringBuilder buffer = new StringBuilder();
@@ -271,7 +272,7 @@ public class IDataHTMLParser extends IDataTextParser {
      * Converts an Object[] to an HTML string.
      *
      * @param input The Object[] to be converted.
-     * @return      The HTML string that represents the given Object[].
+     * @return The HTML string that represents the given Object[].
      */
     protected String encodeToString(Object[] input) {
         StringBuilder buffer = new StringBuilder();

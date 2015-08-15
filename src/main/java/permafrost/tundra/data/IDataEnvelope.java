@@ -24,14 +24,21 @@
 
 package permafrost.tundra.data;
 
-import com.wm.data.*;
+import com.wm.data.IData;
+import com.wm.data.IDataCursor;
+import com.wm.data.IDataFactory;
+import com.wm.data.IDataHashCursor;
+import com.wm.data.IDataIndexCursor;
+import com.wm.data.IDataPortable;
+import com.wm.data.IDataSharedCursor;
+import com.wm.data.IDataTreeCursor;
 import com.wm.util.Values;
 import com.wm.util.coder.IDataCodable;
 import com.wm.util.coder.ValuesCodable;
 
 /**
- * A convenience wrapper for an IData object, that implements the IData, IDataCodable,
- * IDataPortable, and ValuesCodable interfaces for maximum API compatibility.
+ * A convenience wrapper for an IData object, that implements the IData, IDataCodable, IDataPortable, and ValuesCodable
+ * interfaces for maximum API compatibility.
  */
 public class IDataEnvelope implements IData, IDataCodable, IDataPortable, ValuesCodable {
     /**
@@ -48,6 +55,7 @@ public class IDataEnvelope implements IData, IDataCodable, IDataPortable, Values
 
     /**
      * Constructs a new IDataEnvelope wrapping the given IData document.
+     *
      * @param document The IData document to be wrapped.
      */
     public IDataEnvelope(IData document) {
@@ -56,6 +64,7 @@ public class IDataEnvelope implements IData, IDataCodable, IDataPortable, Values
 
     /**
      * Constructs a new IDataEnvelope wrapping the given IDataCodable object.
+     *
      * @param codable The IDataCodable object to be wrapped.
      */
     public IDataEnvelope(IDataCodable codable) {
@@ -64,6 +73,7 @@ public class IDataEnvelope implements IData, IDataCodable, IDataPortable, Values
 
     /**
      * Constructs a new IDataEnvelope wrapping the given IDataPortable object.
+     *
      * @param portable The IDataPortable object to be wrapped.
      */
     public IDataEnvelope(IDataPortable portable) {
@@ -72,6 +82,7 @@ public class IDataEnvelope implements IData, IDataCodable, IDataPortable, Values
 
     /**
      * Constructs a new IDataEnvelope wrapping the given ValuesCodable object.
+     *
      * @param codable The ValuesCodable object to be wrapped.
      */
     public IDataEnvelope(ValuesCodable codable) {
@@ -79,8 +90,9 @@ public class IDataEnvelope implements IData, IDataCodable, IDataPortable, Values
     }
 
     /**
-     * Returns an IDataCursor for this IData object. An IDataCursor contains the basic
-     * methods you use to traverse an IData object and get or set elements within it.
+     * Returns an IDataCursor for this IData object. An IDataCursor contains the basic methods you use to traverse an
+     * IData object and get or set elements within it.
+     *
      * @return An IDataCursor for this object.
      */
     @Override
@@ -89,10 +101,10 @@ public class IDataEnvelope implements IData, IDataCodable, IDataPortable, Values
     }
 
     /**
-     * Returns an IDataSharedCursor for the IData object. A shared cursor is a hash
-     * cursor with the additional capability of expressing an underlying data structure
-     * that is shared or constrained by data. It differs from other cursors in that its
-     * operations can fail and throw exceptions.
+     * Returns an IDataSharedCursor for the IData object. A shared cursor is a hash cursor with the additional
+     * capability of expressing an underlying data structure that is shared or constrained by data. It differs from
+     * other cursors in that its operations can fail and throw exceptions.
+     *
      * @return An IDataSharedCursor for this object.
      */
     @Override
@@ -101,8 +113,9 @@ public class IDataEnvelope implements IData, IDataCodable, IDataPortable, Values
     }
 
     /**
-     * Returns an IDataHashCursor for the IData object. A hash cursor is a cursor that
-     * you use to access elements of the IData object by key.
+     * Returns an IDataHashCursor for the IData object. A hash cursor is a cursor that you use to access elements of the
+     * IData object by key.
+     *
      * @return An IDataHashCursor for this object.
      * @deprecated Replaced by key-based methods in {@link IDataCursor}.
      */
@@ -112,8 +125,9 @@ public class IDataEnvelope implements IData, IDataCodable, IDataPortable, Values
     }
 
     /**
-     * Returns an IDataIndexCursor for this IData object. An IDataIndexCursor contains
-     * methods you use to traverse an IData object by absolute position.
+     * Returns an IDataIndexCursor for this IData object. An IDataIndexCursor contains methods you use to traverse an
+     * IData object by absolute position.
+     *
      * @return An IDataIndexCursor for this object.
      * @deprecated No replacement. See {@link IDataIndexCursor} for alternative sample code.
      */
@@ -123,8 +137,9 @@ public class IDataEnvelope implements IData, IDataCodable, IDataPortable, Values
     }
 
     /**
-     * Returns an IDataTreeCursor for this IData object. A tree cursor contains methods
-     * you use to traverse an IData object as a tree structure.
+     * Returns an IDataTreeCursor for this IData object. A tree cursor contains methods you use to traverse an IData
+     * object as a tree structure.
+     *
      * @return An IDataTreeCursor for this object.
      * @deprecated No replacement.
      */
@@ -135,6 +150,7 @@ public class IDataEnvelope implements IData, IDataCodable, IDataPortable, Values
 
     /**
      * Returns the IData document that this object iterates over.
+     *
      * @return The IData document this object wraps.
      */
     @Override
@@ -144,6 +160,7 @@ public class IDataEnvelope implements IData, IDataCodable, IDataPortable, Values
 
     /**
      * Set the IData document this object wraps.
+     *
      * @param document The IData document to be wrapped.
      */
     @Override
@@ -157,6 +174,7 @@ public class IDataEnvelope implements IData, IDataCodable, IDataPortable, Values
 
     /**
      * Returns the IData document that this object wraps.
+     *
      * @return The IData document this object wraps.
      */
     @Override
@@ -166,6 +184,7 @@ public class IDataEnvelope implements IData, IDataCodable, IDataPortable, Values
 
     /**
      * Set the IData document this object wraps.
+     *
      * @param document The IData document to be wrapped.
      */
     @Override
@@ -175,6 +194,7 @@ public class IDataEnvelope implements IData, IDataCodable, IDataPortable, Values
 
     /**
      * Set the Values object this object wraps.
+     *
      * @param values The Values object to be wrapped.
      */
     @Override
@@ -184,6 +204,7 @@ public class IDataEnvelope implements IData, IDataCodable, IDataPortable, Values
 
     /**
      * Returns the Values object this object wraps.
+     *
      * @return The Values object this object wraps.
      */
     @Override
@@ -193,6 +214,7 @@ public class IDataEnvelope implements IData, IDataCodable, IDataPortable, Values
 
     /**
      * Returns a string representation of this object.
+     *
      * @return A string representation of this object.
      */
     @Override

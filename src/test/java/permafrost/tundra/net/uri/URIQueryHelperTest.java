@@ -28,15 +28,14 @@ import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
 import com.wm.data.IDataUtil;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
-import permafrost.tundra.net.uri.URIQueryHelper;
-
-import static org.junit.Assert.*;
 
 public class URIQueryHelperTest {
     @Test
     public void testParse() throws Exception {
-        String[] c = {"3", "4", "5"};
+        String[] c = { "3", "4", "5" };
         IData query = URIQueryHelper.parse("a=1&b=2&c=3&c=4&c=5", true);
         IDataCursor cursor = query.getCursor();
         assertEquals("1", IDataUtil.getString(cursor, "a"));
@@ -47,7 +46,7 @@ public class URIQueryHelperTest {
 
     @Test
     public void testEmit() throws Exception {
-        String[] c = {"3", "4", "5"};
+        String[] c = { "3", "4", "5" };
         IData query = IDataFactory.create();
         IDataCursor cursor = query.getCursor();
         IDataUtil.put(cursor, "a", "1");

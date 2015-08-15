@@ -26,7 +26,6 @@ package permafrost.tundra.time;
 
 import com.wm.data.IData;
 import permafrost.tundra.data.IDataMap;
-
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -67,8 +66,9 @@ public class TimeZoneHelper {
 
     /**
      * Returns the time zone associated with the given ID.
+     *
      * @param id A time zone ID.
-     * @return   The time zone associated with the given ID.
+     * @return The time zone associated with the given ID.
      */
     public static TimeZone get(String id) {
         if (id == null) return null;
@@ -128,13 +128,16 @@ public class TimeZoneHelper {
 
     /**
      * Returns the first matching time zone ID for the given raw millisecond time zone offset.
+     *
      * @param offset A time zone offset in milliseconds.
-     * @return       The ID of the first matching time zone with the given offset.
+     * @return The ID of the first matching time zone with the given offset.
      */
     protected static String get(int offset) {
         String id = null;
         String[] candidates = TimeZone.getAvailableIDs(offset);
-        if (candidates != null && candidates.length > 0) id = candidates[0]; // default to the first candidate timezone ID
+        if (candidates != null && candidates.length > 0) {
+            id = candidates[0]; // default to the first candidate timezone ID
+        }
         return id;
     }
 
@@ -161,8 +164,9 @@ public class TimeZoneHelper {
 
     /**
      * Returns the given Calendar object converted to the default time zone.
-     * @param calendar  The Calendar object to be normalized.
-     * @return          The given Calendar object converted to the default time zone.
+     *
+     * @param calendar The Calendar object to be normalized.
+     * @return The given Calendar object converted to the default time zone.
      */
     public static Calendar normalize(Calendar calendar) {
         return convert(calendar, DEFAULT_TIME_ZONE);
@@ -170,11 +174,10 @@ public class TimeZoneHelper {
 
     /**
      * Converts the given calendar to the given time zone.
-     * @param input     The calendar to be coverted to another time zone.
-     * @param timezone  The time zone ID identifying the time zone the calendar
-     *                  will be converted to.
-     * @return          A new calendar representing the same instant in time
-     *                  as the given calendar but in the given time.
+     *
+     * @param input    The calendar to be coverted to another time zone.
+     * @param timezone The time zone ID identifying the time zone the calendar will be converted to.
+     * @return A new calendar representing the same instant in time as the given calendar but in the given time.
      */
     public static Calendar convert(Calendar input, String timezone) {
         return convert(input, get(timezone));
@@ -182,10 +185,10 @@ public class TimeZoneHelper {
 
     /**
      * Converts the given calendar to the given time zone.
-     * @param input     The calendar to be converted to another time zone.
-     * @param timezone  The time zone the calendar will be converted to.
-     * @return          A new calendar representing the same instant in time
-     *                  as the given calendar but in the given time.
+     *
+     * @param input    The calendar to be converted to another time zone.
+     * @param timezone The time zone the calendar will be converted to.
+     * @return A new calendar representing the same instant in time as the given calendar but in the given time.
      */
     public static Calendar convert(Calendar input, TimeZone timezone) {
         if (input == null || timezone == null) return input;
@@ -197,9 +200,10 @@ public class TimeZoneHelper {
 
     /**
      * Replaces the time zone on the given calendar with the given time zone.
-     * @param input     The calendar to replace the time zone on.
-     * @param timezone  A time zone ID identifying the time zone the calendar will be forced into.
-     * @return          A new calendar that has been forced into a new time zone.
+     *
+     * @param input    The calendar to replace the time zone on.
+     * @param timezone A time zone ID identifying the time zone the calendar will be forced into.
+     * @return A new calendar that has been forced into a new time zone.
      */
     public static Calendar replace(Calendar input, String timezone) {
         return replace(input, get(timezone));
@@ -207,9 +211,10 @@ public class TimeZoneHelper {
 
     /**
      * Replaces the time zone on the given calendar with the given time zone.
-     * @param input     The calendar to replace the time zone on.
-     * @param timezone  The new time zone the calendar will be forced into.
-     * @return          A new calendar that has been forced into a new time zone.
+     *
+     * @param input    The calendar to replace the time zone on.
+     * @param timezone The new time zone the calendar will be forced into.
+     * @return A new calendar that has been forced into a new time zone.
      */
     public static Calendar replace(Calendar input, TimeZone timezone) {
         if (input == null || timezone == null) return input;
@@ -230,12 +235,12 @@ public class TimeZoneHelper {
     }
 
     /**
-     * Returns an IData representation of the given TimeZone object, using the given
-     * datetime to resolve whether daylight savings is active.
+     * Returns an IData representation of the given TimeZone object, using the given datetime to resolve whether
+     * daylight savings is active.
      *
-     * @param timezone  The TimeZone object to be converted to an IData representation.
-     * @param instant   The datetime used to resolve the status of daylight savings.
-     * @return          An IData representation of the given TimeZone object.
+     * @param timezone The TimeZone object to be converted to an IData representation.
+     * @param instant  The datetime used to resolve the status of daylight savings.
+     * @return An IData representation of the given TimeZone object.
      */
     public static IData toIData(TimeZone timezone, Calendar instant) {
         if (timezone == null) return null;
@@ -258,25 +263,25 @@ public class TimeZoneHelper {
     }
 
     /**
-     * Returns an IData representation of the given TimeZone object, using the given
-     * datetime string to resolve whether daylight savings is active.
+     * Returns an IData representation of the given TimeZone object, using the given datetime string to resolve whether
+     * daylight savings is active.
      *
-     * @param timezone  The TimeZone object to be converted to an IData representation.
-     * @param datetime  The datetime string used to resolve the status of daylight savings.
-     * @param pattern   The pattern to use to parse the given datetime string.
-     * @return          An IData representation of the given TimeZone object.
+     * @param timezone The TimeZone object to be converted to an IData representation.
+     * @param datetime The datetime string used to resolve the status of daylight savings.
+     * @param pattern  The pattern to use to parse the given datetime string.
+     * @return An IData representation of the given TimeZone object.
      */
     public static IData toIData(TimeZone timezone, String datetime, String pattern) {
         return toIData(timezone, DateTimeHelper.parse(datetime, pattern));
     }
 
     /**
-     * Returns an IData representation of the given TimeZone objects, using the given
-     * datetime to resolve whether daylight savings is active.
+     * Returns an IData representation of the given TimeZone objects, using the given datetime to resolve whether
+     * daylight savings is active.
      *
      * @param timezones A list of TimeZone objects to be converted to an IData representation.
      * @param instant   The datetime used to resolve the status of daylight savings.
-     * @return          An IData[] representation of the given TimeZone objects.
+     * @return An IData[] representation of the given TimeZone objects.
      */
     public static IData[] toIDataArray(TimeZone[] timezones, Calendar instant) {
         if (timezones == null) return null;
@@ -291,13 +296,13 @@ public class TimeZoneHelper {
     }
 
     /**
-     * Returns an IData representation of the given TimeZone objects, using the given
-     * datetime string to resolve whether daylight savings is active.
+     * Returns an IData representation of the given TimeZone objects, using the given datetime string to resolve whether
+     * daylight savings is active.
      *
      * @param timezones A list of TimeZone objects to be converted to an IData representation.
      * @param datetime  The datetime string used to resolve the status of daylight savings.
      * @param pattern   The pattern to use to parse the given datetime string.
-     * @return          An IData[] representation of the given TimeZone objects.
+     * @return An IData[] representation of the given TimeZone objects.
      */
     public static IData[] toIDataArray(TimeZone[] timezones, String datetime, String pattern) {
         return toIDataArray(timezones, DateTimeHelper.parse(datetime, pattern));

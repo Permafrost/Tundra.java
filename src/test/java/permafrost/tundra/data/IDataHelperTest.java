@@ -4,16 +4,14 @@ import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
 import com.wm.data.IDataUtil;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 import permafrost.tundra.io.StreamHelper;
-
 import java.util.regex.Pattern;
-
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotNull;
 
 public class IDataHelperTest {
     IData document = IDataFactory.create();
@@ -29,47 +27,47 @@ public class IDataHelperTest {
 
     @Test
     public void testGetKeys() throws Exception {
-        String[] expected = {"a", "b", "c"};
+        String[] expected = { "a", "b", "c" };
         assertArrayEquals(expected, IDataHelper.getKeys(document));
     }
 
     @Test
     public void testGetKeysWithNullIData() throws Exception {
         String[] expected = new String[0];
-        assertArrayEquals(expected, IDataHelper.getKeys((IData) null));
+        assertArrayEquals(expected, IDataHelper.getKeys((IData)null));
     }
 
     @Test
     public void testGetKeysWithNullPatternString() throws Exception {
-        String[] expected = {"a", "b"};
+        String[] expected = { "a", "b" };
         String patternString = "[ab]";
         assertArrayEquals(expected, IDataHelper.getKeys(document, patternString));
     }
 
     @Test
     public void testGetKeysWithPatternString() throws Exception {
-        String[] expected = {"a", "b", "c"};
+        String[] expected = { "a", "b", "c" };
         String patternString = null;
         assertArrayEquals(expected, IDataHelper.getKeys(document, patternString));
     }
 
     @Test
     public void testGetKeysWithPattern() throws Exception {
-        String[] expected = {"a", "b"};
+        String[] expected = { "a", "b" };
         Pattern pattern = Pattern.compile("[ab]");
         assertArrayEquals(expected, IDataHelper.getKeys(document, pattern));
     }
 
     @Test
     public void testGetKeysWithNullPattern() throws Exception {
-        String[] expected = {"a", "b", "c"};
+        String[] expected = { "a", "b", "c" };
         Pattern pattern = null;
         assertArrayEquals(expected, IDataHelper.getKeys(document, pattern));
     }
 
     @Test
     public void testGetValues() throws Exception {
-        String[] expected = {"1", "2", "3"};
+        String[] expected = { "1", "2", "3" };
         assertArrayEquals(expected, IDataHelper.getValues(document));
     }
 
@@ -81,7 +79,7 @@ public class IDataHelperTest {
 
     @Test
     public void testMergeWithNullArgument() throws Exception {
-        IData merge = IDataHelper.merge((IData) null);
+        IData merge = IDataHelper.merge((IData)null);
         assertNotNull(merge);
         assertEquals(0, IDataHelper.size(merge));
     }
@@ -306,7 +304,7 @@ public class IDataHelperTest {
 
     @Test
     public void testGetKeyWithArrayIndex() throws Exception {
-        String[] array = {"1", "2", "3"};
+        String[] array = { "1", "2", "3" };
 
         IDataMap parent = new IDataMap();
         parent.put("a", array);
@@ -321,7 +319,7 @@ public class IDataHelperTest {
 
     @Test(expected = ArrayIndexOutOfBoundsException.class)
     public void testGetKeyWithArrayIndexOutOfBounds() throws Exception {
-        String[] array = {"1", "2", "3"};
+        String[] array = { "1", "2", "3" };
 
         IDataMap parent = new IDataMap();
         parent.put("a", array);
@@ -331,7 +329,7 @@ public class IDataHelperTest {
 
     @Test(expected = ArrayIndexOutOfBoundsException.class)
     public void testGetKeyWithNegativeArrayIndexOutOfBounds() throws Exception {
-        String[] array = {"1", "2", "3"};
+        String[] array = { "1", "2", "3" };
 
         IDataMap parent = new IDataMap();
         parent.put("a", array);
@@ -364,7 +362,7 @@ public class IDataHelperTest {
 
     @Test
     public void testGetKeyWithPathAndArrayIndex() throws Exception {
-        String[] array = {"1", "2", "3"};
+        String[] array = { "1", "2", "3" };
         IDataMap child = new IDataMap();
         child.put("b", array);
         IDataMap parent = new IDataMap();
@@ -405,15 +403,15 @@ public class IDataHelperTest {
 
     @Test
     public void testDropWithArrayIndex() throws Exception {
-        String[] array = {"1", "2", "3"};
-        String[] expected = {"1", "3"};
+        String[] array = { "1", "2", "3" };
+        String[] expected = { "1", "3" };
 
         IDataMap parent = new IDataMap();
         parent.put("a", array);
 
         IDataHelper.drop(parent, "a[1]");
 
-        assertArrayEquals(expected, (String[]) IDataHelper.get(parent, "a"));
+        assertArrayEquals(expected, (String[])IDataHelper.get(parent, "a"));
     }
 
     @Test
@@ -443,8 +441,8 @@ public class IDataHelperTest {
 
     @Test
     public void testDropWithPathAndArrayIndex() throws Exception {
-        String[] array = {"1", "2", "3"};
-        String[] expected = {"1", "3"};
+        String[] array = { "1", "2", "3" };
+        String[] expected = { "1", "3" };
 
         IDataMap child = new IDataMap();
         child.put("b", array);
@@ -453,12 +451,12 @@ public class IDataHelperTest {
 
         IDataHelper.drop(parent, "a/b[1]");
 
-        assertArrayEquals(expected, (String[]) IDataHelper.get(parent, "a/b"));
+        assertArrayEquals(expected, (String[])IDataHelper.get(parent, "a/b"));
     }
 
     @Test(expected = ArrayIndexOutOfBoundsException.class)
     public void testDropWithArrayIndexOutOfBounds() throws Exception {
-        String[] array = {"1", "2", "3"};
+        String[] array = { "1", "2", "3" };
 
         IDataMap parent = new IDataMap();
         parent.put("a", array);
@@ -468,7 +466,7 @@ public class IDataHelperTest {
 
     @Test(expected = ArrayIndexOutOfBoundsException.class)
     public void testDropWithNegativeArrayIndexOutOfBounds() throws Exception {
-        String[] array = {"1", "2", "3"};
+        String[] array = { "1", "2", "3" };
 
         IDataMap parent = new IDataMap();
         parent.put("a", array);
@@ -518,24 +516,24 @@ public class IDataHelperTest {
 
     @Test
     public void testPutWithArrayIndex() throws Exception {
-        String[] expected = {"1"};
+        String[] expected = { "1" };
         document = IDataHelper.put(document, "z[0]", "1");
-        assertArrayEquals(expected, (String[]) IDataHelper.get(document, "z"));
+        assertArrayEquals(expected, (String[])IDataHelper.get(document, "z"));
     }
 
     @Test
     public void testPutWithPathAndArrayIndex() throws Exception {
-        String[] expected = {"1"};
+        String[] expected = { "1" };
         document = IDataHelper.put(document, "a/b[0]", "1");
-        assertArrayEquals(expected, (String[]) IDataHelper.get(document, "a/b"));
+        assertArrayEquals(expected, (String[])IDataHelper.get(document, "a/b"));
     }
 
 
     @Test
     public void testPutWithLiteralKeyThatIncludesPathAndArrayIndex() throws Exception {
         document = IDataHelper.put(document, "a/b[0]", "1", true);
-        assertEquals("1", (String) IDataHelper.get(document, "a/b[0]", true));
-        assertEquals("1", (String) IDataHelper.get(document, "a/b[0]", false));
+        assertEquals("1", (String)IDataHelper.get(document, "a/b[0]", true));
+        assertEquals("1", (String)IDataHelper.get(document, "a/b[0]", false));
     }
 
     @Test
@@ -1026,7 +1024,7 @@ public class IDataHelperTest {
 
     @Test
     public void testGetAsArrayWithSingleOccurrence() throws Exception {
-        Object[] expected = new String[] {"1"};
+        Object[] expected = new String[] { "1" };
 
         IData document = IDataFactory.create();
         IDataCursor cursor = document.getCursor();
@@ -1042,8 +1040,8 @@ public class IDataHelperTest {
 
     @Test
     public void testGetAsArrayWithArrayIndex() throws Exception {
-        Object[] expected = new String[] {"2"};
-        Object[] array = new String[] {"1", "2", "3"};
+        Object[] expected = new String[] { "2" };
+        Object[] array = new String[] { "1", "2", "3" };
 
         IData document = IDataFactory.create();
         IDataCursor cursor = document.getCursor();
@@ -1059,7 +1057,7 @@ public class IDataHelperTest {
 
     @Test
     public void testGetAsArrayWithMultipleOccurrence() throws Exception {
-        Object[] expected = new String[] {"1", "2", "3"};
+        Object[] expected = new String[] { "1", "2", "3" };
 
         IData document = IDataFactory.create();
         IDataCursor cursor = document.getCursor();
@@ -1077,7 +1075,7 @@ public class IDataHelperTest {
 
     @Test
     public void testGetAsArrayWithNthKeyAndMultipleOccurrence() throws Exception {
-        Object[] expected = new String[] {"2"};
+        Object[] expected = new String[] { "2" };
 
         IData document = IDataFactory.create();
         IDataCursor cursor = document.getCursor();
@@ -1095,7 +1093,7 @@ public class IDataHelperTest {
 
     @Test
     public void testGetAsArrayWithQualifiedKeyAndSingleOccurrence() throws Exception {
-        Object[] expected = new String[] {"1"};
+        Object[] expected = new String[] { "1" };
 
         IData child = IDataFactory.create();
         IDataCursor cursor = child.getCursor();
@@ -1116,7 +1114,7 @@ public class IDataHelperTest {
 
     @Test
     public void testGetAsArrayWithQualifiedKeyAndMultipleOccurrence() throws Exception {
-        Object[] expected = new String[] {"2", "3", "4"};
+        Object[] expected = new String[] { "2", "3", "4" };
 
         IData child = IDataFactory.create();
         IDataCursor cursor = child.getCursor();
@@ -1137,10 +1135,10 @@ public class IDataHelperTest {
 
     @Test
     public void testGetAsArrayWithQualifiedKeyAndMultipleArrays() throws Exception {
-        Object[] expected = new String[] {"1", "2", "3", "4", "5", "6", "7"};
+        Object[] expected = new String[] { "1", "2", "3", "4", "5", "6", "7" };
 
-        Object[] array1 = new String[] {"1", "2", "3"};
-        Object[] array2 = new String[] {"4", "5", "6"};
+        Object[] array1 = new String[] { "1", "2", "3" };
+        Object[] array2 = new String[] { "4", "5", "6" };
 
         IData child = IDataFactory.create();
         IDataCursor cursor = child.getCursor();
@@ -1162,7 +1160,7 @@ public class IDataHelperTest {
 
     @Test
     public void testArrayify() throws Exception {
-        Object[] expected = new String[] {"2", "3", "4"};
+        Object[] expected = new String[] { "2", "3", "4" };
 
         IData child = IDataFactory.create();
         IDataCursor cursor = child.getCursor();
@@ -1177,7 +1175,7 @@ public class IDataHelperTest {
 
         IDataHelper.arrayify(parent, "a/c");
 
-        assertArrayEquals(expected, (Object[]) IDataHelper.get(parent, "a/c"));
+        assertArrayEquals(expected, (Object[])IDataHelper.get(parent, "a/c"));
     }
 
     @Test
@@ -1372,7 +1370,7 @@ public class IDataHelperTest {
 
         IDataMap child = new IDataMap();
         child.put("c", "2");
-        child.put("d", new String[]{"3", "4"});
+        child.put("d", new String[] { "3", "4" });
         child.put("e", new Integer("5"));
         child.put("f", "6");
 

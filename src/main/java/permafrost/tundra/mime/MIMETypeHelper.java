@@ -31,25 +31,24 @@ import com.wm.data.IDataUtil;
 import permafrost.tundra.data.IDataHelper;
 import permafrost.tundra.data.IDataMap;
 import permafrost.tundra.lang.ExceptionHelper;
-
+import java.util.Enumeration;
 import javax.activation.MimeType;
 import javax.activation.MimeTypeParameterList;
 import javax.activation.MimeTypeParseException;
-import java.util.Enumeration;
 
 public class MIMETypeHelper {
     /**
      * Disallow instantiation of this class.
      */
-    private MIMETypeHelper()  {}
+    private MIMETypeHelper() {}
 
     public static final String DEFAULT_MIME_TYPE = "application/octet-stream";
 
     /**
      * Parses the given MIME type string to an IData representation.
      *
-     * @param string    The MIME type string to be parsed.
-     * @return          An IData representation of the MIME type string.
+     * @param string The MIME type string to be parsed.
+     * @return An IData representation of the MIME type string.
      * @throws MimeTypeParseException If the given MIME type string is malformed.
      */
     public static IData parse(String string) throws MimeTypeParseException {
@@ -58,11 +57,10 @@ public class MIMETypeHelper {
     }
 
     /**
-     * Returns a MIME type string comprised of the components specified in the
-     * given IData document.
+     * Returns a MIME type string comprised of the components specified in the given IData document.
      *
-     * @param document  The IData document to be converted to a MIME type string.
-     * @return          A MIME type string representing the components specified in the given IData document.
+     * @param document The IData document to be converted to a MIME type string.
+     * @return A MIME type string representing the components specified in the given IData document.
      * @throws MimeTypeParseException If the given MIME type string is malformed.
      */
     public static String emit(IData document) throws MimeTypeParseException {
@@ -96,11 +94,11 @@ public class MIMETypeHelper {
     }
 
     /**
-     * Normalizes a MIME type string by removing extraneous whitespace characters, and listing
-     * parameters in alphabetical order.
+     * Normalizes a MIME type string by removing extraneous whitespace characters, and listing parameters in
+     * alphabetical order.
      *
-     * @param string    The MIME type string to be normalized.
-     * @return          The normalized MIME type string.
+     * @param string The MIME type string to be normalized.
+     * @return The normalized MIME type string.
      * @throws MimeTypeParseException If the MIME type string is malformed.
      */
     public static String normalize(String string) throws MimeTypeParseException {
@@ -108,13 +106,12 @@ public class MIMETypeHelper {
     }
 
     /**
-     * Returns true if the given MIME type strings are considered equivalent
-     * because their types and subtypes match (parameters are not considered
-     * in the comparison).
+     * Returns true if the given MIME type strings are considered equivalent because their types and subtypes match
+     * (parameters are not considered in the comparison).
      *
-     * @param string1   The first MIME type string to be compare.
-     * @param string2   The second MIME type string to be compared.
-     * @return          True if the two MIME type strings are considered equal, otherwise false.
+     * @param string1 The first MIME type string to be compare.
+     * @param string2 The second MIME type string to be compared.
+     * @return True if the two MIME type strings are considered equal, otherwise false.
      * @throws MimeTypeParseException If either of the MIME type strings are malformed.
      */
     public static boolean equal(String string1, String string2) throws MimeTypeParseException {
@@ -128,12 +125,12 @@ public class MIMETypeHelper {
     }
 
     /**
-     * Returns true if the given string is a valid MIME type, optionally throwing an
-     * exception if the string is invalid.
+     * Returns true if the given string is a valid MIME type, optionally throwing an exception if the string is
+     * invalid.
      *
-     * @param string            The string to validate.
-     * @param raise             Whether an exception should be thrown if the string is an invalid MIME type.
-     * @return                  True if the string is a well-formed MIME type.
+     * @param string The string to validate.
+     * @param raise  Whether an exception should be thrown if the string is an invalid MIME type.
+     * @return True if the string is a well-formed MIME type.
      * @throws ServiceException If raise is true and the given string is an invalid MIME type.
      */
     public static boolean validate(String string, boolean raise) throws ServiceException {
@@ -152,14 +149,14 @@ public class MIMETypeHelper {
     /**
      * Returns true if the given string is a valid MIME type.
      *
-     * @param string    The string to validate.
-     * @return          True if the string is a well-formed MIME type.
+     * @param string The string to validate.
+     * @return True if the string is a well-formed MIME type.
      */
     public static boolean validate(String string) {
         boolean result = false;
         try {
             result = validate(string, false);
-        } catch(ServiceException ex) {
+        } catch (ServiceException ex) {
             // ignore as this exception will never be thrown
         }
         return result;
@@ -168,8 +165,8 @@ public class MIMETypeHelper {
     /**
      * Converts a MimeType to an IData representation.
      *
-     * @param mimeType  The MimeType to convert.
-     * @return          An IData representation of the given MimeType.
+     * @param mimeType The MimeType to convert.
+     * @return An IData representation of the given MimeType.
      */
     public static IData toIData(MimeType mimeType) {
         if (mimeType == null) return null;
@@ -188,8 +185,8 @@ public class MIMETypeHelper {
     /**
      * Converts a MimeTypeParameterList to an IData representation.
      *
-     * @param mimeTypeParameterList     The MimeTypeParameterList to convert.
-     * @return                          An IData representation of the given MimeTypeParameterList.
+     * @param mimeTypeParameterList The MimeTypeParameterList to convert.
+     * @return An IData representation of the given MimeTypeParameterList.
      */
     public static IData toIData(MimeTypeParameterList mimeTypeParameterList) {
         if (mimeTypeParameterList == null) return null;
@@ -197,7 +194,7 @@ public class MIMETypeHelper {
         IDataMap output = new IDataMap();
 
         Enumeration names = mimeTypeParameterList.getNames();
-        while(names.hasMoreElements()) {
+        while (names.hasMoreElements()) {
             String name = (String)names.nextElement();
             String value = mimeTypeParameterList.get(name);
             output.put(name, value);

@@ -27,7 +27,6 @@ package permafrost.tundra.server;
 import com.wm.app.b2b.server.InvokeState;
 import com.wm.app.b2b.server.ServerThread;
 import com.wm.lang.ns.NSService;
-
 import java.util.Stack;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -57,6 +56,7 @@ public class ServerThreadFactory {
 
     /**
      * Constructs a new ServerThreadFactory.
+     *
      * @param name  The name of the factory, used to prefix thread names.
      * @param state The invoke state to clone for each thread created.
      */
@@ -66,13 +66,16 @@ public class ServerThreadFactory {
 
     /**
      * Constructs a new ServerThreadFactory.
+     *
      * @param name  The name of the factory, used to prefix thread names.
      * @param state The invoke state to clone for each thread created.
      */
     public ServerThreadFactory(String name, InvokeState state, int priority) {
         if (name == null) throw new NullPointerException("name must not be null");
         if (state == null) throw new NullPointerException("state must not be null");
-        if (priority < Thread.MIN_PRIORITY || priority > Thread.MAX_PRIORITY) throw new IllegalArgumentException("priority out of range");
+        if (priority < Thread.MIN_PRIORITY || priority > Thread.MAX_PRIORITY) {
+            throw new IllegalArgumentException("priority out of range");
+        }
 
         this.name = name;
         this.state = state;
@@ -81,8 +84,9 @@ public class ServerThreadFactory {
 
     /**
      * Returns a newly constructed Thread that will execute the given Runnable.
+     *
      * @param runnable The Runnable to be executed by the thread.
-     * @return         The newly constructed thread.
+     * @return The newly constructed thread.
      */
     public Thread newThread(Runnable runnable) {
         ServerThread thread = new ServerThread(runnable);
@@ -94,12 +98,13 @@ public class ServerThreadFactory {
 
     /**
      * Clones the invoke state with its call stack intact.
+     *
      * @return A clone of the invoke state used for new threads.
      */
     private InvokeState cloneInvokeStateWithStack() {
         InvokeState outputState = (InvokeState)state.clone();
         Stack stack = (Stack)state.getCallStack().clone();
-        while(!stack.empty()) {
+        while (!stack.empty()) {
             NSService service = (NSService)stack.remove(0);
             outputState.pushService(service);
         }

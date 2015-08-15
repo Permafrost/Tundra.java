@@ -32,7 +32,15 @@ import com.wm.util.Table;
 import permafrost.tundra.io.StreamHelper;
 import permafrost.tundra.lang.ArrayHelper;
 import permafrost.tundra.lang.CharsetHelper;
-
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.StringWriter;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.nio.charset.Charset;
+import java.util.Iterator;
+import java.util.List;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
@@ -45,15 +53,6 @@ import javax.json.JsonString;
 import javax.json.JsonStructure;
 import javax.json.JsonValue;
 import javax.json.JsonWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.StringWriter;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.nio.charset.Charset;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * Deserializes and serializes IData objects from and to JSON.
@@ -76,6 +75,7 @@ public class IDataJSONParser extends IDataTextParser {
 
     /**
      * Returns the singleton instance of this class.
+     *
      * @return The singleton instance of this class.
      */
     public static IDataJSONParser getInstance() {
@@ -85,10 +85,10 @@ public class IDataJSONParser extends IDataTextParser {
     /**
      * Encodes the given IData document as JSON to the given output stream.
      *
-     * @param outputStream  The stream to write the encoded IData to.
-     * @param document      The IData document to be encoded.
-     * @param charset       The character set to use.
-     * @throws IOException  If there is a problem writing to the stream.
+     * @param outputStream The stream to write the encoded IData to.
+     * @param document     The IData document to be encoded.
+     * @param charset      The character set to use.
+     * @throws IOException If there is a problem writing to the stream.
      */
     public void encode(OutputStream outputStream, IData document, Charset charset) throws IOException {
         StreamHelper.copy(StreamHelper.normalize(encodeToString(document), charset), outputStream);
@@ -97,10 +97,10 @@ public class IDataJSONParser extends IDataTextParser {
     /**
      * Returns an IData representation of the JSON data in the given input stream.
      *
-     * @param inputStream                       The input stream to be decoded.
-     * @param charset                           The character set to use.
-     * @return                                  An IData representation of the given input stream data.
-     * @throws IOException                      If there is a problem reading from the stream.
+     * @param inputStream The input stream to be decoded.
+     * @param charset     The character set to use.
+     * @return An IData representation of the given input stream data.
+     * @throws IOException If there is a problem reading from the stream.
      */
     public IData decode(InputStream inputStream, Charset charset) throws IOException {
         JsonReaderFactory factory = Json.createReaderFactory(null);
@@ -124,6 +124,7 @@ public class IDataJSONParser extends IDataTextParser {
 
     /**
      * The MIME media type for JSON.
+     *
      * @return JSON MIME media type.
      */
     public String getContentType() {
@@ -134,7 +135,7 @@ public class IDataJSONParser extends IDataTextParser {
      * Converts an JSON value to an appropriate webMethods compatible representation.
      *
      * @param input The JSON value to convert.
-     * @return      The converted Object.
+     * @return The converted Object.
      */
     protected static Object fromJsonValue(JsonValue input) {
         Object output = null;
@@ -154,7 +155,7 @@ public class IDataJSONParser extends IDataTextParser {
                 output = fromJsonNumber((JsonNumber)input);
             } else if (type == JsonValue.ValueType.STRING) {
                 output = fromJsonString((JsonString)input);
-            } else if (type != JsonValue.ValueType.NULL){
+            } else if (type != JsonValue.ValueType.NULL) {
                 throw new IllegalArgumentException("Unexpected JSON value type: " + type.toString());
             }
         }
@@ -166,7 +167,7 @@ public class IDataJSONParser extends IDataTextParser {
      * Converts a JSON string to an appropriate webMethods compatible representation.
      *
      * @param input The JSON string to convert.
-     * @return      The converted Object.
+     * @return The converted Object.
      */
     protected static Object fromJsonString(JsonString input) {
         return input.getString();
@@ -176,7 +177,7 @@ public class IDataJSONParser extends IDataTextParser {
      * Converts a JSON number to an appropriate webMethods compatible representation.
      *
      * @param input The JSON number to convert.
-     * @return      The converted Object.
+     * @return The converted Object.
      */
     protected static Object fromJsonNumber(JsonNumber input) {
         Object output;
@@ -192,7 +193,7 @@ public class IDataJSONParser extends IDataTextParser {
      * Converts a JSON object to an IData document.
      *
      * @param input The JSON object to be converted.
-     * @return      The converted IData document.
+     * @return The converted IData document.
      */
     protected static IData fromJsonObject(JsonObject input) {
         if (input == null) return null;
@@ -202,7 +203,7 @@ public class IDataJSONParser extends IDataTextParser {
         IData output = IDataFactory.create();
         IDataCursor cursor = output.getCursor();
 
-        while(iterator.hasNext()) {
+        while (iterator.hasNext()) {
             String key = iterator.next();
             JsonValue value = input.get(key);
             IDataUtil.put(cursor, key, fromJsonValue(value));
@@ -217,7 +218,7 @@ public class IDataJSONParser extends IDataTextParser {
      * Converts a JSON array to an Object[].
      *
      * @param input The JSON array to convert.
-     * @return      The converted Object[].
+     * @return The converted Object[].
      */
     protected static Object[] fromJsonArray(JsonArray input) {
         if (input == null) return null;
@@ -225,7 +226,7 @@ public class IDataJSONParser extends IDataTextParser {
         List output = new java.util.ArrayList(input.size());
         Iterator<JsonValue> iterator = input.iterator();
 
-        while(iterator.hasNext()) {
+        while (iterator.hasNext()) {
             JsonValue item = iterator.next();
             Object object = fromJsonValue(item);
             output.add(object);
@@ -238,7 +239,7 @@ public class IDataJSONParser extends IDataTextParser {
      * Returns a JSON representation of the given IData object.
      *
      * @param input The IData to convert to JSON.
-     * @return      The JSON representation of the IData.
+     * @return The JSON representation of the IData.
      */
     @Override
     public String encodeToString(IData input) throws IOException {
@@ -264,7 +265,7 @@ public class IDataJSONParser extends IDataTextParser {
      * Converts an IData document to a JSON object.
      *
      * @param input An IData document.
-     * @return      A JSON object.
+     * @return A JSON object.
      */
     protected static JsonObject toJsonObject(IData input) {
         JsonObjectBuilder builder = Json.createObjectBuilder();
@@ -272,7 +273,7 @@ public class IDataJSONParser extends IDataTextParser {
         if (input != null) {
             IDataCursor cursor = input.getCursor();
 
-            while(cursor.next()) {
+            while (cursor.next()) {
                 String key = cursor.getKey();
                 Object value = cursor.getValue();
 
@@ -312,7 +313,7 @@ public class IDataJSONParser extends IDataTextParser {
      * Converts an Object[] to a JSON array.
      *
      * @param input An Object[] to be converted.
-     * @return      A JSON array.
+     * @return A JSON array.
      */
     protected static JsonArray toJsonArray(Object[] input) {
         JsonArrayBuilder builder = Json.createArrayBuilder();

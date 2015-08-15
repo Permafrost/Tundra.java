@@ -32,7 +32,6 @@ import permafrost.tundra.lang.BytesHelper;
 import permafrost.tundra.lang.CharsetHelper;
 import permafrost.tundra.lang.ObjectConvertMode;
 import permafrost.tundra.lang.ObjectHelper;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -46,9 +45,10 @@ public class ZipEntryWithData extends ZipEntry implements IDataCodable {
 
     /**
      * Constructs a new ZipEntryWithData object.
-     * @param name          The name associated with the content.
-     * @param data          The data associated with the content.
-     * @throws IOException  If an I/O problem occurs reading from the stream.
+     *
+     * @param name The name associated with the content.
+     * @param data The data associated with the content.
+     * @throws IOException If an I/O problem occurs reading from the stream.
      */
     public ZipEntryWithData(String name, InputStream data) throws IOException {
         this(name, BytesHelper.normalize(data));
@@ -56,6 +56,7 @@ public class ZipEntryWithData extends ZipEntry implements IDataCodable {
 
     /**
      * Constructs a new ZipEntryWithData object.
+     *
      * @param name The name associated with the content.
      * @param data The data associated with the content.
      */
@@ -66,9 +67,10 @@ public class ZipEntryWithData extends ZipEntry implements IDataCodable {
 
     /**
      * Constructs a new ZipEntryWithData object.
-     * @param name          The name associated with the content.
-     * @param data          The data associated with the content.
-     * @param charsetName   The character set used to encode the string as binary data.
+     *
+     * @param name        The name associated with the content.
+     * @param data        The data associated with the content.
+     * @param charsetName The character set used to encode the string as binary data.
      */
     public ZipEntryWithData(String name, String data, String charsetName) {
         this(name, BytesHelper.normalize(data, charsetName));
@@ -76,9 +78,10 @@ public class ZipEntryWithData extends ZipEntry implements IDataCodable {
 
     /**
      * Constructs a new ZipEntryWithData object.
-     * @param name          The name associated with the content.
-     * @param data          The data associated with the content.
-     * @param charset       The character set used to encode the string as binary data.
+     *
+     * @param name    The name associated with the content.
+     * @param data    The data associated with the content.
+     * @param charset The character set used to encode the string as binary data.
      */
     public ZipEntryWithData(String name, String data, Charset charset) {
         this(name, BytesHelper.normalize(data, charset));
@@ -86,8 +89,9 @@ public class ZipEntryWithData extends ZipEntry implements IDataCodable {
 
     /**
      * Constructs a new ZipEntryWithData object.
-     * @param name          The name associated with the content.
-     * @param data          The data associated with the content.
+     *
+     * @param name The name associated with the content.
+     * @param data The data associated with the content.
      */
     public ZipEntryWithData(String name, String data) {
         this(name, BytesHelper.normalize(data));
@@ -95,6 +99,7 @@ public class ZipEntryWithData extends ZipEntry implements IDataCodable {
 
     /**
      * Returns the data associated with this content.
+     *
      * @return The data associated with this content.
      */
     public byte[] getData() {
@@ -103,9 +108,10 @@ public class ZipEntryWithData extends ZipEntry implements IDataCodable {
 
     /**
      * Returns an IData representation of this object.
-     * @param charset   The character set to use when mode is STRING.
-     * @param mode      Determines the type of object the data is returned as.
-     * @return          An IData representation of this object.
+     *
+     * @param charset The character set to use when mode is STRING.
+     * @param mode    Determines the type of object the data is returned as.
+     * @return An IData representation of this object.
      */
     public IData getIData(Charset charset, ObjectConvertMode mode) {
         if (mode == null) mode = ObjectConvertMode.STREAM;
@@ -125,9 +131,10 @@ public class ZipEntryWithData extends ZipEntry implements IDataCodable {
 
     /**
      * Returns an IData representation of this object.
+     *
      * @param charsetName The character set to use when mode is STRING.
      * @param mode        Determines the type of object the data is returned as.
-     * @return            An IData representation of this object.
+     * @return An IData representation of this object.
      */
     public IData getIData(String charsetName, ObjectConvertMode mode) {
         return getIData(CharsetHelper.normalize(charsetName), mode);
@@ -135,9 +142,10 @@ public class ZipEntryWithData extends ZipEntry implements IDataCodable {
 
     /**
      * Returns an IData representation of this object.
+     *
      * @param charsetName The character set to use when mode is STRING.
      * @param mode        Determines the type of object the data is returned as.
-     * @return            An IData representation of this object.
+     * @return An IData representation of this object.
      */
     public IData getIData(String charsetName, String mode) {
         return getIData(charsetName, ObjectConvertMode.normalize(mode));
@@ -145,7 +153,8 @@ public class ZipEntryWithData extends ZipEntry implements IDataCodable {
 
     /**
      * Returns an IData representation of this object.
-     * @param mode      Determines the type of object the data is returned as.
+     *
+     * @param mode Determines the type of object the data is returned as.
      * @return An IData representation of this object.
      */
     public IData getIData(ObjectConvertMode mode) {
@@ -154,6 +163,7 @@ public class ZipEntryWithData extends ZipEntry implements IDataCodable {
 
     /**
      * Returns an IData representation of this object.
+     *
      * @return An IData representation of this object.
      */
     @Override
@@ -163,8 +173,9 @@ public class ZipEntryWithData extends ZipEntry implements IDataCodable {
 
     /**
      * Not implemented: initializes the values of this object from the given IData document.
-     * @param document The IData document to initialize this object from;
-     *                 must include the following keys: name, encoding, content.
+     *
+     * @param document The IData document to initialize this object from; must include the following keys: name,
+     *                 encoding, content.
      */
     @Override
     public void setIData(IData document) {
@@ -173,10 +184,11 @@ public class ZipEntryWithData extends ZipEntry implements IDataCodable {
 
     /**
      * Returns a new ZipEntryWithData object given an IData document.
-     * @param document      The IData document to construct the ZipEntryWithData object from;
-     *                      must include the following keys: name, encoding, content.
-     * @return              The ZipEntryWithData object representing the given IData document.
-     * @throws IOException  If an I/O problem occurs reading from a stream.
+     *
+     * @param document The IData document to construct the ZipEntryWithData object from; must include the following
+     *                 keys: name, encoding, content.
+     * @return The ZipEntryWithData object representing the given IData document.
+     * @throws IOException If an I/O problem occurs reading from a stream.
      */
     public static ZipEntryWithData valueOf(IData document) throws IOException {
         if (document == null) return null;
@@ -186,10 +198,11 @@ public class ZipEntryWithData extends ZipEntry implements IDataCodable {
 
     /**
      * Returns a ZipEntryWithData[] given an IData[].
-     * @param array         The IData[] to construct the ZipEntryWithData object from; each IData
-     *                      must include the following keys: name, encoding, content.
-     * @return              The ZipEntryWithData[] representing the given IData[].
-     * @throws IOException  If an I/O problem occurs reading from a stream.
+     *
+     * @param array The IData[] to construct the ZipEntryWithData object from; each IData must include the following
+     *              keys: name, encoding, content.
+     * @return The ZipEntryWithData[] representing the given IData[].
+     * @throws IOException If an I/O problem occurs reading from a stream.
      */
     public static ZipEntryWithData[] valueOf(IData[] array) throws IOException {
         if (array == null) return null;
@@ -203,10 +216,11 @@ public class ZipEntryWithData extends ZipEntry implements IDataCodable {
 
     /**
      * Returns an IData[] given a ZipEntryWithData[].
+     *
      * @param contents The ZipEntryWithData[] to be converted to an IData[].
      * @param charset  The character set to use when mode is STRING.
      * @param mode     Determines the type of object the data is returned as.
-     * @return         The IData[] representing the given ZipEntryWithData[].
+     * @return The IData[] representing the given ZipEntryWithData[].
      */
     public static IData[] toIDataArray(ZipEntryWithData[] contents, Charset charset, ObjectConvertMode mode) {
         if (contents == null) return null;
@@ -223,10 +237,11 @@ public class ZipEntryWithData extends ZipEntry implements IDataCodable {
 
     /**
      * Returns an IData[] given a ZipEntryWithData[].
-     * @param contents      The ZipEntryWithData[] to be converted to an IData[].
-     * @param charsetName   The character set to use when mode is STRING.
-     * @param mode          Determines the type of object the data is returned as.
-     * @return              The IData[] representing the given ZipEntryWithData[].
+     *
+     * @param contents    The ZipEntryWithData[] to be converted to an IData[].
+     * @param charsetName The character set to use when mode is STRING.
+     * @param mode        Determines the type of object the data is returned as.
+     * @return The IData[] representing the given ZipEntryWithData[].
      */
     public static IData[] toIDataArray(ZipEntryWithData[] contents, String charsetName, ObjectConvertMode mode) {
         return toIDataArray(contents, CharsetHelper.normalize(charsetName), mode);
@@ -234,10 +249,11 @@ public class ZipEntryWithData extends ZipEntry implements IDataCodable {
 
     /**
      * Returns an IData[] given a ZipEntryWithData[].
-     * @param contents      The ZipEntryWithData[] to be converted to an IData[].
-     * @param charsetName   The character set to use when mode is STRING.
-     * @param mode          Determines the type of object the data is returned as.
-     * @return              The IData[] representing the given ZipEntryWithData[].
+     *
+     * @param contents    The ZipEntryWithData[] to be converted to an IData[].
+     * @param charsetName The character set to use when mode is STRING.
+     * @param mode        Determines the type of object the data is returned as.
+     * @return The IData[] representing the given ZipEntryWithData[].
      */
     public static IData[] toIDataArray(ZipEntryWithData[] contents, String charsetName, String mode) {
         return toIDataArray(contents, charsetName, ObjectConvertMode.normalize(mode));
@@ -245,9 +261,10 @@ public class ZipEntryWithData extends ZipEntry implements IDataCodable {
 
     /**
      * Returns an IData[] given a ZipEntryWithData[].
-     * @param contents      The ZipEntryWithData[] to be converted to an IData[].
-     * @param mode          Determines the type of object the data is returned as.
-     * @return              The IData[] representing the given ZipEntryWithData[].
+     *
+     * @param contents The ZipEntryWithData[] to be converted to an IData[].
+     * @param mode     Determines the type of object the data is returned as.
+     * @return The IData[] representing the given ZipEntryWithData[].
      */
     public static IData[] toIDataArray(ZipEntryWithData[] contents, ObjectConvertMode mode) {
         return toIDataArray(contents, (Charset)null, mode);
@@ -255,8 +272,9 @@ public class ZipEntryWithData extends ZipEntry implements IDataCodable {
 
     /**
      * Returns an IData[] given a ZipEntryWithData[].
+     *
      * @param contents The ZipEntryWithData[] to be converted to an IData[].
-     * @return         The IData[] representing the given ZipEntryWithData[].
+     * @return The IData[] representing the given ZipEntryWithData[].
      */
     public static IData[] toIDataArray(ZipEntryWithData[] contents) {
         return toIDataArray(contents, (ObjectConvertMode)(null));

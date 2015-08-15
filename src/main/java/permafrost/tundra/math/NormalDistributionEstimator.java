@@ -41,6 +41,7 @@ public class NormalDistributionEstimator {
 
     /**
      * Constructs a new estimator object.
+     *
      * @param unit The unit of measurement related to the measured samples.
      */
     public NormalDistributionEstimator(String unit) {
@@ -61,7 +62,7 @@ public class NormalDistributionEstimator {
     /**
      * Constructs a new estimator object seeded with the given samples.
      *
-     * @param unit The unit of measurement related to the measured samples.
+     * @param unit    The unit of measurement related to the measured samples.
      * @param samples One or more initial samples to seed the estimator with.
      */
     public NormalDistributionEstimator(String unit, double... samples) {
@@ -70,8 +71,7 @@ public class NormalDistributionEstimator {
     }
 
     /**
-     * Constructs a new estimator object seeded with the given collection of
-     * samples.
+     * Constructs a new estimator object seeded with the given collection of samples.
      *
      * @param samples An initial collection of samples to seed the estimator with.
      */
@@ -81,10 +81,9 @@ public class NormalDistributionEstimator {
     }
 
     /**
-     * Constructs a new estimator object seeded with the given collection of
-     * samples.
+     * Constructs a new estimator object seeded with the given collection of samples.
      *
-     * @param unit The unit of measurement related to the measured samples.
+     * @param unit    The unit of measurement related to the measured samples.
      * @param samples An initial collection of samples to seed the estimator with.
      */
     public NormalDistributionEstimator(String unit, java.util.Collection<Double> samples) {
@@ -216,8 +215,7 @@ public class NormalDistributionEstimator {
     }
 
     /**
-     * Returns a string-based representation of the mean, standard deviation and
-     * number of samples for this estimator.
+     * Returns a string-based representation of the mean, standard deviation and number of samples for this estimator.
      *
      * @return String-based representation of this estimator.
      */
@@ -228,7 +226,7 @@ public class NormalDistributionEstimator {
         String unit = getUnit();
 
         // thread synchronized to make sure all values are consistent
-        synchronized(this) {
+        synchronized (this) {
             mean = getMean();
             stdev = getStandardDeviation();
             min = getMinimum();

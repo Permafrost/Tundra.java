@@ -45,8 +45,9 @@ public enum HTTPMethod {
 
     /**
      * Returns an HTTPMethod for the given ordinal value.
+     *
      * @param value The value to be converted to an HTTPMethod.
-     * @return      The HTTPMethod representing the given value.
+     * @return The HTTPMethod representing the given value.
      */
     public static HTTPMethod valueOf(int value) {
         return map.get(value);
@@ -54,8 +55,9 @@ public enum HTTPMethod {
 
     /**
      * Returns an HTTPMethod for the given string value.
+     *
      * @param value The value to be converted to an HTTPMethod.
-     * @return      The HTTPMethod representing the given value.
+     * @return The HTTPMethod representing the given value.
      */
     public static HTTPMethod normalize(String value) {
         return value == null ? null : valueOf(value.trim().toUpperCase());

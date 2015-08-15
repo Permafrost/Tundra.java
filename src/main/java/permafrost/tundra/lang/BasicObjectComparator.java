@@ -45,6 +45,7 @@ public class BasicObjectComparator implements ObjectComparator {
 
     /**
      * Returns the singleton instance of this class.
+     *
      * @return The singleton instance of this class.
      */
     public static BasicObjectComparator getInstance() {
@@ -54,14 +55,11 @@ public class BasicObjectComparator implements ObjectComparator {
     /**
      * Compares two Objects.
      *
-     * @param object1        The first Object to be compared.
-     * @param object2        The second Object to be compared.
-     * @return               A value less than zero if the first object
-     *                       comes before the second object, a value of
-     *                       zero if they are equal, or a value of greater
-     *                       than zero if the first object comes after the
-     *                       second object according to the comparison
-     *                       of all the keys and values in each document.
+     * @param object1 The first Object to be compared.
+     * @param object2 The second Object to be compared.
+     * @return A value less than zero if the first object comes before the second object, a value of zero if they are
+     * equal, or a value of greater than zero if the first object comes after the second object according to the
+     * comparison of all the keys and values in each document.
      */
     @SuppressWarnings("unchecked")
     public int compare(Object object1, Object object2) {
@@ -70,14 +68,14 @@ public class BasicObjectComparator implements ObjectComparator {
         if (object1 == null || object2 == null) {
             if (object1 != null) {
                 result = 1;
-            } else if (object2 != null){
+            } else if (object2 != null) {
                 result = -1;
             }
         } else {
             if (object1 instanceof Comparable && object1.getClass().isAssignableFrom(object2.getClass())) {
-                result = ((Comparable) object1).compareTo(object2);
+                result = ((Comparable)object1).compareTo(object2);
             } else if (object2 instanceof Comparable && object2.getClass().isAssignableFrom(object1.getClass())) {
-                int comparison = ((Comparable) object2).compareTo(object1);
+                int comparison = ((Comparable)object2).compareTo(object1);
                 result = comparison < 0 ? 1 : comparison > 0 ? -1 : 0;
             } else if (object1 != object2) {
                 // last ditch effort: compare two incomparable objects using their hash codes

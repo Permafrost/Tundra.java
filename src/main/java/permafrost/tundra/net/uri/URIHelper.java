@@ -30,7 +30,6 @@ import com.wm.data.IDataFactory;
 import com.wm.data.IDataUtil;
 import permafrost.tundra.lang.ArrayHelper;
 import permafrost.tundra.lang.CharsetHelper;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -56,9 +55,10 @@ public class URIHelper {
 
     /**
      * Parses a URI string into an IData representation.
-     * @param input                 The URI string to be parsed.
-     * @return                      An IData representation of the give URI.
-     * @throws URISyntaxException   If the given string is an invalid URI.
+     *
+     * @param input The URI string to be parsed.
+     * @return An IData representation of the give URI.
+     * @throws URISyntaxException If the given string is an invalid URI.
      */
     public static IData parse(String input) throws URISyntaxException {
         if (input == null) return null;
@@ -160,9 +160,10 @@ public class URIHelper {
 
     /**
      * Emits a URI given as an IData document as a string.
-     * @param input                 An IData containing a specific URI structure to be serialized.
-     * @return                      The URI string representing the given IData.
-     * @throws URISyntaxException   If the given string is an invalid URI.
+     *
+     * @param input An IData containing a specific URI structure to be serialized.
+     * @return The URI string representing the given IData.
+     * @throws URISyntaxException If the given string is an invalid URI.
      */
     public static String emit(IData input) throws URISyntaxException {
         if (input == null) return null;
@@ -251,9 +252,10 @@ public class URIHelper {
 
     /**
      * Normalizes a URI string, refer: http://docs.oracle.com/javase/6/docs/api/java/net/URI.html#normalize().
-     * @param input                 The URI string to be normalized.
-     * @return                      The normalized URI string.
-     * @throws URISyntaxException   If the given string is an invalid URI.
+     *
+     * @param input The URI string to be normalized.
+     * @return The normalized URI string.
+     * @throws URISyntaxException If the given string is an invalid URI.
      */
     public static String normalize(String input) throws URISyntaxException {
         return emit(parse(input));
@@ -261,8 +263,9 @@ public class URIHelper {
 
     /**
      * URI encodes a string, refer: http://docs.oracle.com/javase/6/docs/api/java/net/URLEncoder.html.
-     * @param input         The string to be URI encoded.
-     * @return              The string after being URI encoded.
+     *
+     * @param input The string to be URI encoded.
+     * @return The string after being URI encoded.
      */
     public static String encode(String input) {
         return encode(input, DEFAULT_CHARSET);
@@ -270,9 +273,10 @@ public class URIHelper {
 
     /**
      * URI encodes a string, refer: http://docs.oracle.com/javase/6/docs/api/java/net/URLEncoder.html.
-     * @param input         The string to be URI encoded.
-     * @param charsetName   The character set to use when URI encoding the string.
-     * @return              The string after being URI encoded.
+     *
+     * @param input       The string to be URI encoded.
+     * @param charsetName The character set to use when URI encoding the string.
+     * @return The string after being URI encoded.
      */
     public static String encode(String input, String charsetName) {
         return encode(input, CharsetHelper.normalize(charsetName, DEFAULT_CHARSET));
@@ -280,9 +284,10 @@ public class URIHelper {
 
     /**
      * URI encodes a string, refer: http://docs.oracle.com/javase/6/docs/api/java/net/URLEncoder.html.
-     * @param input         The string to be URI encoded.
-     * @param charset       The character set to use when URI encoding the string.
-     * @return              The string after being URI encoded.
+     *
+     * @param input   The string to be URI encoded.
+     * @param charset The character set to use when URI encoding the string.
+     * @return The string after being URI encoded.
      */
     public static String encode(String input, Charset charset) {
         if (input == null) return null;
@@ -300,8 +305,9 @@ public class URIHelper {
 
     /**
      * URI encodes a string list, refer: http://docs.oracle.com/javase/6/docs/api/java/net/URLEncoder.html.
-     * @param input         A list of strings to be URI encoded.
-     * @return              The new copy of the list of strings after being URI encoded.
+     *
+     * @param input A list of strings to be URI encoded.
+     * @return The new copy of the list of strings after being URI encoded.
      */
     public static String[] encode(String[] input) {
         return encode(input, DEFAULT_CHARSET);
@@ -309,9 +315,10 @@ public class URIHelper {
 
     /**
      * URI encodes a string list, refer: http://docs.oracle.com/javase/6/docs/api/java/net/URLEncoder.html.
-     * @param input         A list of strings to be URI encoded.
-     * @param charsetName   The character set to use when URI encoding the strings.
-     * @return              The new copy of the list of strings after being URI encoded.
+     *
+     * @param input       A list of strings to be URI encoded.
+     * @param charsetName The character set to use when URI encoding the strings.
+     * @return The new copy of the list of strings after being URI encoded.
      */
     public static String[] encode(String[] input, String charsetName) {
         return encode(input, CharsetHelper.normalize(charsetName, DEFAULT_CHARSET));
@@ -319,9 +326,10 @@ public class URIHelper {
 
     /**
      * URI encodes a string list, refer: http://docs.oracle.com/javase/6/docs/api/java/net/URLEncoder.html.
-     * @param input         A list of strings to be URI encoded.
-     * @param charset       The character set to use when URI encoding the strings.
-     * @return              The new copy of the list of strings after being URI encoded.
+     *
+     * @param input   A list of strings to be URI encoded.
+     * @param charset The character set to use when URI encoding the strings.
+     * @return The new copy of the list of strings after being URI encoded.
      */
     public static String[] encode(String[] input, Charset charset) {
         if (input == null) return null;
@@ -337,8 +345,9 @@ public class URIHelper {
 
     /**
      * URI decodes a string, refer: http://docs.oracle.com/javase/6/docs/api/java/net/URLDecoder.html.
-     * @param input         The string to be URI decoded.
-     * @return              The string after being URI decoded.
+     *
+     * @param input The string to be URI decoded.
+     * @return The string after being URI decoded.
      */
     public static String decode(String input) {
         return decode(input, DEFAULT_CHARSET);
@@ -346,9 +355,10 @@ public class URIHelper {
 
     /**
      * URI decodes a string, refer: http://docs.oracle.com/javase/6/docs/api/java/net/URLDecoder.html.
-     * @param input         The string to be URI decoded.
-     * @param charsetName   The character set to use when URI decoding the string.
-     * @return              The string after it has been URI decoded.
+     *
+     * @param input       The string to be URI decoded.
+     * @param charsetName The character set to use when URI decoding the string.
+     * @return The string after it has been URI decoded.
      */
     public static String decode(String input, String charsetName) {
         return decode(input, CharsetHelper.normalize(charsetName, DEFAULT_CHARSET));
@@ -356,9 +366,10 @@ public class URIHelper {
 
     /**
      * URI decodes a string, refer: http://docs.oracle.com/javase/6/docs/api/java/net/URLDecoder.html.
-     * @param input         The string to be URI decoded.
-     * @param charset       The character set to use when URI decoding the string.
-     * @return              The string after it has been URI decoded.
+     *
+     * @param input   The string to be URI decoded.
+     * @param charset The character set to use when URI decoding the string.
+     * @return The string after it has been URI decoded.
      */
     public static String decode(String input, Charset charset) {
         if (input == null) return null;
@@ -367,7 +378,7 @@ public class URIHelper {
 
         try {
             output = java.net.URLDecoder.decode(input, CharsetHelper.normalize(charset, DEFAULT_CHARSET).name());
-        } catch(UnsupportedEncodingException ex) {
+        } catch (UnsupportedEncodingException ex) {
             throw new IllegalArgumentException(ex); // this should never happen
         }
 
@@ -376,8 +387,9 @@ public class URIHelper {
 
     /**
      * URI decodes a string list, refer: http://docs.oracle.com/javase/6/docs/api/java/net/URLDecoder.html.
-     * @param input         The list of strings to be URI decoded.
-     * @return              A new copy of the list of strings after being URI decoded.
+     *
+     * @param input The list of strings to be URI decoded.
+     * @return A new copy of the list of strings after being URI decoded.
      */
     public static String[] decode(String[] input) {
         return decode(input, DEFAULT_CHARSET);
@@ -385,9 +397,10 @@ public class URIHelper {
 
     /**
      * URI decodes a string list, refer: http://docs.oracle.com/javase/6/docs/api/java/net/URLDecoder.html.
-     * @param input         The list of strings to be URI decoded.
-     * @param charsetName      The character set to use when URI decoding the strings.
-     * @return              A new copy of the list of strings after being URI decoded.
+     *
+     * @param input       The list of strings to be URI decoded.
+     * @param charsetName The character set to use when URI decoding the strings.
+     * @return A new copy of the list of strings after being URI decoded.
      */
     public static String[] decode(String[] input, String charsetName) {
         return decode(input, CharsetHelper.normalize(charsetName, DEFAULT_CHARSET));
@@ -396,9 +409,10 @@ public class URIHelper {
 
     /**
      * URI decodes a string list, refer: http://docs.oracle.com/javase/6/docs/api/java/net/URLDecoder.html.
-     * @param input         The list of strings to be URI decoded.
-     * @param charset       The character set to use when URI decoding the strings.
-     * @return              A new copy of the list of strings after being URI decoded.
+     *
+     * @param input   The list of strings to be URI decoded.
+     * @param charset The character set to use when URI decoding the strings.
+     * @return A new copy of the list of strings after being URI decoded.
      */
     public static String[] decode(String[] input, Charset charset) {
         if (input == null) return null;

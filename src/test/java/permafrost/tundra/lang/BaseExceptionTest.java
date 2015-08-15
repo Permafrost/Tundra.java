@@ -25,9 +25,9 @@
 package permafrost.tundra.lang;
 
 import com.wm.app.b2b.server.ServiceException;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class BaseExceptionTest {
     @Test

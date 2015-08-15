@@ -30,7 +30,6 @@ import com.wm.data.IDataFactory;
 import com.wm.data.IDataUtil;
 import com.wm.lang.flow.ExpressionEvaluator;
 import com.wm.lang.flow.MalformedExpressionException;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -39,9 +38,8 @@ import java.util.regex.Pattern;
  */
 public class ConditionEvaluator {
     /**
-     * Regular expressions to detect backwards-compatibility mode to support the previous
-     * ANTLR-based implementation of the evaluate function, which allowed use of the key
-     * words: null, true and false
+     * Regular expressions to detect backwards-compatibility mode to support the previous ANTLR-based implementation of
+     * the evaluate function, which allowed use of the key words: null, true and false
      */
     protected static final Pattern NULL_PATTERN = Pattern.compile("((=|==|!=|<>|>|>=|<|<=)\\s*null(\\s|$))|((^|\\s)null\\s*(=|==|!=|<>|>|>=|<|<=))");
     protected static final Pattern TRUE_PATTERN = Pattern.compile("((=|==|!=|<>|>|>=|<|<=)\\s*true(\\s|$))|((^|\\s)true\\s*(=|==|!=|<>|>|>=|<|<=))");
@@ -54,6 +52,7 @@ public class ConditionEvaluator {
 
     /**
      * Constructs a new flow condition.
+     *
      * @param condition The conditional statement to be evaluated.
      */
     public ConditionEvaluator(String condition) {
@@ -64,7 +63,7 @@ public class ConditionEvaluator {
      * Evaluates the conditional statement against the given scope.
      *
      * @param scope The scope against which the conditional statement is evaluated.
-     * @return      True if the conditional statement evaluates to true, otherwise false.
+     * @return True if the conditional statement evaluates to true, otherwise false.
      */
     public boolean evaluate(IData scope) {
         boolean result = true;
@@ -105,13 +104,12 @@ public class ConditionEvaluator {
     }
 
     /**
-     * Evaluates the conditional statement against the given scope. This is a
-     * convenience method which constructs a new Condition object and evaluates
-     * it.
+     * Evaluates the conditional statement against the given scope. This is a convenience method which constructs a new
+     * Condition object and evaluates it.
      *
      * @param condition The conditional statement to be evaluated.
      * @param scope     The scope against which the conditional statement is evaluated.
-     * @return          True if the conditional statement evaluates to true, otherwise false.
+     * @return True if the conditional statement evaluates to true, otherwise false.
      */
     public static boolean evaluate(String condition, IData scope) {
         ConditionEvaluator evaluator = new ConditionEvaluator(condition);

@@ -24,11 +24,13 @@
 
 package permafrost.tundra.zip;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 import permafrost.tundra.lang.BytesHelper;
-
-import static org.junit.Assert.*;
 
 public class GzipHelperTest {
     byte[] expectedCompressedContent, expectedDecompressedContent;
@@ -36,7 +38,8 @@ public class GzipHelperTest {
     @Before
     public void setUp() throws Exception {
         expectedCompressedContent = BytesHelper.base64Decode("H4sIAAAAAAAAAA3IwQkAIAwDwFWymmiwPqxisj8W7nWOJRSdTZgy+kkzDUczkhyq2vdRWjk/qJJnGjAAAAA=");
-        expectedDecompressedContent = BytesHelper.base64Decode("dGhpcyBpcyBzb21lIHRlc3QgY29udGVudCB0aGF0IG5lZWRzIGNvbXByZXNzaW5n");;
+        expectedDecompressedContent = BytesHelper.base64Decode("dGhpcyBpcyBzb21lIHRlc3QgY29udGVudCB0aGF0IG5lZWRzIGNvbXByZXNzaW5n");
+        ;
     }
 
     @Test

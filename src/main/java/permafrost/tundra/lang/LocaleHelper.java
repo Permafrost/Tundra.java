@@ -27,7 +27,6 @@ package permafrost.tundra.lang;
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataUtil;
-
 import java.util.Locale;
 
 /**
@@ -42,14 +41,13 @@ public class LocaleHelper {
     /**
      * Returns a new Locale object for the given language, country and variant
      *
-     * @param language  An ISO 639 alpha-2 or alpha-3 language code, or a language subtag
-     *                  up to 8 characters in length. See the Locale class description
-     *                  about valid language values.
-     * @param country   An ISO 3166 alpha-2 country code or a UN M.49 numeric-3 area code.
-     *                  See the Locale class description about valid country values.
-     * @param variant   Any arbitrary value used to indicate a variation of a Locale.
-     *                  See the Locale class description for the details.
-     * @return          A new Locale object.
+     * @param language An ISO 639 alpha-2 or alpha-3 language code, or a language subtag up to 8 characters in length.
+     *                 See the Locale class description about valid language values.
+     * @param country  An ISO 3166 alpha-2 country code or a UN M.49 numeric-3 area code. See the Locale class
+     *                 description about valid country values.
+     * @param variant  Any arbitrary value used to indicate a variation of a Locale. See the Locale class description
+     *                 for the details.
+     * @return A new Locale object.
      */
     public static Locale toLocale(String language, String country, String variant) {
         Locale locale = Locale.getDefault();
@@ -71,7 +69,7 @@ public class LocaleHelper {
      * Converts an IData locale object to a Locale object.
      *
      * @param document The IData locale object to be converted.
-     * @return         A Locale object representing the given locale.
+     * @return A Locale object representing the given locale.
      */
     public static Locale toLocale(IData document) {
         String language = null, country = null, variant = null;

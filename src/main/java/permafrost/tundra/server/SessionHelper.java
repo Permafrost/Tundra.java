@@ -47,8 +47,9 @@ public class SessionHelper {
 
     /**
      * Converts the given session object to an IData representation.
+     *
      * @param session The session to be converted.
-     * @return        The IData representation of the given session.
+     * @return The IData representation of the given session.
      */
     public static IData toIData(Session session) {
         if (session == null) return null;
@@ -72,6 +73,7 @@ public class SessionHelper {
 
     /**
      * Returns the current session.
+     *
      * @return The current session.
      */
     public static Session getCurrentSession() {
@@ -80,6 +82,7 @@ public class SessionHelper {
 
     /**
      * Returns the current session in an IData document representation.
+     *
      * @return The current session in an IData document representation.
      */
     public static IData getCurrentSessionAsIData() {
@@ -88,6 +91,7 @@ public class SessionHelper {
 
     /**
      * Stores the given key and value in current session state.
+     *
      * @param key   The key to be stored in current session state.
      * @param value The value to be associated with the given key.
      */
@@ -99,8 +103,9 @@ public class SessionHelper {
 
     /**
      * Returns the value associated with the given key from the current session state.
-     * @param key   The key whose value is to be retrieved.
-     * @return      The value associated with the given key, or null if the key does not exist.
+     *
+     * @param key The key whose value is to be retrieved.
+     * @return The value associated with the given key, or null if the key does not exist.
      */
     public static Object get(String key) {
         if (key == null) return null;
@@ -109,8 +114,9 @@ public class SessionHelper {
 
     /**
      * Removes the element associated with the given key from current session state.
+     *
      * @param key The key whose associated element is to be removed.
-     * @return    The value associated with the removed element.
+     * @return The value associated with the removed element.
      */
     public static Object remove(String key) {
         if (key == null) return null;
@@ -119,6 +125,7 @@ public class SessionHelper {
 
     /**
      * Returns the current user's name.
+     *
      * @return The current user's name.
      */
     public static String getCurrentUserName() {
@@ -127,6 +134,7 @@ public class SessionHelper {
 
     /**
      * Returns the current user.
+     *
      * @return The current user.
      */
     public static User getCurrentUser() {

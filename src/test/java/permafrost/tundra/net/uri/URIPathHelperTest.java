@@ -24,10 +24,9 @@
 
 package permafrost.tundra.net.uri;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertNull;
 import org.junit.Test;
-import permafrost.tundra.net.uri.URIPathHelper;
-
-import static org.junit.Assert.*;
 
 public class URIPathHelperTest {
     @Test
@@ -47,13 +46,13 @@ public class URIPathHelperTest {
 
     @Test
     public void testParseWithPath() throws Exception {
-        String[] expected = {"abc", "def", "ghi"};
+        String[] expected = { "abc", "def", "ghi" };
         assertArrayEquals(expected, URIPathHelper.parse("/abc/def/ghi"));
     }
 
     @Test
     public void testParseWithVariableSubstituion() throws Exception {
-        String[] expected = {"abc", "%def/ghi%"};
+        String[] expected = { "abc", "%def/ghi%" };
         assertArrayEquals(expected, URIPathHelper.parse("/abc/%def/ghi%"));
     }
 }

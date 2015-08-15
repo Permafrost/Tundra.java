@@ -24,14 +24,10 @@
 
 package permafrost.tundra.net.http.route;
 
-import com.wm.data.IData;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import permafrost.tundra.data.IDataMap;
-
 import java.io.File;
-import java.util.Map;
-
-import static org.junit.Assert.*;
 
 public class HTTPRouteTest {
 

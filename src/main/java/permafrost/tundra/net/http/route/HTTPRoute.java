@@ -35,7 +35,6 @@ import permafrost.tundra.data.IDataMap;
 import permafrost.tundra.io.FileHelper;
 import permafrost.tundra.net.http.HTTPMethod;
 import permafrost.tundra.net.uri.URIHelper;
-
 import java.io.File;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -71,7 +70,8 @@ public class HTTPRoute implements IDataCodable {
     protected NSName service;
 
     /**
-     * The target which is invoked/redirected to when an HTTP request matching the route's method and URI template is received.
+     * The target which is invoked/redirected to when an HTTP request matching the route's method and URI template is
+     * received.
      */
     protected String target;
 
@@ -87,11 +87,12 @@ public class HTTPRoute implements IDataCodable {
 
     /**
      * Constructs a new routing instruction.
-     * @param method        The HTTP method to be routed.
-     * @param uri           The URI to be routed.
-     * @param target        The target to be routed.
-     * @param description   The description of the instruction.
-     * @param source        The source file of the instruction.
+     *
+     * @param method      The HTTP method to be routed.
+     * @param uri         The URI to be routed.
+     * @param target      The target to be routed.
+     * @param description The description of the instruction.
+     * @param source      The source file of the instruction.
      */
     public HTTPRoute(HTTPMethod method, String uri, String target, String description, File source) {
         initialize(method, uri, target, description, source);
@@ -99,11 +100,12 @@ public class HTTPRoute implements IDataCodable {
 
     /**
      * Constructs a new routing instruction.
-     * @param method        The HTTP method to be routed.
-     * @param uri           The URI to be routed.
-     * @param target        The target to be routed.
-     * @param description   The description of the instruction.
-     * @param source        The source file of the instruction.
+     *
+     * @param method      The HTTP method to be routed.
+     * @param uri         The URI to be routed.
+     * @param target      The target to be routed.
+     * @param description The description of the instruction.
+     * @param source      The source file of the instruction.
      */
     public HTTPRoute(String method, String uri, String target, String description, File source) {
         initialize(method, uri, target, description, source);
@@ -111,8 +113,9 @@ public class HTTPRoute implements IDataCodable {
 
     /**
      * Constructs a new routing instruction from the given IData document.
-     * @param document  An IData object representing the routing instruction; must contain
-     *                  the following keys: method, uri, target, description, source.
+     *
+     * @param document An IData object representing the routing instruction; must contain the following keys: method,
+     *                 uri, target, description, source.
      */
     public HTTPRoute(IData document) {
         setIData(document);
@@ -120,6 +123,7 @@ public class HTTPRoute implements IDataCodable {
 
     /**
      * Returns the HTTP request method this routing instruction matches.
+     *
      * @return The HTTP request method this routing instruction matches.
      */
     public HTTPMethod getMethod() {
@@ -128,6 +132,7 @@ public class HTTPRoute implements IDataCodable {
 
     /**
      * Returns the URI template this routing instruction matches.
+     *
      * @return The URI template this routing instruction matches.
      */
     public UriTemplate getURI() {
@@ -136,6 +141,7 @@ public class HTTPRoute implements IDataCodable {
 
     /**
      * Returns the target which is executed for this routing instruction.
+     *
      * @return The target which is executed for this routing instruction.
      */
     public String getTarget() {
@@ -144,6 +150,7 @@ public class HTTPRoute implements IDataCodable {
 
     /**
      * Returns true if the target is a service invocation.
+     *
      * @return True if the target is a service invocation.
      */
     public boolean isInvoke() {
@@ -152,6 +159,7 @@ public class HTTPRoute implements IDataCodable {
 
     /**
      * Returns true if the target is a document.
+     *
      * @return True if the target is a document.
      */
     public boolean isDocument() {
@@ -160,6 +168,7 @@ public class HTTPRoute implements IDataCodable {
 
     /**
      * Returns the service which is invoked for this routing instruction, or null if target is a document.
+     *
      * @return The service which is invoked for this routing instruction, or null if target is a document.
      */
     public NSName getService() {
@@ -168,6 +177,7 @@ public class HTTPRoute implements IDataCodable {
 
     /**
      * Returns the description of this routing instruction.
+     *
      * @return The description of this routing instruction.
      */
     public String getDescription() {
@@ -176,6 +186,7 @@ public class HTTPRoute implements IDataCodable {
 
     /**
      * Returns the source file for this routing instruction.
+     *
      * @return The source file for this routing instruction.
      */
     public File getSource() {
@@ -184,7 +195,8 @@ public class HTTPRoute implements IDataCodable {
 
     /**
      * Returns the Integration Server HTTP dispatcher directive for this routing instruction.
-     * @return    The directive for this routing instruction's URI.
+     *
+     * @return The directive for this routing instruction's URI.
      */
     public String getDirective() {
         return getDirective(uri.toString());
@@ -192,8 +204,9 @@ public class HTTPRoute implements IDataCodable {
 
     /**
      * Returns the Integration Server HTTP dispatcher directive for the given URI string.
+     *
      * @param uri The URI to return the directive for.
-     * @return    The directive for the given URI.
+     * @return The directive for the given URI.
      */
     public static String getDirective(String uri) {
         if (uri == null) return null;
@@ -208,9 +221,10 @@ public class HTTPRoute implements IDataCodable {
 
     /**
      * Returns true if the given HTTP request method and URI match this routing instruction.
+     *
      * @param method The HTTP method to match.
      * @param uri    The URI to match.
-     * @return       True if this routing instruction matches the given method and uri.
+     * @return True if this routing instruction matches the given method and uri.
      */
     public boolean matches(HTTPMethod method, String uri) {
         return this.method != null && this.method == method && this.uri != null && this.uri.matches(uri);
@@ -218,9 +232,10 @@ public class HTTPRoute implements IDataCodable {
 
     /**
      * Returns true if the given HTTP request method and URI match this routing instruction.
+     *
      * @param method The HTTP method to match.
      * @param uri    The URI to match.
-     * @return       True if this routing instruction matches the given method and uri.
+     * @return True if this routing instruction matches the given method and uri.
      */
     public boolean matches(String method, String uri) {
         return matches(HTTPMethod.valueOf(method.toUpperCase()), uri);
@@ -228,9 +243,10 @@ public class HTTPRoute implements IDataCodable {
 
     /**
      * Returns an IData document containing matched URI template parameters extracted from the given URI.
+     *
      * @param method The HTTP method to match.
      * @param uri    The URI to match.
-     * @return       An IData document containing the matched URI template parameters, or null if not matched.
+     * @return An IData document containing the matched URI template parameters, or null if not matched.
      */
     public IData match(HTTPMethod method, String uri) {
         return matches(method, uri) ? normalize(this.uri.match(uri)) : null;
@@ -242,10 +258,11 @@ public class HTTPRoute implements IDataCodable {
     private static final Pattern KEY_EQUALS_VALUE_PATTERN = Pattern.compile("([^=]+?)=(.*)");
 
     /**
-     * Converts a UriTemplate result set to an IData document. Supports converting URI template
-     * variables specified in the form {key=value} to key value tuples in resulting IData.
-     * @param results   The UriTemplate matched result set.
-     * @return          An IData representing the matched results.
+     * Converts a UriTemplate result set to an IData document. Supports converting URI template variables specified in
+     * the form {key=value} to key value tuples in resulting IData.
+     *
+     * @param results The UriTemplate matched result set.
+     * @return An IData representing the matched results.
      */
     private static IData normalize(Map<String, String> results) {
         if (results == null) return null;
@@ -275,9 +292,10 @@ public class HTTPRoute implements IDataCodable {
 
     /**
      * Returns an IData document containing matched URI template parameters extracted from the given URI.
+     *
      * @param method The HTTP method to match.
      * @param uri    The URI to match.
-     * @return       An IData document containing the matched URI template parameters, or null if not matched.
+     * @return An IData document containing the matched URI template parameters, or null if not matched.
      */
     public IData match(String method, String uri) {
         return match(HTTPMethod.normalize(method), uri);
@@ -285,6 +303,7 @@ public class HTTPRoute implements IDataCodable {
 
     /**
      * Returns an IData representation of this routing instruction.
+     *
      * @return An IData representation of this routing instruction.
      */
     public IData getIData() {
@@ -305,8 +324,9 @@ public class HTTPRoute implements IDataCodable {
 
     /**
      * Initializes this HTTP routing instruction.
-     * @param document  An IData object representing the routing instruction; must contain
-     *                  the following keys: method, uri, target, description, source.
+     *
+     * @param document An IData object representing the routing instruction; must contain the following keys: method,
+     *                 uri, target, description, source.
      */
     public void setIData(IData document) {
         if (document == null) return;
@@ -324,11 +344,12 @@ public class HTTPRoute implements IDataCodable {
 
     /**
      * Initializes this HTTP routing instruction.
-     * @param method        The HTTP method for the instruction.
-     * @param uri           The URI for the instruction.
-     * @param target        The target for the instruction.
-     * @param description   The description of the instruction.
-     * @param source        The source file of the instruction.
+     *
+     * @param method      The HTTP method for the instruction.
+     * @param uri         The URI for the instruction.
+     * @param target      The target for the instruction.
+     * @param description The description of the instruction.
+     * @param source      The source file of the instruction.
      */
     protected void initialize(String method, String uri, String target, String description, String source) {
         initialize(method, uri, target, description, FileHelper.construct(source));
@@ -336,11 +357,12 @@ public class HTTPRoute implements IDataCodable {
 
     /**
      * Initializes a new routing instruction.
-     * @param method        The HTTP method to be routed.
-     * @param uri           The URI to be routed.
-     * @param target        The target to be routed.
-     * @param description   The description of the instruction.
-     * @param source        The source file of the instruction.
+     *
+     * @param method      The HTTP method to be routed.
+     * @param uri         The URI to be routed.
+     * @param target      The target to be routed.
+     * @param description The description of the instruction.
+     * @param source      The source file of the instruction.
      */
     protected void initialize(String method, String uri, String target, String description, File source) {
         initialize(HTTPMethod.normalize(method), uri, target, description, source);
@@ -348,11 +370,12 @@ public class HTTPRoute implements IDataCodable {
 
     /**
      * Initializes a new routing instruction.
-     * @param method        The HTTP method for the instruction.
-     * @param uri           The URI for the instruction.
-     * @param target        The target for the instruction.
-     * @param description   The description of the instruction.
-     * @param source        The source file of the instruction.
+     *
+     * @param method      The HTTP method for the instruction.
+     * @param uri         The URI for the instruction.
+     * @param target      The target for the instruction.
+     * @param description The description of the instruction.
+     * @param source      The source file of the instruction.
      */
     protected void initialize(HTTPMethod method, String uri, String target, String description, File source) {
         initialize(method, new UriTemplate(uri), target, description, source);
@@ -360,11 +383,12 @@ public class HTTPRoute implements IDataCodable {
 
     /**
      * Initializes a new routing instruction.
-     * @param method        The HTTP method for the instruction.
-     * @param uri           The URI for the instruction.
-     * @param target        The target for the instruction.
-     * @param description   The description of the instruction.
-     * @param source        The source file of the instruction.
+     *
+     * @param method      The HTTP method for the instruction.
+     * @param uri         The URI for the instruction.
+     * @param target      The target for the instruction.
+     * @param description The description of the instruction.
+     * @param source      The source file of the instruction.
      */
     protected void initialize(HTTPMethod method, UriTemplate uri, String target, String description, File source) {
         this.method = method;
@@ -384,8 +408,9 @@ public class HTTPRoute implements IDataCodable {
 
     /**
      * Compares this object with another object for equality.
+     *
      * @param other The object to compare with.
-     * @return      True if the two objects are equal.
+     * @return True if the two objects are equal.
      */
     public boolean equals(Object other) {
         if (!(other instanceof HTTPRoute)) return false;

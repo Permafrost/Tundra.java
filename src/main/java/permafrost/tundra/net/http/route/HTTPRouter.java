@@ -36,7 +36,6 @@ import com.wm.data.IDataUtil;
 import permafrost.tundra.net.http.HTTPHelper;
 import permafrost.tundra.net.http.HTTPMethod;
 import permafrost.tundra.net.uri.URIQueryHelper;
-
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
@@ -70,6 +69,7 @@ public class HTTPRouter implements HTTPHandler {
 
     /**
      * Returns the singleton instance of this class.
+     *
      * @return The singleton instance of this class.
      */
     public static HTTPRouter getInstance() {
@@ -78,10 +78,11 @@ public class HTTPRouter implements HTTPHandler {
 
     /**
      * Processes an HTTP request.
-     * @param state             The HTTP request to be processed.
-     * @return                  True if this object was able to process the HTTP request, otherwise false.
-     * @throws IOException      If an I/O problem is encountered reading from or writing to the client socket.
-     * @throws AccessException  If the the HTTP request requires authentication or is not authorized.
+     *
+     * @param state The HTTP request to be processed.
+     * @return True if this object was able to process the HTTP request, otherwise false.
+     * @throws IOException     If an I/O problem is encountered reading from or writing to the client socket.
+     * @throws AccessException If the the HTTP request requires authentication or is not authorized.
      */
     public final boolean process(com.wm.app.b2b.server.ProtocolState state) throws IOException, AccessException {
         ContentHandler contentHandler = ServerAPI.getContentHandler(state.getContentType());
@@ -132,8 +133,9 @@ public class HTTPRouter implements HTTPHandler {
     }
 
     /**
-     * Register this object with the Integration Server HTTP request dispatcher for all
-     * the directives in the routing table.
+     * Register this object with the Integration Server HTTP request dispatcher for all the directives in the routing
+     * table.
+     *
      * @param oldDirectives The previously registered directives which must now be unregistered.
      * @param newDirectives The new directives to be registered.
      */
@@ -149,6 +151,7 @@ public class HTTPRouter implements HTTPHandler {
 
     /**
      * Registers this object as a handler for the given directive with the Integration Server HTTP request dispatcher.
+     *
      * @param directive The directive to register this object as a handler for.
      */
     protected void register(String directive) {
@@ -157,6 +160,7 @@ public class HTTPRouter implements HTTPHandler {
 
     /**
      * Registers this object as a handler for the given directives with the Integration Server HTTP request dispatcher.
+     *
      * @param directives The directives to register this object as a handler for.
      */
     protected void register(Collection<String> directives) {
@@ -167,6 +171,7 @@ public class HTTPRouter implements HTTPHandler {
 
     /**
      * Unregisters this object as a handler of the given directive from the Integration Server HTTP request dispatcher.
+     *
      * @param directive The directive to unregister this object as a handler of.
      */
     protected void unregister(String directive) {
@@ -174,7 +179,9 @@ public class HTTPRouter implements HTTPHandler {
     }
 
     /**
-     * Unregisters this object as a handler of the given directives from the Integration Server HTTP request dispatcher.
+     * Unregisters this object as a handler of the given directives from the Integration Server HTTP request
+     * dispatcher.
+     *
      * @param directives The directives to unregister this object as a handler of.
      */
     protected void unregister(Collection<String> directives) {
@@ -194,6 +201,7 @@ public class HTTPRouter implements HTTPHandler {
 
     /**
      * Returns the HTTP route table that this object is handling HTTP requests for.
+     *
      * @return The HTTP route table.
      */
     public HTTPRouteTable getRoutes() {

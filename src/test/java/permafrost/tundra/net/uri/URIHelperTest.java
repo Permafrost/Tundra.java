@@ -24,10 +24,8 @@
 
 package permafrost.tundra.net.uri;
 
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
-import permafrost.tundra.net.uri.URIHelper;
-
-import static org.junit.Assert.*;
 
 public class URIHelperTest {
     @Test

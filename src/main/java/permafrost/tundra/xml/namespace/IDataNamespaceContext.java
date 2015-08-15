@@ -26,14 +26,13 @@ package permafrost.tundra.xml.namespace;
 
 import com.wm.data.IData;
 import permafrost.tundra.data.IDataMap;
-
-import javax.xml.XMLConstants;
-import javax.xml.namespace.NamespaceContext;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import javax.xml.XMLConstants;
+import javax.xml.namespace.NamespaceContext;
 
 /**
  * An XML namespace context that uses an IData document as its source of namespace prefix URI mappings.
@@ -44,7 +43,8 @@ public class IDataNamespaceContext implements NamespaceContext {
 
     /**
      * Constructs a new IDataNamespaceContext using the given IData as the source of namespace prefix URI mappings.
-     * @param document  The IData document used as a source of namespace prefix URI mappings.
+     *
+     * @param document The IData document used as a source of namespace prefix URI mappings.
      */
     public IDataNamespaceContext(IData document) {
         IDataMap map = IDataMap.of(document);
@@ -67,8 +67,9 @@ public class IDataNamespaceContext implements NamespaceContext {
 
     /**
      * Returns the URI associated with the given prefix.
-     * @param prefix    The prefix whose URI is to be returned.
-     * @return          The URI associated with the given prefix.
+     *
+     * @param prefix The prefix whose URI is to be returned.
+     * @return The URI associated with the given prefix.
      */
     @Override
     public String getNamespaceURI(String prefix) {
@@ -88,8 +89,9 @@ public class IDataNamespaceContext implements NamespaceContext {
 
     /**
      * Returns the prefix associated with the given URI.
-     * @param uri   The URI whose prefix is to be returned.
-     * @return      The prefix associated with the given URI.
+     *
+     * @param uri The URI whose prefix is to be returned.
+     * @return The prefix associated with the given URI.
      */
     @Override
     public String getPrefix(String uri) {
@@ -105,8 +107,9 @@ public class IDataNamespaceContext implements NamespaceContext {
 
     /**
      * Returns an iterator which iterates over all the prefixes associated with the given URI.
-     * @param uri   The URI whose prefixes are to be iterated over.
-     * @return      An Iterator which iterates over all the prefixes associated with the given URI.
+     *
+     * @param uri The URI whose prefixes are to be iterated over.
+     * @return An Iterator which iterates over all the prefixes associated with the given URI.
      */
     @Override
     public Iterator getPrefixes(String uri) {

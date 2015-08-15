@@ -32,7 +32,8 @@ import org.xml.sax.SAXException;
 import permafrost.tundra.io.StreamHelper;
 import permafrost.tundra.lang.ExceptionHelper;
 import permafrost.tundra.xml.namespace.IDataNamespaceContext;
-
+import java.io.IOException;
+import java.io.InputStream;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -41,8 +42,6 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * A collection of convenience methods for working with XPath.
@@ -55,10 +54,11 @@ public class XPathHelper {
 
     /**
      * Returns true if the given XPath expression can be found in the given XML content.
-     * @param content           The content to query.
-     * @param expression        The XPath expression to query against the give content.
-     * @param namespaceContext  Any namespace declarations required to query the given content.
-     * @return                  True if the given XPath expression is found in the given XML content.
+     *
+     * @param content          The content to query.
+     * @param expression       The XPath expression to query against the give content.
+     * @param namespaceContext Any namespace declarations required to query the given content.
+     * @return True if the given XPath expression is found in the given XML content.
      * @throws ServiceException If a parsing error occurs.
      */
     public static boolean exists(InputStream content, String expression, IData namespaceContext) throws ServiceException {
@@ -67,10 +67,11 @@ public class XPathHelper {
 
     /**
      * Returns true if the given XPath expression can be found in the given XML content.
-     * @param content           The content to query.
-     * @param expression        The XPath expression to query against the give content.
-     * @param namespaceContext  Any namespace declarations required to query the given content.
-     * @return                  True if the given XPath expression is found in the given XML content.
+     *
+     * @param content          The content to query.
+     * @param expression       The XPath expression to query against the give content.
+     * @param namespaceContext Any namespace declarations required to query the given content.
+     * @return True if the given XPath expression is found in the given XML content.
      * @throws ServiceException If a parsing error occurs.
      */
     public static boolean exists(InputStream content, String expression, NamespaceContext namespaceContext) throws ServiceException {
@@ -87,10 +88,11 @@ public class XPathHelper {
 
     /**
      * Returns true if the given XPath expression can be found in the given XML content.
-     * @param content           The content to query.
-     * @param expression        The XPath expression to query against the give content.
-     * @param namespaceContext  Any namespace declarations required to query the given content.
-     * @return                  True if the given XPath expression is found in the given XML content.
+     *
+     * @param content          The content to query.
+     * @param expression       The XPath expression to query against the give content.
+     * @param namespaceContext Any namespace declarations required to query the given content.
+     * @return True if the given XPath expression is found in the given XML content.
      * @throws ServiceException If a parsing error occurs.
      */
     public static boolean exists(InputSource content, String expression, NamespaceContext namespaceContext) throws ServiceException {
@@ -101,11 +103,11 @@ public class XPathHelper {
             factory.setNamespaceAware(namespaceContext != null);
             DocumentBuilder parser = factory.newDocumentBuilder();
             result = exists(parser.parse(content), expression, namespaceContext);
-        } catch(ParserConfigurationException ex) {
+        } catch (ParserConfigurationException ex) {
             ExceptionHelper.raise(ex);
-        } catch(SAXException ex) {
+        } catch (SAXException ex) {
             ExceptionHelper.raise(ex);
-        } catch(IOException ex) {
+        } catch (IOException ex) {
             ExceptionHelper.raise(ex);
         }
 
@@ -114,10 +116,11 @@ public class XPathHelper {
 
     /**
      * Returns true if the given XPath expression can be found in the given XML content.
-     * @param content           The content to query.
-     * @param expression        The XPath expression to query against the give content.
-     * @param namespaceContext  Any namespace declarations required to query the given content.
-     * @return                  True if the given XPath expression is found in the given XML content.
+     *
+     * @param content          The content to query.
+     * @param expression       The XPath expression to query against the give content.
+     * @param namespaceContext Any namespace declarations required to query the given content.
+     * @return True if the given XPath expression is found in the given XML content.
      * @throws ServiceException If a parsing error occurs.
      */
     public static boolean exists(Document content, String expression, NamespaceContext namespaceContext) throws ServiceException {
@@ -127,7 +130,7 @@ public class XPathHelper {
             XPath evaluator = XPathFactory.newInstance().newXPath();
             if (namespaceContext != null) evaluator.setNamespaceContext(namespaceContext);
             result = (Boolean)evaluator.evaluate(expression, content, XPathConstants.BOOLEAN);
-        } catch(XPathExpressionException ex) {
+        } catch (XPathExpressionException ex) {
             ExceptionHelper.raise(ex);
         }
 

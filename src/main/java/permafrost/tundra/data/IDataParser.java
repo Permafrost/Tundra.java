@@ -35,53 +35,59 @@ import java.nio.charset.Charset;
 public interface IDataParser {
     /**
      * Parses the data in the given input stream, returning an IData representation.
-     * @param inputStream   The input stream to be parsed.
-     * @return              An IData representation of the data in the given input stream.
-     * @throws IOException  If an I/O error occurs.
+     *
+     * @param inputStream The input stream to be parsed.
+     * @return An IData representation of the data in the given input stream.
+     * @throws IOException If an I/O error occurs.
      */
     IData parse(InputStream inputStream) throws IOException;
 
     /**
      * Parses the data in the given input stream, returning an IData representation.
-     * @param inputStream   The input stream to be parsed.
-     * @param charset       The character set to use when decoding the data in the input stream.
-     * @return              An IData representation of the data in the given input stream.
-     * @throws IOException  If an I/O error occurs.
+     *
+     * @param inputStream The input stream to be parsed.
+     * @param charset     The character set to use when decoding the data in the input stream.
+     * @return An IData representation of the data in the given input stream.
+     * @throws IOException If an I/O error occurs.
      */
     IData parse(InputStream inputStream, Charset charset) throws IOException;
 
     /**
      * Parses the data in the given input stream, returning an IData representation.
-     * @param inputStream   The input stream to be parsed.
-     * @param charsetName   The character set to use when decoding the data in the input stream.
-     * @return              An IData representation of the data in the given input stream.
-     * @throws IOException  If an I/O error occurs.
+     *
+     * @param inputStream The input stream to be parsed.
+     * @param charsetName The character set to use when decoding the data in the input stream.
+     * @return An IData representation of the data in the given input stream.
+     * @throws IOException If an I/O error occurs.
      */
     IData parse(InputStream inputStream, String charsetName) throws IOException;
 
     /**
      * Serializes the given IData document.
-     * @param document      The IData document to be serialized.
-     * @return              A serialized representation of the given IData document.
-     * @throws IOException  If an I/O error occurs.
+     *
+     * @param document The IData document to be serialized.
+     * @return A serialized representation of the given IData document.
+     * @throws IOException If an I/O error occurs.
      */
     InputStream emit(IData document) throws IOException;
 
     /**
      * Serializes the given IData document.
-     * @param document      The IData document to be serialized.
-     * @param charset       The character set to use when serializing the IData document.
-     * @return              A serialized representation of the given IData document.
-     * @throws IOException  If an I/O error occurs.
+     *
+     * @param document The IData document to be serialized.
+     * @param charset  The character set to use when serializing the IData document.
+     * @return A serialized representation of the given IData document.
+     * @throws IOException If an I/O error occurs.
      */
     InputStream emit(IData document, Charset charset) throws IOException;
 
     /**
      * Serializes the given IData document.
-     * @param document      The IData document to be serialized.
-     * @param charsetName   The character set to use when serializing the IData document.
-     * @return              A serialized representation of the given IData document.
-     * @throws IOException  If an I/O error occurs.
+     *
+     * @param document    The IData document to be serialized.
+     * @param charsetName The character set to use when serializing the IData document.
+     * @return A serialized representation of the given IData document.
+     * @throws IOException If an I/O error occurs.
      */
     InputStream emit(IData document, String charsetName) throws IOException;
 }

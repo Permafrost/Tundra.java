@@ -26,7 +26,6 @@ package permafrost.tundra.math;
 
 import com.wm.app.b2b.server.ServiceException;
 import permafrost.tundra.lang.ExceptionHelper;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
@@ -46,20 +45,20 @@ public class BigIntegerHelper {
 
     /**
      * Returns a java.math.BigInteger object by parsing the given an integer string.
+     *
      * @param string A string to be parsed.
-     * @return       A java.math.BigInteger representation of the given string.
+     * @return A java.math.BigInteger representation of the given string.
      */
     public static BigInteger parse(String string) {
         return parse(string, DEFAULT_RADIX);
     }
 
     /**
-     * Returns a java.math.BigInteger object by parsing the given an integer string,
-     * using the given radix.
+     * Returns a java.math.BigInteger object by parsing the given an integer string, using the given radix.
      *
      * @param string A string to be parsed.
      * @param radix  The radix to use when interpreting the given string.
-     * @return       A java.math.BigInteger representation of the given string.
+     * @return A java.math.BigInteger representation of the given string.
      */
     public static BigInteger parse(String string, int radix) {
         if (string == null) return null;
@@ -68,8 +67,9 @@ public class BigIntegerHelper {
 
     /**
      * Returns java.math.BigInteger representations of the given String[].
+     *
      * @param strings A list of strings to parse.
-     * @return        A list of java.math.BigDecimal representations of the given strings.
+     * @return A list of java.math.BigDecimal representations of the given strings.
      */
     public static BigInteger[] parse(String[] strings) {
         return parse(strings, DEFAULT_RADIX);
@@ -77,9 +77,10 @@ public class BigIntegerHelper {
 
     /**
      * Returns java.math.BigInteger representations of the given String[].
+     *
      * @param strings A list of strings to parse.
      * @param radix   The radix to use when interpreting the given strings.
-     * @return        A list of java.math.BigDecimal representations of the given strings.
+     * @return A list of java.math.BigDecimal representations of the given strings.
      */
     public static BigInteger[] parse(String[] strings, int radix) {
         if (strings == null) return null;
@@ -95,8 +96,9 @@ public class BigIntegerHelper {
 
     /**
      * Returns a string representation of the given integer.
-     * @param integer        The integer to convert to a string representation.
-     * @return               The string representation of the given integer.
+     *
+     * @param integer The integer to convert to a string representation.
+     * @return The string representation of the given integer.
      */
     public static String emit(BigInteger integer) {
         if (integer == null) return null;
@@ -105,8 +107,9 @@ public class BigIntegerHelper {
 
     /**
      * Returns a string representation of the given list of integers.
-     * @param integers       The list of integers to convert to string representations.
-     * @return               The string representations of the given list of integers.
+     *
+     * @param integers The list of integers to convert to string representations.
+     * @return The string representations of the given list of integers.
      */
     public static String[] emit(BigInteger[] integers) {
         if (integers == null) return null;
@@ -121,23 +124,23 @@ public class BigIntegerHelper {
     }
 
     /**
-     * Returns a BigInteger representation of the given object, if it an
-     * instance of java.lang.Number or a java.lang.String which can be
-     * parsed as an integer.
+     * Returns a BigInteger representation of the given object, if it an instance of java.lang.Number or a
+     * java.lang.String which can be parsed as an integer.
+     *
      * @param object An object to be converted to a BigInteger.
-     * @return       A BigInteger representation of the given object.
+     * @return A BigInteger representation of the given object.
      */
     public static BigInteger normalize(Object object) {
         return normalize(object, DEFAULT_RADIX);
     }
 
     /**
-     * Returns a BigInteger representation of the given object, if it an
-     * instance of java.lang.Number or a java.lang.String which can be
-     * parsed as an integer.
+     * Returns a BigInteger representation of the given object, if it an instance of java.lang.Number or a
+     * java.lang.String which can be parsed as an integer.
+     *
      * @param object An object to be converted to a BigInteger.
      * @param radix  The radix to use when interpreting the given strings.
-     * @return       A BigInteger representation of the given object.
+     * @return A BigInteger representation of the given object.
      */
     public static BigInteger normalize(Object object, int radix) {
         BigInteger integer = null;
@@ -157,8 +160,9 @@ public class BigIntegerHelper {
 
     /**
      * Returns BigInteger representations of the given list of Objects.
+     *
      * @param values The objects to convert to BigInteger representations.
-     * @return       BigInteger representations of the given objects.
+     * @return BigInteger representations of the given objects.
      */
     public static BigInteger[] normalize(Object[] values) {
         return normalize(values, DEFAULT_RADIX);
@@ -166,9 +170,10 @@ public class BigIntegerHelper {
 
     /**
      * Returns BigInteger representations of the given list of Objects.
+     *
      * @param values The objects to convert to BigInteger representations.
      * @param radix  The radix to use when interpreting the given strings.
-     * @return       BigInteger representations of the given objects.
+     * @return BigInteger representations of the given objects.
      */
     public static BigInteger[] normalize(Object[] values, int radix) {
         if (values == null) return null;
@@ -184,8 +189,9 @@ public class BigIntegerHelper {
 
     /**
      * Returns the absolute value of the given integer number.
+     *
      * @param integer An integer number.
-     * @return        The absolute value of the given integer number.
+     * @return The absolute value of the given integer number.
      */
     public static BigInteger absolute(BigInteger integer) {
         if (integer == null) return null;
@@ -194,8 +200,9 @@ public class BigIntegerHelper {
 
     /**
      * Returns the absolute values of the given integer numbers.
+     *
      * @param integers A list of integer numbers.
-     * @return         The absolute values of the given list of integer numbers.
+     * @return The absolute values of the given list of integer numbers.
      */
     public static BigInteger[] absolute(BigInteger[] integers) {
         if (integers == null) return null;
@@ -211,8 +218,9 @@ public class BigIntegerHelper {
 
     /**
      * Returns the negated value of the given integer number.
+     *
      * @param integer A integer number.
-     * @return        The negated value of the given integer number.
+     * @return The negated value of the given integer number.
      */
     public static BigInteger negate(BigInteger integer) {
         if (integer == null) return null;
@@ -221,8 +229,9 @@ public class BigIntegerHelper {
 
     /**
      * Returns the negated values of the given integer numbers.
+     *
      * @param integers A list of integer numbers.
-     * @return         The negated values of the given list of integer numbers.
+     * @return The negated values of the given list of integer numbers.
      */
     public static BigInteger[] negate(BigInteger[] integers) {
         if (integers == null) return null;
@@ -238,10 +247,11 @@ public class BigIntegerHelper {
 
     /**
      * Returns the sum of all the given integers.
+     *
      * @param operands The integer numbers to be summed.
-     * @return         The sum of all the given integer numbers.
+     * @return The sum of all the given integer numbers.
      */
-    public static BigInteger add(BigInteger ...operands) {
+    public static BigInteger add(BigInteger... operands) {
         BigInteger result = null;
 
         if (operands != null) {
@@ -261,8 +271,9 @@ public class BigIntegerHelper {
 
     /**
      * Increments the given integer by one.
+     *
      * @param integer The integer to be incremented.
-     * @return        The given integer incremented by one, or one if input is null.
+     * @return The given integer incremented by one, or one if input is null.
      */
     public static BigInteger increment(BigInteger integer) {
         return add(integer == null ? BigInteger.ZERO : integer, BigInteger.ONE);
@@ -270,8 +281,9 @@ public class BigIntegerHelper {
 
     /**
      * Decrements the given integer by one.
+     *
      * @param integer The integer to be decremented.
-     * @return        The given integer decremented by one, or minus one if input is null.
+     * @return The given integer decremented by one, or minus one if input is null.
      */
     public static BigInteger decrement(BigInteger integer) {
         return subtract(integer == null ? BigInteger.ZERO : integer, BigInteger.ONE);
@@ -279,9 +291,10 @@ public class BigIntegerHelper {
 
     /**
      * Subtracts one integer from another returning the result.
+     *
      * @param minuend    The integer to be subtracted from.
      * @param subtrahend The integer to be subtracted.
-     * @return           The result of subtracting the subtrahend from the minuend.
+     * @return The result of subtracting the subtrahend from the minuend.
      */
     public static BigInteger subtract(BigInteger minuend, BigInteger subtrahend) {
         BigInteger result = null;
@@ -295,10 +308,11 @@ public class BigIntegerHelper {
 
     /**
      * Returns the multiplication of all the given integers.
+     *
      * @param operands The integer numbers to be summed.
-     * @return         The multiplication of all the given integer numbers.
+     * @return The multiplication of all the given integer numbers.
      */
-    public static BigInteger multiply(BigInteger ...operands) {
+    public static BigInteger multiply(BigInteger... operands) {
         BigInteger result = null;
 
         if (operands != null) {
@@ -318,9 +332,10 @@ public class BigIntegerHelper {
 
     /**
      * Divides the given dividend by the divisor.
-     * @param dividend     The integer to be divided.
-     * @param divisor      The integer to divide by.
-     * @return             An array of two integers, the result of the division, and the remainder.
+     *
+     * @param dividend The integer to be divided.
+     * @param divisor  The integer to divide by.
+     * @return An array of two integers, the result of the division, and the remainder.
      */
     public static BigInteger[] divideAndRemainder(BigInteger dividend, BigInteger divisor) {
         BigInteger[] result = null;
@@ -334,9 +349,10 @@ public class BigIntegerHelper {
 
     /**
      * Divides the given dividend by the divisor.
-     * @param dividend     The integer to be divided.
-     * @param divisor      The integer to divide by.
-     * @return             The result of dividing the dividend by the divisor.
+     *
+     * @param dividend The integer to be divided.
+     * @param divisor  The integer to divide by.
+     * @return The result of dividing the dividend by the divisor.
      */
     public static BigInteger divide(BigInteger dividend, BigInteger divisor) {
         BigInteger result = null;
@@ -350,9 +366,10 @@ public class BigIntegerHelper {
 
     /**
      * Returns the remainder from dividing the given dividend by the divisor.
-     * @param dividend     The integer to be divided.
-     * @param divisor      The integer to divide by.
-     * @return             The remainder of dividing the dividend by the divisor.
+     *
+     * @param dividend The integer to be divided.
+     * @param divisor  The integer to divide by.
+     * @return The remainder of dividing the dividend by the divisor.
      */
     public static BigInteger remainder(BigInteger dividend, BigInteger divisor) {
         BigInteger result = null;
@@ -366,9 +383,10 @@ public class BigIntegerHelper {
 
     /**
      * Returns the exponentiation of the given base raised to power of the given exponent.
+     *
      * @param base     The integer base to be raised to the power of the given exponent.
      * @param exponent The exponent to raise the given base to.
-     * @return         The result of raising the given base to the power of the given exponent.
+     * @return The result of raising the given base to the power of the given exponent.
      */
     public static BigInteger power(BigInteger base, BigInteger exponent) {
         if (exponent == null) return base;
@@ -377,9 +395,10 @@ public class BigIntegerHelper {
 
     /**
      * Returns the exponentiation of the given base raised to power of the given exponent.
+     *
      * @param base     The integer base to be raised to the power of the given exponent.
      * @param exponent The exponent to raise the given base to.
-     * @return         The result of raising the given base to the power of the given exponent.
+     * @return The result of raising the given base to the power of the given exponent.
      */
     public static BigInteger power(BigInteger base, int exponent) {
         if (base == null) return null;
@@ -387,12 +406,13 @@ public class BigIntegerHelper {
     }
 
     /**
-     * Returns a BigInteger whose value is shifted by the given distance. The shift distance when
-     * positive performs a left shift and when negative performs a right shift.
-     * @param integer   The integer to be shifted.
-     * @param distance  The distance to shift the integer.
-     * @return          The given integer shifted the given distance, left if distance is positive,
-     *                  and right if distance is negative.
+     * Returns a BigInteger whose value is shifted by the given distance. The shift distance when positive performs a
+     * left shift and when negative performs a right shift.
+     *
+     * @param integer  The integer to be shifted.
+     * @param distance The distance to shift the integer.
+     * @return The given integer shifted the given distance, left if distance is positive, and right if distance is
+     * negative.
      */
     public static BigInteger shift(BigInteger integer, int distance) {
         if (integer == null) return null;
@@ -401,10 +421,11 @@ public class BigIntegerHelper {
 
     /**
      * Returns the largest of the given list of integer numbers.
+     *
      * @param integers A list of integer numbers.
-     * @return         The largest of the given numbers.
+     * @return The largest of the given numbers.
      */
-    public static BigInteger maximum(BigInteger ...integers) {
+    public static BigInteger maximum(BigInteger... integers) {
         BigInteger result = null;
 
         if (integers != null) {
@@ -424,10 +445,11 @@ public class BigIntegerHelper {
 
     /**
      * Returns the smallest of the given list of integer numbers.
+     *
      * @param integers A list of integer numbers.
-     * @return         The smallest of the given numbers.
+     * @return The smallest of the given numbers.
      */
-    public static BigInteger minimum(BigInteger ...integers) {
+    public static BigInteger minimum(BigInteger... integers) {
         BigInteger result = null;
 
         if (integers != null) {
@@ -447,10 +469,11 @@ public class BigIntegerHelper {
 
     /**
      * Returns the average or mean from the given list of integer numbers.
-     * @param integers     A list of integer numbers.
-     * @return             The average or mean value of the given list of values.
+     *
+     * @param integers A list of integer numbers.
+     * @return The average or mean value of the given list of values.
      */
-    public static BigInteger average(BigInteger ...integers) {
+    public static BigInteger average(BigInteger... integers) {
         BigInteger result = null;
 
         if (integers != null) {
@@ -475,9 +498,10 @@ public class BigIntegerHelper {
 
     /**
      * Returns true if the given string can be parsed as a integer number.
+     *
      * @param integer The string to validate.
      * @param raise   True if an exception should be thrown if the string is not a valid integer number.
-     * @return        True if the string can be parsed as a integer number, otherwise false.
+     * @return True if the string can be parsed as a integer number, otherwise false.
      * @throws ServiceException If raise is true and the given string is not a valid integer number.
      */
     public static boolean validate(String integer, boolean raise) throws ServiceException {
@@ -487,7 +511,7 @@ public class BigIntegerHelper {
                 parse(integer);
                 valid = true;
             }
-        } catch(NumberFormatException ex) {
+        } catch (NumberFormatException ex) {
             if (raise) ExceptionHelper.raise(ex);
         }
         return valid;
@@ -495,15 +519,16 @@ public class BigIntegerHelper {
 
     /**
      * Returns true if the given string can be parsed as a integer number.
+     *
      * @param integer The string to validate.
-     * @return        True if the string can be parsed as a integer number, otherwise false.
+     * @return True if the string can be parsed as a integer number, otherwise false.
      */
     public static boolean validate(String integer) {
         boolean result = false;
 
         try {
             result = validate(integer, false);
-        } catch(ServiceException ex) {
+        } catch (ServiceException ex) {
             // suppress the exception
         }
 

@@ -30,7 +30,6 @@ import com.wm.data.IDataFactory;
 import com.wm.data.IDataUtil;
 import permafrost.tundra.lang.ArrayHelper;
 import permafrost.tundra.lang.CharsetHelper;
-
 import java.nio.charset.Charset;
 
 /**
@@ -39,9 +38,10 @@ import java.nio.charset.Charset;
 public class URIQueryHelper {
     /**
      * Parses a query string.
-     * @param input         The query string to be parsed.
-     * @param decode        Whether to URI decode the values in the query string.
-     * @return              An IData representation of the parsed query string.
+     *
+     * @param input  The query string to be parsed.
+     * @param decode Whether to URI decode the values in the query string.
+     * @return An IData representation of the parsed query string.
      */
     public static IData parse(String input, boolean decode) {
         return parse(input, URIHelper.DEFAULT_CHARSET, decode);
@@ -49,10 +49,11 @@ public class URIQueryHelper {
 
     /**
      * Parses a query string.
-     * @param input         The query string to be parsed.
-     * @param charsetName   The character set to use when decoding URI encoded values.
-     * @param decode        Whether to URI decode the values in the query string.
-     * @return              An IData representation of the parsed query string.
+     *
+     * @param input       The query string to be parsed.
+     * @param charsetName The character set to use when decoding URI encoded values.
+     * @param decode      Whether to URI decode the values in the query string.
+     * @return An IData representation of the parsed query string.
      */
     public static IData parse(String input, String charsetName, boolean decode) {
         return parse(input, CharsetHelper.normalize(charsetName, URIHelper.DEFAULT_CHARSET), decode);
@@ -60,10 +61,11 @@ public class URIQueryHelper {
 
     /**
      * Parses a query string.
-     * @param input         The query string to be parsed.
-     * @param charset       The character set to use when decoding URI encoded values.
-     * @param decode        Whether to URI decode the values in the query string.
-     * @return              An IData representation of the parsed query string.
+     *
+     * @param input   The query string to be parsed.
+     * @param charset The character set to use when decoding URI encoded values.
+     * @param decode  Whether to URI decode the values in the query string.
+     * @return An IData representation of the parsed query string.
      */
     public static IData parse(String input, Charset charset, boolean decode) {
         if (input == null) return null;
@@ -92,7 +94,7 @@ public class URIQueryHelper {
                     array[0] = (String)existing;
                     array[1] = value;
                 } else if (existing instanceof String[]) {
-                    array = ArrayHelper.append((String[]) existing, value, String.class);
+                    array = ArrayHelper.append((String[])existing, value, String.class);
                 }
                 IDataUtil.put(cursor, name, array);
             }
@@ -105,11 +107,12 @@ public class URIQueryHelper {
 
     /**
      * Emits a query string given a name and value.
-     * @param name          The query string parameter's name.
-     * @param value         The query string parameter's value.
-     * @param charset       The character set to use when URI encoding the parameter's value.
-     * @param encode        True if the parameter's value should be URI encoded.
-     * @return              A query string containing the specified parameter.
+     *
+     * @param name    The query string parameter's name.
+     * @param value   The query string parameter's value.
+     * @param charset The character set to use when URI encoding the parameter's value.
+     * @param encode  True if the parameter's value should be URI encoded.
+     * @return A query string containing the specified parameter.
      */
     private static String emit(String name, Object value, Charset charset, boolean encode) {
         if (encode) {
@@ -121,15 +124,16 @@ public class URIQueryHelper {
 
     /**
      * Emits a query string given a name and array of values.
-     * @param name          The query string parameter's name.
-     * @param values        A list of values for the query string parameter.
-     * @param charset       The character set to use when URI encoding the parameter's value.
-     * @param encode        True if the parameter's value should be URI encoded.
-     * @return              A query string containing the specified parameter.
+     *
+     * @param name    The query string parameter's name.
+     * @param values  A list of values for the query string parameter.
+     * @param charset The character set to use when URI encoding the parameter's value.
+     * @param encode  True if the parameter's value should be URI encoded.
+     * @return A query string containing the specified parameter.
      */
     private static String emit(String name, Object[] values, Charset charset, boolean encode) {
         StringBuilder output = new StringBuilder();
-        for(Object value : values) {
+        for (Object value : values) {
             if (output.length() > 0) output.append("&");
             output.append(emit(name, value, charset, encode));
         }
@@ -138,9 +142,10 @@ public class URIQueryHelper {
 
     /**
      * Emits a query string given an IData containing name value pairs.
-     * @param input         An IData containing keys and values to serialized as a query string.
-     * @param encode        True if the query string parameters should be URI encoded.
-     * @return              A query string containing the parameters in the given IData.
+     *
+     * @param input  An IData containing keys and values to serialized as a query string.
+     * @param encode True if the query string parameters should be URI encoded.
+     * @return A query string containing the parameters in the given IData.
      */
     public static String emit(IData input, boolean encode) {
         return emit(input, URIHelper.DEFAULT_CHARSET_NAME, encode);
@@ -148,10 +153,11 @@ public class URIQueryHelper {
 
     /**
      * Emits a query string given an IData containing name value pairs.
-     * @param input         An IData containing keys and values to serialized as a query string.
-     * @param charsetName   The character set to use when URI encoding the parameters.
-     * @param encode        True if the query string parameters should be URI encoded.
-     * @return              A query string containing the parameters in the given IData.
+     *
+     * @param input       An IData containing keys and values to serialized as a query string.
+     * @param charsetName The character set to use when URI encoding the parameters.
+     * @param encode      True if the query string parameters should be URI encoded.
+     * @return A query string containing the parameters in the given IData.
      */
     public static String emit(IData input, String charsetName, boolean encode) {
         return emit(input, CharsetHelper.normalize(charsetName, URIHelper.DEFAULT_CHARSET), encode);
@@ -159,10 +165,11 @@ public class URIQueryHelper {
 
     /**
      * Emits a query string given an IData containing name value pairs.
-     * @param input         An IData containing keys and values to serialized as a query string.
-     * @param charset       The character set to use when URI encoding the parameters.
-     * @param encode        True if the query string parameters should be URI encoded.
-     * @return              A query string containing the parameters in the given IData.
+     *
+     * @param input   An IData containing keys and values to serialized as a query string.
+     * @param charset The character set to use when URI encoding the parameters.
+     * @param encode  True if the query string parameters should be URI encoded.
+     * @return A query string containing the parameters in the given IData.
      */
     public static String emit(IData input, Charset charset, boolean encode) {
         if (input == null) return null;
@@ -170,7 +177,7 @@ public class URIQueryHelper {
         StringBuilder output = new StringBuilder();
 
         IDataCursor cursor = input.getCursor();
-        while(cursor.next()) {
+        while (cursor.next()) {
             String key = cursor.getKey();
             Object value = cursor.getValue();
 

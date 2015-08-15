@@ -48,6 +48,7 @@ public class DirectoryFilter implements FilenameFilter {
 
     /**
      * Returns the singleton instance of this class.
+     *
      * @return The singleton instance of this class.
      */
     public static DirectoryFilter getInstance() {
@@ -56,9 +57,10 @@ public class DirectoryFilter implements FilenameFilter {
 
     /**
      * Returns true if the given child is a directory.
+     *
      * @param parent The parent directory being filtered.
      * @param child  The child filename being filtered.
-     * @return       True if the given child is a directory.
+     * @return True if the given child is a directory.
      */
     public boolean accept(File parent, String child) {
         return (new File(parent, child)).isDirectory();

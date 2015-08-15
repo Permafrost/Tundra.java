@@ -34,54 +34,62 @@ import java.util.List;
 public abstract class AbstractDirectoryListing implements DirectoryListing {
     /**
      * Returns all the files and directories in this listing.
+     *
      * @return All the files and directories in this listing.
      */
     abstract public List<File> listAll();
 
     /**
      * Returns all the files and directories in this listing as a String[].
+     *
      * @return All the files and directories in this listing as a String[].
      */
     public String[] listAllAsStringArray() {
-        return(convertListToStringArray(listAll()));
+        return (convertListToStringArray(listAll()));
     }
 
     /**
      * Returns all the directories in this listing.
+     *
      * @return All the directories in this listing.
      */
     abstract public List<File> listDirectories();
 
     /**
      * Returns all the directories in this listing as a String[].
+     *
      * @return All the directories in this listing as a String[].
      */
     public String[] listDirectoriesAsStringArray() {
-        return(convertListToStringArray(listDirectories()));
+        return (convertListToStringArray(listDirectories()));
     }
 
     /**
      * Returns all the files in this listing.
+     *
      * @return All the files in this listing.
      */
     abstract public List<File> listFiles();
 
     /**
      * Returns all the files in this listing as a String[].
+     *
      * @return All the files in this listing as a String[].
      */
     public String[] listFilesAsStringArray() {
-        return(convertListToStringArray(listFiles()));
+        return (convertListToStringArray(listFiles()));
     }
 
     /**
      * Returns the directory which produced this listing.
+     *
      * @return The directory which produced this listing.
      */
     abstract public File getDirectory();
 
     /**
      * Returns the directory which produced this listing as a String.
+     *
      * @return The directory which produced this listing as a String.
      */
     public String getDirectoryAsString() {
@@ -90,8 +98,9 @@ public abstract class AbstractDirectoryListing implements DirectoryListing {
 
     /**
      * Converts a List to a String[].
-     * @param list  The List to be converted.
-     * @return      The String[] representation of the given list.
+     *
+     * @param list The List to be converted.
+     * @return The String[] representation of the given list.
      */
     private String[] convertListToStringArray(List<File> list) {
         if (list == null) return null;

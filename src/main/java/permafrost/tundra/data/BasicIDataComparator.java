@@ -54,6 +54,7 @@ public class BasicIDataComparator implements IDataComparator {
 
     /**
      * Returns the singleton instance of this class.
+     *
      * @return The singleton instance of this class.
      */
     public static BasicIDataComparator getInstance() {
@@ -65,12 +66,9 @@ public class BasicIDataComparator implements IDataComparator {
      *
      * @param document1 The first IData document to be compared.
      * @param document2 The second IData document to be compared.
-     * @return          A value less than zero if the first document
-     *                  comes before the second document, a value of
-     *                  zero if they are equal, or a value of greater
-     *                  than zero if the first document comes after the
-     *                  second document according to the comparison
-     *                  of all the keys and values in each document.
+     * @return A value less than zero if the first document comes before the second document, a value of zero if they
+     * are equal, or a value of greater than zero if the first document comes after the second document according to the
+     * comparison of all the keys and values in each document.
      */
     public int compare(IData document1, IData document2) {
         int result = 0;
@@ -78,7 +76,7 @@ public class BasicIDataComparator implements IDataComparator {
         if (document1 == null || document2 == null) {
             if (document1 != null) {
                 result = 1;
-            } else if (document2 != null){
+            } else if (document2 != null) {
                 result = -1;
             }
         } else {
@@ -119,7 +117,7 @@ public class BasicIDataComparator implements IDataComparator {
                                    (value2 instanceof IData[] || value2 instanceof Table || value2 instanceof IDataCodable[] || value2 instanceof IDataPortable[] || value2 instanceof ValuesCodable[])) {
                             result = BasicIDataArrayComparator.getInstance().compare(IDataHelper.toIDataArray(value1), IDataHelper.toIDataArray(value2));
                         } else if (value1 instanceof Object[] && value2 instanceof Object[]) {
-                            result = BasicArrayComparator.getInstance().compare((Object[]) value1, (Object[]) value2);
+                            result = BasicArrayComparator.getInstance().compare((Object[])value1, (Object[])value2);
                         } else {
                             result = BasicObjectComparator.getInstance().compare(value1, value2);
                         }

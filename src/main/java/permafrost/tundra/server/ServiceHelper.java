@@ -38,14 +38,13 @@ import permafrost.tundra.lang.ExceptionHelper;
 import permafrost.tundra.lang.StringHelper;
 import permafrost.tundra.mime.MIMETypeHelper;
 import permafrost.tundra.net.http.HTTPHelper;
-
-import javax.activation.MimeType;
-import javax.activation.MimeTypeParseException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.Map;
+import javax.activation.MimeType;
+import javax.activation.MimeTypeParseException;
 
 /**
  * A collection of convenience methods for working with webMethods Integration Server services.
@@ -59,14 +58,16 @@ public class ServiceHelper {
     /**
      * Creates a new service in the given package with the given name.
      *
-     * @param packageName       The name of the package to create the service in.
-     * @param serviceName       The fully-qualified name of the service to be created.
-     * @param type              The type of service to be created.
-     * @param subtype           The subtype of service to be created.
+     * @param packageName The name of the package to create the service in.
+     * @param serviceName The fully-qualified name of the service to be created.
+     * @param type        The type of service to be created.
+     * @param subtype     The subtype of service to be created.
      * @throws ServiceException If an error creating the service occurs.
      */
     private static void create(String packageName, String serviceName, String type, String subtype) throws ServiceException {
-        if (!PackageHelper.exists(packageName)) throw new IllegalArgumentException("package does not exist: " + packageName);
+        if (!PackageHelper.exists(packageName)) {
+            throw new IllegalArgumentException("package does not exist: " + packageName);
+        }
         if (NodeHelper.exists(serviceName)) throw new IllegalArgumentException("node already exists: " + serviceName);
 
         NSName service = NSName.create(serviceName);
@@ -85,8 +86,8 @@ public class ServiceHelper {
     /**
      * Creates a new flow service in the given package with the given name.
      *
-     * @param packageName       The name of the package to create the service in.
-     * @param serviceName       The fully-qualified name of the service to be created.
+     * @param packageName The name of the package to create the service in.
+     * @param serviceName The fully-qualified name of the service to be created.
      * @throws ServiceException If an error creating the service occurs.
      */
     public static void create(String packageName, String serviceName) throws ServiceException {
@@ -96,14 +97,13 @@ public class ServiceHelper {
     /**
      * Sets the HTTP response status, headers, and body for the current service invocation.
      *
-     * @param code              The HTTP response status code to be returned.
-     * @param message           The HTTP response status message to be returned; if null, the standard message
-     *                          for the given code will be used.
-     * @param headers           The HTTP headers to be returned; if null, no custom headers will be added to the
-     *                          response.
-     * @param content           The HTTP response body to be returned.
-     * @param contentType       The MIME content type of the response body being returned.
-     * @param charset           The character set used if a text response is being returned.
+     * @param code        The HTTP response status code to be returned.
+     * @param message     The HTTP response status message to be returned; if null, the standard message for the given
+     *                    code will be used.
+     * @param headers     The HTTP headers to be returned; if null, no custom headers will be added to the response.
+     * @param content     The HTTP response body to be returned.
+     * @param contentType The MIME content type of the response body being returned.
+     * @param charset     The character set used if a text response is being returned.
      * @throws ServiceException If an I/O error occurs.
      */
     public static void respond(int code, String message, IData headers, InputStream content, String contentType, Charset charset) throws ServiceException {
@@ -127,8 +127,8 @@ public class ServiceHelper {
     /**
      * Sets the response body in the given HTTP response.
      *
-     * @param response          The HTTP response to set the response body in.
-     * @param content           The content to set the response body to.
+     * @param response The HTTP response to set the response body in.
+     * @param content  The content to set the response body to.
      * @throws ServiceException If an I/O error occurs.
      */
     private static void setResponseBody(HttpHeader response, InputStream content) throws ServiceException {
@@ -145,9 +145,9 @@ public class ServiceHelper {
     /**
      * Sets the response status code and message in the given HTTP response.
      *
-     * @param response  The HTTP response to set the response status in.
-     * @param code      The response status code.
-     * @param message   The response status message.
+     * @param response The HTTP response to set the response status in.
+     * @param code     The response status code.
+     * @param message  The response status message.
      */
     private static void setResponseStatus(HttpHeader response, int code, String message) {
         if (response != null) {
@@ -159,9 +159,9 @@ public class ServiceHelper {
     /**
      * Sets the Content-Type header in the given HTTP response.
      *
-     * @param response          The HTTP response to set the header in.
-     * @param contentType       The MIME content type.
-     * @param charset           The character set used by the content, or null if not applicable.
+     * @param response    The HTTP response to set the header in.
+     * @param contentType The MIME content type.
+     * @param charset     The character set used by the content, or null if not applicable.
      * @throws ServiceException If the MIME content type is malformed.
      */
     private static void setContentType(HttpHeader response, String contentType, Charset charset) throws ServiceException {
@@ -178,11 +178,11 @@ public class ServiceHelper {
     }
 
     /**
-     * Sets all HTTP header with the given keys to their associated values from the given IData document
-     * in the given HTTP response.
+     * Sets all HTTP header with the given keys to their associated values from the given IData document in the given
+     * HTTP response.
      *
-     * @param response  The HTTP response to add the header to.
-     * @param headers   An IData document containing key value pairs to be set as headers in the given response.
+     * @param response The HTTP response to add the header to.
+     * @param headers  An IData document containing key value pairs to be set as headers in the given response.
      */
     private static void setHeaders(HttpHeader response, IData headers) {
         IDataMap map = new IDataMap(headers);
@@ -195,9 +195,9 @@ public class ServiceHelper {
     /**
      * Sets the HTTP header with the given key to the given value in the given HTTP response.
      *
-     * @param response  The HTTP response to add the header to.
-     * @param key       The header's key.
-     * @param value     The header's value.
+     * @param response The HTTP response to add the header to.
+     * @param key      The header's key.
+     * @param value    The header's value.
      */
     private static void setHeader(HttpHeader response, String key, Object value) {
         if (response != null && key != null) {

@@ -30,6 +30,7 @@ import java.util.NoSuchElementException;
 
 /**
  * This class adapts an Enumeration object to an Iterator object.
+ *
  * @param <T> The type of element iterated over.
  */
 public class EnumerationIterator<T> implements Iterator<T> {
@@ -40,6 +41,7 @@ public class EnumerationIterator<T> implements Iterator<T> {
 
     /**
      * Constructs a new EnumerationIterator object.
+     *
      * @param enumeration The enumeration to iterate over.
      * @throws NullPointerException If the enumeration is null.
      */
@@ -49,8 +51,9 @@ public class EnumerationIterator<T> implements Iterator<T> {
     }
 
     /**
-     * Returns true if the iteration has more elements. (In other words, returns true if next() would return
-     * an element rather than throwing an exception.)
+     * Returns true if the iteration has more elements. (In other words, returns true if next() would return an element
+     * rather than throwing an exception.)
+     *
      * @return True if the iteration has more elements.
      */
     public boolean hasNext() {
@@ -59,6 +62,7 @@ public class EnumerationIterator<T> implements Iterator<T> {
 
     /**
      * Returns the next element in the iteration.
+     *
      * @return The next element in the iteration.
      * @throws NoSuchElementException If no more elements exist.
      */
@@ -67,10 +71,10 @@ public class EnumerationIterator<T> implements Iterator<T> {
     }
 
     /**
-     * Removes from the underlying collection the last element returned by this iterator (optional operation).
-     * This method can be called only once per call to next(). The behavior of an iterator is unspecified if
-     * the underlying collection is modified while the iteration is in progress in any way other than by
-     * calling this method.
+     * Removes from the underlying collection the last element returned by this iterator (optional operation). This
+     * method can be called only once per call to next(). The behavior of an iterator is unspecified if the underlying
+     * collection is modified while the iteration is in progress in any way other than by calling this method.
+     *
      * @throws UnsupportedOperationException This method is not implemented by this class.
      */
     public void remove() {

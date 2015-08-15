@@ -24,10 +24,10 @@
 
 package permafrost.tundra.flow;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import permafrost.tundra.data.IDataMap;
-
-import static org.junit.Assert.*;
 
 public class ConditionEvaluatorTest {
 

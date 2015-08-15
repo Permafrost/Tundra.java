@@ -26,8 +26,11 @@ package permafrost.tundra.net.http.route;
 
 import com.wm.data.IData;
 import permafrost.tundra.net.http.HTTPMethod;
-
-import java.util.*;
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A list of HTTP routes.
@@ -42,6 +45,7 @@ public class HTTPRouteList extends ArrayList<HTTPRoute> {
 
     /**
      * Constructs a new HTTP route list with the given intial capacity.
+     *
      * @param intialCapacity The initial capacity (number of items) in the underlying array.
      */
     public HTTPRouteList(int intialCapacity) {
@@ -50,6 +54,7 @@ public class HTTPRouteList extends ArrayList<HTTPRoute> {
 
     /**
      * Constructs a new HTTP route list seeded with the given collection of routes.
+     *
      * @param collection The collection to seed the list with.
      */
     public HTTPRouteList(Collection<? extends HTTPRoute> collection) {
@@ -57,12 +62,13 @@ public class HTTPRouteList extends ArrayList<HTTPRoute> {
     }
 
     /**
-     * Add the given route to the given list, returning the list. If the given list is null,
-     * a new list is constructed containing the given route and returned.
+     * Add the given route to the given list, returning the list. If the given list is null, a new list is constructed
+     * containing the given route and returned.
+     *
      * @param list  The list to add the route to.
      * @param route The route to be added.
-     * @return      The list after the route was added. If the given list was null, a new
-     *              list containing the route will be returned.
+     * @return The list after the route was added. If the given list was null, a new list containing the route will be
+     * returned.
      */
     public static HTTPRouteList add(HTTPRouteList list, HTTPRoute route) {
         if (list == null) list = new HTTPRouteList();
@@ -72,6 +78,7 @@ public class HTTPRouteList extends ArrayList<HTTPRoute> {
 
     /**
      * Returns an IData[] representation of the route list.
+     *
      * @return An IData[] representation of the route list.
      */
     public IData[] toIDataArray() {
@@ -84,9 +91,10 @@ public class HTTPRouteList extends ArrayList<HTTPRoute> {
 
     /**
      * Returns the route that matches the given HTTP request method and URI, or null if no route in the list matches.
+     *
      * @param method The HTTP method to match against.
      * @param uri    The URI to match against.
-     * @return       The route that matched the given method and uri, or null if no route in the list matches.
+     * @return The route that matched the given method and uri, or null if no route in the list matches.
      */
     public Map.Entry<HTTPRoute, IData> match(HTTPMethod method, String uri) {
         for (HTTPRoute route : this) {
@@ -100,9 +108,10 @@ public class HTTPRouteList extends ArrayList<HTTPRoute> {
 
     /**
      * Returns the route that matches the given HTTP request method and URI, or null if no route in the list matches.
+     *
      * @param method The HTTP method to match against.
      * @param uri    The URI to match against.
-     * @return       The route that matched the given method and uri, or null if no route in the list matches.
+     * @return The route that matched the given method and uri, or null if no route in the list matches.
      */
     public Map.Entry<HTTPRoute, IData> match(String method, String uri) {
         return match(HTTPMethod.normalize(method), uri);

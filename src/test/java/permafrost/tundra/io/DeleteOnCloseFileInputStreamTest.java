@@ -24,12 +24,11 @@
 
 package permafrost.tundra.io;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import permafrost.tundra.lang.StringHelper;
-
 import java.io.File;
-
-import static org.junit.Assert.*;
 
 public class DeleteOnCloseFileInputStreamTest {
 

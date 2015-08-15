@@ -25,7 +25,6 @@
 package permafrost.tundra.lang;
 
 import permafrost.tundra.io.StreamHelper;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -50,9 +49,9 @@ public class CharsetHelper {
 
     /**
      * Normalizes the given charset name as a Charset object.
+     *
      * @param charsetName The character set name to normalize.
-     * @return            The Charset representing the given name,
-     *                    or a default Charset if the given name is null.
+     * @return The Charset representing the given name, or a default Charset if the given name is null.
      */
     public static Charset normalize(String charsetName) {
         return normalize(charsetName, DEFAULT_CHARSET);
@@ -60,11 +59,10 @@ public class CharsetHelper {
 
     /**
      * Normalizes the given charset name as a Charset object.
+     *
      * @param charsetName    The character set name to normalize.
-     * @param defaultCharset The default character set to return
-     *                       if the given name is null.
-     * @return               The Charset representing the given name,
-     *                       or a default Charset if the given name is null.
+     * @param defaultCharset The default character set to return if the given name is null.
+     * @return The Charset representing the given name, or a default Charset if the given name is null.
      */
     public static Charset normalize(String charsetName, Charset defaultCharset) {
         Charset charset;
@@ -78,8 +76,9 @@ public class CharsetHelper {
 
     /**
      * Normalizes the given Charset object.
-     * @param charset     The character set to normalize.
-     * @return            The normalized character set.
+     *
+     * @param charset The character set to normalize.
+     * @return The normalized character set.
      */
     public static Charset normalize(Charset charset) {
         return normalize(charset, DEFAULT_CHARSET);
@@ -87,10 +86,10 @@ public class CharsetHelper {
 
     /**
      * Normalizes the given Charset object.
+     *
      * @param charset        The character set to normalize.
-     * @param defaultCharset The default character set to return
-     *                       if the given charset is null.
-     * @return               The normalized character set.
+     * @param defaultCharset The default character set to return if the given charset is null.
+     * @return The normalized character set.
      */
     public static Charset normalize(Charset charset, Charset defaultCharset) {
         if (charset == null) charset = defaultCharset;
@@ -98,13 +97,13 @@ public class CharsetHelper {
     }
 
     /**
-     * Returns a new byte[] by converting the given byte[] from the input charset to
-     * the output charset, unless the two charsets are equal in which case the given
-     * byte[] is returned as is.
-     * @param content           The text content to be converted to another charset.
-     * @param inCharset         The charset the text content is currently encoded with.
-     * @param outCharset        The charset the returned converted text content will be encoded with.
-     * @return                  The given text content converted from one charset to another.
+     * Returns a new byte[] by converting the given byte[] from the input charset to the output charset, unless the two
+     * charsets are equal in which case the given byte[] is returned as is.
+     *
+     * @param content    The text content to be converted to another charset.
+     * @param inCharset  The charset the text content is currently encoded with.
+     * @param outCharset The charset the returned converted text content will be encoded with.
+     * @return The given text content converted from one charset to another.
      */
     public static byte[] convert(byte[] content, Charset inCharset, Charset outCharset) {
         if (inCharset.equals(outCharset)) return content;
@@ -112,41 +111,41 @@ public class CharsetHelper {
     }
 
     /**
-     * Returns a new byte[] by converting the given byte[] from the input charset to
-     * the output charset, unless the two charsets are equal in which case the given
-     * byte[] is returned as is.
-     * @param content           The text content to be converted to another charset.
-     * @param inCharsetName     The charset the text content is currently encoded with.
-     * @param outCharsetName    The charset the returned converted text content will be encoded with.
-     * @return                  The given text content converted from one charset to another.
+     * Returns a new byte[] by converting the given byte[] from the input charset to the output charset, unless the two
+     * charsets are equal in which case the given byte[] is returned as is.
+     *
+     * @param content        The text content to be converted to another charset.
+     * @param inCharsetName  The charset the text content is currently encoded with.
+     * @param outCharsetName The charset the returned converted text content will be encoded with.
+     * @return The given text content converted from one charset to another.
      */
     public static byte[] convert(byte[] content, String inCharsetName, String outCharsetName) {
         return convert(content, normalize(inCharsetName), normalize(outCharsetName));
     }
 
     /**
-     * Returns a new InputStream by converting the given InputStream from the input charset to
-     * the output charset, unless the two charsets are equal in which case the given
-     * InputStream is returned as is.
-     * @param content           The text content to be converted to another charset.
-     * @param inCharset         The charset the text content is currently encoded with.
-     * @param outCharset        The charset the returned converted text content will be encoded with.
-     * @return                  The given text content converted from one charset to another.
-     * @throws IOException      If an I/O error occurs.
+     * Returns a new InputStream by converting the given InputStream from the input charset to the output charset,
+     * unless the two charsets are equal in which case the given InputStream is returned as is.
+     *
+     * @param content    The text content to be converted to another charset.
+     * @param inCharset  The charset the text content is currently encoded with.
+     * @param outCharset The charset the returned converted text content will be encoded with.
+     * @return The given text content converted from one charset to another.
+     * @throws IOException If an I/O error occurs.
      */
     public static InputStream convert(InputStream content, Charset inCharset, Charset outCharset) throws IOException {
         return StreamHelper.normalize(convert(BytesHelper.normalize(content), inCharset, outCharset));
     }
 
     /**
-     * Returns a new InputStream by converting the given InputStream from the input charset to
-     * the output charset, unless the two charsets are equal in which case the given
-     * InputStream is returned as is.
-     * @param content           The text content to be converted to another charset.
-     * @param inCharsetName     The charset the text content is currently encoded with.
-     * @param outCharsetName    The charset the returned converted text content will be encoded with.
-     * @return                  The given text content converted from one charset to another.
-     * @throws IOException      If an I/O error occurs.
+     * Returns a new InputStream by converting the given InputStream from the input charset to the output charset,
+     * unless the two charsets are equal in which case the given InputStream is returned as is.
+     *
+     * @param content        The text content to be converted to another charset.
+     * @param inCharsetName  The charset the text content is currently encoded with.
+     * @param outCharsetName The charset the returned converted text content will be encoded with.
+     * @return The given text content converted from one charset to another.
+     * @throws IOException If an I/O error occurs.
      */
     public static InputStream convert(InputStream content, String inCharsetName, String outCharsetName) throws IOException {
         return convert(content, normalize(inCharsetName), normalize(outCharsetName));

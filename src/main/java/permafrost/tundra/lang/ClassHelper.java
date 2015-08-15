@@ -32,8 +32,9 @@ public class ClassHelper {
 
     /**
      * Returns an array of Class objects associated with the class or interface with the given names.
+     *
      * @param classNames A list of class or interface names.
-     * @return           A list of Class objects associated with the given names.
+     * @return A list of Class objects associated with the given names.
      * @throws ClassNotFoundException If a class with the given name cannot be found.
      */
     public static Class[] forName(String[] classNames) throws ClassNotFoundException {

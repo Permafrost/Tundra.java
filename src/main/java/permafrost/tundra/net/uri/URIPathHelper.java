@@ -24,8 +24,8 @@
 
 package permafrost.tundra.net.uri;
 
-import permafrost.tundra.lang.ArrayHelper;
 import permafrost.tundra.flow.VariableSubstitutor;
+import permafrost.tundra.lang.ArrayHelper;
 
 /**
  * A collection of convenience methods for working with URI paths.
@@ -40,8 +40,9 @@ public class URIPathHelper {
 
     /**
      * Parses a URI path string, with support for variable substitution strings.
+     *
      * @param input The URI path string to be parsed.
-     * @return      A list of the individual path components.
+     * @return A list of the individual path components.
      */
     public static String[] parse(String input) {
         if (input == null || input.equals("") || input.equals("/")) return null;
@@ -52,7 +53,7 @@ public class URIPathHelper {
         java.util.regex.Matcher substitutionMatcher = VariableSubstitutor.matcher(input);
 
         int index = 0;
-        while(substitutionMatcher.find()) {
+        while (substitutionMatcher.find()) {
             int start = substitutionMatcher.start();
             int end = substitutionMatcher.end();
 
@@ -68,6 +69,7 @@ public class URIPathHelper {
 
     /**
      * Appends the given item to the given list.
+     *
      * @param item The item to be appended.
      * @param list The list to append the item to.
      */
@@ -82,6 +84,7 @@ public class URIPathHelper {
 
     /**
      * Splits the given path string into it component parts in the given list.
+     *
      * @param input The path string to split.
      * @param list  The list to append path components to.
      */
@@ -89,7 +92,7 @@ public class URIPathHelper {
         java.util.regex.Matcher matcher = PATH_PATTERN.matcher(input);
 
         int index = 0;
-        while(matcher.find()) {
+        while (matcher.find()) {
             int start = matcher.start();
             int end = matcher.end();
 

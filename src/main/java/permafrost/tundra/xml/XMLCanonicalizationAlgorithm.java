@@ -58,8 +58,9 @@ public enum XMLCanonicalizationAlgorithm {
 
     /**
      * Constructs a new XML canonicalization algorithm.
-     * @param name  The human-readable name of the XML canonicalization algorithm.
-     * @param id    The ID of the XML canonicalization algorithm.
+     *
+     * @param name The human-readable name of the XML canonicalization algorithm.
+     * @param id   The ID of the XML canonicalization algorithm.
      */
     XMLCanonicalizationAlgorithm(String name, String id) {
         this.name = name;
@@ -68,8 +69,9 @@ public enum XMLCanonicalizationAlgorithm {
 
     /**
      * Returns an XML canonicalization algorithm associated with the given name.
+     *
      * @param name The value to be converted to an HTTPMethod.
-     * @return      The HTTPMethod representing the given value.
+     * @return The HTTPMethod representing the given value.
      */
     public static XMLCanonicalizationAlgorithm normalize(String name) {
         XMLCanonicalizationAlgorithm algorithm = null;
@@ -85,8 +87,9 @@ public enum XMLCanonicalizationAlgorithm {
 
     /**
      * Normalizes the given XMLCanonicalizationAlgorithm.
+     *
      * @param algorithm The XMLCanonicalizationAlgorithm to be normalized.
-     * @return          The default XMLCanonicalizationAlgorithm if algorithm is null, otherwise algorithm.
+     * @return The default XMLCanonicalizationAlgorithm if algorithm is null, otherwise algorithm.
      */
     public static XMLCanonicalizationAlgorithm normalize(XMLCanonicalizationAlgorithm algorithm) {
         return algorithm == null ? DEFAULT_ALGORITHM : algorithm;
@@ -94,6 +97,7 @@ public enum XMLCanonicalizationAlgorithm {
 
     /**
      * Returns the XML canonicalization ID of this algorithm.
+     *
      * @return The XML canonicalization ID of this algorithm.
      */
     public String getID() {

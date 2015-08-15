@@ -45,8 +45,9 @@ public enum MessageDigestAlgorithm {
 
     /**
      * Returns the MessageDigestAlgorithm for the given algorithm name.
+     *
      * @param name The name of the algorithm to return.
-     * @return     The MessageDigestAlgorithm for the given algorithm name.
+     * @return The MessageDigestAlgorithm for the given algorithm name.
      */
     public static MessageDigestAlgorithm normalize(String name) {
         MessageDigestAlgorithm algorithm = null;
@@ -58,9 +59,9 @@ public enum MessageDigestAlgorithm {
 
     /**
      * Returns a normalized MessageDigestAlgorithm.
+     *
      * @param algorithm The algorithm to normalize.
-     * @return          If the given algorithm is null then SHA_256 is returned,
-     *                  otherwise the given algorithm is returned.
+     * @return If the given algorithm is null then SHA_256 is returned, otherwise the given algorithm is returned.
      */
     public static MessageDigestAlgorithm normalize(MessageDigestAlgorithm algorithm) {
         return algorithm == null ? getDefault() : algorithm;
@@ -68,6 +69,7 @@ public enum MessageDigestAlgorithm {
 
     /**
      * Returns the MessageDigestAlgorithm's algorithm name.
+     *
      * @return The MessageDigestAlgorithm's algorithm name.
      */
     @Override
@@ -77,6 +79,7 @@ public enum MessageDigestAlgorithm {
 
     /**
      * Returns the default MessageDigestAlgorithm.
+     *
      * @return The default MessageDigestAlgorithm.
      */
     public static MessageDigestAlgorithm getDefault() {

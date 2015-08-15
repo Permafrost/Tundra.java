@@ -27,11 +27,10 @@ package permafrost.tundra.mime;
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataUtil;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import permafrost.tundra.data.IDataMap;
 import permafrost.tundra.lang.BaseException;
-
-import static org.junit.Assert.*;
 
 public class MIMETypeHelperTest {
 

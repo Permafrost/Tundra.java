@@ -48,6 +48,7 @@ public class PackageNameComparator implements Comparator<NSPackage> {
 
     /**
      * Returns the singleton instance of this class.
+     *
      * @return The singleton instance of this class.
      */
     public static PackageNameComparator getInstance() {
@@ -57,11 +58,10 @@ public class PackageNameComparator implements Comparator<NSPackage> {
     /**
      * Compares two Package objects using the package name.
      *
-     * @param package1  The first package to be compared.
-     * @param package2  The second package to be compared.
-     * @return          0 if the two package names are equal,
-     *                  -1 if the first package is ordered by name before the second package,
-     *                  +1 if the first package is ordered by name after the second package.
+     * @param package1 The first package to be compared.
+     * @param package2 The second package to be compared.
+     * @return 0 if the two package names are equal, -1 if the first package is ordered by name before the second
+     * package, +1 if the first package is ordered by name after the second package.
      */
     public int compare(NSPackage package1, NSPackage package2) {
         int result = 0;

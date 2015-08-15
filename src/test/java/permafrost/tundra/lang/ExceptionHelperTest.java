@@ -24,12 +24,10 @@
 
 package permafrost.tundra.lang;
 
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.Assert.*;
 
 public class ExceptionHelperTest {
     @Test(expected = BaseException.class)
@@ -71,7 +69,7 @@ public class ExceptionHelperTest {
 
     @Test
     public void testGetMessageWithNull() throws Exception {
-        assertEquals("Message should be an empty string", "", ExceptionHelper.getMessage((Throwable) null));
+        assertEquals("Message should be an empty string", "", ExceptionHelper.getMessage((Throwable)null));
     }
 
     @Test

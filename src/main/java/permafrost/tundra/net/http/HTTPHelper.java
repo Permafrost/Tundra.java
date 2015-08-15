@@ -105,9 +105,9 @@ public class HTTPHelper {
 
     /**
      * Returns the standard message associated with the given HTTP response status code.
+     *
      * @param code An HTTP response status code.
-     * @return     The standard message associated with the given code, or "Unassigned" if
-     *             given code is not standard.
+     * @return The standard message associated with the given code, or "Unassigned" if given code is not standard.
      */
     public static String getResponseStatusMessage(int code) {
         String message = RESPONSE_STATUSES.get(code);

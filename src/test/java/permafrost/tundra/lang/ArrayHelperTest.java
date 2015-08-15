@@ -24,16 +24,15 @@
 
 package permafrost.tundra.lang;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
-import permafrost.tundra.lang.ArrayHelper;
-
-import static org.junit.Assert.*;
 
 public class ArrayHelperTest {
     @Test
     public void testFillWithIndexAndLengthInRange() throws Exception {
         String item = "test";
-        String[] expected = {null, null, null, null, null, item, item, null, null, null};
+        String[] expected = { null, null, null, null, null, item, item, null, null, null };
         String[] actual = new String[10];
 
         assertArrayEquals(expected, ArrayHelper.fill(actual, item, 5, 2));
@@ -42,7 +41,7 @@ public class ArrayHelperTest {
     @Test
     public void testFillWithLengthOutOfRange() throws Exception {
         String item = "test";
-        String[] expected = {null, null, null, null, null, item, item, item, item, item};
+        String[] expected = { null, null, null, null, null, item, item, item, item, item };
         String[] actual = new String[10];
 
         assertArrayEquals(expected, ArrayHelper.fill(actual, item, 5, 100));
@@ -51,7 +50,7 @@ public class ArrayHelperTest {
     @Test
     public void testFillWithIndexOutOfRange() throws Exception {
         String item = "test";
-        String[] expected = {null, null, null, null, null, null, null, null, null, null};
+        String[] expected = { null, null, null, null, null, null, null, null, null, null };
         String[] actual = new String[10];
 
         assertArrayEquals(expected, ArrayHelper.fill(actual, item, 100, 100));
@@ -60,7 +59,7 @@ public class ArrayHelperTest {
     @Test
     public void testFillWithNegativeIndex() throws Exception {
         String item = "test";
-        String[] expected = {null, null, null, null, null, null, null, item, item, null};
+        String[] expected = { null, null, null, null, null, null, null, item, item, null };
         String[] actual = new String[10];
 
         assertArrayEquals(expected, ArrayHelper.fill(actual, item, -3, 2));
@@ -69,7 +68,7 @@ public class ArrayHelperTest {
     @Test
     public void testFillWithNegativeLength() throws Exception {
         String item = "test";
-        String[] expected = {null, null, null, null, null, null, null, null, null, null};
+        String[] expected = { null, null, null, null, null, null, null, null, null, null };
         String[] actual = new String[10];
 
         assertArrayEquals(expected, ArrayHelper.fill(actual, item, 5, -2));
@@ -78,7 +77,7 @@ public class ArrayHelperTest {
     @Test
     public void testFillWithZeroLength() throws Exception {
         String item = "test";
-        String[] expected = {null, null, null, null, null, null, null, null, null, null};
+        String[] expected = { null, null, null, null, null, null, null, null, null, null };
         String[] actual = new String[10];
 
         assertArrayEquals(expected, ArrayHelper.fill(actual, item, 5, 0));
@@ -95,7 +94,7 @@ public class ArrayHelperTest {
         array[0] = new Integer(1);
         array[1] = new Integer(2);
 
-        assertArrayEquals(new String[]{"1", "2"}, ArrayHelper.toStringArray(array));
+        assertArrayEquals(new String[] { "1", "2" }, ArrayHelper.toStringArray(array));
     }
 
     @Test
@@ -115,7 +114,7 @@ public class ArrayHelperTest {
         table[1][0] = new Integer("3");
         table[1][1] = new Integer("4");
 
-        assertArrayEquals(new String[][]{{"1", "2"},{"3", "4"}}, ArrayHelper.toStringTable(table));
+        assertArrayEquals(new String[][] { { "1", "2" }, { "3", "4" } }, ArrayHelper.toStringTable(table));
     }
 
     @Test
@@ -149,16 +148,16 @@ public class ArrayHelperTest {
 
     @Test
     public void testEqualReturnsTrue() throws Exception {
-        String[] array1 = {"a","b","c"};
-        String[] array2 = {"a","b","c"};
+        String[] array1 = { "a", "b", "c" };
+        String[] array2 = { "a", "b", "c" };
 
         assertEquals(true, ArrayHelper.equal(array1, array2));
     }
 
     @Test
     public void testEqualReturnsFalse() throws Exception {
-        String[] array1 = {"a","b","c"};
-        String[] array2 = {"a","b","d"};
+        String[] array1 = { "a", "b", "c" };
+        String[] array2 = { "a", "b", "d" };
 
         assertEquals(false, ArrayHelper.equal(array1, array2));
     }

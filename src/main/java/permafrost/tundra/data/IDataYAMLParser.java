@@ -36,7 +36,6 @@ import org.yaml.snakeyaml.representer.Represent;
 import permafrost.tundra.io.StreamHelper;
 import permafrost.tundra.lang.BytesHelper;
 import permafrost.tundra.lang.StringHelper;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -66,6 +65,7 @@ public class IDataYAMLParser extends IDataTextParser {
 
     /**
      * Returns the singleton instance of this class.
+     *
      * @return The singleton instance of this class.
      */
     public static IDataYAMLParser getInstance() {
@@ -75,10 +75,10 @@ public class IDataYAMLParser extends IDataTextParser {
     /**
      * Serializes the given IData document as YAML to the given output stream.
      *
-     * @param outputStream  The stream to write the encoded IData to.
-     * @param document      The IData document to be encoded.
-     * @param charset       The character set to use.
-     * @throws IOException  If there is a problem writing to the stream.
+     * @param outputStream The stream to write the encoded IData to.
+     * @param document     The IData document to be encoded.
+     * @param charset      The character set to use.
+     * @throws IOException If there is a problem writing to the stream.
      */
     public void encode(OutputStream outputStream, IData document, Charset charset) throws IOException {
         StreamHelper.copy(StreamHelper.normalize(encodeToString(document), charset), outputStream);
@@ -87,10 +87,10 @@ public class IDataYAMLParser extends IDataTextParser {
     /**
      * Returns an IData representation of the YAML data read from the given input stream.
      *
-     * @param inputStream                       The input stream to be decoded.
-     * @param charset                           The character set to use.
-     * @return                                  An IData representation of the given input stream data.
-     * @throws IOException                      If there is a problem reading from the stream.
+     * @param inputStream The input stream to be decoded.
+     * @param charset     The character set to use.
+     * @return An IData representation of the given input stream data.
+     * @throws IOException If there is a problem reading from the stream.
      */
     public IData decode(InputStream inputStream, Charset charset) throws IOException {
         return decodeFromString(StringHelper.normalize(inputStream, charset));
@@ -108,9 +108,9 @@ public class IDataYAMLParser extends IDataTextParser {
     /**
      * Returns an IData representation of the YAML data.
      *
-     * @param string        The String to be decoded.
-     * @return              An IData representation of the given data.
-     * @throws IOException  If an I/O problem occurs.
+     * @param string The String to be decoded.
+     * @return An IData representation of the given data.
+     * @throws IOException If an I/O problem occurs.
      */
     @Override
     public IData decodeFromString(String string) throws IOException {
@@ -136,7 +136,7 @@ public class IDataYAMLParser extends IDataTextParser {
      * Returns a YAML representation of the given IData object.
      *
      * @param input The IData to convert to YAML.
-     * @return      The YAML representation of the IData.
+     * @return The YAML representation of the IData.
      */
     @Override
     public String encodeToString(IData input) throws IOException {
@@ -160,8 +160,7 @@ public class IDataYAMLParser extends IDataTextParser {
     }
 
     /**
-     * Tundra implementation of YAML Representer which supports InputStreams and
-     * Objects with no public members.
+     * Tundra implementation of YAML Representer which supports InputStreams and Objects with no public members.
      */
     protected class Representer extends org.yaml.snakeyaml.representer.Representer {
         /**
@@ -194,16 +193,16 @@ public class IDataYAMLParser extends IDataTextParser {
             }
 
             /**
-             * Returns a YAML node representation of the given Object: if the Object
-             * has public members, these are encoded to YAML, otherwise Object.toString()
-             * is encoded to YAML.
+             * Returns a YAML node representation of the given Object: if the Object has public members, these are
+             * encoded to YAML, otherwise Object.toString() is encoded to YAML.
+             *
              * @param data The Object to be converted to a YAML node.
              */
             public Node representData(Object data) {
                 Node node = null;
                 try {
                     node = super.representData(data);
-                } catch(YAMLException ex) {
+                } catch (YAMLException ex) {
                     node = defaultRepresent.representData(data);
                 }
                 return node;
@@ -216,13 +215,14 @@ public class IDataYAMLParser extends IDataTextParser {
         protected class RepresentInputStream extends RepresentByteArray {
             /**
              * Returns a YAML node representation of the given InputStream object.
+             *
              * @param data The InputStream to be converted to a YAML node.
              */
             @SuppressWarnings("unchecked")
             public Node representData(Object data) {
                 try {
-                    return super.representData(BytesHelper.normalize((InputStream) data));
-                } catch(IOException ex) {
+                    return super.representData(BytesHelper.normalize((InputStream)data));
+                } catch (IOException ex) {
                     throw new YAMLException(ex);
                 }
             }

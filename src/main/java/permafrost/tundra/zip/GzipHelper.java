@@ -27,7 +27,6 @@ package permafrost.tundra.zip;
 import permafrost.tundra.io.StreamHelper;
 import permafrost.tundra.lang.BytesHelper;
 import permafrost.tundra.lang.CharsetHelper;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,9 +45,10 @@ public class GzipHelper {
 
     /**
      * GZIP compresses the given data.
-     * @param inputStream   The data to be compressed.
-     * @return              The compressed data.
-     * @throws IOException  If an I/O problem occurs when reading from the stream.
+     *
+     * @param inputStream The data to be compressed.
+     * @return The compressed data.
+     * @throws IOException If an I/O problem occurs when reading from the stream.
      */
     public static InputStream compress(InputStream inputStream) throws IOException {
         if (inputStream == null) return null;
@@ -61,9 +61,10 @@ public class GzipHelper {
 
     /**
      * GZIP compresses the given data.
-     * @param bytes         The data to be compressed.
-     * @return              The compressed data.
-     * @throws IOException  If an I/O problem occurs when reading from the stream.
+     *
+     * @param bytes The data to be compressed.
+     * @return The compressed data.
+     * @throws IOException If an I/O problem occurs when reading from the stream.
      */
     public static InputStream compress(byte[] bytes) throws IOException {
         return compress(StreamHelper.normalize(bytes));
@@ -71,10 +72,11 @@ public class GzipHelper {
 
     /**
      * GZIP compresses the given data.
-     * @param string        The data to be compressed.
-     * @param charset       The character set to use.
-     * @return              The compressed data.
-     * @throws IOException  If an I/O problem occurs when reading from the stream.
+     *
+     * @param string  The data to be compressed.
+     * @param charset The character set to use.
+     * @return The compressed data.
+     * @throws IOException If an I/O problem occurs when reading from the stream.
      */
     public static InputStream compress(String string, Charset charset) throws IOException {
         return compress(StreamHelper.normalize(string, charset));
@@ -82,10 +84,11 @@ public class GzipHelper {
 
     /**
      * GZIP compresses the given data.
-     * @param string        The data to be compressed.
-     * @param charsetName   The character set to use.
-     * @return              The compressed data.
-     * @throws IOException  If an I/O problem occurs when reading from the stream.
+     *
+     * @param string      The data to be compressed.
+     * @param charsetName The character set to use.
+     * @return The compressed data.
+     * @throws IOException If an I/O problem occurs when reading from the stream.
      */
     public static InputStream compress(String string, String charsetName) throws IOException {
         return compress(string, CharsetHelper.normalize(charsetName));
@@ -93,9 +96,10 @@ public class GzipHelper {
 
     /**
      * GZIP compresses the given data.
-     * @param string        The data to be compressed.
-     * @return              The compressed data.
-     * @throws IOException  If an I/O problem occurs when reading from the stream.
+     *
+     * @param string The data to be compressed.
+     * @return The compressed data.
+     * @throws IOException If an I/O problem occurs when reading from the stream.
      */
     public static InputStream compress(String string) throws IOException {
         return compress(string, (Charset)null);
@@ -103,9 +107,10 @@ public class GzipHelper {
 
     /**
      * GZIP decompresses the given data.
-     * @param inputStream   The compressed data to be decompressed.
-     * @return              The decompressed data.
-     * @throws IOException  If an I/O problem occurs when reading from the stream.
+     *
+     * @param inputStream The compressed data to be decompressed.
+     * @return The decompressed data.
+     * @throws IOException If an I/O problem occurs when reading from the stream.
      */
     public static InputStream decompress(InputStream inputStream) throws IOException {
         if (inputStream == null) return null;
@@ -118,9 +123,10 @@ public class GzipHelper {
 
     /**
      * GZIP decompresses the given data.
-     * @param bytes         The compressed data to be decompressed.
-     * @return              The decompressed data.
-     * @throws IOException  If an I/O problem occurs when reading from the stream.
+     *
+     * @param bytes The compressed data to be decompressed.
+     * @return The decompressed data.
+     * @throws IOException If an I/O problem occurs when reading from the stream.
      */
     public static InputStream decompress(byte[] bytes) throws IOException {
         return decompress(StreamHelper.normalize(bytes));
@@ -128,9 +134,10 @@ public class GzipHelper {
 
     /**
      * GZIP decompresses the given data.
-     * @param base64        The compressed data as a base64-encoded string to be decompressed.
-     * @return              The decompressed data.
-     * @throws IOException  If an I/O problem occurs when reading from the stream.
+     *
+     * @param base64 The compressed data as a base64-encoded string to be decompressed.
+     * @return The decompressed data.
+     * @throws IOException If an I/O problem occurs when reading from the stream.
      */
     public static InputStream decompress(String base64) throws IOException {
         return decompress(StreamHelper.normalize(BytesHelper.base64Decode(base64)));
