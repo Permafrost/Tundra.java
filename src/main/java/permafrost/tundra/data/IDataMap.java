@@ -30,7 +30,6 @@ import com.wm.data.IDataPortable;
 import com.wm.data.IDataUtil;
 import com.wm.util.coder.IDataCodable;
 import com.wm.util.coder.ValuesCodable;
-import permafrost.tundra.lang.ObjectHelper;
 import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.Collection;
@@ -62,7 +61,7 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
      * @param document The IData document to be wrapped.
      */
     public IDataMap(IData document) {
-        super(document instanceof IDataMap ? ((IDataMap)document).getIData() : document);
+        super(document);
     }
 
     /**
@@ -142,12 +141,7 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
      * @param map The map to see this new object with.
      */
     public IDataMap(Map<? extends Object, ? extends Object> map) {
-        super();
-        if (map != null) {
-            for (Map.Entry<? extends Object, ? extends Object> entry : map.entrySet()) {
-                this.put(ObjectHelper.stringify(entry.getKey()), entry.getValue());
-            }
-        }
+        this(IDataHelper.toIData(map));
     }
 
     /**
@@ -396,7 +390,7 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
      */
     @Override
     public IDataIterator iterator() {
-        return new IDataIteratorImplementation(getIData());
+        return new IDataIteratorImplementation(getCursor());
     }
 
     /**
@@ -449,12 +443,12 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
         protected IDataCursor cursor;
 
         /**
-         * Constructs a new IDataIterator object for iterating over the given IData document.
+         * Constructs a new IDataIterator object for iterating with the given IDataCursor.
          *
-         * @param document The document to be iterated over.
+         * @param cursor The cursor to be iterated with.
          */
-        public IDataIteratorImplementation(IData document) {
-            if (document != null) this.cursor = document.getCursor();
+        public IDataIteratorImplementation(IDataCursor cursor) {
+            this.cursor = cursor;
         }
 
         /**
