@@ -33,22 +33,28 @@ import org.junit.Test;
 
 public class ReadOnlyIDataMapTest {
 
-        @Test
-        public void testImmutability() throws Exception {
-            IData document = IDataFactory.create();
-            IDataCursor cursor = document.getCursor();
-            IDataUtil.put(cursor, "a", "1");
-            cursor.destroy();
+    @Test
+    public void testPutIgnored() throws Exception {
+        IData document = IDataFactory.create();
+        IDataCursor cursor = document.getCursor();
+        IDataUtil.put(cursor, "a", "1");
+        cursor.destroy();
 
-            ReadOnlyIDataMap map = ReadOnlyIDataMap.of(document);
+        ReadOnlyIDataMap map = ReadOnlyIDataMap.of(document);
 
-            map.put("a", "2");
-            assertEquals("1", map.get("a"));
+        map.put("a", "2");
+        assertEquals("1", map.get("a"));
 
-            cursor = map.getCursor();
-            IDataUtil.put(cursor, "a", "3");
-            cursor.destroy();
-            assertEquals("1", map.get("a"));
-        }
+        cursor = map.getCursor();
+        IDataUtil.put(cursor, "a", "3");
+        cursor.destroy();
+        assertEquals("1", map.get("a"));
+    }
 
+
+    @Test
+    public void testOfWithNullArgument() throws Exception {
+        ReadOnlyIDataMap map = ReadOnlyIDataMap.of((IData)null);
+        assertEquals(0, map.size());
+    }
 }
