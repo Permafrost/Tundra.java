@@ -59,7 +59,7 @@ public class IDataEnvelope implements IData, IDataCodable, IDataPortable, Values
      * @param document The IData document to be wrapped.
      */
     public IDataEnvelope(IData document) {
-        setIData(document);
+        setIData(document instanceof IDataEnvelope ? ((IDataEnvelope)document).getIData() : document);
     }
 
     /**
