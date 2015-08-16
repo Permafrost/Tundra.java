@@ -25,6 +25,7 @@
 package permafrost.tundra.html;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertArrayEquals;
 import org.junit.Test;
 
 public class HTMLHelperTest {
@@ -39,5 +40,19 @@ public class HTMLHelperTest {
     public void testEncode() throws Exception {
         String s = "&";
         assertEquals("&amp;", HTMLHelper.encode(s));
+    }
+
+    @Test
+    public void testDecodeArray() throws Exception {
+        String[] expected = new String[] { "&", ">" };
+        String[] array = new String[] { "&amp;", "&gt;" };
+        assertArrayEquals(expected, HTMLHelper.decode(array));
+    }
+
+    @Test
+    public void testEncodeArray() throws Exception {
+        String[] expected = new String[] { "&amp;", "&gt;" };
+        String[] array = new String[] { "&", ">" };
+        assertArrayEquals(expected, HTMLHelper.encode(array));
     }
 }

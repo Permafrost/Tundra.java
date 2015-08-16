@@ -47,6 +47,24 @@ public class HTMLHelper {
     }
 
     /**
+     * HTML decodes the given strings.
+     *
+     * @param input The strings to be decoded.
+     * @return The decoded strings.
+     */
+    public static String[] decode(String[] input) {
+        if (input == null) return null;
+
+        String[] output = new String[input.length];
+
+        for (int i = 0; i < input.length; i++) {
+            output[i] = decode(input[i]);
+        }
+
+        return output;
+    }
+
+    /**
      * HTML encodes the given string.
      *
      * @param input The string to be encoded.
@@ -55,5 +73,23 @@ public class HTMLHelper {
     public static String encode(String input) {
         if (input == null) return null;
         return HtmlUtils.htmlEscape(input);
+    }
+
+    /**
+     * HTML encodes the given strings.
+     *
+     * @param input The strings to be encoded.
+     * @return The encoded strings.
+     */
+    public static String[] encode(String[] input) {
+        if (input == null) return null;
+
+        String[] output = new String[input.length];
+
+        for (int i = 0; i < input.length; i++) {
+            output[i] = encode(input[i]);
+        }
+
+        return output;
     }
 }
