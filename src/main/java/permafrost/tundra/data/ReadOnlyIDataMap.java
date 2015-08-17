@@ -197,6 +197,8 @@ public class ReadOnlyIDataMap extends IDataMap {
                 cursor.setValue(ReadOnlyIDataMap.of(IDataHelper.toIDataArray(value)));
             }
         }
+
+        cursor.destroy();
     }
 
     /**
