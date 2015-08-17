@@ -191,9 +191,9 @@ public class ReadOnlyIDataMap extends IDataMap {
 
         while (cursor.next()) {
             Object value = cursor.getValue();
-            if ((value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) && (!(value instanceof ReadOnlyIDataMap))) {
+            if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
                 cursor.setValue(ReadOnlyIDataMap.of(IDataHelper.toIData(value)));
-            } else if ((value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) && (!(value instanceof ReadOnlyIDataMap[]))) {
+            } else if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
                 cursor.setValue(ReadOnlyIDataMap.of(IDataHelper.toIDataArray(value)));
             }
         }
