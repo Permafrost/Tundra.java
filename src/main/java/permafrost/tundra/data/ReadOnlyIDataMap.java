@@ -46,7 +46,7 @@ public class ReadOnlyIDataMap extends IDataMap {
      * @param document The IData document to wrap in a read-only representation.
      */
     public ReadOnlyIDataMap(IData document) {
-        super(IDataHelper.duplicate(document, false));
+        super(IDataHelper.duplicate(document, true));
         // recursively freeze all child IData and IData[] elements as read-only
         freeze();
     }
