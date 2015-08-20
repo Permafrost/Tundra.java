@@ -490,15 +490,10 @@ public class IDataHelper {
 
         try {
             if (document != null) {
-                IDataCursor cursor = document.getCursor();
-                try {
-                    if (recurse) {
-                        output = IDataUtil.deepClone(document);
-                    } else {
-                        output = IDataUtil.clone(document);
-                    }
-                } finally {
-                    cursor.destroy();
+                if (recurse) {
+                    output = IDataUtil.deepClone(document);
+                } else {
+                    output = IDataUtil.clone(document);
                 }
             }
         } catch (IOException ex) {
