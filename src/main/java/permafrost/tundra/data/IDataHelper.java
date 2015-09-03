@@ -1316,7 +1316,7 @@ public class IDataHelper {
      * @param document An IData document to be cleared.
      */
     public static void clear(IData document) {
-        clear(document, (String)null);
+        clear(document, (String) null);
     }
 
     /**
