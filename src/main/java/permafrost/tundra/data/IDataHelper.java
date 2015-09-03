@@ -235,10 +235,10 @@ public class IDataHelper {
      * @return The list of flattened values.
      */
     private static List<Object> getLeafValues(List<Object> values, Object value, Class... classes) {
-        if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
-            values = getLeafValues(values, toIData(value), classes);
-        } else if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
+        if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
             values = getLeafValues(values, toIDataArray(value), classes);
+        } else if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
+            values = getLeafValues(values, toIData(value), classes);
         } else if (value instanceof Object[][]) {
             values = getLeafValues(values, (Object[][])value, classes);
         } else if (value instanceof Object[]) {
@@ -774,17 +774,6 @@ public class IDataHelper {
 
             if (value instanceof String) {
                 value = StringHelper.squeeze((String)value, false);
-            } else if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
-                IData data = toIData(value);
-                if (recurse) {
-                    value = squeeze(data, recurse);
-                } else {
-                    if (size(data) == 0) {
-                        value = null;
-                    } else {
-                        value = data;
-                    }
-                }
             } else if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
                 IData[] array = toIDataArray(value);
                 if (recurse) {
@@ -794,6 +783,17 @@ public class IDataHelper {
                         value = null;
                     } else {
                         value = array;
+                    }
+                }
+            } else if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
+                IData data = toIData(value);
+                if (recurse) {
+                    value = squeeze(data, recurse);
+                } else {
+                    if (size(data) == 0) {
+                        value = null;
+                    } else {
+                        value = data;
                     }
                 }
             } else if (value instanceof Object[][]) {
@@ -853,12 +853,12 @@ public class IDataHelper {
 
             if (value instanceof String || value instanceof String[] || value instanceof String[][]) {
                 // do nothing, already value is already a string
-            } else if (recurse && (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable)) {
-                value = stringify(toIData(value), recurse);
             } else if (recurse && (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[])) {
                 value = stringify(toIDataArray(value), recurse);
+            } else if (recurse && (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable)) {
+                value = stringify(toIData(value), recurse);
             } else if (value instanceof Object[][]) {
-                value = ArrayHelper.toStringTable((Object[][])value);
+                value = ArrayHelper.toStringTable((Object[][]) value);
             } else if (value instanceof Object[]) {
                 value = ArrayHelper.toStringArray((Object[])value);
             } else {
@@ -912,10 +912,10 @@ public class IDataHelper {
 
             if (value == null) {
                 value = "";
-            } else if (recurse && (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable)) {
-                value = blankify(toIData(value), recurse);
             } else if (recurse && (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[])) {
                 value = blankify(toIDataArray(value), recurse);
+            } else if (recurse && (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable)) {
+                value = blankify(toIData(value), recurse);
             }
             outputCursor.insertAfter(key, value);
         }
@@ -981,10 +981,10 @@ public class IDataHelper {
 
             if (value != null) {
                 if (recurse) {
-                    if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
-                        value = compact(toIData(value), recurse);
-                    } else if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
+                    if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
                         value = compact(toIDataArray(value), recurse);
+                    } else if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
+                        value = compact(toIData(value), recurse);
                     } else if (value instanceof Object[][]) {
                         value = ArrayHelper.compact((Object[][])value);
                     } else if (value instanceof Object[]) {
@@ -1080,10 +1080,10 @@ public class IDataHelper {
             Object value = inputCursor.getValue();
 
             if (value != null) {
-                if (recurse && (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable)) {
-                    value = substitute(toIData(value), defaultValue, scope, recurse);
-                } else if (recurse && (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[])) {
+                if (recurse && (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[])) {
                     value = substitute(toIDataArray(value), defaultValue, scope, recurse);
+                } else if (recurse && (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable)) {
+                    value = substitute(toIData(value), defaultValue, scope, recurse);
                 } else if (value instanceof String) {
                     value = VariableSubstitutor.substitute((String)value, defaultValue, scope);
                 } else if (value instanceof String[]) {
@@ -1130,17 +1130,7 @@ public class IDataHelper {
      * @return A new normalized version of the given Object.
      */
     private static Object normalize(Object value) {
-        if (value instanceof IData) {
-            value = normalize((IData)value);
-        } else if (value instanceof IDataCodable) {
-            value = normalize((IDataCodable)value);
-        } else if (value instanceof IDataPortable) {
-            value = normalize((IDataPortable)value);
-        } else if (value instanceof ValuesCodable) {
-            value = normalize((ValuesCodable)value);
-        } else if (value instanceof Map) {
-            value = normalize((Map)value);
-        } else if (value instanceof IData[]) {
+        if (value instanceof IData[]) {
             value = normalize((IData[])value);
         } else if (value instanceof Table) {
             value = normalize((Table)value);
@@ -1153,7 +1143,17 @@ public class IDataHelper {
         } else if (value instanceof Collection) {
             value = normalize((Collection)value);
         } else if (value instanceof Map[]) {
-            value = normalize((Map[])value);
+            value = normalize((Map[]) value);
+        } else if (value instanceof IData) {
+            value = normalize((IData)value);
+        } else if (value instanceof IDataCodable) {
+            value = normalize((IDataCodable)value);
+        } else if (value instanceof IDataPortable) {
+            value = normalize((IDataPortable)value);
+        } else if (value instanceof ValuesCodable) {
+            value = normalize((ValuesCodable)value);
+        } else if (value instanceof Map) {
+            value = normalize((Map)value);
         }
 
         return value;
@@ -1751,10 +1751,10 @@ public class IDataHelper {
         for (Map.Entry<String, Object> entry : IDataMap.of(document)) {
             String key = entry.getKey();
             Object value = entry.getValue();
-            if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
-                value = toMap(value);
-            } else if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
+            if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
                 value = toList(value);
+            } else if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
+                value = toMap(value);
             }
             output.put(key, value);
         }
@@ -2131,9 +2131,7 @@ public class IDataHelper {
             Object value = cursor.getValue();
 
             if (recurse && value != null) {
-                if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
-                    value = pivot(toIData(value), recurse);
-                } else if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
+                if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
                     IData[] array = toIDataArray(value);
                     if (array != null) {
                         List<IData[]> list = new ArrayList<IData[]>(array.length);
@@ -2144,6 +2142,8 @@ public class IDataHelper {
 
                         value = list.toArray(new IData[0][0]);
                     }
+                } else if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
+                    value = pivot(toIData(value), recurse);
                 }
             }
 
@@ -2250,14 +2250,14 @@ public class IDataHelper {
             if (result) {
                 Object value = ic.getValue();
                 if (recurse) {
-                    if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
-                        value = sort(toIData(value), recurse);
-                    } else if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
+                    if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
                         IData[] array = toIDataArray(value);
                         for (int j = 0; j < array.length; j++) {
                             array[j] = sort(array[j], recurse);
                         }
                         value = array;
+                    } else if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
+                        value = sort(toIData(value), recurse);
                     }
                 }
                 oc.insertAfter(keys[i], value);
