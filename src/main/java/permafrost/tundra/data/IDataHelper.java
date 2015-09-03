@@ -1655,7 +1655,9 @@ public class IDataHelper {
                     IData child = null;
                     try {
                         child = ArrayHelper.get(array, key.getIndex());
-                    } catch (ArrayIndexOutOfBoundsException ex) { }
+                    } catch(ArrayIndexOutOfBoundsException ex) {
+                        // ignore exception
+                    }
                     value = ArrayHelper.put(array, put(child, fullyQualifiedKey, value, includeNull), key.getIndex(), IData.class);
                 } else if (key.hasKeyIndex()) {
                     value = put(toIData(get(document, key.getKey(), key.getIndex())), fullyQualifiedKey, value, includeNull);
