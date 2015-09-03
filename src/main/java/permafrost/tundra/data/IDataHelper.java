@@ -2390,10 +2390,10 @@ public class IDataHelper {
     public static Object[] getValues(IData[] array, String key, Object defaultValue) {
         if (array == null || key == null) return null;
 
-        List list = new ArrayList(array.length);
+        List<Object> list = new ArrayList<Object>(array.length);
 
-        for (int i = 0; i < array.length; i++) {
-            list.add(get(array[i], key, defaultValue));
+        for (IData item : array) {
+            list.add(get(item, key, defaultValue));
         }
 
         return ArrayHelper.normalize(list.toArray());
@@ -2593,15 +2593,15 @@ public class IDataHelper {
         } else {
             Map<CompoundKey, List<IData>> groups = new TreeMap<CompoundKey, List<IData>>();
 
-            for (int i = 0; i < array.length; i++) {
-                if (array[i] != null) {
-                    CompoundKey key = new CompoundKey(keys, array[i]);
+            for (IData item : array) {
+                if (item != null) {
+                    CompoundKey key = new CompoundKey(keys, item);
                     List<IData> list = groups.get(key);
                     if (list == null) {
                         list = new LinkedList<IData>();
                         groups.put(key, list);
                     }
-                    list.add(array[i]);
+                    list.add(item);
                 }
             }
 
@@ -2658,12 +2658,13 @@ public class IDataHelper {
                 if (keys == null || keys.length == 0) keys = getKeys(array);
 
                 Map<CompoundKey, IData> set = new TreeMap<CompoundKey, IData>();
-                for (int i = 0; i < array.length; i++) {
-                    if (array[i] != null) {
-                        CompoundKey key = new CompoundKey(keys, array[i]);
-                        if (!set.containsKey(key)) set.put(key, array[i]);
+                for (IData item : array) {
+                    if (item != null) {
+                        CompoundKey key = new CompoundKey(keys, item);
+                        if (!set.containsKey(key)) set.put(key, item);
                     }
                 }
+
                 output = set.values().toArray(new IData[set.size()]);
             }
         }
@@ -2693,14 +2694,14 @@ public class IDataHelper {
             super(keys.length);
 
             // seed with key value pairs
-            for (int i = 0; i < keys.length; i++) {
-                Object value = IDataHelper.get(document, keys[i]);
+            for (String key : keys) {
+                Object value = IDataHelper.get(document, key);
                 if (value instanceof Comparable) {
-                    this.put(keys[i], (Comparable)value);
+                    this.put(key, (Comparable)value);
                 } else if (value != null) {
-                    this.put(keys[i], System.identityHashCode(value));
+                    this.put(key, System.identityHashCode(value));
                 } else {
-                    this.put(keys[i], null);
+                    this.put(key, null);
                 }
             }
         }
