@@ -834,6 +834,90 @@ public class IDataHelper {
     }
 
     /**
+     * Returns a string created by concatenating each element of the given IData document.
+     *
+     * @param document The IData document to be converted to a string.
+     * @return A string representation of the given IData document.
+     */
+    public static String join(IData document) {
+        return join(document, ", ", ", ", ": ");
+    }
+
+    /**
+     * Returns a string created by concatenating each element of the given IData document, separated by the given
+     * separator strings.
+     *
+     * @param document The IData document to be converted to a string.
+     * @param itemSeparator The string to use to delimit entries in IData documents.
+     * @param listSeparator The string to use to delimit list items.
+     * @param valueSeparator The string to use to delimit key value pairs.
+     * @return A string representation of the given IData document.
+     */
+    public static String join(IData document, String itemSeparator, String listSeparator, String valueSeparator) {
+        if (document == null) return null;
+
+        int size = size(document);
+        int i = 0;
+
+        IDataCursor cursor = document.getCursor();
+        StringBuilder builder = new StringBuilder();
+
+        while (cursor.next()) {
+            String key = cursor.getKey();
+            Object value = cursor.getValue();
+
+            if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
+                value = "[" + join(toIDataArray(value), itemSeparator, listSeparator, valueSeparator) + "]";
+            } else if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
+                value = "{" + join(toIData(value), itemSeparator, listSeparator, valueSeparator) + "}";
+            } else if (value instanceof Object[][]) {
+                value = "[" + ArrayHelper.join(ArrayHelper.toStringTable((Object[][])value), listSeparator) + "]";
+            } else if (value instanceof Object[]) {
+                value = "[" + ArrayHelper.join(ArrayHelper.toStringArray((Object[])value), listSeparator) + "]";
+            }
+
+            if (value != null) {
+                builder.append(key);
+                if (valueSeparator != null) builder.append(valueSeparator);
+                builder.append(value.toString());
+            }
+
+            if (itemSeparator != null && i < size - 1) builder.append(itemSeparator);
+
+            i++;
+        }
+
+        cursor.destroy();
+
+        return builder.toString();
+    }
+
+    /**
+     * Returns a string created by concatenating each element of the given IData[] document list, separated by the given
+     * separator strings.
+     *
+     * @param array The IData[] document list to be converted to a string.
+     * @param itemSeparator The string to use to delimit entries in IData documents.
+     * @param listSeparator The string to use to delimit list items.
+     * @param valueSeparator The string to use to delimit key value pairs.
+     * @return A string representation of the given IData document.
+     */
+    public static String join(IData[] array, String itemSeparator, String listSeparator, String valueSeparator) {
+        if (array == null) return null;
+
+        StringBuilder builder = new StringBuilder();
+
+        for(int i = 0; i < array.length; i++) {
+            builder.append("{");
+            builder.append(join(array[i], itemSeparator, listSeparator, valueSeparator));
+            builder.append("}");
+            if (listSeparator != null && i < array.length - 1) builder.append(listSeparator);
+        }
+
+        return builder.toString();
+    }
+
+    /**
      * Converts all non-string values to strings, except for IData and IData[] compatible objects.
      *
      * @param document The IData document to stringify.
@@ -852,7 +936,7 @@ public class IDataHelper {
             Object value = inputCursor.getValue();
 
             if (value instanceof String || value instanceof String[] || value instanceof String[][]) {
-                // do nothing, already value is already a string
+                // do nothing, value is already a string
             } else if (recurse && (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[])) {
                 value = stringify(toIDataArray(value), recurse);
             } else if (recurse && (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable)) {
@@ -1316,7 +1400,7 @@ public class IDataHelper {
      * @param document An IData document to be cleared.
      */
     public static void clear(IData document) {
-        clear(document, (String) null);
+        clear(document, (String)null);
     }
 
     /**

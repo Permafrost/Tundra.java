@@ -1411,4 +1411,54 @@ public class IDataHelperTest {
 
         assertArrayEquals(expected, actual);
     }
+
+    @Test
+    public void testJoin() throws Exception {
+        IDataMap map = new IDataMap();
+        map.put("a", "1");
+        map.put("b", "2");
+
+        IDataMap child = new IDataMap();
+        child.put("d", new String[]{"3", "4"});
+        child.put("e", new String[][]{{"5", "6"}, {"7", "8"}});
+
+        map.put("c", child);
+        map.put("f", new String[]{"9", "10", "11", "12"});
+
+        IDataMap[] array = new IDataMap[2];
+        array[0] = new IDataMap();
+        array[0].put("h", "13");
+        array[0].put("i", "14");
+        array[1] = new IDataMap();
+        array[1].put("j", "15");
+
+        map.put("g", array);
+
+        assertEquals("a: 1, b: 2, c: {d: [3, 4], e: [[5, 6], [7, 8]]}, f: [9, 10, 11, 12], g: [{h: 13, i: 14}, {j: 15}]", IDataHelper.join(map));
+    }
+
+    @Test
+    public void testJoinWithCustomSeparators() throws Exception {
+        IDataMap map = new IDataMap();
+        map.put("a", "1");
+        map.put("b", "2");
+
+        IDataMap child = new IDataMap();
+        child.put("d", new String[]{"3", "4"});
+        child.put("e", new String[][]{{"5", "6"}, {"7", "8"}});
+
+        map.put("c", child);
+        map.put("f", new String[]{"9", "10", "11", "12"});
+
+        IDataMap[] array = new IDataMap[2];
+        array[0] = new IDataMap();
+        array[0].put("h", "13");
+        array[0].put("i", "14");
+        array[1] = new IDataMap();
+        array[1].put("j", "15");
+
+        map.put("g", array);
+
+        assertEquals("a = 1; b = 2; c = {d = [3, 4]; e = [[5, 6], [7, 8]]}; f = [9, 10, 11, 12]; g = [{h = 13; i = 14}, {j = 15}]", IDataHelper.join(map, "; ", ", ", " = "));
+    }
 }
