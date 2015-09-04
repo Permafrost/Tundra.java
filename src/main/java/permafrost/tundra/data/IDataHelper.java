@@ -840,7 +840,18 @@ public class IDataHelper {
      * @return A string representation of the given IData document.
      */
     public static String join(IData document) {
-        return join(document, ", ", ", ", ": ");
+        return join(document, true);
+    }
+
+    /**
+     * Returns a string created by concatenating each element of the given IData document.
+     *
+     * @param document The IData document to be converted to a string.
+     * @param includeNulls If true, null values will be included in the output string, otherwise they are ignored.
+     * @return A string representation of the given IData document.
+     */
+    public static String join(IData document, boolean includeNulls) {
+        return join(document, ", ", ", ", ": ", includeNulls);
     }
 
     /**
@@ -854,10 +865,24 @@ public class IDataHelper {
      * @return A string representation of the given IData document.
      */
     public static String join(IData document, String itemSeparator, String listSeparator, String valueSeparator) {
+        return join(document, itemSeparator, listSeparator, valueSeparator, true);
+    }
+
+    /**
+     * Returns a string created by concatenating each element of the given IData document, separated by the given
+     * separator strings.
+     *
+     * @param document The IData document to be converted to a string.
+     * @param itemSeparator The string to use to delimit entries in IData documents.
+     * @param listSeparator The string to use to delimit list items.
+     * @param valueSeparator The string to use to delimit key value pairs.
+     * @param includeNulls If true, null values will be included in the output string, otherwise they are ignored.
+     * @return A string representation of the given IData document.
+     */
+    public static String join(IData document, String itemSeparator, String listSeparator, String valueSeparator, boolean includeNulls) {
         if (document == null) return null;
 
-        int size = size(document);
-        int i = 0;
+        boolean itemSeparatorRequired = false;
 
         IDataCursor cursor = document.getCursor();
         StringBuilder builder = new StringBuilder();
@@ -866,25 +891,28 @@ public class IDataHelper {
             String key = cursor.getKey();
             Object value = cursor.getValue();
 
-            if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
-                value = "[" + join(toIDataArray(value), itemSeparator, listSeparator, valueSeparator) + "]";
-            } else if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
-                value = "{" + join(toIData(value), itemSeparator, listSeparator, valueSeparator) + "}";
-            } else if (value instanceof Object[][]) {
-                value = "[" + ArrayHelper.join(ArrayHelper.toStringTable((Object[][])value), listSeparator) + "]";
-            } else if (value instanceof Object[]) {
-                value = "[" + ArrayHelper.join(ArrayHelper.toStringArray((Object[])value), listSeparator) + "]";
-            }
+            boolean includeItem = includeNulls || value != null;
 
-            if (value != null) {
+            if (itemSeparator != null && itemSeparatorRequired && includeItem) builder.append(itemSeparator);
+
+            if (includeItem) {
+                if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
+                    value = "[" + join(toIDataArray(value), itemSeparator, listSeparator, valueSeparator, includeNulls) + "]";
+                } else if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
+                    value = "{" + join(toIData(value), itemSeparator, listSeparator, valueSeparator, includeNulls) + "}";
+                } else if (value instanceof Object[][]) {
+                    value = "[" + ArrayHelper.join(ArrayHelper.toStringTable((Object[][])value), listSeparator, includeNulls) + "]";
+                } else if (value instanceof Object[]) {
+                    value = "[" + ArrayHelper.join(ArrayHelper.toStringArray((Object[])value), listSeparator, includeNulls) + "]";
+                }
+
                 builder.append(key);
                 if (valueSeparator != null) builder.append(valueSeparator);
-                builder.append(value.toString());
+                builder.append(ObjectHelper.stringify(value));
+                itemSeparatorRequired = true;
+            } else {
+                itemSeparatorRequired = false;
             }
-
-            if (itemSeparator != null && i < size - 1) builder.append(itemSeparator);
-
-            i++;
         }
 
         cursor.destroy();
@@ -903,15 +931,37 @@ public class IDataHelper {
      * @return A string representation of the given IData document.
      */
     public static String join(IData[] array, String itemSeparator, String listSeparator, String valueSeparator) {
+        return join(array, itemSeparator, listSeparator, valueSeparator, true);
+    }
+
+    /**
+     * Returns a string created by concatenating each element of the given IData[] document list, separated by the given
+     * separator strings.
+     *
+     * @param array The IData[] document list to be converted to a string.
+     * @param itemSeparator The string to use to delimit entries in IData documents.
+     * @param listSeparator The string to use to delimit list items.
+     * @param valueSeparator The string to use to delimit key value pairs.
+     * @param includeNulls If true, null values will be included in the output string, otherwise they are ignored.
+     * @return A string representation of the given IData document.
+     */
+    public static String join(IData[] array, String itemSeparator, String listSeparator, String valueSeparator, boolean includeNulls) {
         if (array == null) return null;
 
         StringBuilder builder = new StringBuilder();
+        boolean separatorRequired = false;
 
-        for(int i = 0; i < array.length; i++) {
-            builder.append("{");
-            builder.append(join(array[i], itemSeparator, listSeparator, valueSeparator));
-            builder.append("}");
-            if (listSeparator != null && i < array.length - 1) builder.append(listSeparator);
+        for(IData item : array) {
+            boolean includeItem = includeNulls || item != null;
+
+            if (listSeparator != null && separatorRequired && includeItem) builder.append(listSeparator);
+
+            if (includeItem) {
+                builder.append("{");
+                builder.append(join(item, itemSeparator, listSeparator, valueSeparator, includeNulls));
+                builder.append("}");
+                separatorRequired = true;
+            }
         }
 
         return builder.toString();

@@ -408,13 +408,37 @@ public class ArrayHelper {
      * each item in order, optionally separated by the given separator string.
      */
     public static <T> String join(T[] array, String separator) {
-        if (array == null) return "";
+        return join(array, separator, true);
+    }
+
+    /**
+     * Returns a string created by concatenating each element of the given array, separated by the given separator
+     * string.
+     *
+     * @param array     The array whose contents are to be joined.
+     * @param separator An optional separator string to be used between items of the array.
+     * @param includeNulls If true, null values will be included in the output string, otherwise they are ignored.
+     * @param <T>       The class of items stored in the array.
+     * @return A string representation of the given array created by concatenating together the string representation of
+     * each item in order, optionally separated by the given separator string.
+     */
+    public static <T> String join(T[] array, String separator, boolean includeNulls) {
+        if (array == null) return null;
 
         StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < array.length; i++) {
-            builder.append(ObjectHelper.stringify(array[i]));
-            if (separator != null && i < array.length - 1) builder.append(separator);
+        boolean separatorRequired = false;
+
+        for (T item : array) {
+            boolean includeItem = includeNulls || item != null;
+
+            if (separator != null && separatorRequired && includeItem) builder.append(separator);
+
+            if (includeItem) {
+                builder.append(ObjectHelper.stringify(item));
+                separatorRequired = true;
+            }
         }
+
         return builder.toString();
     }
 
@@ -429,14 +453,40 @@ public class ArrayHelper {
      * each item in order, optionally separated by the given separator string.
      */
     public static <T> String join(T[][] table, String separator) {
-        if (table == null) return "";
+        return join(table, separator, true);
+    }
+
+    /**
+     * Returns a string created by concatenating each element of the given table, separated by the given separator
+     * string.
+     *
+     * @param table     The table whose contents are to be joined.
+     * @param separator An optional separator string to be used between items of the table.
+     * @param includeNulls If true, null values will be included in the output string, otherwise they are ignored.
+     * @param <T>       The class of items stored in the table.
+     * @return A string representation of the given table created by concatenating together the string representation of
+     * each item in order, optionally separated by the given separator string.
+     */
+    public static <T> String join(T[][] table, String separator, boolean includeNulls) {
+        if (table == null) return null;
 
         StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < table.length; i++) {
-            builder.append("[");
-            builder.append(join(table[i], separator));
-            builder.append("]");
-            if (separator != null && i < table.length - 1) builder.append(separator);
+        boolean separatorRequired = false;
+
+        for (T[] row : table) {
+            boolean includeItem = includeNulls || row != null;
+
+            if (separator != null && separatorRequired && includeItem) builder.append(separator);
+
+            if (includeItem) {
+                String value = join(row, separator, includeNulls);
+
+                if (value != null) builder.append("[");
+                builder.append(value);
+                if (value != null) builder.append("]");
+
+                separatorRequired = true;
+            }
         }
 
         return builder.toString();

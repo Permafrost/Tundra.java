@@ -1440,15 +1440,16 @@ public class IDataHelperTest {
     @Test
     public void testJoinWithCustomSeparators() throws Exception {
         IDataMap map = new IDataMap();
+        map.put("z", null);
         map.put("a", "1");
         map.put("b", "2");
 
         IDataMap child = new IDataMap();
-        child.put("d", new String[]{"3", "4"});
-        child.put("e", new String[][]{{"5", "6"}, {"7", "8"}});
+        child.put("d", new String[]{null, "3", "4"});
+        child.put("e", new String[][]{{"5", "6"}, {"7", "8"}, null, {null, "9"}});
 
         map.put("c", child);
-        map.put("f", new String[]{"9", "10", "11", "12"});
+        map.put("f", new String[]{"9", "10", null, "12", null});
 
         IDataMap[] array = new IDataMap[2];
         array[0] = new IDataMap();
@@ -1456,9 +1457,12 @@ public class IDataHelperTest {
         array[0].put("i", "14");
         array[1] = new IDataMap();
         array[1].put("j", "15");
+        array[1].put("k", null);
 
         map.put("g", array);
+        map.put("l", new String[0]);
 
-        assertEquals("a = 1; b = 2; c = {d = [3, 4]; e = [[5, 6], [7, 8]]}; f = [9, 10, 11, 12]; g = [{h = 13; i = 14}, {j = 15}]", IDataHelper.join(map, "; ", ", ", " = "));
+        assertEquals("z = null; a = 1; b = 2; c = {d = [null, 3, 4]; e = [[5, 6], [7, 8], null, [null, 9]]}; f = [9, 10, null, 12, null]; g = [{h = 13; i = 14}, {j = 15; k = null}]; l = []", IDataHelper.join(map, "; ", ", ", " = ", true));
+        assertEquals("a = 1; b = 2; c = {d = [3, 4]; e = [[5, 6], [7, 8], [9]]}; f = [9, 10, 12]; g = [{h = 13; i = 14}, {j = 15}]; l = []", IDataHelper.join(map, "; ", ", ", " = ", false));
     }
 }
