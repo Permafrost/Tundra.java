@@ -215,10 +215,10 @@ public class IDataHTMLParser extends IDataTextParser {
                     if (value == null) {
                         buffer.append(HTMLEntity.NULL.toString());
                     } else {
-                        if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
-                            buffer.append(encodeToString(IDataHelper.toIData(value)));
-                        } else if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
+                        if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
                             buffer.append(encodeToString(IDataHelper.toIDataArray(value)));
+                        } else if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
+                            buffer.append(encodeToString(IDataHelper.toIData(value)));
                         } else if (value instanceof Object[][]) {
                             buffer.append(encodeToString((Object[][])value));
                         } else if (value instanceof Object[]) {
