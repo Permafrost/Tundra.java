@@ -174,12 +174,22 @@ public class ObjectHelper {
     }
 
     /**
+     * Returns the nearest class which is an ancestor to the classes of the given objects.
+     *
+     * @param objects One or more objects to return the nearest ancestor for.
+     * @return The nearest ancestor class which is an ancestor to the classes of the given objects.
+     */
+    public static Class<?> getNearestAncestor(Collection<?> objects) {
+        return getNearestAncestor(toClassSet(objects));
+    }
+
+    /**
      * Returns the nearest class which is an ancestor to all the classes in the given set.
      *
      * @param classes A set of classes for which the nearest ancestor will be returned.
      * @return The nearest ancestor class which is an ancestor to all the classes in the given set.
      */
-    public static Class<?> getNearestAncestor(Collection<Class<?>> classes) {
+    public static Class<?> getNearestAncestor(Set<Class<?>> classes) {
         Class<?> nearest = null;
 
         Set<Class<?>> ancestors = getAncestors(classes);
@@ -330,6 +340,22 @@ public class ObjectHelper {
      * @return The set of classes for the given list of objects.
      */
     private static Set<Class<?>> toClassSet(Object... objects) {
+        Set<Class<?>> classes = new LinkedHashSet<Class<?>>();
+
+        for (Object object : objects) {
+            if (object != null) classes.add(object.getClass());
+        }
+
+        return classes;
+    }
+
+    /**
+     * Converts the given list of objects to a set of classes.
+     *
+     * @param objects One or more objects to return a set of classes for.
+     * @return The set of classes for the given list of objects.
+     */
+    private static Set<Class<?>> toClassSet(Collection<?> objects) {
         Set<Class<?>> classes = new LinkedHashSet<Class<?>>();
 
         for (Object object : objects) {
