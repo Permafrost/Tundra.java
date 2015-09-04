@@ -110,12 +110,12 @@ public class BasicIDataComparator implements IDataComparator {
                             } else if (value2 != null) {
                                 result = -1;
                             }
-                        } else if ((value1 instanceof IData || value1 instanceof IDataCodable || value1 instanceof IDataPortable || value1 instanceof ValuesCodable) &&
-                                   (value2 instanceof IData || value2 instanceof IDataCodable || value2 instanceof IDataPortable || value2 instanceof ValuesCodable)) {
-                            result = compare(IDataHelper.toIData(value1), IDataHelper.toIData(value2));
                         } else if ((value1 instanceof IData[] || value1 instanceof Table || value1 instanceof IDataCodable[] || value1 instanceof IDataPortable[] || value1 instanceof ValuesCodable[]) &&
                                    (value2 instanceof IData[] || value2 instanceof Table || value2 instanceof IDataCodable[] || value2 instanceof IDataPortable[] || value2 instanceof ValuesCodable[])) {
                             result = BasicIDataArrayComparator.getInstance().compare(IDataHelper.toIDataArray(value1), IDataHelper.toIDataArray(value2));
+                        } else if ((value1 instanceof IData || value1 instanceof IDataCodable || value1 instanceof IDataPortable || value1 instanceof ValuesCodable) &&
+                                   (value2 instanceof IData || value2 instanceof IDataCodable || value2 instanceof IDataPortable || value2 instanceof ValuesCodable)) {
+                            result = compare(IDataHelper.toIData(value1), IDataHelper.toIData(value2));
                         } else if (value1 instanceof Object[] && value2 instanceof Object[]) {
                             result = BasicArrayComparator.getInstance().compare((Object[])value1, (Object[])value2);
                         } else {
