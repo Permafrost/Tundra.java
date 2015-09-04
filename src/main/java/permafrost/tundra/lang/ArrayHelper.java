@@ -741,6 +741,17 @@ public class ArrayHelper {
     }
 
     /**
+     * Returns a new array whose class is the nearest ancestor class of all contained items.
+     *
+     * @param input The array to be normalized.
+     * @return A new copy of the given array whose class is the nearest ancestor of all contained items.
+     */
+    public static Object[] normalize(Collection<?> input) {
+        if (input == null) return null;
+        return input.toArray(instantiate(ObjectHelper.getNearestAncestor(input), input.size()));
+    }
+
+    /**
      * Returns a new array with all string items trimmed, all empty string items removed, and all null items removed.
      *
      * @param array An array to be squeezed.
