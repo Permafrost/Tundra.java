@@ -419,6 +419,30 @@ public class ArrayHelper {
     }
 
     /**
+     * Returns a string created by concatenating each element of the given table, separated by the given separator
+     * string.
+     *
+     * @param table     The table whose contents are to be joined.
+     * @param separator An optional separator string to be used between items of the table.
+     * @param <T>       The class of items stored in the table.
+     * @return A string representation of the given table created by concatenating together the string representation of
+     * each item in order, optionally separated by the given separator string.
+     */
+    public static <T> String join(T[][] table, String separator) {
+        if (table == null) return "";
+
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < table.length; i++) {
+            builder.append("[");
+            builder.append(join(table[i], separator));
+            builder.append("]");
+            if (separator != null && i < table.length - 1) builder.append(separator);
+        }
+
+        return builder.toString();
+    }
+
+    /**
      * Returns a string representation of the given array.
      *
      * @param array The array to be stringified.
