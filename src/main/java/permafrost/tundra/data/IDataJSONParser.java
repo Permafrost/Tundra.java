@@ -27,8 +27,11 @@ package permafrost.tundra.data;
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
+import com.wm.data.IDataPortable;
 import com.wm.data.IDataUtil;
 import com.wm.util.Table;
+import com.wm.util.coder.IDataCodable;
+import com.wm.util.coder.ValuesCodable;
 import permafrost.tundra.io.StreamHelper;
 import permafrost.tundra.lang.ArrayHelper;
 import permafrost.tundra.lang.CharsetHelper;
@@ -39,6 +42,7 @@ import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import javax.json.Json;
@@ -223,16 +227,14 @@ public class IDataJSONParser extends IDataTextParser {
     protected static Object[] fromJsonArray(JsonArray input) {
         if (input == null) return null;
 
-        List output = new java.util.ArrayList(input.size());
-        Iterator<JsonValue> iterator = input.iterator();
+        List<Object> output = new ArrayList<Object>(input.size());
 
-        while (iterator.hasNext()) {
-            JsonValue item = iterator.next();
+        for(JsonValue item : input) {
             Object object = fromJsonValue(item);
             output.add(object);
         }
 
-        return ArrayHelper.normalize(output.toArray());
+        return ArrayHelper.normalize(output);
     }
 
     /**
@@ -279,11 +281,10 @@ public class IDataJSONParser extends IDataTextParser {
 
                 if (value == null) {
                     builder.addNull(key);
-                } else if (value instanceof IData) {
-                    builder.add(key, toJsonObject((IData)value));
-                } else if (value instanceof Table) {
-                    value = ((Table)value).getValues();
-                    builder.add(key, toJsonArray((IData[])value));
+                } else if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
+                    builder.add(key, toJsonArray(IDataHelper.toIDataArray(value)));
+                } else if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
+                    builder.add(key, toJsonObject(IDataHelper.toIData(value)));
                 } else if (value instanceof Object[]) {
                     builder.add(key, toJsonArray((Object[])value));
                 } else if (value instanceof Boolean) {
@@ -319,15 +320,13 @@ public class IDataJSONParser extends IDataTextParser {
         JsonArrayBuilder builder = Json.createArrayBuilder();
 
         if (input != null) {
-            for (int i = 0; i < input.length; i++) {
-                Object value = input[i];
+            for (Object value : input) {
                 if (value == null) {
                     builder.addNull();
-                } else if (value instanceof IData) {
-                    builder.add(toJsonObject((IData)value));
-                } else if (value instanceof Table) {
-                    value = ((Table)value).getValues();
-                    builder.add(toJsonArray((IData[])value));
+                } else if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
+                    builder.add(toJsonArray(IDataHelper.toIDataArray(value)));
+                } else if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
+                    builder.add(toJsonObject(IDataHelper.toIData(value)));
                 } else if (value instanceof Object[]) {
                     builder.add(toJsonArray((Object[])value));
                 } else if (value instanceof Boolean) {
