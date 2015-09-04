@@ -140,7 +140,7 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
      *
      * @param map The map to see this new object with.
      */
-    public IDataMap(Map<? extends Object, ? extends Object> map) {
+    public IDataMap(Map<?, ?> map) {
         this(IDataHelper.toIData(map));
     }
 
@@ -150,7 +150,7 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
      * @param map        The map to see this new object with.
      * @param comparator The IDataComparator to be used to compare IData objects.
      */
-    public IDataMap(Map<? extends Object, ? extends Object> map, IDataComparator comparator) {
+    public IDataMap(Map<?, ?> map, IDataComparator comparator) {
         this(map);
         setComparator(comparator);
     }
@@ -278,8 +278,8 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
      * @param map Mappings to be stored in this map.
      */
     @Override
-    public void putAll(Map<? extends String, ? extends Object> map) {
-        for (Map.Entry<? extends String, ? extends Object> entry : map.entrySet()) {
+    public void putAll(Map<? extends String, ?> map) {
+        for (Map.Entry<? extends String, ?> entry : map.entrySet()) {
             put(entry.getKey(), entry.getValue());
         }
     }
@@ -307,7 +307,7 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
      *
      * @param map A Map containing key value pairs to be stored in this IDataMap.
      */
-    public void merge(Map<? extends String, ? extends Object> map) {
+    public void merge(Map<? extends String, ?> map) {
         putAll(map);
     }
 
@@ -352,7 +352,7 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
      * @param map The Map to seed the new IDataMap with.
      * @return A new IDataMap that includes all the key value pairs from the given Map.
      */
-    public static IDataMap of(Map<? extends String, ? extends Object> map) {
+    public static IDataMap of(Map<? extends String, ?> map) {
         if (map instanceof IDataMap) {
             return (IDataMap)map;
         } else {
