@@ -108,14 +108,14 @@ public class ObjectHelper {
 
         String output;
 
-        if (object instanceof Object[][]) {
+        if (object instanceof IData[] || object instanceof Table || object instanceof IDataCodable[] || object instanceof IDataPortable[] || object instanceof ValuesCodable[]) {
+            output = ArrayHelper.stringify(IDataHelper.toIDataArray(object));
+        } else if (object instanceof IData || object instanceof IDataCodable || object instanceof IDataPortable || object instanceof ValuesCodable) {
+            output = IDataHelper.toIData(object).toString();
+        } else if (object instanceof Object[][]) {
             output = ArrayHelper.stringify((Object[][])object);
         } else if (object instanceof Object[]) {
             output = ArrayHelper.stringify((Object[])object);
-        } else if (object instanceof IData || object instanceof IDataCodable || object instanceof IDataPortable || object instanceof ValuesCodable) {
-            output = IDataHelper.toIData(object).toString();
-        } else if (object instanceof IData[] || object instanceof Table || object instanceof IDataCodable[] || object instanceof IDataPortable[] || object instanceof ValuesCodable[]) {
-            output = ArrayHelper.stringify(IDataHelper.toIDataArray(object));
         } else {
             output = object.toString();
         }
