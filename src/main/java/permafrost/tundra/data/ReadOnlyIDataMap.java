@@ -288,7 +288,7 @@ public class ReadOnlyIDataMap extends IDataMap {
      * @param map Mappings to be stored in this map.
      */
     @Override
-    public void putAll(Map<? extends String, ? extends Object> map) {
+    public void putAll(Map<? extends String, ?> map) {
         // do nothing as cursor is read only
     }
 
@@ -318,7 +318,7 @@ public class ReadOnlyIDataMap extends IDataMap {
      * @param map A Map containing key value pairs to be stored in this IDataMap.
      */
     @Override
-    public void merge(Map<? extends String, ? extends Object> map) {
+    public void merge(Map<? extends String, ?> map) {
         // do nothing as cursor is read only
     }
 
