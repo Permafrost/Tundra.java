@@ -117,7 +117,7 @@ public class IDataHelper {
             values.add(entry.getValue());
         }
 
-        return ArrayHelper.normalize(values.toArray());
+        return ArrayHelper.normalize(values);
     }
 
     /**
@@ -2530,7 +2530,7 @@ public class IDataHelper {
             list.add(get(item, key, defaultValue));
         }
 
-        return ArrayHelper.normalize(list.toArray());
+        return ArrayHelper.normalize(list);
     }
 
     /**
