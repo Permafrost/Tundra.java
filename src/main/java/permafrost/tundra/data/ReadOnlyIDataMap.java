@@ -133,7 +133,7 @@ public class ReadOnlyIDataMap extends IDataMap {
      *
      * @param map The map to see this new object with.
      */
-    public ReadOnlyIDataMap(Map<? extends Object, ? extends Object> map) {
+    public ReadOnlyIDataMap(Map<?, ?> map) {
         this(IDataHelper.toIData(map));
     }
 
@@ -143,7 +143,7 @@ public class ReadOnlyIDataMap extends IDataMap {
      * @param map        The map to see this new object with.
      * @param comparator The IDataComparator to be used to compare IData objects.
      */
-    public ReadOnlyIDataMap(Map<? extends Object, ? extends Object> map, IDataComparator comparator) {
+    public ReadOnlyIDataMap(Map<?, ?> map, IDataComparator comparator) {
         this(map);
         setComparator(comparator);
     }
@@ -191,10 +191,10 @@ public class ReadOnlyIDataMap extends IDataMap {
 
         while (cursor.next()) {
             Object value = cursor.getValue();
-            if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
-                cursor.setValue(ReadOnlyIDataMap.of(IDataHelper.toIData(value)));
-            } else if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
+            if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
                 cursor.setValue(ReadOnlyIDataMap.of(IDataHelper.toIDataArray(value)));
+            } else if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
+                cursor.setValue(ReadOnlyIDataMap.of(IDataHelper.toIData(value)));
             }
         }
 
