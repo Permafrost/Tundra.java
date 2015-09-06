@@ -851,7 +851,7 @@ public class IDataHelper {
      * @return A string representation of the given IData document.
      */
     public static String join(IData document, boolean includeNulls) {
-        return join(document, ", ", ", ", ": ", includeNulls);
+        return join(document, null, null, null, includeNulls);
     }
 
     /**
@@ -882,6 +882,10 @@ public class IDataHelper {
     public static String join(IData document, String itemSeparator, String listSeparator, String valueSeparator, boolean includeNulls) {
         if (document == null) return null;
 
+        if (itemSeparator == null) itemSeparator = ", ";
+        if (listSeparator == null) listSeparator = ", ";
+        if (valueSeparator == null) valueSeparator = ": ";
+
         boolean itemSeparatorRequired = false;
 
         IDataCursor cursor = document.getCursor();
@@ -893,7 +897,7 @@ public class IDataHelper {
 
             boolean includeItem = includeNulls || value != null;
 
-            if (itemSeparator != null && itemSeparatorRequired && includeItem) builder.append(itemSeparator);
+            if (itemSeparatorRequired && includeItem) builder.append(itemSeparator);
 
             if (includeItem) {
                 if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
@@ -907,17 +911,25 @@ public class IDataHelper {
                 }
 
                 builder.append(key);
-                if (valueSeparator != null) builder.append(valueSeparator);
+                builder.append(valueSeparator);
                 builder.append(ObjectHelper.stringify(value));
                 itemSeparatorRequired = true;
-            } else {
-                itemSeparatorRequired = false;
             }
         }
 
         cursor.destroy();
 
         return builder.toString();
+    }
+
+    /**
+     * Returns a string created by concatenating each element of the given IData[] document list.
+     *
+     * @param array The IData[] document list to be converted to a string.
+     * @return A string representation of the given IData document.
+     */
+    public static String join(IData[] array) {
+        return join(array, null, null, null, true);
     }
 
     /**
@@ -948,13 +960,17 @@ public class IDataHelper {
     public static String join(IData[] array, String itemSeparator, String listSeparator, String valueSeparator, boolean includeNulls) {
         if (array == null) return null;
 
+        if (itemSeparator == null) itemSeparator = ", ";
+        if (listSeparator == null) listSeparator = ", ";
+        if (valueSeparator == null) valueSeparator = ": ";
+
         StringBuilder builder = new StringBuilder();
         boolean separatorRequired = false;
 
         for(IData item : array) {
             boolean includeItem = includeNulls || item != null;
 
-            if (listSeparator != null && separatorRequired && includeItem) builder.append(listSeparator);
+            if (separatorRequired && includeItem) builder.append(listSeparator);
 
             if (includeItem) {
                 builder.append("{");
