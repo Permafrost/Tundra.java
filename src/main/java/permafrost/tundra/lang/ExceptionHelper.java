@@ -56,7 +56,7 @@ public class ExceptionHelper {
      * @throws ServiceException Always throws a new ServiceException using the given list of causes.
      */
     public static void raise(Collection<? extends Throwable> causes) throws ServiceException {
-        raise(getMessage(causes == null ? null : causes.toArray(new Throwable[causes.size()])));
+        raise(getMessage(causes));
     }
 
     /**
