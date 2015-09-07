@@ -55,7 +55,7 @@ public class ExceptionHelper {
      * @param causes The list of exceptions which caused this new ServiceException to be thrown.
      * @throws ServiceException Always throws a new ServiceException using the given list of causes.
      */
-    public static void raise(Collection<Throwable> causes) throws ServiceException {
+    public static void raise(Collection<? extends Throwable> causes) throws ServiceException {
         raise(getMessage(causes == null ? null : causes.toArray(new Throwable[causes.size()])));
     }
 
@@ -137,7 +137,7 @@ public class ExceptionHelper {
      * @param exceptions A list of exceptions whose messages are to be retrieved.
      * @return A message describing all exceptions in the given list.
      */
-    public static String getMessage(Collection<Throwable> exceptions) {
+    public static String getMessage(Collection<? extends Throwable> exceptions) {
         if (exceptions == null) return "";
         return getMessage(exceptions.toArray(new Throwable[exceptions.size()]));
     }
@@ -158,7 +158,7 @@ public class ExceptionHelper {
      * @param exceptions A list of exceptions whose messages are to be retrieved.
      * @return A message describing all exceptions in the given list.
      */
-    public static Collection<String> getMessages(Collection<Throwable> exceptions) {
+    public static Collection<String> getMessages(Collection<? extends Throwable> exceptions) {
         if (exceptions == null) return null;
         return Arrays.asList(getMessages(exceptions.toArray(new Throwable[exceptions.size()])));
     }

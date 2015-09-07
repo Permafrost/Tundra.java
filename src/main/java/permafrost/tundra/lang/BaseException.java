@@ -69,7 +69,7 @@ public class BaseException extends ServiceException {
      *
      * @param exceptions A collection of exceptions this exception will wrap.
      */
-    public BaseException(Collection<Throwable> exceptions) {
+    public BaseException(Collection<? extends Throwable> exceptions) {
         super(ExceptionHelper.getMessage(exceptions));
     }
 
