@@ -36,7 +36,7 @@ public class IterableEnumeration<T> implements Iterable<T> {
     /**
      * The iterator this object iterates over.
      */
-    private Iterator<T> iterator;
+    private final Iterator<T> iterator;
 
     /**
      * Constructs a new IterableEnumeration object.
@@ -45,7 +45,7 @@ public class IterableEnumeration<T> implements Iterable<T> {
      * @throws NullPointerException If the enumeration is null.
      */
     public IterableEnumeration(Enumeration<T> enumeration) {
-        this.iterator = new EnumerationIterator<T>(enumeration);
+        this.iterator = EnumerationIterator.of(enumeration);
     }
 
     /**

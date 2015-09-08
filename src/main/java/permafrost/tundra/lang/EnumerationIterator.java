@@ -43,10 +43,8 @@ public class EnumerationIterator<T> implements Iterator<T> {
      * Constructs a new EnumerationIterator object.
      *
      * @param enumeration The enumeration to iterate over.
-     * @throws NullPointerException If the enumeration is null.
      */
     public EnumerationIterator(Enumeration<T> enumeration) {
-        if (enumeration == null) throw new NullPointerException("enumeration must not be null");
         this.enumeration = enumeration;
     }
 
@@ -57,7 +55,7 @@ public class EnumerationIterator<T> implements Iterator<T> {
      * @return True if the iteration has more elements.
      */
     public boolean hasNext() {
-        return enumeration.hasMoreElements();
+        return enumeration != null && enumeration.hasMoreElements();
     }
 
     /**
@@ -67,6 +65,7 @@ public class EnumerationIterator<T> implements Iterator<T> {
      * @throws NoSuchElementException If no more elements exist.
      */
     public T next() {
+        if (enumeration == null) throw new NoSuchElementException();
         return enumeration.nextElement();
     }
 
@@ -79,5 +78,27 @@ public class EnumerationIterator<T> implements Iterator<T> {
      */
     public void remove() {
         throw new UnsupportedOperationException("remove method is not supported");
+    }
+
+    /**
+     * Returns a new EnumerationIterator object for the given Enumeration.
+     *
+     * @param enumeration The enumeration to be iterated over.
+     * @param <T> The type of objects the enumerator returns.
+     * @return A new EnumerationIterator object for the given Enumeration.
+     */
+    public static <T> EnumerationIterator<T> of(Enumeration<T> enumeration) {
+        return new EnumerationIterator<T>(enumeration);
+    }
+
+    /**
+     * Returns a new EnumerationIterator object for the given Enumeration.
+     *
+     * @param enumeration The enumeration to be iterated over.
+     * @param <T> The type of objects the enumerator returns.
+     * @return A new EnumerationIterator object for the given Enumeration.
+     */
+    public static <T> EnumerationIterator<T> newInstance(Enumeration<T> enumeration) {
+        return of(enumeration);
     }
 }
