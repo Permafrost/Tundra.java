@@ -24,6 +24,8 @@
 
 package permafrost.tundra.lang;
 
+import java.util.UUID;
+
 /**
  * A collection of convenience methods for working with IDs.
  */
@@ -59,7 +61,7 @@ public class IdentityHelper {
      * @return The new random UUID.
      */
     public static String generate(ObjectConvertMode mode) {
-        java.util.UUID uuid = java.util.UUID.randomUUID();
+        UUID uuid = UUID.randomUUID();
         String id = null;
 
         if (mode == null) mode = ObjectConvertMode.STRING;
