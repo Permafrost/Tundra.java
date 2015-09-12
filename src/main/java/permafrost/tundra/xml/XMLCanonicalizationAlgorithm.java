@@ -70,8 +70,8 @@ public enum XMLCanonicalizationAlgorithm {
     /**
      * Returns an XML canonicalization algorithm associated with the given name.
      *
-     * @param name The value to be converted to an HTTPMethod.
-     * @return The HTTPMethod representing the given value.
+     * @param name The value to be converted to an XMLCanonicalizationAlgorithm.
+     * @return The XMLCanonicalizationAlgorithm representing the given value.
      */
     public static XMLCanonicalizationAlgorithm normalize(String name) {
         XMLCanonicalizationAlgorithm algorithm = null;
