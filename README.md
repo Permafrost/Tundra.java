@@ -25,7 +25,6 @@ It is also dependent on the following open source libraries, which
 are required to be included on the project's classpath:
 
 * `jakarta-oro-2.0.8.jar` - http://archive.apache.org/dist/jakarta/oro/
-* `snakeyaml-1.15.jar` - http://www.snakeyaml.org
 * `spring-core-4.1.2.RELEASE.jar` - http://projects.spring.io/spring-framework/
 * `spring-web-4.1.2.RELEASE.jar` - http://projects.spring.io/spring-framework/
 * `xmlsec-1.5.8.jar` - http://santuario.apache.org
