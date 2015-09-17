@@ -27,25 +27,37 @@ package permafrost.tundra.time;
 import permafrost.tundra.lang.ArrayHelper;
 import java.sql.Timestamp;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Map;
 import java.util.SortedSet;
 import java.util.TimeZone;
+import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import javax.xml.bind.DatatypeConverter;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.Duration;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 /**
  * A collection of convenience methods for working with datetimes.
  */
 public class DateTimeHelper {
     public static final String DEFAULT_DATETIME_PATTERN = "datetime";
-    private static final java.util.Map<String, String> NAMED_PATTERNS = new java.util.TreeMap<String, String>();
+    private static final Map<String, String> NAMED_PATTERNS = new TreeMap<String, String>();
+    private static final Pattern DB2_DATETIME_PATTERN = Pattern.compile("(\\d{4})-(\\d{2})-(\\d{2})-(\\d{2})\\.(\\d{2})\\.(\\d{2})\\.(\\d{6})");
 
     static {
         NAMED_PATTERNS.put("datetime.jdbc", "yyyy-MM-dd HH:mm:ss.SSS");
+        NAMED_PATTERNS.put("datetime.db2", "yyyy-MM-dd-HH.mm.ss.SSS'000'");
         NAMED_PATTERNS.put("date", "yyyy-MM-dd");
         NAMED_PATTERNS.put("date.jdbc", "yyyy-MM-dd");
         NAMED_PATTERNS.put("date.xml", "yyyy-MM-dd");
@@ -81,14 +93,14 @@ public class DateTimeHelper {
         if (calendar == null || duration == null) return calendar;
 
         try {
-            java.util.GregorianCalendar gcal = new java.util.GregorianCalendar();
+            GregorianCalendar gcal = new GregorianCalendar();
             gcal.setTime(calendar.getTime());
             gcal.setTimeZone(calendar.getTimeZone());
-            javax.xml.datatype.XMLGregorianCalendar xcal = javax.xml.datatype.DatatypeFactory.newInstance().newXMLGregorianCalendar(gcal);
+            XMLGregorianCalendar xcal = DatatypeFactory.newInstance().newXMLGregorianCalendar(gcal);
             xcal.add(duration);
 
             calendar = xcal.toGregorianCalendar();
-        } catch (javax.xml.datatype.DatatypeConfigurationException ex) {
+        } catch (DatatypeConfigurationException ex) {
             throw new RuntimeException(ex);
         }
 
@@ -291,7 +303,7 @@ public class DateTimeHelper {
         if (timezone != null) input = TimeZoneHelper.convert(input, timezone);
 
         if (pattern.equals("datetime") || pattern.equals("datetime.xml")) {
-            output = javax.xml.bind.DatatypeConverter.printDateTime(input);
+            output = DatatypeConverter.printDateTime(input);
         } else if (pattern.equals("milliseconds")) {
             output = "" + input.getTimeInMillis();
         } else {
@@ -470,14 +482,33 @@ public class DateTimeHelper {
 
         try {
             if (pattern.equals("datetime") || pattern.equals("datetime.xml")) {
-                output = javax.xml.bind.DatatypeConverter.parseDateTime(input);
+                output = DatatypeConverter.parseDateTime(input);
             } else if (pattern.equals("datetime.jdbc")) {
                 output = Calendar.getInstance();
                 output.setTime(Timestamp.valueOf(input));
+            } else if (pattern.equals("datetime.db2")) {
+                Matcher matcher = DB2_DATETIME_PATTERN.matcher(input);
+                if (matcher.matches()) {
+                    output = Calendar.getInstance();
+                    output.setLenient(false);
+
+                    int year = Integer.parseInt(matcher.group(1));
+                    int month = Integer.parseInt(matcher.group(2));
+                    int day = Integer.parseInt(matcher.group(3));
+                    int hour = Integer.parseInt(matcher.group(4));
+                    int minute = Integer.parseInt(matcher.group(5));
+                    int second = Integer.parseInt(matcher.group(6));
+                    int microsecond = Integer.parseInt(matcher.group(7));
+
+                    output.set(year, month - 1, day, hour, minute, second);
+                    output.set(Calendar.MILLISECOND, microsecond / 1000);
+                } else {
+                    throw new ParseException("Unparseable datetime: '" + input + "' does not conform to pattern '" + pattern + "'", 0);
+                }
             } else if (pattern.equals("date") || pattern.equals("date.xml")) {
-                output = javax.xml.bind.DatatypeConverter.parseDate(input);
+                output = DatatypeConverter.parseDate(input);
             } else if (pattern.equals("time") || pattern.equals("time.xml")) {
-                output = javax.xml.bind.DatatypeConverter.parseTime(input);
+                output = DatatypeConverter.parseTime(input);
             } else if (pattern.equals("milliseconds")) {
                 output = Calendar.getInstance();
                 output.setTimeInMillis(Long.parseLong(input));
@@ -491,7 +522,7 @@ public class DateTimeHelper {
             }
 
             if (timezone != null) output = TimeZoneHelper.replace(output, timezone);
-        } catch (Exception ex) {
+        } catch(Exception ex) {
             throw new IllegalArgumentException("Unparseable datetime: '" + input + "' does not conform to pattern '" + pattern + "'", ex);
         }
 
