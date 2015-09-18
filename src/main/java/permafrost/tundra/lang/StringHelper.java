@@ -37,6 +37,7 @@ import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -645,5 +646,29 @@ public class StringHelper {
         } else {
             return string1.compareTo(string2);
         }
+    }
+
+    /**
+     * Returns a formatted string using the specified format and arguments.
+     *
+     * @param pattern   A format string, as per http://docs.oracle.com/javase/6/docs/api/java/util/Formatter.html.
+     * @param arguments Arguments referenced by the format specifiers in the format string.
+     * @return          A formatted string.
+     */
+    public static String format(String pattern, Object... arguments) {
+        return format(null, pattern, arguments);
+    }
+
+    /**
+     * Returns a formatted string using the specified format and arguments.
+     *
+     * @param locale    The locale to apply during formatting. If null then no localization is applied.
+     * @param pattern   A format string, as per http://docs.oracle.com/javase/6/docs/api/java/util/Formatter.html.
+     * @param arguments Arguments referenced by the format specifiers in the format string.
+     * @return          A formatted string.
+     */
+    public static String format(Locale locale, String pattern, Object... arguments) {
+        if (pattern == null) return null;
+        return String.format(locale, pattern, arguments);
     }
 }
