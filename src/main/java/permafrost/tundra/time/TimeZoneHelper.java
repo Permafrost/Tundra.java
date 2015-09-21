@@ -191,7 +191,7 @@ public class TimeZoneHelper {
      * @return A new calendar representing the same instant in time as the given calendar but in the given time.
      */
     public static Calendar convert(Calendar input, TimeZone timezone) {
-        if (input == null || timezone == null) return input;
+        if (input == null || timezone == null || timezone.equals(input.getTimeZone())) return input;
 
         Calendar output = Calendar.getInstance(timezone);
         output.setTimeInMillis(input.getTimeInMillis());
@@ -217,7 +217,7 @@ public class TimeZoneHelper {
      * @return A new calendar that has been forced into a new time zone.
      */
     public static Calendar replace(Calendar input, TimeZone timezone) {
-        if (input == null || timezone == null) return input;
+        if (input == null || timezone == null || timezone.equals(input.getTimeZone())) return input;
 
         long instant = input.getTimeInMillis();
         TimeZone currentZone = input.getTimeZone();
