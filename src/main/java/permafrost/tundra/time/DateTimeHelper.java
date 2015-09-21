@@ -428,9 +428,31 @@ public class DateTimeHelper {
      * @return A Calendar object representing the parsed value.
      */
     public static Calendar parse(long milliseconds) {
+        return parse(milliseconds, (TimeZone)null);
+    }
+
+    /**
+     * Parses a milliseconds since epoch value into a Calendar object.
+     *
+     * @param milliseconds The milliseconds since epoch value.
+     * @param timezone The time zone ID identifying the time zone into which the parsed string will be forced.
+     * @return A Calendar object representing the parsed value.
+     */
+    public static Calendar parse(long milliseconds, String timezone) {
+        return parse(milliseconds, TimeZoneHelper.get(timezone));
+    }
+
+    /**
+     * Parses a milliseconds since epoch value into a Calendar object.
+     *
+     * @param milliseconds The milliseconds since epoch value.
+     * @param timezone The time zone into which the parsed string will be forced.
+     * @return A Calendar object representing the parsed value.
+     */
+    public static Calendar parse(long milliseconds, TimeZone timezone) {
         Calendar output = Calendar.getInstance();
         output.setTimeInMillis(milliseconds);
-        return output;
+        return TimeZoneHelper.convert(output, timezone);
     }
 
     /**
@@ -1101,5 +1123,76 @@ public class DateTimeHelper {
         if (calendars == null || calendars.size() == 0) return null;
         SortedSet<Calendar> set = new TreeSet<Calendar>(calendars);
         return set.first();
+    }
+
+    /**
+     * Normalizes the given Object to a Calendar: if it's already a Calendar, it is returned;
+     * if it's a Date, it is converted to a Calendar; if it's a Number, it is treated as
+     * a milliseconds since epoch value to create a new Calendar; otherwise it is parsed as
+     * a datetime string.
+     *
+     * @param object    The Object to be normalized to a Calendar.
+     * @return          A Calendar object representing the given Object.
+     */
+    public static Calendar normalize(Object object) {
+        return normalize(object, null);
+    }
+
+    /**
+     * Normalizes the given Object to a Calendar: if it's already a Calendar, it is returned;
+     * if it's a Date, it is converted to a Calendar; if it's a Number, it is treated as
+     * a milliseconds since epoch value to create a new Calendar; otherwise it is parsed as
+     * a datetime string.
+     *
+     * @param object    The Object to be normalized to a Calendar.
+     * @param pattern   An optional datetime pattern the given Object adheres to, if it's a String.
+     * @return          A Calendar object representing the given Object.
+     */
+    public static Calendar normalize(Object object, String pattern) {
+        return normalize(object, pattern, (TimeZone)null);
+    }
+
+    /**
+     * Normalizes the given Object to a Calendar: if it's already a Calendar, it is returned;
+     * if it's a Date, it is converted to a Calendar; if it's a Number, it is treated as
+     * a milliseconds since epoch value to create a new Calendar; otherwise it is parsed as
+     * a datetime string.
+     *
+     * @param object    The Object to be normalized to a Calendar.
+     * @param pattern   An optional datetime pattern the given Object adheres to, if it's a String.
+     * @param timezone  The time zone ID identifying the time zone which the parsed string will be forced.
+     * @return          A Calendar object representing the given Object.
+     */
+    public static Calendar normalize(Object object, String pattern, String timezone) {
+        return normalize(object, pattern, TimeZoneHelper.get(timezone));
+    }
+
+    /**
+     * Normalizes the given Object to a Calendar: if it's already a Calendar, it is returned;
+     * if it's a Date, it is converted to a Calendar; if it's a Number, it is treated as
+     * a milliseconds since epoch value to create a new Calendar; otherwise it is parsed as
+     * a datetime string.
+     *
+     * @param object    The Object to be normalized to a Calendar.
+     * @param pattern   An optional datetime pattern the given Object adheres to, if it's a String.
+     * @param timezone  The time zone into which the parsed string will be forced.
+     * @return          A Calendar object representing the given Object.
+     */
+    public static Calendar normalize(Object object, String pattern, TimeZone timezone) {
+        if (object == null) return null;
+
+        Calendar calendar = null;
+
+        if (object instanceof Calendar) {
+            calendar = TimeZoneHelper.convert((Calendar)object, timezone);
+        } else if (object instanceof Date) {
+            calendar = TimeZoneHelper.convert(toCalendar((Date)object), timezone);
+        } else if (object instanceof Number) {
+            calendar = parse(((Number)object).longValue(), timezone);
+        } else {
+            calendar = parse(object.toString(), pattern, timezone);
+        }
+
+        return calendar;
     }
 }
