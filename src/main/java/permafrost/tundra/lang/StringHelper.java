@@ -28,7 +28,11 @@ import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
 import com.wm.data.IDataUtil;
+import permafrost.tundra.data.IDataHelper;
 import permafrost.tundra.io.StreamHelper;
+import permafrost.tundra.math.BigDecimalHelper;
+import permafrost.tundra.math.BigIntegerHelper;
+import permafrost.tundra.time.DateTimeHelper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -670,5 +674,51 @@ public class StringHelper {
     public static String format(Locale locale, String pattern, Object... arguments) {
         if (pattern == null) return null;
         return String.format(locale, pattern, arguments);
+    }
+
+    /**
+     * Returns a formatted string using the specified format and arguments.
+     *
+     * @param locale    The locale to apply during formatting. If null then no localization is applied.
+     * @param pattern   A format string, as per http://docs.oracle.com/javase/6/docs/api/java/util/Formatter.html.
+     * @param pipeline  The IData pipeline that contains the argument values.
+     * @param arguments The list of arguments to be fetched from the pipeline and normalized to the specified types.
+     * @return          A formatted string.
+     */
+    public static String format(Locale locale, String pattern, IData pipeline, IData[] arguments) {
+        List<Object> list = new ArrayList<Object>(arguments == null? 0 : arguments.length);
+
+        if (arguments != null) {
+            for (IData argument : arguments) {
+                if (argument != null) {
+                    IDataCursor cursor = argument.getCursor();
+
+                    String key = IDataUtil.getString(cursor, "key");
+                    Object value = IDataUtil.get(cursor, "value");
+                    String type = IDataUtil.getString(cursor, "type");
+                    String argPattern = IDataUtil.getString(cursor, "pattern");
+
+                    cursor.destroy();
+
+                    if (key != null && value == null) value = IDataHelper.get(pipeline, key);
+
+                    if (value != null) {
+                        if (type == null || type.equalsIgnoreCase("string")) {
+                            value = value.toString();
+                        } else if (type.equalsIgnoreCase("integer")) {
+                            value = BigIntegerHelper.normalize(value);
+                        } else if (type.equalsIgnoreCase("decimal")) {
+                            value = BigDecimalHelper.normalize(value);
+                        } else if (type.equalsIgnoreCase("datetime")) {
+                            value = DateTimeHelper.normalize(value, argPattern);
+                        }
+                    }
+
+                    list.add(value);
+                }
+            }
+        }
+
+        return format(locale, pattern, list.toArray(new Object[list.size()]));
     }
 }
