@@ -717,12 +717,12 @@ public class DateTimeHelper {
     }
 
     /**
-     * Returns the current datetime as an XML datetime string.
+     * Returns the current datetime as a java.util.Calendar.
      *
-     * @return The current datetime as an XML datetime string.
+     * @return The current datetime as a java.util.Calendar.
      */
-    public static String now() {
-        return now(null);
+    public static Calendar now() {
+        return Calendar.getInstance();
     }
 
     /**
@@ -739,7 +739,7 @@ public class DateTimeHelper {
      * Returns the current datetime as a string formatted according to the given pattern.
      *
      * @param pattern  The serialization pattern to use.
-     * @param timezone The time zone ID identifying the time zone the current datetime should be returned in.
+     * @param timezone The time zone ID identifying the time zone the datetime should be returned in.
      * @return The current datetime as a string formatted according to the given pattern.
      */
     public static String now(String pattern, String timezone) {
@@ -750,7 +750,7 @@ public class DateTimeHelper {
      * Returns the current datetime as a string formatted according to the given pattern.
      *
      * @param pattern  The serialization pattern to use.
-     * @param timezone The time zone the current datetime should be returned in.
+     * @param timezone The time zone the datetime should be returned in.
      * @return The current datetime as a string formatted according to the given pattern.
      */
     public static String now(String pattern, TimeZone timezone) {
