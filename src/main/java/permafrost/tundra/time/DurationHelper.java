@@ -38,11 +38,11 @@ import javax.xml.datatype.Duration;
  * A collection of convenience methods for working with durations.
  */
 public class DurationHelper {
-    private static final long MILLISECONDS_PER_SECOND = 1000;
-    private static final long MILLISECONDS_PER_MINUTE = 60 * MILLISECONDS_PER_SECOND;
-    private static final long MILLISECONDS_PER_HOUR = 60 * MILLISECONDS_PER_MINUTE;
-    private static final long MILLISECONDS_PER_DAY = 24 * MILLISECONDS_PER_HOUR;
-    private static final long MILLISECONDS_PER_WEEK = 7 * MILLISECONDS_PER_DAY;
+    public static final long MILLISECONDS_PER_SECOND = 1000;
+    public static final long MILLISECONDS_PER_MINUTE = 60 * MILLISECONDS_PER_SECOND;
+    public static final long MILLISECONDS_PER_HOUR = 60 * MILLISECONDS_PER_MINUTE;
+    public static final long MILLISECONDS_PER_DAY = 24 * MILLISECONDS_PER_HOUR;
+    public static final long MILLISECONDS_PER_WEEK = 7 * MILLISECONDS_PER_DAY;
 
     private static final BigDecimal DECIMAL_ONE_THOUSAND = new BigDecimal(1000);
     private static final BigInteger INTEGER_SEVEN = new BigInteger("7");
