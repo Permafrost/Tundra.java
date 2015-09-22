@@ -820,4 +820,68 @@ public class DurationHelper {
         if (instant == null) instant = Calendar.getInstance();
         return input.normalizeWith(instant).multiply(factor);
     }
+
+    /**
+     * Normalizes the given object to a Duration object.
+     *
+     * @param input   The object to be normalized.
+     * @param pattern The pattern the object adhere to, if it is a string.
+     * @return A Duration object which represents the given object.
+     */
+    public static Duration normalize(Object input, String pattern) {
+        return normalize(input, DurationPattern.normalize(pattern));
+    }
+
+    /**
+     * Normalizes the given object to a Duration object.
+     *
+     * @param input   The object to be normalized.
+     * @param pattern The pattern the object adhere to, if it is a string.
+     * @return A Duration object which represents the given object.
+     */
+    public static Duration normalize(Object input, DurationPattern pattern) {
+        if (input == null) return null;
+
+        Duration output = null;
+
+        if (input instanceof String) {
+            output = parse((String)input, pattern);
+        } else if (input instanceof Number) {
+            output = parse(((Number)input).longValue());
+        } else if (input instanceof Duration) {
+            output = (Duration)input;
+        }
+
+        return output;
+    }
+
+    /**
+     * Normalizes the given objects to Duration objects.
+     *
+     * @param input   The list of objects to be normalized.
+     * @param pattern The pattern the objects adhere to, if they are strings.
+     * @return A list of Duration objects which represents the given objects.
+     */
+    public static Duration[] normalize(Object[] input, String pattern) {
+        return normalize(input, DurationPattern.normalize(pattern));
+    }
+
+    /**
+     * Normalizes the given objects to Duration objects.
+     *
+     * @param input   The list of objects to be normalized.
+     * @param pattern The pattern the objects adhere to, if they are strings.
+     * @return A list of Duration objects which represents the given objects.
+     */
+    public static Duration[] normalize(Object[] input, DurationPattern pattern) {
+        if (input == null) return null;
+
+        Duration[] output = new Duration[input.length];
+
+        for (int i = 0; i < input.length; i++) {
+            output[i] = normalize(input[i], pattern);
+        }
+
+        return output;
+    }
 }
