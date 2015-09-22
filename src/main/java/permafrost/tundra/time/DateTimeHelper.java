@@ -754,7 +754,136 @@ public class DateTimeHelper {
      * @return The current datetime as a string formatted according to the given pattern.
      */
     public static String now(String pattern, TimeZone timezone) {
-        return emit(Calendar.getInstance(), pattern, timezone);
+        return emit(now(), pattern, timezone);
+    }
+
+    /**
+     * Returns the current date as a java.util.Calendar.
+     *
+     * @return The current date as a java.util.Calendar.
+     */
+    public static Calendar today() {
+        Calendar today = now();
+        today.set(Calendar.HOUR_OF_DAY, 0);
+        today.set(Calendar.MINUTE, 0);
+        today.set(Calendar.SECOND, 0);
+        today.set(Calendar.MILLISECOND, 0);
+
+        return today;
+    }
+
+    /**
+     * Returns the current date as a string formatted according to the given pattern.
+     *
+     * @param pattern The serialization pattern to use.
+     * @return The current date as a string formatted according to the given pattern.
+     */
+    public static String today(String pattern) {
+        return today(pattern, (TimeZone)null);
+    }
+
+    /**
+     * Returns the current date as a string formatted according to the given pattern.
+     *
+     * @param pattern  The serialization pattern to use.
+     * @param timezone The time zone ID identifying the time zone the datetime should be returned in.
+     * @return The current date as a string formatted according to the given pattern.
+     */
+    public static String today(String pattern, String timezone) {
+        return today(pattern, TimeZoneHelper.get(timezone));
+    }
+
+    /**
+     * Returns the current date as a string formatted according to the given pattern.
+     *
+     * @param pattern  The serialization pattern to use.
+     * @param timezone The time zone the datetime should be returned in.
+     * @return The current date as a string formatted according to the given pattern.
+     */
+    public static String today(String pattern, TimeZone timezone) {
+        return emit(TimeZoneHelper.replace(today(), timezone), pattern);
+    }
+
+    /**
+     * Returns the current date plus 1 day as a java.util.Calendar.
+     *
+     * @return The current date plus 1 day as a java.util.Calendar.
+     */
+    public static Calendar tomorrow() {
+        return add(today(), DurationHelper.parse(DurationHelper.MILLISECONDS_PER_DAY));
+    }
+
+    /**
+     * Returns the current date plus 1 day as a string formatted according to the given pattern.
+     *
+     * @param pattern The serialization pattern to use.
+     * @return The current date plus 1 day as a string formatted according to the given pattern.
+     */
+    public static String tomorrow(String pattern) {
+        return tomorrow(pattern, (TimeZone)null);
+    }
+
+    /**
+     * Returns the current date plus 1 day as a string formatted according to the given pattern.
+     *
+     * @param pattern  The serialization pattern to use.
+     * @param timezone The time zone ID identifying the time zone the datetime should be returned in.
+     * @return The current date plus 1 day as a string formatted according to the given pattern.
+     */
+    public static String tomorrow(String pattern, String timezone) {
+        return tomorrow(pattern, TimeZoneHelper.get(timezone));
+    }
+
+    /**
+     * Returns the current date plus 1 day as a string formatted according to the given pattern.
+     *
+     * @param pattern  The serialization pattern to use.
+     * @param timezone The time zone the datetime should be returned in.
+     * @return The current date plus 1 day as a string formatted according to the given pattern.
+     */
+    public static String tomorrow(String pattern, TimeZone timezone) {
+        return emit(TimeZoneHelper.replace(tomorrow(), timezone), pattern);
+    }
+
+    /**
+     * Returns the current date minus 1 day as a java.util.Calendar.
+     *
+     * @return The current date minus 1 day as a java.util.Calendar.
+     */
+    public static Calendar yesterday() {
+        return subtract(today(), DurationHelper.parse(DurationHelper.MILLISECONDS_PER_DAY));
+    }
+
+    /**
+     * Returns the current date minus 1 day as a string formatted according to the given pattern.
+     *
+     * @param pattern The serialization pattern to use.
+     * @return The current date minus 1 day as a string formatted according to the given pattern.
+     */
+    public static String yesterday(String pattern) {
+        return yesterday(pattern, (TimeZone)null);
+    }
+
+    /**
+     * Returns the current date minus 1 day as a string formatted according to the given pattern.
+     *
+     * @param pattern  The serialization pattern to use.
+     * @param timezone The time zone ID identifying the time zone the datetime should be returned in.
+     * @return The current date minus 1 day as a string formatted according to the given pattern.
+     */
+    public static String yesterday(String pattern, String timezone) {
+        return yesterday(pattern, TimeZoneHelper.get(timezone));
+    }
+
+    /**
+     * Returns the current date minus 1 day as a string formatted according to the given pattern.
+     *
+     * @param pattern  The serialization pattern to use.
+     * @param timezone The time zone the datetime should be returned in.
+     * @return The current date minus 1 day as a string formatted according to the given pattern.
+     */
+    public static String yesterday(String pattern, TimeZone timezone) {
+        return emit(TimeZoneHelper.replace(yesterday(), timezone), pattern);
     }
 
     /**
