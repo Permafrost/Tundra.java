@@ -37,11 +37,14 @@ import permafrost.tundra.flow.VariableSubstitutor;
 import permafrost.tundra.lang.ArrayHelper;
 import permafrost.tundra.lang.ObjectHelper;
 import permafrost.tundra.lang.StringHelper;
+import permafrost.tundra.time.DateTimeHelper;
 import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -1011,6 +1014,10 @@ public class IDataHelper {
                 value = ArrayHelper.toStringTable((Object[][]) value);
             } else if (value instanceof Object[]) {
                 value = ArrayHelper.toStringArray((Object[])value);
+            } else if (value instanceof Calendar) {
+                value = DateTimeHelper.emit((Calendar)value);
+            } else if (value instanceof Date) {
+                value = DateTimeHelper.emit((Date)value);
             } else {
                 value = value.toString();
             }
