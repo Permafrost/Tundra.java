@@ -250,16 +250,27 @@ public class StringHelper {
 
         return output;
     }
+    
+    /**
+     * Converts a null input string to an empty string, or returns the string unmodified if not null.
+     *
+     * @param input    The string to be converted to an empty string if null.
+     * @return         If input is null then empty string, otherwise input string unmodified.
+     */
+    public static String blankify(String input) {
+        return blankify(input, true);
+    }
 
     /**
-     * Returns an empty string if given string is null, otherwise returns the given string.
+     * Converts a null input string to an empty string, or returns the string unmodified if not null.
      *
-     * @param string The string to blankify.
-     * @return An empty string if the given string is null, otherwise the given string.
+     * @param input    The string to be converted to an empty string if null.
+     * @param blankify If true, nulls will be converted to empty strings, else no conversion will occur.
+     * @return         If blankify is true and input is null then empty string, otherwise input string unmodified.
      */
-    public static String blankify(String string) {
-        if (string == null) string = "";
-        return string;
+    public static String blankify(String input, boolean blankify) {
+        if (!blankify) return input;
+        return input == null ? "" : input;
     }
 
     /**
