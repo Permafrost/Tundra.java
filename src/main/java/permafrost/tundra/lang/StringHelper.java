@@ -307,7 +307,7 @@ public class StringHelper {
      *
      * @param string        The string to capitalize.
      * @param firstWordOnly Whether only the first word should be capitalized, or all words.
-     * @return The capitalized string.
+     * @return              The capitalized string.
      */
     public static String capitalize(String string, boolean firstWordOnly) {
         if (string == null) return null;
@@ -327,6 +327,26 @@ public class StringHelper {
         }
 
         return new String(characters);
+    }
+
+    /**
+     * Capitalizes the first character in either the first word or all words in each of the given
+     * strings.
+     *
+     * @param input         The strings to capitalize.
+     * @param firstWordOnly Whether only the first word should be capitalized, or all words.
+     * @return              The capitalized strings.
+     */
+    public static String[] capitalize(String[] input, boolean firstWordOnly) {
+        if (input == null) return null;
+
+        String[] output = new String[input.length];
+
+        for (int i = 0; i < input.length; i++) {
+            output[i] = capitalize(input[i], firstWordOnly);
+        }
+
+        return output;
     }
 
     /**

@@ -120,4 +120,14 @@ public class StringHelperTest {
     public void testSplitWithRegularExpression() throws Exception {
         assertArrayEquals(new String[] { "a", "", "be" }, StringHelper.split("abcbdbe", "(bc|bd)", false));
     }
+
+    @Test
+    public void testCapitalizeAllWords() throws Exception {
+        assertArrayEquals(new String[] { "This Is A Test", "This Is Another Test" }, StringHelper.capitalize(new String[] { "this is a test", "this is another test" }, false));
+    }
+
+    @Test
+    public void testCapitalizeFirstWords() throws Exception {
+        assertArrayEquals(new String[] { "This is a test", "This is another test" }, StringHelper.capitalize(new String[] { "this is a test", "this is another test" }, true));
+    }
 }
