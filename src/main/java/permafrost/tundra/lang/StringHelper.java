@@ -250,7 +250,7 @@ public class StringHelper {
 
         return output;
     }
-    
+
     /**
      * Converts a null input string to an empty string, or returns the string unmodified if not null.
      *
@@ -271,6 +271,35 @@ public class StringHelper {
     public static String blankify(String input, boolean blankify) {
         if (!blankify) return input;
         return input == null ? "" : input;
+    }
+
+    /**
+     * Converts any null strings to empty strings, or returns the strings unmodified if not null.
+     *
+     * @param input    The list of strings to be converted to an empty strings if null.
+     * @return         The list of strings converted to empty strings if they were null.
+     */
+    public static String[] blankify(String[] input) {
+        return blankify(input, true);
+    }
+
+    /**
+     * Converts any null strings to empty strings, or returns the strings unmodified if not null.
+     *
+     * @param input    The list of strings to be converted to an empty strings if null.
+     * @param blankify If true, nulls will be converted to empty strings, else no conversion will occur.
+     * @return         The list of strings converted to empty strings if they were null.
+     */
+    public static String[] blankify(String input[], boolean blankify) {
+        if (!blankify || input == null) return input;
+
+        String output[] = new String[input.length];
+
+        for (int i = 0; i < input.length; i++) {
+            output[i] = blankify(input[i], blankify);
+        }
+
+        return output;
     }
 
     /**
