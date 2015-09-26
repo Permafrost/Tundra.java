@@ -54,9 +54,9 @@ public class StringHelperTest {
 
     @Test
     public void testPadWithNull() throws Exception {
-        assertEquals("aaaaaaaaaa", StringHelper.pad(null, 10, 'a'));
-        assertEquals("aaaaaaaaaa", StringHelper.pad(null, -10, 'a'));
-        assertEquals("", StringHelper.pad(null, 0, 'a'));
+        assertEquals("aaaaaaaaaa", StringHelper.pad((String)null, 10, 'a'));
+        assertEquals("aaaaaaaaaa", StringHelper.pad((String)null, -10, 'a'));
+        assertEquals("", StringHelper.pad((String)null, 0, 'a'));
     }
 
     @Test

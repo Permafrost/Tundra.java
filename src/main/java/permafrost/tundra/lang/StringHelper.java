@@ -650,7 +650,7 @@ public class StringHelper {
      * @param length    The desired length of the string. If less than 0 the string is padded right to left, otherwise
      *                  it is padded from left to right.
      * @param character The character to pad the string with.
-     * @return The padded string.
+     * @return          The padded string.
      */
     public static String pad(String string, int length, char character) {
         if (string == null) string = "";
@@ -669,6 +669,27 @@ public class StringHelper {
         if (left) builder.append(string);
 
         return builder.toString();
+    }
+
+    /**
+     * Pads each string in the given list with the given character to the given length.
+     *
+     * @param input     The list of strings to be padded.
+     * @param length    The desired length of the strings. If less than 0 the strings are padded right to left, otherwise
+     *                  they are padded from left to right.
+     * @param character The character to pad the strings with.
+     * @return          The list of padded strings.
+     */
+    public static String[] pad(String[] input, int length, char character) {
+        if (input == null) return null;
+
+        String[] output = new String[input.length];
+
+        for (int i = 0; i < input.length; i++) {
+            output[i] = pad(input[i], length, character);
+        }
+
+        return output;
     }
 
     /**
