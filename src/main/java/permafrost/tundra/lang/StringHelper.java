@@ -653,30 +653,6 @@ public class StringHelper {
     }
 
     /**
-     * Returns a formatted string using the specified format and arguments.
-     *
-     * @param pattern   A format string, as per http://docs.oracle.com/javase/6/docs/api/java/util/Formatter.html.
-     * @param arguments Arguments referenced by the format specifiers in the format string.
-     * @return          A formatted string.
-     */
-    public static String format(String pattern, Object... arguments) {
-        return format(null, pattern, arguments);
-    }
-
-    /**
-     * Returns a formatted string using the specified format and arguments.
-     *
-     * @param locale    The locale to apply during formatting. If null then no localization is applied.
-     * @param pattern   A format string, as per http://docs.oracle.com/javase/6/docs/api/java/util/Formatter.html.
-     * @param arguments Arguments referenced by the format specifiers in the format string.
-     * @return          A formatted string.
-     */
-    public static String format(Locale locale, String pattern, Object... arguments) {
-        if (pattern == null) return null;
-        return String.format(locale, pattern, arguments);
-    }
-
-    /**
      * Returns a formatted string using the specified pattern and arguments.
      *
      * @param locale    The locale to apply during formatting. If null then no localization is applied.
@@ -685,8 +661,8 @@ public class StringHelper {
      * @param arguments The list of arguments to be fetched from the record and normalized to the specified types.
      * @return          A formatted string.
      */
-    public static String format(Locale locale, String pattern, IData record, IData[] arguments) {
-        List<Object> list = new ArrayList<Object>(arguments == null? 0 : arguments.length);
+    public static String format(Locale locale, String pattern, IData[] arguments, IData record) {
+        List<Object> args = new ArrayList<Object>(arguments == null? 0 : arguments.length);
 
         if (arguments != null) {
             for (IData argument : arguments) {
@@ -714,12 +690,12 @@ public class StringHelper {
                         }
                     }
 
-                    list.add(value);
+                    args.add(value);
                 }
             }
         }
 
-        return format(locale, pattern, list.toArray(new Object[list.size()]));
+        return String.format(locale, pattern, args.toArray(new Object[args.size()]));
     }
 
     /**
@@ -728,18 +704,18 @@ public class StringHelper {
      *
      * @param locale            The locale to apply during formatting. If null then no localization is applied.
      * @param pattern           A format string, as per http://docs.oracle.com/javase/6/docs/api/java/util/Formatter.html.
-     * @param records           An IData[] document list where each item contains a set of argument values.
      * @param arguments         The list of arguments to be fetched from each record and normalized to the specified types.
      * @param recordSeparator   An optional string for separating each formatted record in the resulting string.
+     * @param records           An IData[] document list where each item contains a set of argument values.
      * @return                  A formatted string.
      */
-    public static String format(Locale locale, String pattern, IData[] records, IData[] arguments, String recordSeparator) {
+    public static String format(Locale locale, String pattern, IData[] arguments, String recordSeparator, IData ... records) {
         if (records == null) return null;
 
         StringBuilder builder = new StringBuilder();
 
         for (IData record : records) {
-            builder.append(format(locale, pattern, record, arguments));
+            builder.append(format(locale, pattern, arguments, record));
             if (recordSeparator != null) builder.append(recordSeparator);
         }
 
