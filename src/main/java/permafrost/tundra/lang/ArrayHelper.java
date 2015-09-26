@@ -373,7 +373,7 @@ public class ArrayHelper {
         }
         list.add(index, item);
 
-        return list.toArray(array);
+        return list.toArray(instantiate(klass, list.size()));
     }
 
     /**
