@@ -802,4 +802,54 @@ public class StringHelper {
 
         return builder.toString();
     }
+
+    /**
+     * Returns null if the given string only contains whitespace characters.
+     *
+     * @param input   The string to be nullified.
+     * @return        Null if the given string only contains whitespace characters, otherwise the given string unmodified.
+     */
+    public static String nullify(String input) {
+        return nullify(input, true);
+    }
+
+    /**
+     * Returns null if the given string only contains whitespace characters.
+     *
+     * @param input   The string to be nullified.
+     * @param nullify If true, the string will be nullified.
+     * @return        Null if the given string only contains whitespace characters, otherwise the given string unmodified.
+     */
+    public static String nullify(String input, boolean nullify) {
+        return (input == null || input.trim().equals("")) ? null : input;
+    }
+
+    /**
+     * Converts each string in the given list to null if it only contains whitespace characters.
+     *
+     * @param input   The string list to be nullified.
+     * @return        The nullified list of strings.
+     */
+    public static String[] nullify(String[] input) {
+        return nullify(input, true);
+    }
+
+    /**
+     * Converts each string in the given list to null if it only contains whitespace characters.
+     *
+     * @param input   The string list to be nullified.
+     * @param nullify If true, the list will be nullified.
+     * @return        The nullified list of strings.
+     */
+    public static String[] nullify(String[] input, boolean nullify) {
+        if (!nullify || input == null) return null;
+
+        String[] output = new String[input.length];
+
+        for (int i = 0; i < input.length; i++) {
+            output[i] = nullify(input[i], nullify);
+        }
+
+        return output;
+    }
 }
