@@ -837,6 +837,62 @@ public class IDataHelper {
     }
 
     /**
+     * Converts all strings that only contain whitespace characters to null.
+     *
+     * @param document An IData document to be nullified.
+     * @param recurse  Whether to also nullify embedded IData and IData[] objects.
+     * @return         A new IData document that is the given IData nullified.
+     */
+    public static IData nullify(IData document, boolean recurse) {
+        if (document == null) return null;
+
+        IData output = IDataFactory.create();
+        IDataCursor inputCursor = document.getCursor();
+        IDataCursor outputCursor = output.getCursor();
+
+        while (inputCursor.next()) {
+            String key = inputCursor.getKey();
+            Object value = inputCursor.getValue();
+
+            if (value instanceof String) {
+                value = StringHelper.nullify((String)value);
+            } else if (recurse) {
+                if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
+                    value = nullify(toIDataArray(value), recurse);
+                } else if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
+                    value = nullify(toIData(value), recurse);
+                }
+            }
+
+            outputCursor.insertAfter(key, value);
+        }
+
+        inputCursor.destroy();
+        outputCursor.destroy();
+
+        return output;
+    }
+
+    /**
+     * Converts all strings that only contain whitespace characters to null.
+     *
+     * @param input   An IData[] to be nullified.
+     * @param recurse Whether to also nullify embedded IData and IData[] objects.
+     * @return        A new IData[] that is the given IData[] nullify.
+     */
+    public static IData[] nullify(IData[] input, boolean recurse) {
+        if (input == null) return null;
+
+        IData[] output = new IData[input.length];
+
+        for (int i = 0; i < input.length; i++) {
+            output[i] = nullify(input[i], recurse);
+        }
+
+        return output;
+    }
+
+    /**
      * Returns a string created by concatenating each element of the given IData document.
      *
      * @param document The IData document to be converted to a string.
