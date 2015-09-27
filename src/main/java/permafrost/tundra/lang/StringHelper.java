@@ -754,6 +754,7 @@ public class StringHelper {
                     Object value = IDataUtil.get(cursor, "value");
                     String type = IDataUtil.getString(cursor, "type");
                     String argPattern = IDataUtil.getString(cursor, "pattern");
+                    boolean blankify = BooleanHelper.parse(IDataUtil.getString(cursor, "blankify?"));
 
                     cursor.destroy();
 
@@ -769,6 +770,8 @@ public class StringHelper {
                         } else if (type.equalsIgnoreCase("datetime")) {
                             value = DateTimeHelper.normalize(value, argPattern);
                         }
+                    } else if (blankify) {
+                        value = "";
                     }
 
                     args.add(value);
