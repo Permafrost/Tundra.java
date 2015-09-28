@@ -39,6 +39,17 @@ public class LocaleHelper {
     private LocaleHelper() {}
 
     /**
+     * Returns the given locale if not null, otherwise returns the default locale.
+     *
+     * @param locale The locale to be normalized.
+     * @return       The given locale if not null, otherwise the default locale.
+     */
+    public static Locale normalize(Locale locale) {
+        if (locale == null) locale = Locale.getDefault();
+        return locale;
+    }
+
+    /**
      * Returns a new Locale object for the given language, country and variant
      *
      * @param language An ISO 639 alpha-2 or alpha-3 language code, or a language subtag up to 8 characters in length.
