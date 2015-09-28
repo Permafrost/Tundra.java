@@ -27,11 +27,14 @@ package permafrost.tundra.math;
 import com.wm.app.b2b.server.ServiceException;
 import permafrost.tundra.lang.ArrayHelper;
 import permafrost.tundra.lang.ExceptionHelper;
+import permafrost.tundra.lang.LocaleHelper;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.ParseException;
+import java.util.Locale;
 
 /**
  * A collection of convenience methods for working with decimals.
@@ -55,18 +58,61 @@ public class BigDecimalHelper {
     /**
      * Parses the given string and returns a decimal representation.
      *
+     * @param decimalString A string to be parsed as a decimal.
+     * @return              A decimal representation of the given string.
+     */
+    public static BigDecimal parse(String decimalString) {
+        return parse(decimalString, (String)null);
+    }
+
+    /**
+     * Parses the given string and returns a decimal representation.
+     *
+     * @param decimalString  A string to be parsed as a decimal.
+     * @param locale         The locale to use if the string is only parseable in this localized format.
+     * @return               A decimal representation of the given string.
+     */
+    public static BigDecimal parse(String decimalString, Locale locale) {
+        return parse(decimalString, (String)null, locale);
+    }
+
+    /**
+     * Parses the given string and returns a decimal representation.
+     *
      * @param decimalString  A string to be parsed as a decimal.
      * @param decimalPattern A java.text.DecimalFormat pattern string describing the format of the given decimal
      *                       string.
-     * @return A decimal representation of the given string.
+     * @return               A decimal representation of the given string.
      */
     public static BigDecimal parse(String decimalString, String decimalPattern) {
+        return parse(decimalString, decimalPattern, null);
+    }
+
+    /**
+     * Parses the given string and returns a decimal representation.
+     *
+     * @param decimalString  A string to be parsed as a decimal.
+     * @param decimalPattern A java.text.DecimalFormat pattern string describing the format of the given decimal
+     *                       string.
+     * @param locale         The locale to use if the string is only parseable in this localized format.
+     * @return               A decimal representation of the given string.
+     */
+    public static BigDecimal parse(String decimalString, String decimalPattern, Locale locale) {
         if (decimalString == null) return null;
 
         BigDecimal result;
 
         if (decimalPattern == null) {
-            result = new BigDecimal(decimalString);
+            try {
+                result = new BigDecimal(decimalString);
+            } catch(NumberFormatException ex) {
+                try {
+                    // try parsing with the number format for the default locale
+                    result = new BigDecimal(NumberFormat.getInstance(LocaleHelper.normalize(locale)).parse(decimalString).doubleValue());
+                } catch(ParseException pe) {
+                    throw new IllegalArgumentException(pe);
+                }
+            }
         } else {
             DecimalFormat parser = new DecimalFormat(decimalPattern);
             parser.setParseBigDecimal(true);
@@ -86,9 +132,22 @@ public class BigDecimalHelper {
      * @param decimalString   A string to be parsed as a decimal.
      * @param decimalPatterns A list java.text.DecimalFormat pattern strings one of which describes the format of the
      *                        given decimal string.
-     * @return A decimal representation of the given string.
+     * @return                A decimal representation of the given string.
      */
     public static BigDecimal parse(String decimalString, String[] decimalPatterns) {
+        return parse(decimalString, decimalPatterns, null);
+    }
+
+    /**
+     * Parses the given string and returns a decimal representation.
+     *
+     * @param decimalString   A string to be parsed as a decimal.
+     * @param decimalPatterns A list java.text.DecimalFormat pattern strings one of which describes the format of the
+     *                        given decimal string.
+     * @param locale          The locale to use if the string is only parseable in this localized format.
+     * @return                A decimal representation of the given string.
+     */
+    public static BigDecimal parse(String decimalString, String[] decimalPatterns, Locale locale) {
         if (decimalString == null) return null;
 
         BigDecimal result = null;
@@ -99,7 +158,7 @@ public class BigDecimalHelper {
             boolean parsed = false;
             for (String decimalPattern : decimalPatterns) {
                 try {
-                    result = parse(decimalString, decimalPattern);
+                    result = parse(decimalString, decimalPattern, locale);
                     parsed = true;
                     break;
                 } catch (IllegalArgumentException ex) {
@@ -115,13 +174,24 @@ public class BigDecimalHelper {
     }
 
     /**
-     * Parses the given string and returns a decimal representation.
+     * Parses the given strings and returns their decimal representations.
      *
-     * @param decimalString A string to be parsed as a decimal.
-     * @return A decimal representation of the given string.
+     * @param decimals One or more strings to be parsed as a decimal.
+     * @return         A decimal representation of the given strings.
      */
-    public static BigDecimal parse(String decimalString) {
-        return parse(decimalString, (String)null);
+    public static BigDecimal[] parse(String[] decimals) {
+        return parse(decimals, (String)null);
+    }
+
+    /**
+     * Parses the given strings and returns their decimal representations.
+     *
+     * @param decimals One or more strings to be parsed as a decimal.
+     * @param locale   The locale to use if the string is only parseable in this localized format.
+     * @return         A decimal representation of the given strings.
+     */
+    public static BigDecimal[] parse(String[] decimals, Locale locale) {
+        return parse(decimals, (String)null, locale);
     }
 
     /**
@@ -130,7 +200,7 @@ public class BigDecimalHelper {
      * @param decimalStrings One or more strings to be parsed as a decimal.
      * @param decimalPattern A java.text.DecimalFormat pattern string describing the format of the given decimal
      *                       strings.
-     * @return A decimal representation of the given strings.
+     * @return               A decimal representation of the given strings.
      */
     public static BigDecimal[] parse(String[] decimalStrings, String decimalPattern) {
         if (decimalStrings == null) return null;
@@ -147,18 +217,19 @@ public class BigDecimalHelper {
     /**
      * Parses the given strings and returns their decimal representations.
      *
-     * @param decimalStrings  One or more strings to be parsed as a decimal.
-     * @param decimalPatterns A list of java.text.DecimalFormat pattern string one of which describes the format of the
-     *                        given decimal strings.
-     * @return A decimal representation of the given strings.
+     * @param decimalStrings One or more strings to be parsed as a decimal.
+     * @param decimalPattern A java.text.DecimalFormat pattern string describing the format of the given decimal
+     *                       strings.
+     * @param locale         The locale to use if the string is only parseable in this localized format.
+     * @return               A decimal representation of the given strings.
      */
-    public static BigDecimal[] parse(String[] decimalStrings, String[] decimalPatterns) {
+    public static BigDecimal[] parse(String[] decimalStrings, String decimalPattern, Locale locale) {
         if (decimalStrings == null) return null;
 
         BigDecimal[] decimals = new BigDecimal[decimalStrings.length];
 
         for (int i = 0; i < decimals.length; i++) {
-            decimals[i] = parse(decimalStrings[i], decimalPatterns);
+            decimals[i] = parse(decimalStrings[i], decimalPattern, locale);
         }
 
         return decimals;
@@ -167,11 +238,55 @@ public class BigDecimalHelper {
     /**
      * Parses the given strings and returns their decimal representations.
      *
-     * @param decimals One or more strings to be parsed as a decimal.
-     * @return A decimal representation of the given strings.
+     * @param decimalStrings  One or more strings to be parsed as a decimal.
+     * @param decimalPatterns A list of java.text.DecimalFormat pattern string one of which describes the format of the
+     *                        given decimal strings.
+     * @return                A decimal representation of the given strings.
      */
-    public static BigDecimal[] parse(String[] decimals) {
-        return parse(decimals, (String)null);
+    public static BigDecimal[] parse(String[] decimalStrings, String[] decimalPatterns) {
+        return parse(decimalStrings, decimalPatterns, null);
+    }
+
+    /**
+     * Parses the given strings and returns their decimal representations.
+     *
+     * @param decimalStrings  One or more strings to be parsed as a decimal.
+     * @param decimalPatterns A list of java.text.DecimalFormat pattern string one of which describes the format of the
+     *                        given decimal strings.
+     * @param locale          The locale to use if the string is only parseable in this localized format.
+     * @return                A decimal representation of the given strings.
+     */
+    public static BigDecimal[] parse(String[] decimalStrings, String[] decimalPatterns, Locale locale) {
+        if (decimalStrings == null) return null;
+
+        BigDecimal[] decimals = new BigDecimal[decimalStrings.length];
+
+        for (int i = 0; i < decimals.length; i++) {
+            decimals[i] = parse(decimalStrings[i], decimalPatterns, locale);
+        }
+
+        return decimals;
+    }
+
+    /**
+     * Returns a string representation of the given decimal.
+     *
+     * @param decimal The decimal to convert to a string representation.
+     * @return        The string representation of the given decimal.
+     */
+    public static String emit(BigDecimal decimal) {
+        return emit(decimal, (String)null);
+    }
+
+    /**
+     * Returns a string representation of the given decimal.
+     *
+     * @param decimal The decimal to convert to a string representation.
+     * @param locale  The locale to use for emitting a localized number format.
+     * @return        The string representation of the given decimal.
+     */
+    public static String emit(BigDecimal decimal, Locale locale) {
+        return emit(decimal, null, locale);
     }
 
     /**
@@ -180,31 +295,59 @@ public class BigDecimalHelper {
      * @param decimal        The decimal to convert to a string representation.
      * @param decimalPattern A java.text.DecimalFormat pattern string describing the format of the given decimal
      *                       strings.
-     * @return The string representation of the given decimal.
+     * @return               The string representation of the given decimal.
      */
     public static String emit(BigDecimal decimal, String decimalPattern) {
+        return emit(decimal, decimalPattern, null);
+    }
+
+    /**
+     * Returns a string representation of the given decimal.
+     *
+     * @param decimal        The decimal to convert to a string representation.
+     * @param decimalPattern A java.text.DecimalFormat pattern string describing the format of the given decimal
+     *                       strings.
+     * @param locale         The locale to use for emitting a localized number format, if no pattern is specified.
+     * @return               The string representation of the given decimal.
+     */
+    public static String emit(BigDecimal decimal, String decimalPattern, Locale locale) {
         if (decimal == null) return null;
 
         String output;
 
         if (decimalPattern == null) {
-            output = decimal.toString();
+            if (locale == null) {
+                output = decimal.toString();
+            } else {
+                output = NumberFormat.getInstance(locale).format(decimal);
+            }
         } else {
-            DecimalFormat emitter = new DecimalFormat(decimalPattern);
-            output = emitter.format(decimal);
+            output = new DecimalFormat(decimalPattern).format(decimal);
         }
 
         return output;
     }
 
     /**
-     * Returns a string representation of the given decimal.
+     * Returns a string representation of the given list of decimals.
      *
-     * @param decimal The decimal to convert to a string representation.
-     * @return The string representation of the given decimal.
+     * @param decimals The list of decimals to convert to string representations.
+     * @return         The string representations of the given list of decimals.
      */
-    public static String emit(BigDecimal decimal) {
-        return emit(decimal, null);
+    public static String[] emit(BigDecimal[] decimals) {
+        return emit(decimals, (String)null);
+    }
+
+
+    /**
+     * Returns a string representation of the given list of decimals.
+     *
+     * @param decimals The list of decimals to convert to string representations.
+     * @param locale   The locale to use for emitting a localized number format, if no pattern is specified.
+     * @return         The string representations of the given list of decimals.
+     */
+    public static String[] emit(BigDecimal[] decimals, Locale locale) {
+        return emit(decimals, null, locale);
     }
 
     /**
@@ -213,28 +356,31 @@ public class BigDecimalHelper {
      * @param decimals       The list of decimals to convert to string representations.
      * @param decimalPattern A java.text.DecimalFormat pattern string describing the format of the given decimal
      *                       strings.
-     * @return The string representations of the given list of decimals.
+     * @return               The string representations of the given list of decimals.
      */
     public static String[] emit(BigDecimal[] decimals, String decimalPattern) {
-        if (decimals == null) return null;
-
-        String[] strings = new String[decimals.length];
-
-        for (int i = 0; i < decimals.length; i++) {
-            strings[i] = emit(decimals[i], decimalPattern);
-        }
-
-        return strings;
+        return emit(decimals, decimalPattern, null);
     }
 
     /**
      * Returns a string representation of the given list of decimals.
      *
-     * @param decimals The list of decimals to convert to string representations.
-     * @return The string representations of the given list of decimals.
+     * @param decimals       The list of decimals to convert to string representations.
+     * @param decimalPattern A java.text.DecimalFormat pattern string describing the format of the given decimal
+     *                       strings.
+     * @param locale         The locale to use for emitting a localized number format, if no pattern is specified.
+     * @return               The string representations of the given list of decimals.
      */
-    public static String[] emit(BigDecimal[] decimals) {
-        return emit(decimals, null);
+    public static String[] emit(BigDecimal[] decimals, String decimalPattern, Locale locale) {
+        if (decimals == null) return null;
+
+        String[] strings = new String[decimals.length];
+
+        for (int i = 0; i < decimals.length; i++) {
+            strings[i] = emit(decimals[i], decimalPattern, locale);
+        }
+
+        return strings;
     }
 
     /**
