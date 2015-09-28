@@ -38,6 +38,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -794,7 +796,13 @@ public class StringHelper {
                             value = DateTimeHelper.normalize(value, argPattern);
                         }
                     } else if (blankify) {
-                        value = "";
+                        if (type == null || type.equalsIgnoreCase("string")) {
+                            value = "";
+                        } else if (type.equalsIgnoreCase("integer")) {
+                            value = BigInteger.ZERO;
+                        } else if (type.equalsIgnoreCase("decimal")) {
+                            value = BigDecimal.ZERO;
+                        }
                     }
 
                     args.add(value);
