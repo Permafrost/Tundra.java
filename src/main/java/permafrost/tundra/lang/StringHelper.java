@@ -743,6 +743,20 @@ public class StringHelper {
      * @return          A formatted string.
      */
     public static String format(Locale locale, String pattern, IData[] arguments, IData record) {
+        return format(locale, pattern, arguments, record, 0);
+    }
+
+    /**
+     * Returns a formatted string using the specified pattern and arguments.
+     *
+     * @param locale    The locale to apply during formatting. If null then no localization is applied.
+     * @param pattern   A format string, as per http://docs.oracle.com/javase/6/docs/api/java/util/Formatter.html.
+     * @param record    An IData document which contains the argument values referenced by the given argument keys.
+     * @param arguments The list of arguments to be fetched from the record and normalized to the specified types.
+     * @param index     The zero-based array index for this record if it is part of a list that is being formatted.
+     * @return          A formatted string.
+     */
+    public static String format(Locale locale, String pattern, IData[] arguments, IData record, int index) {
         List<Object> args = new ArrayList<Object>(arguments == null? 0 : arguments.length);
 
         if (arguments != null) {
@@ -758,7 +772,16 @@ public class StringHelper {
 
                     cursor.destroy();
 
-                    if (key != null && value == null) value = IDataHelper.get(record, key);
+                    if (key != null && value == null) {
+                        value = IDataHelper.get(record, key);
+                        if (value == null) {
+                            if (key.equals("$index")) {
+                                value = index;
+                            } else if (key.equals("$iteration")) {
+                                value = index + 1;
+                            }
+                        }
+                    }
 
                     if (value != null) {
                         if (type == null || type.equalsIgnoreCase("string")) {
@@ -798,8 +821,8 @@ public class StringHelper {
 
         StringBuilder builder = new StringBuilder();
 
-        for (IData record : records) {
-            builder.append(format(locale, pattern, arguments, record));
+        for (int i = 0; i < records.length; i++) {
+            builder.append(format(locale, pattern, arguments, records[i], i));
             if (recordSeparator != null) builder.append(recordSeparator);
         }
 
