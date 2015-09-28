@@ -843,4 +843,28 @@ public class ArrayHelper {
     public static <T> T[] arrayify(T... args) {
         return args;
     }
+
+    /**
+     * Returns a new array containing an index for each relative item in the given
+     * array calculated as follows: index[n] = startIndex + n * step;
+     *
+     * @param array      An array to return indexes for.
+     * @param startIndex The starting index for the first item in the given array.
+     * @param step       The value the index will be incremented by for each subsequent item.
+     * @param <T>        The type of item stored in the given array.
+     * @return           A new array containing an index for each relative item in the given array.
+     */
+    public static <T> String[] index(T[] array, int startIndex, int step) {
+        if (array == null) return null;
+
+        String[] output = new String[array.length];
+        long index = startIndex;
+
+        for (int i = 0; i < array.length; i++) {
+            output[i] = "" + index;
+            index += step;
+        }
+
+        return output;
+    }
 }
