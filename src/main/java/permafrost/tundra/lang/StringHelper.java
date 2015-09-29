@@ -759,54 +759,54 @@ public class StringHelper {
      * @return          A formatted string.
      */
     public static String format(Locale locale, String pattern, IData[] arguments, IData record, int index) {
+        if (pattern == null || arguments == null || record == null) return null;
+
         List<Object> args = new ArrayList<Object>(arguments == null? 0 : arguments.length);
 
-        if (arguments != null) {
-            for (IData argument : arguments) {
-                if (argument != null) {
-                    IDataCursor cursor = argument.getCursor();
+        for (IData argument : arguments) {
+            if (argument != null) {
+                IDataCursor cursor = argument.getCursor();
 
-                    String key = IDataUtil.getString(cursor, "key");
-                    Object value = IDataUtil.get(cursor, "value");
-                    String type = IDataUtil.getString(cursor, "type");
-                    String argPattern = IDataUtil.getString(cursor, "pattern");
-                    boolean blankify = BooleanHelper.parse(IDataUtil.getString(cursor, "blankify?"));
+                String key = IDataUtil.getString(cursor, "key");
+                Object value = IDataUtil.get(cursor, "value");
+                String type = IDataUtil.getString(cursor, "type");
+                String argPattern = IDataUtil.getString(cursor, "pattern");
+                boolean blankify = BooleanHelper.parse(IDataUtil.getString(cursor, "blankify?"));
 
-                    cursor.destroy();
+                cursor.destroy();
 
-                    if (key != null && value == null) {
-                        value = IDataHelper.get(record, key);
-                        if (value == null) {
-                            if (key.equals("$index")) {
-                                value = index;
-                            } else if (key.equals("$iteration")) {
-                                value = index + 1;
-                            }
+                if (key != null && value == null) {
+                    value = IDataHelper.get(record, key);
+                    if (value == null) {
+                        if (key.equals("$index")) {
+                            value = index;
+                        } else if (key.equals("$iteration")) {
+                            value = index + 1;
                         }
                     }
-
-                    if (value != null) {
-                        if (type == null || type.equalsIgnoreCase("string")) {
-                            value = value.toString();
-                        } else if (type.equalsIgnoreCase("integer")) {
-                            value = BigIntegerHelper.normalize(value);
-                        } else if (type.equalsIgnoreCase("decimal")) {
-                            value = BigDecimalHelper.normalize(value);
-                        } else if (type.equalsIgnoreCase("datetime")) {
-                            value = DateTimeHelper.normalize(value, argPattern);
-                        }
-                    } else if (blankify) {
-                        if (type == null || type.equalsIgnoreCase("string")) {
-                            value = "";
-                        } else if (type.equalsIgnoreCase("integer")) {
-                            value = BigInteger.ZERO;
-                        } else if (type.equalsIgnoreCase("decimal")) {
-                            value = BigDecimal.ZERO;
-                        }
-                    }
-
-                    args.add(value);
                 }
+
+                if (value != null) {
+                    if (type == null || type.equalsIgnoreCase("string")) {
+                        value = value.toString();
+                    } else if (type.equalsIgnoreCase("integer")) {
+                        value = BigIntegerHelper.normalize(value);
+                    } else if (type.equalsIgnoreCase("decimal")) {
+                        value = BigDecimalHelper.normalize(value);
+                    } else if (type.equalsIgnoreCase("datetime")) {
+                        value = DateTimeHelper.normalize(value, argPattern);
+                    }
+                } else if (blankify) {
+                    if (type == null || type.equalsIgnoreCase("string")) {
+                        value = "";
+                    } else if (type.equalsIgnoreCase("integer")) {
+                        value = BigInteger.ZERO;
+                    } else if (type.equalsIgnoreCase("decimal")) {
+                        value = BigDecimal.ZERO;
+                    }
+                }
+
+                args.add(value);
             }
         }
 
@@ -825,7 +825,7 @@ public class StringHelper {
      * @return                  A formatted string.
      */
     public static String format(Locale locale, String pattern, IData[] arguments, String recordSeparator, IData ... records) {
-        if (records == null) return null;
+        if (pattern == null || arguments == null || records == null) return null;
 
         StringBuilder builder = new StringBuilder();
 
