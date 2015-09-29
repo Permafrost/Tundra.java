@@ -740,12 +740,12 @@ public class StringHelper {
      *
      * @param locale    The locale to apply during formatting. If null then no localization is applied.
      * @param pattern   A format string, as per http://docs.oracle.com/javase/6/docs/api/java/util/Formatter.html.
-     * @param record    An IData document which contains the argument values referenced by the given argument keys.
+     * @param scope     An IData document which contains the argument values referenced by the given argument keys.
      * @param arguments The list of arguments to be fetched from the record and normalized to the specified types.
      * @return          A formatted string.
      */
-    public static String format(Locale locale, String pattern, IData[] arguments, IData record) {
-        return format(locale, pattern, arguments, record, 0);
+    public static String format(Locale locale, String pattern, IData[] arguments, IData scope) {
+        return format(locale, pattern, arguments, null, scope);
     }
 
     /**
@@ -753,13 +753,42 @@ public class StringHelper {
      *
      * @param locale    The locale to apply during formatting. If null then no localization is applied.
      * @param pattern   A format string, as per http://docs.oracle.com/javase/6/docs/api/java/util/Formatter.html.
-     * @param record    An IData document which contains the argument values referenced by the given argument keys.
+     * @param scope     An IData document which contains the argument values referenced by the given argument keys.
      * @param arguments The list of arguments to be fetched from the record and normalized to the specified types.
      * @param index     The zero-based array index for this record if it is part of a list that is being formatted.
      * @return          A formatted string.
      */
-    public static String format(Locale locale, String pattern, IData[] arguments, IData record, int index) {
-        if (pattern == null || arguments == null || record == null) return null;
+    public static String format(Locale locale, String pattern, IData[] arguments, IData scope, int index) {
+        return format(locale, pattern, arguments, null, scope, 0);
+    }
+
+    /**
+     * Returns a formatted string using the specified pattern and arguments.
+     *
+     * @param locale    The locale to apply during formatting. If null then no localization is applied.
+     * @param pattern   A format string, as per http://docs.oracle.com/javase/6/docs/api/java/util/Formatter.html.
+     * @param pipeline  The pipeline against which absolute argument keys are resolved.
+     * @param scope     An IData document which contains the argument values referenced by the given argument keys.
+     * @param arguments The list of arguments to be fetched from the record and normalized to the specified types.
+     * @return          A formatted string.
+     */
+    public static String format(Locale locale, String pattern, IData[] arguments, IData pipeline, IData scope) {
+        return format(locale, pattern, arguments, pipeline, scope, 0);
+    }
+
+    /**
+     * Returns a formatted string using the specified pattern and arguments.
+     *
+     * @param locale    The locale to apply during formatting. If null then no localization is applied.
+     * @param pattern   A format string, as per http://docs.oracle.com/javase/6/docs/api/java/util/Formatter.html.
+     * @param pipeline  The pipeline against which absolute argument keys are resolved.
+     * @param scope     An IData document which contains the argument values referenced by the given argument keys.
+     * @param arguments The list of arguments to be fetched from the record and normalized to the specified types.
+     * @param index     The zero-based array index for this record if it is part of a list that is being formatted.
+     * @return          A formatted string.
+     */
+    public static String format(Locale locale, String pattern, IData[] arguments, IData pipeline, IData scope, int index) {
+        if (pattern == null || arguments == null || scope == null) return null;
 
         List<Object> args = new ArrayList<Object>(arguments == null? 0 : arguments.length);
 
@@ -776,7 +805,7 @@ public class StringHelper {
                 cursor.destroy();
 
                 if (key != null && value == null) {
-                    value = IDataHelper.get(record, key);
+                    value = IDataHelper.get(pipeline, scope, key);
                     if (value == null) {
                         if (key.equals("$index")) {
                             value = index;
@@ -825,12 +854,28 @@ public class StringHelper {
      * @return                  A formatted string.
      */
     public static String format(Locale locale, String pattern, IData[] arguments, String recordSeparator, IData ... records) {
+        return format(locale, pattern, arguments, null, recordSeparator, records);
+    }
+
+    /**
+     * Returns a formatted string produced by formatting each given record using the specified pattern and
+     * arguments, separated by the given separator string.
+     *
+     * @param locale            The locale to apply during formatting. If null then no localization is applied.
+     * @param pattern           A format string, as per http://docs.oracle.com/javase/6/docs/api/java/util/Formatter.html.
+     * @param arguments         The list of arguments to be fetched from each record and normalized to the specified types.
+     * @param pipeline          The pipeline against which absolute argument keys are resolved.
+     * @param recordSeparator   An optional string for separating each formatted record in the resulting string.
+     * @param records           An IData[] document list where each item contains a set of argument values.
+     * @return                  A formatted string.
+     */
+    public static String format(Locale locale, String pattern, IData[] arguments, IData pipeline, String recordSeparator, IData ... records) {
         if (pattern == null || arguments == null || records == null) return null;
 
         StringBuilder builder = new StringBuilder();
 
         for (int i = 0; i < records.length; i++) {
-            builder.append(format(locale, pattern, arguments, records[i], i));
+            builder.append(format(locale, pattern, arguments, pipeline, records[i], i));
             if (recordSeparator != null) builder.append(recordSeparator);
         }
 
