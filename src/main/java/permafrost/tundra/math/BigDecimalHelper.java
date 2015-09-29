@@ -873,39 +873,113 @@ public class BigDecimalHelper {
      * Returns true if the given string can be parsed as a decimal number.
      *
      * @param decimal The string to validate.
-     * @param raise   True if an exception should be thrown if the string is not a valid decimal number.
-     * @return True if the string can be parsed as a decimal number, otherwise false.
-     * @throws ServiceException If raise is true and the given string is not a valid decimal number.
+     * @return        True if the string can be parsed as a decimal number, otherwise false.
      */
-    public static boolean validate(String decimal, boolean raise) throws ServiceException {
-        boolean valid = false;
-        try {
-            if (decimal != null) {
-                parse(decimal);
-                valid = true;
-            }
-        } catch (NumberFormatException ex) {
-            if (raise) ExceptionHelper.raise(ex);
-        }
-        return valid;
+    public static boolean validate(String decimal) {
+        return validate(decimal, null, null);
+    }
+
+    /**
+     * Returns true if the given string can be parsed as a decimal number.
+     *
+     * @param decimal        The string to validate.
+     * @param decimalPattern A java.text.DecimalFormat pattern string describing the format of the given decimal string.
+     * @return               True if the string can be parsed as a decimal number, otherwise false.
+     */
+    public static boolean validate(String decimal, String decimalPattern) {
+        return validate(decimal, decimalPattern, null);
     }
 
     /**
      * Returns true if the given string can be parsed as a decimal number.
      *
      * @param decimal The string to validate.
-     * @return True if the string can be parsed as a decimal number, otherwise false.
+     * @param locale  The locale to use if the string is only parseable in this localized format.
+     * @return        True if the string can be parsed as a decimal number, otherwise false.
      */
-    public static boolean validate(String decimal) {
+    public static boolean validate(String decimal, Locale locale) {
+        return validate(decimal, null, locale);
+    }
+
+    /**
+     * Returns true if the given string can be parsed as a decimal number.
+     *
+     * @param decimal        The string to validate.
+     * @param decimalPattern A java.text.DecimalFormat pattern string describing the format of the given decimal string.
+     * @param locale         The locale to use if the string is only parseable in this localized format.
+     * @return               True if the string can be parsed as a decimal number, otherwise false.
+     */
+    public static boolean validate(String decimal, String decimalPattern, Locale locale) {
         boolean result = false;
 
         try {
-            result = validate(decimal, false);
+            result = validate(decimal, decimalPattern, locale, false);
         } catch (ServiceException ex) {
-            // suppress the exception
+            // suppress the exception, which will never be thrown anyway
         }
 
         return result;
+    }
+
+    /**
+     * Returns true if the given string can be parsed as a decimal number.
+     *
+     * @param decimal           The string to validate.
+     * @param raise             True if an exception should be thrown if the string is not a valid decimal number.
+     * @return                  True if the string can be parsed as a decimal number, otherwise false.
+     * @throws ServiceException If raise is true and the given string is not a valid decimal number.
+     */
+    public static boolean validate(String decimal, boolean raise) throws ServiceException {
+        return validate(decimal, null, null, raise);
+    }
+
+    /**
+     * Returns true if the given string can be parsed as a decimal number.
+     *
+     * @param decimal           The string to validate.
+     * @param decimalPattern    A java.text.DecimalFormat pattern string describing the format of the given decimal string.
+     * @param raise             True if an exception should be thrown if the string is not a valid decimal number.
+     * @return                  True if the string can be parsed as a decimal number, otherwise false.
+     * @throws ServiceException If raise is true and the given string is not a valid decimal number.
+     */
+    public static boolean validate(String decimal, String decimalPattern, boolean raise) throws ServiceException {
+        return validate(decimal, decimalPattern, null, raise);
+    }
+
+    /**
+     * Returns true if the given string can be parsed as a decimal number.
+     *
+     * @param decimal           The string to validate.
+     * @param raise             True if an exception should be thrown if the string is not a valid decimal number.
+     * @param locale            The locale to use if the string is only parseable in this localized format.
+     * @return                  True if the string can be parsed as a decimal number, otherwise false.
+     * @throws ServiceException If raise is true and the given string is not a valid decimal number.
+     */
+    public static boolean validate(String decimal, Locale locale, boolean raise) throws ServiceException {
+        return validate(decimal, null, locale, raise);
+    }
+
+    /**
+     * Returns true if the given string can be parsed as a decimal number.
+     *
+     * @param decimal           The string to validate.
+     * @param decimalPattern    A java.text.DecimalFormat pattern string describing the format of the given decimal string.
+     * @param locale            The locale to use if the string is only parseable in this localized format.
+     * @param raise             True if an exception should be thrown if the string is not a valid decimal number.
+     * @return                  True if the string can be parsed as a decimal number, otherwise false.
+     * @throws ServiceException If raise is true and the given string is not a valid decimal number.
+     */
+    public static boolean validate(String decimal, String decimalPattern, Locale locale, boolean raise) throws ServiceException {
+        boolean valid = false;
+        try {
+            if (decimal != null) {
+                parse(decimal, decimalPattern, locale);
+                valid = true;
+            }
+        } catch (Exception ex) {
+            if (raise) ExceptionHelper.raise(ex);
+        }
+        return valid;
     }
 
     /**
