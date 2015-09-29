@@ -1557,6 +1557,45 @@ public class IDataHelper {
     }
 
     /**
+     * Returns the value associated with the given key from the given IData document.
+     *
+     * @param document An IData document.
+     * @param key      A simple or fully-qualified key identifying the value in the given IData document to be
+     *                 returned.
+     * @return The value associated with the given key in the given IData document.
+     */
+    public static Object get(IData document, String key) {
+        return get(null, document, key);
+    }
+
+    /**
+     * Returns the value associated with the given key from the given scope (if relative) or pipeline (if absolute).
+     *
+     * @param pipeline The pipeline, required if the key is an absolute path.
+     * @param scope    An IData document used to scope the key if it is relative.
+     * @param key      A simple or fully-qualified key identifying the value in the given IData document to be
+     *                 returned.
+     * @return         The value associated with the given key in the given IData document.
+     */
+    public static Object get(IData pipeline, IData scope, String key) {
+        return get(pipeline, scope, key, false);
+    }
+
+    /**
+     * Returns the value associated with the given key from the given IData document.
+     *
+     * @param document An IData document.
+     * @param key      A simple or fully-qualified key identifying the value in the given IData document to be
+     *                 returned.
+     * @param literal  If true, the key will be treated as a literal key, rather than potentially as a fully-qualified
+     *                 key.
+     * @return         The value associated with the given key in the given IData document.
+     */
+    public static Object get(IData document, String key, boolean literal) {
+        return get(null, document, key, literal);
+    }
+
+    /**
      * Returns the value associated with the given key from the given IData document, or if null the specified default
      * value.
      *
@@ -1569,6 +1608,21 @@ public class IDataHelper {
      */
     public static Object get(IData document, String key, Object defaultValue) {
         return get(document, key, defaultValue, false);
+    }
+
+    /**
+     * Returns the value associated with the given key from the given scope (if relative) or pipeline (if absolute).
+     *
+     * @param pipeline     The pipeline, required if the key is an absolute path.
+     * @param scope        An IData document used to scope the key if it is relative.
+     * @param key          A simple or fully-qualified key identifying the value in the given IData document to be
+     *                     returned.
+     * @param defaultValue A default value to be returned if the existing value associated with the given key is null.
+     * @return Either the value associated with the given key in the given IData document, or the given defaultValue if
+     * null.
+     */
+    public static Object get(IData pipeline, IData scope, String key, Object defaultValue) {
+        return get(pipeline, scope, key, defaultValue, false);
     }
 
     /**
@@ -1585,51 +1639,63 @@ public class IDataHelper {
      * null.
      */
     public static Object get(IData document, String key, Object defaultValue, boolean literal) {
-        Object value = get(document, key, literal);
-        if (value == null) value = defaultValue;
+        return get(null, document, key, defaultValue, literal);
+    }
 
+    /**
+     * Returns the value associated with the given key from the given IData document, or if null the specified default
+     * value.
+     *
+     * @param scope     An IData document.
+     * @param key          A simple or fully-qualified key identifying the value in the given IData document to be
+     *                     returned.
+     * @param defaultValue A default value to be returned if the existing value associated with the given key is null.
+     * @param literal      If true, the key will be treated as a literal key, rather than potentially as a
+     *                     fully-qualified key.
+     * @return Either the value associated with the given key in the given IData document, or the given defaultValue if
+     * null.
+     */
+    public static Object get(IData pipeline, IData scope, String key, Object defaultValue, boolean literal) {
+        Object value = get(pipeline, scope, key, literal);
+        if (value == null) value = defaultValue;
         return value;
     }
 
     /**
-     * Returns the value associated with the given key from the given IData document.
+     * Returns the value associated with the given key from the given scope (if relative) or pipeline (if absolute).
      *
-     * @param document An IData document.
+     * @param pipeline The pipeline, required if the key is an absolute path.
+     * @param scope    An IData document used to scope the key if it is relative.
      * @param key      A simple or fully-qualified key identifying the value in the given IData document to be
      *                 returned.
      * @param literal  If true, the key will be treated as a literal key, rather than potentially as a fully-qualified
      *                 key.
-     * @return The value associated with the given key in the given IData document.
+     * @return         The value associated with the given key in the given IData document.
      */
-    public static Object get(IData document, String key, boolean literal) {
-        if (document == null || key == null) return null;
+    public static Object get(IData pipeline, IData scope, String key, boolean literal) {
+        if (key == null) return null;
 
         Object value = null;
-        IDataCursor cursor = document.getCursor();
 
-        // try finding a value that matches the literal key, and if not found try finding a value
-        // associated with the leaf key if the key is considered fully-qualified
-        if (cursor.first(key)) {
-            value = cursor.getValue();
-        } else if (Key.isFullyQualified(key, literal)) {
-            value = get(document, Key.parse(key, literal));
+        if (scope != null) {
+            // try finding a value that matches the literal key, and if not found try finding a value
+            // associated with the leaf key if the key is considered fully-qualified
+            IDataCursor cursor = scope.getCursor();
+
+            if (cursor.first(key)) {
+                value = cursor.getValue();
+            } else if (pipeline != null && Key.isAbsolute(key, literal)) {
+                value = get(null, pipeline, key.substring(1), literal);
+            } else if (scope != null && Key.isFullyQualified(key, literal)) {
+                value = get(scope, Key.parse(key, literal));
+            }
+
+            cursor.destroy();
+        } else if (pipeline != null && Key.isAbsolute(key, literal)) {
+            value = get(null, pipeline, key.substring(1), literal);
         }
 
-        cursor.destroy();
-
         return value;
-    }
-
-    /**
-     * Returns the value associated with the given key from the given IData document.
-     *
-     * @param document An IData document.
-     * @param key      A simple or fully-qualified key identifying the value in the given IData document to be
-     *                 returned.
-     * @return The value associated with the given key in the given IData document.
-     */
-    public static Object get(IData document, String key) {
-        return get(document, key, false);
     }
 
     /**
@@ -1637,7 +1703,7 @@ public class IDataHelper {
      *
      * @param document An IData document.
      * @param keys     A fully-qualified key identifying the value in the given IData document to be returned.
-     * @return The value associated with the given key in the given IData document.
+     * @return         The value associated with the given key in the given IData document.
      */
     private static Object get(IData document, Queue<Key> keys) {
         Object value = null;
@@ -2781,6 +2847,28 @@ public class IDataHelper {
          */
         public static boolean isFullyQualified(String key, boolean literal) {
             return !literal && key != null && (key.contains(SEPARATOR) || INDEX_PATTERN.matcher(key).find());
+        }
+
+        /**
+         * Returns true if the given IData key starts with "/", indicating it is an absolute path.
+         *
+         * @param key     An IData key string.
+         * @return        True if the given key is accessing the root scope.
+         */
+        public static boolean isAbsolute(String key) {
+            return isAbsolute(key, false);
+        }
+
+        /**
+         * Returns true if the given IData key starts with "/", indicating it is an absolute path.
+         *
+         * @param key     An IData key string.
+         * @param literal If true, the key will be treated as a literal key, rather than potentially as a
+         *                fully-qualified key.
+         * @return        True if the given key is an absolute path.
+         */
+        public static boolean isAbsolute(String key, boolean literal) {
+            return !literal && key != null && key.startsWith(SEPARATOR);
         }
     }
 
