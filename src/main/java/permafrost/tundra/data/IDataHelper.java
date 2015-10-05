@@ -2951,11 +2951,9 @@ public class IDataHelper {
                 IData group = IDataFactory.create();
                 IDataCursor cursor = group.getCursor();
                 IDataUtil.put(cursor, "by", key.getIData());
-                if (then == null) {
-                    IDataUtil.put(cursor, "items", items);
-                } else {
-                    IDataUtil.put(cursor, "then", group(items, then));
-                }
+                IDataUtil.put(cursor, "items", items);
+                if (then != null) IDataUtil.put(cursor, "then", group(items, then));
+
                 cursor.destroy();
 
                 result.add(group);
