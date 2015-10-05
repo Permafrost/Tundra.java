@@ -287,6 +287,46 @@ public class IDataComparisonCriterion implements IDataCodable {
     }
 
     /**
+     * Returns an IDataComparisonCriterion given an key.
+     *
+     * @param key The comparison key.
+     * @return An IDataComparisonCriterion representing the given key.
+     */
+    public static IDataComparisonCriterion of(String key) {
+        if (key == null) return null;
+        return new IDataComparisonCriterion(key);
+    }
+
+    /**
+     * Returns an IDataComparisonCriterion given an IData.
+     *
+     * @param criterion The comparison criterion specified as an IData.
+     * @return An IDataComparisonCriterion representing the given criterion.
+     */
+    public static IDataComparisonCriterion of(IData criterion) {
+        if (criterion == null) return null;
+        return new IDataComparisonCriterion(criterion);
+    }
+
+    /**
+     * Returns an IDataComparisonCriterion[] given a list of keys.
+     *
+     * @param keys The comparison criteria specified as a list of keys.
+     * @return An IDataComparisonCriterion[] representing the given criteria.
+     */
+    public static IDataComparisonCriterion[] of(String[] keys) {
+        if (keys == null) return null;
+
+        IDataComparisonCriterion[] output = new IDataComparisonCriterion[keys.length];
+
+        for (int i = 0; i < keys.length; i++) {
+            output[i] = of(keys[i]);
+        }
+
+        return output;
+    }
+
+    /**
      * Returns an IDataComparisonCriterion[] given an IData[].
      *
      * @param criteria The comparison criteria specified as an IData[].
@@ -298,7 +338,7 @@ public class IDataComparisonCriterion implements IDataCodable {
         IDataComparisonCriterion[] output = new IDataComparisonCriterion[criteria.length];
 
         for (int i = 0; i < criteria.length; i++) {
-            output[i] = new IDataComparisonCriterion(criteria[i]);
+            output[i] = of(criteria[i]);
         }
 
         return output;
