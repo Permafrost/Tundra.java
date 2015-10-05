@@ -1327,7 +1327,6 @@ public class IDataHelperTest {
         item6.put("key2", "x");
         item6.put("key3", new Object());
 
-
         array[0] = item1;
         array[1] = item2;
         array[2] = item3;

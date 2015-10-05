@@ -125,22 +125,33 @@ public class CriteriaBasedIDataComparator implements IDataComparator {
                         secondValue = secondValue.toString();
                         break;
                 }
-                if (firstValue instanceof Comparable) {
-                    result = normalize(((Comparable)firstValue).compareTo(secondValue), criterion.isDescending());
-                } else if (!firstValue.equals(secondValue)){
-                    // fall back to object id comparison if not comparable or equal
-                    int firstHashCode = System.identityHashCode(firstValue);
-                    int secondHashCode = System.identityHashCode(secondValue);
-
-                    if (firstHashCode < secondHashCode) {
-                        result = -1;
-                    } else if (firstHashCode < secondHashCode) {
-                        result = 1;
+                if (firstValue instanceof Comparable && secondValue instanceof Comparable) {
+                    try {
+                        result = normalize(((Comparable)firstValue).compareTo(secondValue), criterion.isDescending());
+                    } catch (Exception ex) {
+                        result = normalize(compareObjectIdentity(firstValue, secondDocument), criterion.isDescending());
                     }
+                } else {
+                    result = normalize(compareObjectIdentity(firstValue, secondDocument), criterion.isDescending());
                 }
             }
             if (result != 0) break;
         }
         return result;
+    }
+
+    /**
+     * Fallback comparison for incomparable objects using the Java object identity.
+     *
+     * @param firstValue  The first object to be compared.
+     * @param secondValue The second object to be compared.
+     * @return            0 if the objects are equal, otherwise -1.
+     */
+    private int compareObjectIdentity(Object firstValue, Object secondValue) {
+        if (firstValue == secondValue) {
+            return 0;
+        } else {
+            return -1;
+        }
     }
 }
