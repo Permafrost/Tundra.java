@@ -2880,44 +2880,21 @@ public class IDataHelper {
      * @return      The grouped IData[].
      */
     public static IData[] group(IData[] array, String... keys) {
-        return group(array, IDataComparisonCriterion.of(keys));
-    }
+        Map<CompoundKey, List<IData>> groups = group(array, IDataComparisonCriterion.of(keys));
+        List<IData> result;
 
-    /**
-     * Groups the given IData[] by the given keys.
-     *
-     * @param array    The IData[] to be grouped.
-     * @param criteria The criteria to group items by.
-     * @return         The grouped IData[].
-     */
-    public static IData[] group(IData[] array, IDataComparisonCriterion[] criteria) {
-        if (array == null) return null;
+        if (groups.size() == 0) {
+            result = new ArrayList<IData>(1);
 
-        IData[] output = null;
-
-        if (criteria == null || criteria.length == 0) {
-            output = new IData[1];
-            output[0] = IDataFactory.create();
-            IDataCursor cursor = output[0].getCursor();
+            IData document = IDataFactory.create();
+            IDataCursor cursor = document.getCursor();
             IDataUtil.put(cursor, "group", IDataFactory.create());
             IDataUtil.put(cursor, "items", array);
             cursor.destroy();
+
+            result.add(document);
         } else {
-            Map<CompoundKey, List<IData>> groups = new TreeMap<CompoundKey, List<IData>>();
-
-            for (IData item : array) {
-                if (item != null) {
-                    CompoundKey key = new CompoundKey(criteria, item);
-                    List<IData> list = groups.get(key);
-                    if (list == null) {
-                        list = new LinkedList<IData>();
-                        groups.put(key, list);
-                    }
-                    list.add(item);
-                }
-            }
-
-            List<IData> result = new ArrayList<IData>(groups.size());
+            result = new ArrayList<IData>(groups.size());
 
             for (Map.Entry<CompoundKey, List<IData>> entry : groups.entrySet()) {
                 CompoundKey key = entry.getKey();
@@ -2931,11 +2908,88 @@ public class IDataHelper {
 
                 result.add(group);
             }
-
-            output = result.toArray(new IData[result.size()]);
         }
 
-        return output;
+        return result.toArray(new IData[result.size()]);
+    }
+
+    /**
+     * Performs a multi-level grouping of the given IData[] by the given criteria.
+     * @param array     The IData[] to be grouped.
+     * @param criteria  The multi-level grouping criteria.
+     * @return          The grouped IData[].
+     */
+    public static IData[] group(IData[] array, IData criteria) {
+        if (array == null) return null;
+
+        List<IData> result;
+
+        if (criteria == null) {
+            result = new ArrayList<IData>(1);
+
+            IData document = IDataFactory.create();
+            IDataCursor cursor = document.getCursor();
+            IDataUtil.put(cursor, "by", IDataFactory.create());
+            IDataUtil.put(cursor, "items", array);
+            cursor.destroy();
+
+            result.add(document);
+        } else {
+            IDataCursor criteriaCursor = criteria.getCursor();
+            IData[] by = IDataUtil.getIDataArray(criteriaCursor, "by");
+            IData then = IDataUtil.getIData(criteriaCursor, "then");
+            criteriaCursor.destroy();
+
+            Map<CompoundKey, List<IData>> groups = group(array, IDataComparisonCriterion.of(by));
+            result = new ArrayList<IData>(groups.size());
+
+            for (Map.Entry<CompoundKey, List<IData>> entry : groups.entrySet()) {
+                CompoundKey key = entry.getKey();
+                List<IData> value = entry.getValue();
+                IData[] items = value.toArray(new IData[value.size()]);
+
+                IData group = IDataFactory.create();
+                IDataCursor cursor = group.getCursor();
+                IDataUtil.put(cursor, "by", key.getIData());
+                if (then == null) {
+                    IDataUtil.put(cursor, "items", items);
+                } else {
+                    IDataUtil.put(cursor, "then", group(items, then));
+                }
+                cursor.destroy();
+
+                result.add(group);
+            }
+        }
+
+        return result.toArray(new IData[result.size()]);
+    }
+
+    /**
+     * Groups the given IData[] by the given keys.
+     *
+     * @param array    The IData[] to be grouped.
+     * @param criteria The criteria to group items by.
+     * @return         A Map containing the groups and their items.
+     */
+    public static Map<CompoundKey, List<IData>> group(IData[] array, IDataComparisonCriterion[] criteria) {
+        Map<CompoundKey, List<IData>> groups = new TreeMap<CompoundKey, List<IData>>();
+
+        if (array != null && criteria != null || criteria.length == 0) {
+            for (IData item : array) {
+                if (item != null) {
+                    CompoundKey key = new CompoundKey(criteria, item);
+                    List<IData> list = groups.get(key);
+                    if (list == null) {
+                        list = new LinkedList<IData>();
+                        groups.put(key, list);
+                    }
+                    list.add(item);
+                }
+            }
+        }
+
+        return groups;
     }
 
     /**
@@ -2991,7 +3045,7 @@ public class IDataHelper {
         /**
          * The comparator used for comparison with other compound keys.
          */
-        private IDataComparator comparator;
+        private CriteriaBasedIDataComparator comparator;
         /**
          * The IData document containing the values referenced by the compound key.
          */
@@ -3037,7 +3091,7 @@ public class IDataHelper {
          * @param comparator The comparator used for comparison with other compound keys.
          * @param document   The IData document containing the values associated with the given keys.
          */
-        private CompoundKey(IDataComparator comparator, IData document) {
+        private CompoundKey(CriteriaBasedIDataComparator comparator, IData document) {
             if (comparator == null) throw new NullPointerException("comparator must not be null");
             if (document == null) throw new NullPointerException("document must not be null");
             this.comparator = comparator;
@@ -3049,7 +3103,7 @@ public class IDataHelper {
          *
          * @return The IData document containing the values used by this compound key.
          */
-        public IData getIData() {
+        public IData getDocument() {
             return this.document;
         }
 
@@ -3058,9 +3112,50 @@ public class IDataHelper {
          *
          * @param document The IData document containing the values to be used for comparison by this compound key.
          */
-        public void setIData(IData document) {
+        public void setDocument(IData document) {
             if (document == null) throw new NullPointerException("document must not be null");
             this.document = document;
+        }
+
+        /**
+         * Returns the comparator used for comparisons by this compound key.
+         *
+         * @return The comparator used for comparisons by this compound key.
+         */
+        public CriteriaBasedIDataComparator getComparator() {
+            return this.comparator;
+        }
+
+        /**
+         * Sets the comparator to be used by this compound key in comparisons.
+         *
+         * @param comparator The comparator to be used by this compound key in comparisons.
+         */
+        public void setComparator(CriteriaBasedIDataComparator comparator) {
+            this.comparator = comparator;
+        }
+
+        /**
+         * Returns an IData representation of this compound key.
+         *
+         * @return An IData representation of this compound key.
+         */
+        public IData getIData() {
+            IData output = IDataFactory.create();
+            for (IDataComparisonCriterion criterion : comparator.getCriteria()) {
+                IDataHelper.put(output, criterion.getKey(), IDataHelper.get(document, criterion.getKey()));
+            }
+            return output;
+        }
+
+        /**
+         * This method is not implemented.
+         *
+         * @param document Not used.
+         * @throws UnsupportedOperationException as this method is not implemented.
+         */
+        public void setIData(IData document) {
+            throw new UnsupportedOperationException("method not implemented");
         }
 
         /**

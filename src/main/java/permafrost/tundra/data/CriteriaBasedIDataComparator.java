@@ -45,7 +45,7 @@ public class CriteriaBasedIDataComparator implements IDataComparator {
      * @param criteria The comparison criteria to be used when comparing IData objects.
      */
     public CriteriaBasedIDataComparator(IDataComparisonCriterion... criteria) {
-        this(criteria == null ? new ArrayList() : Arrays.asList(criteria));
+        this(criteria == null ? new ArrayList<IDataComparisonCriterion>() : Arrays.asList(criteria));
     }
 
     /**
@@ -58,6 +58,15 @@ public class CriteriaBasedIDataComparator implements IDataComparator {
             throw new IllegalArgumentException("At least one comparison criteria is required to construct an CriteriaBasedIDataComparator object");
         }
         this.criteria = criteria;
+    }
+
+    /**
+     * Returns the criteria used for comparisons by this comparator.
+     *
+     * @return The criteria used for comparisons by this comparator.
+     */
+    public List<IDataComparisonCriterion> getCriteria() {
+        return this.criteria;
     }
 
     /**
