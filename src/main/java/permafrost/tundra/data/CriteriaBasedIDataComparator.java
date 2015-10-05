@@ -29,13 +29,15 @@ import permafrost.tundra.math.BigDecimalHelper;
 import permafrost.tundra.math.BigIntegerHelper;
 import permafrost.tundra.time.DateTimeHelper;
 import permafrost.tundra.time.DurationHelper;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Compares two IData objects using the values associated with the given list of keys in precedence order.
  */
 public class CriteriaBasedIDataComparator implements IDataComparator {
-    protected java.util.List<IDataComparisonCriterion> criteria;
+    protected List<IDataComparisonCriterion> criteria;
 
     /**
      * Construct a new IDataComparator with one or more comparison criteria.
@@ -43,7 +45,7 @@ public class CriteriaBasedIDataComparator implements IDataComparator {
      * @param criteria The comparison criteria to be used when comparing IData objects.
      */
     public CriteriaBasedIDataComparator(IDataComparisonCriterion... criteria) {
-        this(Arrays.asList(criteria));
+        this(criteria == null ? new ArrayList() : Arrays.asList(criteria));
     }
 
     /**
@@ -51,7 +53,7 @@ public class CriteriaBasedIDataComparator implements IDataComparator {
      *
      * @param criteria The comparison criteria to be used when comparing IData objects.
      */
-    public CriteriaBasedIDataComparator(java.util.List<IDataComparisonCriterion> criteria) {
+    public CriteriaBasedIDataComparator(List<IDataComparisonCriterion> criteria) {
         if (criteria == null || criteria.size() == 0) {
             throw new IllegalArgumentException("At least one comparison criteria is required to construct an CriteriaBasedIDataComparator object");
         }
@@ -125,6 +127,16 @@ public class CriteriaBasedIDataComparator implements IDataComparator {
                 }
                 if (firstValue instanceof Comparable) {
                     result = normalize(((Comparable)firstValue).compareTo(secondValue), criterion.isDescending());
+                } else if (!firstValue.equals(secondValue)){
+                    // fall back to object id comparison if not comparable or equal
+                    int firstHashCode = System.identityHashCode(firstValue);
+                    int secondHashCode = System.identityHashCode(secondValue);
+
+                    if (firstHashCode < secondHashCode) {
+                        result = -1;
+                    } else if (firstHashCode < secondHashCode) {
+                        result = 1;
+                    }
                 }
             }
             if (result != 0) break;
