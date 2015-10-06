@@ -2679,6 +2679,79 @@ public class IDataHelper {
     }
 
     /**
+     * Converts all the keys in the given IData document to lower case.
+     *
+     * @param input     The IData whose keys are to be converted to lower case.
+     * @return          The given IData duplicated with all keys converted to lower case.
+     */
+    public static IData keysToLowerCase(IData input) {
+        return keysToLowerCase(input, true);
+    }
+
+    /**
+     * Converts all the keys in the given IData document to lower case.
+     *
+     * @param input     The IData whose keys are to be converted to lower case.
+     * @param recurse   Whether child IData and IData[] objects should also have their keys converted to lower case.
+     * @return          The given IData duplicated with all keys converted to lower case.
+     */
+    public static IData keysToLowerCase(IData input, boolean recurse) {
+        if (input == null) return null;
+
+        IData output = IDataFactory.create();
+        IDataCursor inputCursor = input.getCursor();
+        IDataCursor outputCursor = output.getCursor();
+
+        while(inputCursor.next()) {
+            String key = inputCursor.getKey();
+            Object value = inputCursor.getValue();
+
+            if (recurse) {
+                if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
+                    value = keysToLowerCase(toIDataArray(value), recurse);
+                } else if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
+                    value = keysToLowerCase(toIData(value), recurse);
+                }
+            }
+
+            outputCursor.insertAfter(key.toLowerCase(), value);
+        }
+        inputCursor.destroy();
+        outputCursor.destroy();
+
+        return output;
+    }
+
+    /**
+     * Converts all the keys in the given IData[] document list to lower case.
+     *
+     * @param input     The IData[] whose keys are to be converted to lower case.
+     * @return          The given IData[] duplicated with all keys converted to lower case.
+     */
+    public static IData[] keysToLowerCase(IData[] input) {
+        return keysToLowerCase(input, true);
+    }
+
+    /**
+     * Converts all the keys in the given IData[] document list to lower case.
+     *
+     * @param input     The IData[] whose keys are to be converted to lower case.
+     * @param recurse   Whether child IData and IData[] objects should also have their keys converted to lower case.
+     * @return          The given IData[] duplicated with all keys converted to lower case.
+     */
+    public static IData[] keysToLowerCase(IData[] input, boolean recurse) {
+        if (input == null) return null;
+
+        IData[] output = new IData[input.length];
+
+        for (int i = 0; i < input.length; i++) {
+            output[i] = keysToLowerCase(input[i], recurse);
+        }
+
+        return output;
+    }
+
+    /**
      * Convenience class for fully qualified IData keys.
      */
     private static class Key {
