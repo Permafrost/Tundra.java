@@ -70,7 +70,12 @@ public class ProxyContentHandlerFactory extends ContentHandlerFactory {
      */
     public static void register() {
         for (Map.Entry<String, ContentHandlerFactory> entry : ContentManagerHelper.getRegistrations().entrySet()) {
-            ContentManager.registerHandler(entry.getKey(), new HTTPCompressionContentHandlerFactory(entry.getValue()));
+            String type = entry.getKey();
+            ContentHandlerFactory factory = entry.getValue();
+
+            if (type != null && factory != null) {
+                ContentManager.registerHandler(type, new HTTPCompressionContentHandlerFactory(factory));
+            }
         }
     }
 
@@ -83,7 +88,7 @@ public class ProxyContentHandlerFactory extends ContentHandlerFactory {
             String type = entry.getKey();
             ContentHandlerFactory factory = entry.getValue();
 
-            if (factory instanceof ProxyContentHandlerFactory) {
+            if (type != null && factory instanceof ProxyContentHandlerFactory) {
                 // restore original content handler factory
                 ContentManager.registerHandler(type, ((ProxyContentHandlerFactory)factory).getContentHandlerFactory());
             }
