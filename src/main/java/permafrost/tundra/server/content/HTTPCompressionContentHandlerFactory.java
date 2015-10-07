@@ -60,7 +60,7 @@ public class HTTPCompressionContentHandlerFactory extends ProxyContentHandlerFac
             ContentHandlerFactory factory = entry.getValue();
 
             if (type != null && (!(type.equals("application/wm-soap") || type.equals("application/soap") || type.equals("application/soap+xml"))) && factory != null && (!(factory instanceof HTTPCompressionContentHandlerFactory))) {
-                ContentManager.registerHandler(entry.getKey(), new HTTPCompressionContentHandlerFactory(entry.getValue()));
+                ContentManager.registerHandler(type, new HTTPCompressionContentHandlerFactory(factory));
             }
         }
     }
