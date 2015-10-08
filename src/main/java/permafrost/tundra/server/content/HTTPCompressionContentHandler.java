@@ -28,16 +28,25 @@ import com.wm.app.b2b.server.ContentHandler;
 import com.wm.app.b2b.server.HTTPState;
 import com.wm.app.b2b.server.InvokeState;
 import com.wm.app.b2b.server.ProtocolInfoIf;
-import com.wm.app.b2b.server.ProtocolState;
 import com.wm.net.HttpHeader;
 import com.wm.util.Values;
+import permafrost.tundra.io.StreamHelper;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.zip.GZIPInputStream;
 
+/**
+ * A custom content handler which implements support for HTTP compression using the gzip algorithm by
+ * wrapping another content handler, then checking if the request is HTTP and includes the
+ * `Content-Encoding: gzip` header and if so first wraps the input stream with a gzip decompresssion
+ * stream before calling the proxied content handler to process the request as normal.
+ */
 public class HTTPCompressionContentHandler extends ProxyContentHandler {
+    /**
+     * Creates a new HTTPCompressionContentHandler object.
+     *
+     * @param handler The handler to proxy method calls to.
+     */
     public HTTPCompressionContentHandler(ContentHandler handler) {
         super(handler);
     }
@@ -46,7 +55,7 @@ public class HTTPCompressionContentHandler extends ProxyContentHandler {
      * Reads input for service invocation. Turns properly formatted input into an instance of Values
      * suitable for service invocation. Called before service invocation to provide input. If the
      * transport is HTTP, and a Content-Encoding header was specified with the value "gzip", the
-     * stream is first gzip decompressed before the proxy handler is invoked.
+     * stream is first wrapped in a gzip decompression stream before the proxied handler is invoked.
      *
      * @param inputStream  The input stream from which to read.
      * @param invokeState  The current invocation state (such as the current user).
@@ -54,32 +63,16 @@ public class HTTPCompressionContentHandler extends ProxyContentHandler {
      * @throws IOException If an error occurs reading from the input stream.
      */
     public Values getInputValues(InputStream inputStream, InvokeState invokeState) throws IOException {
-
         if (inputStream != null && invokeState != null) {
             ProtocolInfoIf protocolInfoIf = invokeState.getProtocolInfoIf();
 
             if (protocolInfoIf instanceof HTTPState) {
                 HTTPState httpState = (HTTPState)protocolInfoIf;
-                HttpHeader headers = httpState.getRequestHeader();
-                if (headers != null) {
-                    String contentEncoding = headers.getFieldValue(HttpHeader.CONTENT_ENCODING);
-                    if (contentEncoding != null && contentEncoding.trim().equalsIgnoreCase("gzip")) {
-                        inputStream = new GZIPInputStream(inputStream);
-                        headers.clearField(HttpHeader.CONTENT_ENCODING);
-
-                        // regenerate the transport info stored in the protocol state
-                        try {
-                            // use reflection to invoke protected method initProtocolProps
-                            Method initProtocolProps = ProtocolState.class.getDeclaredMethod("initProtocolProps");
-                            initProtocolProps.setAccessible(true);
-                            initProtocolProps.invoke(httpState);
-                        } catch (NoSuchMethodException ex) {
-                            throw new RuntimeException(ex);
-                        } catch (IllegalAccessException ex) {
-                            throw new RuntimeException(ex);
-                        } catch (InvocationTargetException ex) {
-                            throw new RuntimeException(ex);
-                        }
+                String contentEncoding = HTTPStateHelper.getHeader(httpState, HttpHeader.CONTENT_ENCODING);
+                if (contentEncoding != null) {
+                    if (contentEncoding.equalsIgnoreCase("gzip")) {
+                        inputStream = new GZIPInputStream(inputStream, StreamHelper.DEFAULT_BUFFER_SIZE);
+                        HTTPStateHelper.removeHeader(httpState, HttpHeader.CONTENT_ENCODING);
                     }
                 }
             }
