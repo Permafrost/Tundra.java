@@ -737,6 +737,8 @@ public class IDataHelper {
     public static IData amend(IData document, IData[] amendments, IData scope) {
         if (amendments == null) return document;
 
+        IData output = duplicate(document);
+
         for (int i = 0; i < amendments.length; i++) {
             if (amendments[i] != null) {
                 IDataCursor cursor = amendments[i].getCursor();
@@ -749,12 +751,12 @@ public class IDataHelper {
                 value = VariableSubstitutor.substitute(value, scope);
 
                 if ((condition == null) || ConditionEvaluator.evaluate(condition, scope)) {
-                    document = IDataHelper.put(document, key, value);
+                    output = IDataHelper.put(output, key, value);
                 }
             }
         }
 
-        return document;
+        return output;
     }
 
     /**
