@@ -54,29 +54,32 @@ public class HTTPCompressionContentHandler extends ProxyContentHandler {
      * @throws IOException If an error occurs reading from the input stream.
      */
     public Values getInputValues(InputStream inputStream, InvokeState invokeState) throws IOException {
-        ProtocolInfoIf protocolInfoIf = invokeState.getProtocolInfoIf();
 
-        if (protocolInfoIf instanceof HTTPState) {
-            HTTPState httpState = (HTTPState)protocolInfoIf;
-            HttpHeader headers = httpState.getRequestHeader();
-            if (headers != null) {
-                String contentEncoding = headers.getFieldValue(HttpHeader.CONTENT_ENCODING);
-                if (contentEncoding.equalsIgnoreCase("gzip")) {
-                    inputStream = new GZIPInputStream(inputStream);
-                    headers.clearField(HttpHeader.CONTENT_ENCODING);
+        if (inputStream != null && invokeState != null) {
+            ProtocolInfoIf protocolInfoIf = invokeState.getProtocolInfoIf();
 
-                    // regenerate the transport info stored in the protocol state
-                    try {
-                        // use reflection to invoke protected method initProtocolProps
-                        Method initProtocolProps = ProtocolState.class.getDeclaredMethod("initProtocolProps");
-                        initProtocolProps.setAccessible(true);
-                        initProtocolProps.invoke(httpState);
-                    } catch(NoSuchMethodException ex) {
-                        throw new RuntimeException(ex);
-                    } catch(IllegalAccessException ex) {
-                        throw new RuntimeException(ex);
-                    } catch(InvocationTargetException ex) {
-                        throw new RuntimeException(ex);
+            if (protocolInfoIf instanceof HTTPState) {
+                HTTPState httpState = (HTTPState)protocolInfoIf;
+                HttpHeader headers = httpState.getRequestHeader();
+                if (headers != null) {
+                    String contentEncoding = headers.getFieldValue(HttpHeader.CONTENT_ENCODING);
+                    if (contentEncoding != null && contentEncoding.trim().equalsIgnoreCase("gzip")) {
+                        inputStream = new GZIPInputStream(inputStream);
+                        headers.clearField(HttpHeader.CONTENT_ENCODING);
+
+                        // regenerate the transport info stored in the protocol state
+                        try {
+                            // use reflection to invoke protected method initProtocolProps
+                            Method initProtocolProps = ProtocolState.class.getDeclaredMethod("initProtocolProps");
+                            initProtocolProps.setAccessible(true);
+                            initProtocolProps.invoke(httpState);
+                        } catch (NoSuchMethodException ex) {
+                            throw new RuntimeException(ex);
+                        } catch (IllegalAccessException ex) {
+                            throw new RuntimeException(ex);
+                        } catch (InvocationTargetException ex) {
+                            throw new RuntimeException(ex);
+                        }
                     }
                 }
             }
