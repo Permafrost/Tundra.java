@@ -525,7 +525,7 @@ public class IDataHelper {
      *                 document.
      * @param literal  If true, the key will be treated as a literal key, rather than potentially as a fully-qualified
      *                 key.
-     * @return The given IData document.
+     * @return         The given IData document.
      */
     public static IData drop(IData document, String key, boolean literal) {
         if (document != null && key != null) {
@@ -547,7 +547,7 @@ public class IDataHelper {
      *
      * @param document An IData document.
      * @param keys     A fully-qualified key identifying the value to be removed from the given IData document.
-     * @return The given IData document.
+     * @return         The given IData document.
      */
     private static IData drop(IData document, Queue<Key> keys) {
         if (document != null && keys != null && keys.size() > 0) {
@@ -560,7 +560,17 @@ public class IDataHelper {
                 } else if (key.hasKeyIndex()) {
                     drop(toIData(get(document, key.getKey(), key.getIndex())), keys);
                 } else {
-                    drop(toIData(IDataUtil.get(cursor, key.getKey())), keys);
+                    Object value = IDataUtil.get(cursor, key.getKey());
+                    IData[] array = toIDataArray(value);
+                    if (array != null) {
+                        // if we are referencing an IData[], drop the key from all items in the array
+                        for (IData item : array) {
+                            Queue<Key> itemKeys = new ArrayDeque<Key>(keys);
+                            drop(item, itemKeys);
+                        }
+                    } else {
+                        drop(toIData(value), keys);
+                    }
                 }
             } else {
                 if (key.hasArrayIndex()) {

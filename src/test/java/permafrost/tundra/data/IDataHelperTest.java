@@ -454,6 +454,36 @@ public class IDataHelperTest {
         assertArrayEquals(expected, (String[])IDataHelper.get(parent, "a/b"));
     }
 
+    @Test
+    public void testDropOfKeyInIDataArray() throws Exception {
+        String[] array = { "1", "2", "3" };
+        String[] expected = { "1", "3" };
+
+        IDataMap child1 = new IDataMap();
+        child1.put("a", "1");
+        child1.put("b", "1");
+
+        IDataMap expected1 = new IDataMap();
+        expected1.put("b", "1");
+
+        IDataMap child2 = new IDataMap();
+        child2.put("a", "2");
+        child2.put("b", "2");
+
+        IDataMap expected2 = new IDataMap();
+        expected2.put("a", "2");
+
+        IDataMap parent = new IDataMap();
+        parent.put("c", new IData[] { child1, child2 });
+
+        IDataHelper.drop(parent, "c/a");
+
+        assertEquals(null, child1.get("a"));
+        assertEquals("1", child1.get("b"));
+        assertEquals(null, child2.get("a"));
+        assertEquals("2", child2.get("b"));
+    }
+
     @Test(expected = ArrayIndexOutOfBoundsException.class)
     public void testDropWithArrayIndexOutOfBounds() throws Exception {
         String[] array = { "1", "2", "3" };
