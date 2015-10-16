@@ -39,17 +39,14 @@ import permafrost.tundra.lang.ObjectHelper;
 import permafrost.tundra.lang.StringHelper;
 import permafrost.tundra.time.DateTimeHelper;
 import java.io.IOException;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -324,8 +321,8 @@ public class IDataHelper {
             if (cursor.first(key)) {
                 size++;
                 while (cursor.next(key)) size++;
-            } else if (Key.isFullyQualified(key, literal)) {
-                size = size(document, Key.parse(key, literal));
+            } else if (IDataKey.isFullyQualified(key, literal)) {
+                size = size(document, IDataKey.of(key, literal));
             }
 
             cursor.destroy();
@@ -337,33 +334,33 @@ public class IDataHelper {
      * Returns the number of occurrences of the given fully-qualified key in the given IData document.
      *
      * @param document An IData document.
-     * @param keys     The parsed fully-qualified key whose occurrences are to be counted.
+     * @param key      The parsed fully-qualified key whose occurrences are to be counted.
      * @return The number of occurrences of the given parsed fully-qualified key in the given IData document.
      */
-    private static int size(IData document, Queue<Key> keys) {
+    private static int size(IData document, IDataKey key) {
         int size = 0;
-        if (document != null && keys != null && keys.size() > 0) {
+        if (document != null && key != null && key.size() > 0) {
             IDataCursor cursor = document.getCursor();
-            Key key = keys.remove();
+            IDataKey.Part keyPart = key.remove();
 
-            if (keys.size() > 0) {
-                if (key.hasArrayIndex()) {
-                    size = size(ArrayHelper.get(toIDataArray(IDataUtil.get(cursor, key.getKey())), key.getIndex()), keys);
-                } else if (key.hasKeyIndex()) {
-                    size = size(toIData(get(document, key.getKey(), key.getIndex())), keys);
+            if (key.size() > 0) {
+                if (keyPart.hasArrayIndex()) {
+                    size = size(ArrayHelper.get(toIDataArray(IDataUtil.get(cursor, keyPart.getKey())), keyPart.getIndex()), key);
+                } else if (keyPart.hasKeyIndex()) {
+                    size = size(toIData(get(document, keyPart.getKey(), keyPart.getIndex())), key);
                 } else {
-                    size = size(toIData(IDataUtil.get(cursor, key.getKey())), keys);
+                    size = size(toIData(IDataUtil.get(cursor, keyPart.getKey())), key);
                 }
             } else {
-                if (key.hasArrayIndex()) {
-                    Object[] array = IDataUtil.getObjectArray(cursor, key.getKey());
-                    if (array != null && array.length > key.getIndex()) {
+                if (keyPart.hasArrayIndex()) {
+                    Object[] array = IDataUtil.getObjectArray(cursor, keyPart.getKey());
+                    if (array != null && array.length > keyPart.getIndex()) {
                         size = 1;
                     }
-                } else if (key.hasKeyIndex()) {
-                    size = size(document, key.getKey(), key.getIndex());
+                } else if (keyPart.hasKeyIndex()) {
+                    size = size(document, keyPart.getKey(), keyPart.getIndex());
                 } else {
-                    while (cursor.next(key.getKey())) size++;
+                    while (cursor.next(keyPart.getKey())) size++;
                 }
             }
             cursor.destroy();
@@ -533,8 +530,8 @@ public class IDataHelper {
 
             if (cursor.first(key)) {
                 cursor.delete();
-            } else if (Key.isFullyQualified(key, literal)) {
-                drop(document, Key.parse(key, literal));
+            } else if (IDataKey.isFullyQualified(key, literal)) {
+                drop(document, IDataKey.of(key, literal));
             }
 
             cursor.destroy();
@@ -546,39 +543,38 @@ public class IDataHelper {
      * Removes the value with the given key from the given IData document.
      *
      * @param document An IData document.
-     * @param keys     A fully-qualified key identifying the value to be removed from the given IData document.
+     * @param key      A fully-qualified key identifying the value to be removed from the given IData document.
      * @return         The given IData document.
      */
-    private static IData drop(IData document, Queue<Key> keys) {
-        if (document != null && keys != null && keys.size() > 0) {
+    private static IData drop(IData document, IDataKey key) {
+        if (document != null && key != null && key.size() > 0) {
             IDataCursor cursor = document.getCursor();
-            Key key = keys.remove();
+            IDataKey.Part keyPart = key.remove();
 
-            if (keys.size() > 0) {
-                if (key.hasArrayIndex()) {
-                    drop(ArrayHelper.get(toIDataArray(IDataUtil.get(cursor, key.getKey())), key.getIndex()), keys);
-                } else if (key.hasKeyIndex()) {
-                    drop(toIData(get(document, key.getKey(), key.getIndex())), keys);
+            if (key.size() > 0) {
+                if (keyPart.hasArrayIndex()) {
+                    drop(ArrayHelper.get(toIDataArray(IDataUtil.get(cursor, keyPart.getKey())), keyPart.getIndex()), key);
+                } else if (keyPart.hasKeyIndex()) {
+                    drop(toIData(get(document, keyPart.getKey(), keyPart.getIndex())), key);
                 } else {
-                    Object value = IDataUtil.get(cursor, key.getKey());
+                    Object value = IDataUtil.get(cursor, keyPart.getKey());
                     IData[] array = toIDataArray(value);
                     if (array != null) {
                         // if we are referencing an IData[], drop the key from all items in the array
                         for (IData item : array) {
-                            Queue<Key> itemKeys = new ArrayDeque<Key>(keys);
-                            drop(item, itemKeys);
+                            drop(item, key.clone());
                         }
                     } else {
-                        drop(toIData(value), keys);
+                        drop(toIData(value), key);
                     }
                 }
             } else {
-                if (key.hasArrayIndex()) {
-                    IDataUtil.put(cursor, key.getKey(), ArrayHelper.drop(IDataUtil.getObjectArray(cursor, key.getKey()), key.getIndex()));
-                } else if (key.hasKeyIndex()) {
-                    drop(document, key.getKey(), key.getIndex());
+                if (keyPart.hasArrayIndex()) {
+                    IDataUtil.put(cursor, keyPart.getKey(), ArrayHelper.drop(IDataUtil.getObjectArray(cursor, keyPart.getKey()), keyPart.getIndex()));
+                } else if (keyPart.hasKeyIndex()) {
+                    drop(document, keyPart.getKey(), keyPart.getIndex());
                 } else {
-                    IDataUtil.remove(cursor, key.getKey());
+                    IDataUtil.remove(cursor, keyPart.getKey());
                 }
             }
             cursor.destroy();
@@ -632,8 +628,8 @@ public class IDataHelper {
                 do {
                     cursor.delete();
                 } while (cursor.next(key));
-            } else if (Key.isFullyQualified(key, literal)) {
-                dropAll(document, Key.parse(key, literal));
+            } else if (IDataKey.isFullyQualified(key, literal)) {
+                dropAll(document, IDataKey.of(key, literal));
             }
 
             cursor.destroy();
@@ -645,29 +641,29 @@ public class IDataHelper {
      * Removes all occurrences of the given key from the given IData document.
      *
      * @param document An IData document.
-     * @param keys     A fully-qualified key identifying the values to be removed from the given IData document.
+     * @param key      A fully-qualified key identifying the values to be removed from the given IData document.
      * @return The given IData document.
      */
-    private static IData dropAll(IData document, Queue<Key> keys) {
-        if (document != null && keys != null && keys.size() > 0) {
+    private static IData dropAll(IData document, IDataKey key) {
+        if (document != null && key != null && key.size() > 0) {
             IDataCursor cursor = document.getCursor();
-            Key key = keys.remove();
+            IDataKey.Part keyPart = key.remove();
 
-            if (keys.size() > 0) {
-                if (key.hasArrayIndex()) {
-                    dropAll(ArrayHelper.get(toIDataArray(IDataUtil.get(cursor, key.getKey())), key.getIndex()), keys);
-                } else if (key.hasKeyIndex()) {
-                    dropAll(toIData(get(document, key.getKey(), key.getIndex())), keys);
+            if (key.size() > 0) {
+                if (keyPart.hasArrayIndex()) {
+                    dropAll(ArrayHelper.get(toIDataArray(IDataUtil.get(cursor, keyPart.getKey())), keyPart.getIndex()), key);
+                } else if (keyPart.hasKeyIndex()) {
+                    dropAll(toIData(get(document, keyPart.getKey(), keyPart.getIndex())), key);
                 } else {
-                    dropAll(toIData(IDataUtil.get(cursor, key.getKey())), keys);
+                    dropAll(toIData(IDataUtil.get(cursor, keyPart.getKey())), key);
                 }
             } else {
-                if (key.hasArrayIndex()) {
-                    IDataUtil.put(cursor, key.getKey(), ArrayHelper.drop(IDataUtil.getObjectArray(cursor, key.getKey()), key.getIndex()));
-                } else if (key.hasKeyIndex()) {
-                    drop(document, key.getKey(), key.getIndex());
+                if (keyPart.hasArrayIndex()) {
+                    IDataUtil.put(cursor, keyPart.getKey(), ArrayHelper.drop(IDataUtil.getObjectArray(cursor, keyPart.getKey()), keyPart.getIndex()));
+                } else if (keyPart.hasKeyIndex()) {
+                    drop(document, keyPart.getKey(), keyPart.getIndex());
                 } else {
-                    while (cursor.next(key.getKey())) {
+                    while (cursor.next(keyPart.getKey())) {
                         cursor.delete();
                     }
                 }
@@ -1696,14 +1692,14 @@ public class IDataHelper {
 
             if (cursor.first(key)) {
                 value = cursor.getValue();
-            } else if (pipeline != null && Key.isAbsolute(key, literal)) {
+            } else if (pipeline != null && IDataKey.isAbsolute(key, literal)) {
                 value = get(null, pipeline, key.substring(1), literal);
-            } else if (scope != null && Key.isFullyQualified(key, literal)) {
-                value = get(scope, Key.parse(key, literal));
+            } else if (scope != null && IDataKey.isFullyQualified(key, literal)) {
+                value = get(scope, IDataKey.of(key, literal));
             }
 
             cursor.destroy();
-        } else if (pipeline != null && Key.isAbsolute(key, literal)) {
+        } else if (pipeline != null && IDataKey.isAbsolute(key, literal)) {
             value = get(null, pipeline, key.substring(1), literal);
         }
 
@@ -1714,39 +1710,39 @@ public class IDataHelper {
      * Returns the value associated with the given fully-qualified key from the given IData document.
      *
      * @param document An IData document.
-     * @param keys     A fully-qualified key identifying the value in the given IData document to be returned.
+     * @param key      A fully-qualified key identifying the value in the given IData document to be returned.
      * @return         The value associated with the given key in the given IData document.
      */
-    private static Object get(IData document, Queue<Key> keys) {
+    private static Object get(IData document, IDataKey key) {
         Object value = null;
 
-        if (document != null && keys != null && keys.size() > 0) {
+        if (document != null && key != null && key.size() > 0) {
             IDataCursor cursor = document.getCursor();
-            Key key = keys.remove();
+            IDataKey.Part keyPart = key.remove();
 
-            if (keys.size() > 0) {
-                if (key.hasArrayIndex()) {
-                    value = get(ArrayHelper.get(toIDataArray(IDataUtil.get(cursor, key.getKey())), key.getIndex()), keys);
-                } else if (key.hasKeyIndex()) {
-                    value = get(toIData(get(document, key.getKey(), key.getIndex())), keys);
+            if (key.size() > 0) {
+                if (keyPart.hasArrayIndex()) {
+                    value = get(ArrayHelper.get(toIDataArray(IDataUtil.get(cursor, keyPart.getKey())), keyPart.getIndex()), key);
+                } else if (keyPart.hasKeyIndex()) {
+                    value = get(toIData(get(document, keyPart.getKey(), keyPart.getIndex())), key);
                 } else {
-                    value = get(IDataUtil.getIData(cursor, key.getKey()), keys);
+                    value = get(IDataUtil.getIData(cursor, keyPart.getKey()), key);
                 }
             } else {
-                if (key.hasArrayIndex()) {
-                    value = IDataUtil.get(cursor, key.getKey());
+                if (keyPart.hasArrayIndex()) {
+                    value = IDataUtil.get(cursor, keyPart.getKey());
                     if (value != null) {
                         if (value instanceof Object[] || value instanceof Table) {
                             Object[] array = value instanceof Object[] ? (Object[])value : ((Table)value).getValues();
-                            value = ArrayHelper.get(array, key.getIndex());
+                            value = ArrayHelper.get(array, keyPart.getIndex());
                         } else {
                             value = null;
                         }
                     }
-                } else if (key.hasKeyIndex()) {
-                    value = get(document, key.getKey(), key.getIndex());
+                } else if (keyPart.hasKeyIndex()) {
+                    value = get(document, keyPart.getKey(), keyPart.getIndex());
                 } else {
-                    value = IDataUtil.get(cursor, key.getKey());
+                    value = IDataUtil.get(cursor, keyPart.getKey());
                 }
             }
 
@@ -1815,8 +1811,8 @@ public class IDataHelper {
                 list.addAll(ObjectHelper.listify(cursor.getValue()));
             } while (cursor.next(key));
             output = ArrayHelper.toArray(list);
-        } else if (Key.isFullyQualified(key, literal)) {
-            output = getAsArray(document, Key.parse(key, literal));
+        } else if (IDataKey.isFullyQualified(key, literal)) {
+            output = getAsArray(document, IDataKey.of(key, literal));
         }
 
         cursor.destroy();
@@ -1828,41 +1824,41 @@ public class IDataHelper {
      * Returns the value associated with the given fully-qualified key from the given IData document as an array.
      *
      * @param document An IData document.
-     * @param keys     A fully-qualified key identifying the value in the given IData document to be returned.
+     * @param key      A fully-qualified key identifying the value in the given IData document to be returned.
      * @return The value associated with the given key in the given IData document as an array.
      */
-    private static Object[] getAsArray(IData document, Queue<Key> keys) {
+    private static Object[] getAsArray(IData document, IDataKey key) {
         Object[] output = null;
 
-        if (document != null && keys != null && keys.size() > 0) {
+        if (document != null && key != null && key.size() > 0) {
             IDataCursor cursor = document.getCursor();
-            Key key = keys.remove();
+            IDataKey.Part keyPart = key.remove();
 
-            if (keys.size() > 0) {
-                if (key.hasArrayIndex()) {
-                    output = getAsArray(ArrayHelper.get(toIDataArray(IDataUtil.get(cursor, key.getKey())), key.getIndex()), keys);
-                } else if (key.hasKeyIndex()) {
-                    output = getAsArray(toIData(get(document, key.getKey(), key.getIndex())), keys);
+            if (key.size() > 0) {
+                if (keyPart.hasArrayIndex()) {
+                    output = getAsArray(ArrayHelper.get(toIDataArray(IDataUtil.get(cursor, keyPart.getKey())), keyPart.getIndex()), key);
+                } else if (keyPart.hasKeyIndex()) {
+                    output = getAsArray(toIData(get(document, keyPart.getKey(), keyPart.getIndex())), key);
                 } else {
-                    output = getAsArray(IDataUtil.getIData(cursor, key.getKey()), keys);
+                    output = getAsArray(IDataUtil.getIData(cursor, keyPart.getKey()), key);
                 }
             } else {
                 List<Object> list = new LinkedList<Object>();
-                if (key.hasArrayIndex()) {
-                    Object value = IDataUtil.get(cursor, key.getKey());
+                if (keyPart.hasArrayIndex()) {
+                    Object value = IDataUtil.get(cursor, keyPart.getKey());
                     if (value != null) {
                         if (value instanceof Object[] || value instanceof Table) {
                             Object[] array = value instanceof Object[] ? (Object[])value : ((Table)value).getValues();
-                            value = ArrayHelper.get(array, key.getIndex());
+                            value = ArrayHelper.get(array, keyPart.getIndex());
                         } else {
                             value = null;
                         }
                     }
                     list.addAll(ObjectHelper.listify(value));
-                } else if (key.hasKeyIndex()) {
-                    list.addAll(ObjectHelper.listify(get(document, key.getKey(), key.getIndex())));
+                } else if (keyPart.hasKeyIndex()) {
+                    list.addAll(ObjectHelper.listify(get(document, keyPart.getKey(), keyPart.getIndex())));
                 } else {
-                    while (cursor.next(key.getKey())) {
+                    while (cursor.next(keyPart.getKey())) {
                         list.addAll(ObjectHelper.listify(cursor.getValue()));
                     }
                 }
@@ -1917,7 +1913,7 @@ public class IDataHelper {
      * @return The input IData document with the value set.
      */
     public static IData put(IData document, String key, Object value, boolean literal, boolean includeNull) {
-        return put(document, Key.parse(key, literal), value, includeNull);
+        return put(document, IDataKey.of(key, literal), value, includeNull);
     }
 
     /**
@@ -1925,37 +1921,37 @@ public class IDataHelper {
      * IData document in place.
      *
      * @param document          An IData document.
-     * @param fullyQualifiedKey A fully-qualified key identifying the value to be set.
+     * @param key               A fully-qualified key identifying the value to be set.
      * @param value             The value to be set.
      * @param includeNull       When true the value is set even when null, otherwise the value is only set when it is
      *                          not null.
      * @return The input IData document with the value set.
      */
-    private static IData put(IData document, Queue<Key> fullyQualifiedKey, Object value, boolean includeNull) {
+    private static IData put(IData document, IDataKey key, Object value, boolean includeNull) {
         if (!includeNull && value == null) return document;
 
-        if (fullyQualifiedKey != null && fullyQualifiedKey.size() > 0) {
+        if (key != null && key.size() > 0) {
             if (document == null) document = IDataFactory.create();
 
             IDataCursor cursor = document.getCursor();
-            Key key = fullyQualifiedKey.remove();
+            IDataKey.Part keyPart = key.remove();
 
-            if (fullyQualifiedKey.size() > 0) {
-                if (key.hasArrayIndex()) {
-                    IData[] array = IDataUtil.getIDataArray(cursor, key.getKey());
+            if (key.size() > 0) {
+                if (keyPart.hasArrayIndex()) {
+                    IData[] array = IDataUtil.getIDataArray(cursor, keyPart.getKey());
                     IData child = null;
                     try {
-                        child = ArrayHelper.get(array, key.getIndex());
+                        child = ArrayHelper.get(array, keyPart.getIndex());
                     } catch(ArrayIndexOutOfBoundsException ex) {
                         // ignore exception
                     }
-                    value = ArrayHelper.put(array, put(child, fullyQualifiedKey, value, includeNull), key.getIndex(), IData.class);
-                } else if (key.hasKeyIndex()) {
-                    value = put(toIData(get(document, key.getKey(), key.getIndex())), fullyQualifiedKey, value, includeNull);
+                    value = ArrayHelper.put(array, put(child, key, value, includeNull), keyPart.getIndex(), IData.class);
+                } else if (keyPart.hasKeyIndex()) {
+                    value = put(toIData(get(document, keyPart.getKey(), keyPart.getIndex())), key, value, includeNull);
                 } else {
-                    value = put(IDataUtil.getIData(cursor, key.getKey()), fullyQualifiedKey, value, includeNull);
+                    value = put(IDataUtil.getIData(cursor, keyPart.getKey()), key, value, includeNull);
                 }
-            } else if (key.hasArrayIndex()) {
+            } else if (keyPart.hasArrayIndex()) {
                 Class klass = Object.class;
                 if (value != null) {
                     if (value instanceof String) {
@@ -1964,13 +1960,13 @@ public class IDataHelper {
                         klass = IData.class;
                     }
                 }
-                value = ArrayHelper.put(IDataUtil.getObjectArray(cursor, key.getKey()), value, key.getIndex(), klass);
+                value = ArrayHelper.put(IDataUtil.getObjectArray(cursor, keyPart.getKey()), value, keyPart.getIndex(), klass);
             }
 
-            if (key.hasKeyIndex()) {
-                put(document, key.getKey(), key.getIndex(), value);
+            if (keyPart.hasKeyIndex()) {
+                put(document, keyPart.getKey(), keyPart.getIndex(), value);
             } else {
-                IDataUtil.put(cursor, key.getKey(), value);
+                IDataUtil.put(cursor, keyPart.getKey(), value);
             }
             cursor.destroy();
         }
@@ -2761,200 +2757,6 @@ public class IDataHelper {
         }
 
         return output;
-    }
-
-    /**
-     * Convenience class for fully qualified IData keys.
-     */
-    private static class Key {
-        public static final String SEPARATOR = "/";
-        public static final Pattern INDEX_PATTERN = Pattern.compile("(\\[(-?\\d+?)\\]|\\((\\d+?)\\))$");
-
-        protected boolean hasArrayIndex = false, hasKeyIndex = false;
-        protected int index = 0;
-        protected String key = null;
-
-        /**
-         * Constructs a new key object given a key string.
-         *
-         * @param key An IData key as a string.
-         */
-        public Key(String key) {
-            this(key, false);
-        }
-
-        /**
-         * Constructs a new key object given a key string.
-         *
-         * @param key     An IData key as a string.
-         * @param literal If true, the key is treated literally rather than as a fully-qualified key that could contain
-         *                array or key indexing.
-         */
-        public Key(String key, boolean literal) {
-            if (key == null) throw new NullPointerException("key must not be null");
-
-            if (literal) {
-                this.key = key;
-            } else {
-                StringBuffer buffer = new StringBuffer();
-
-                Matcher matcher = INDEX_PATTERN.matcher(key);
-                while (matcher.find()) {
-                    String arrayIndexString = matcher.group(2);
-                    String keyIndexString = matcher.group(3);
-
-                    if (arrayIndexString != null) {
-                        hasArrayIndex = true;
-                        index = Integer.parseInt(arrayIndexString);
-                    } else {
-                        hasKeyIndex = true;
-                        index = Integer.parseInt(keyIndexString);
-                    }
-                    matcher.appendReplacement(buffer, "");
-                }
-                matcher.appendTail(buffer);
-
-                this.key = buffer.toString();
-            }
-        }
-
-        /**
-         * Returns true if this key includes an array index.
-         *
-         * @return true if this key includes an array index.
-         */
-        public boolean hasArrayIndex() {
-            return hasArrayIndex;
-        }
-
-        /**
-         * Returns true if this key includes an key index.
-         *
-         * @return true if this key includes an key index.
-         */
-        public boolean hasKeyIndex() {
-            return hasKeyIndex;
-        }
-
-        /**
-         * Returns this key's index value.
-         *
-         * @return This key's index value.
-         */
-        public int getIndex() {
-            return index;
-        }
-
-        /**
-         * Returns the key-only component of this Key (with no array or key indexing).
-         *
-         * @return The key-only component of this Key (with no array or key indexing).
-         */
-        public String getKey() {
-            return key;
-        }
-
-        /**
-         * Returns a string representation of this key.
-         *
-         * @return A string representation of this key.
-         */
-        public String toString() {
-            String output;
-            if (hasKeyIndex()) {
-                output = key + "(" + index + ")";
-            } else if (hasArrayIndex()) {
-                output = key + "[" + index + "]";
-            } else {
-                output = key;
-            }
-            return output;
-        }
-
-        /**
-         * Parses a fully-qualified IData key string into its constituent parts.
-         *
-         * @param key A fully-qualified IData key string.
-         * @return The parsed key as a Queue of individual key parts.
-         */
-        public static Queue<Key> parse(String key) {
-            return parse(key, false);
-        }
-
-        /**
-         * Parses a fully-qualified IData key string into its constituent parts.
-         *
-         * @param key     A fully-qualified IData key string.
-         * @param literal If true, the key will be treated as a literal key, rather than potentially as a
-         *                fully-qualified key.
-         * @return The parsed key as a Queue of individual key parts.
-         */
-        public static Queue<Key> parse(String key, boolean literal) {
-            if (key == null) return null;
-
-            String[] parts;
-
-            if (literal) {
-                parts = new String[1];
-                parts[0] = key;
-            } else {
-                parts = key.split(SEPARATOR);
-            }
-
-            Queue<Key> queue = new ArrayDeque<Key>(parts.length);
-
-            for (String part : parts) {
-                queue.add(new Key(part, literal));
-            }
-
-            return queue;
-        }
-
-        /**
-         * Returns true if the given IData key is considered fully-qualified (because it contains either an array index,
-         * key index, or path separated components).
-         *
-         * @param key An IData key string.
-         * @return True if the given key is considered fully-qualified.
-         */
-        public static boolean isFullyQualified(String key) {
-            return isFullyQualified(key, false);
-        }
-
-        /**
-         * Returns true if the given IData key is considered fully-qualified (because it contains either an array index,
-         * key index, or path separated components).
-         *
-         * @param key     An IData key string.
-         * @param literal If true, the key will be treated as a literal key, rather than potentially as a
-         *                fully-qualified key.
-         * @return True if the given key is considered fully-qualified.
-         */
-        public static boolean isFullyQualified(String key, boolean literal) {
-            return !literal && key != null && (key.contains(SEPARATOR) || INDEX_PATTERN.matcher(key).find());
-        }
-
-        /**
-         * Returns true if the given IData key starts with "/", indicating it is an absolute path.
-         *
-         * @param key     An IData key string.
-         * @return        True if the given key is accessing the root scope.
-         */
-        public static boolean isAbsolute(String key) {
-            return isAbsolute(key, false);
-        }
-
-        /**
-         * Returns true if the given IData key starts with "/", indicating it is an absolute path.
-         *
-         * @param key     An IData key string.
-         * @param literal If true, the key will be treated as a literal key, rather than potentially as a
-         *                fully-qualified key.
-         * @return        True if the given key is an absolute path.
-         */
-        public static boolean isAbsolute(String key, boolean literal) {
-            return !literal && key != null && key.startsWith(SEPARATOR);
-        }
     }
 
     /**
