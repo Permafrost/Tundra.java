@@ -6,6 +6,7 @@ import com.wm.data.IDataFactory;
 import com.wm.data.IDataUtil;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
@@ -394,6 +395,34 @@ public class IDataHelperTest {
         assertEquals("2", IDataHelper.get(parent, "a/b(1)"));
         assertEquals("3", IDataHelper.get(parent, "a/b(2)"));
         assertEquals("4", IDataHelper.get(parent, "a/b(3)"));
+    }
+
+    @Test
+    public void testGetKeyWithNoIndexFromPathWithIDataArray() throws Exception {
+        String[] array = { "1", "2", "3" };
+        String[] expected = { "1", "3" };
+
+        IDataMap child1 = new IDataMap();
+        child1.put("a", "1");
+        child1.put("b", "1");
+
+        IDataMap child2 = new IDataMap();
+        child2.put("a", "2");
+        child2.put("b", "2");
+
+        IDataMap parent = new IDataMap();
+        parent.put("c", new IData[] { child1, child2 });
+
+        Object value = IDataHelper.get(parent, "c/a");
+
+        assertNotNull(value);
+        assertEquals(String[].class, value.getClass());
+
+        String[] arrayValue = (String[])value;
+
+        assertEquals(2, arrayValue.length);
+        assertEquals("1", arrayValue[0]);
+        assertEquals("2", arrayValue[1]);
     }
 
     @Test

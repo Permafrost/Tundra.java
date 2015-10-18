@@ -1726,7 +1726,21 @@ public class IDataHelper {
                 } else if (keyPart.hasKeyIndex()) {
                     value = get(toIData(get(document, keyPart.getKey(), keyPart.getIndex())), key);
                 } else {
-                    value = get(IDataUtil.getIData(cursor, keyPart.getKey()), key);
+                    Object object = IDataUtil.get(cursor, keyPart.getKey());
+                    IData parent = toIData(object);
+                    if (parent != null) {
+                        value = get(parent, key);
+                    } else {
+                        IData[] array = toIDataArray(object);
+                        if (array != null) {
+                            List<Object> values = new ArrayList<Object>(array.length);
+                            // if we are referencing an IData[], create a new array of values from the individual values in each IData
+                            for (IData item : array) {
+                                values.add(get(item, key.clone()));
+                            }
+                            value = ArrayHelper.normalize(values);
+                        }
+                    }
                 }
             } else {
                 if (keyPart.hasArrayIndex()) {
