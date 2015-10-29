@@ -83,6 +83,7 @@ class IDataKey extends ArrayDeque<IDataKey.Part> {
      * @return    A new IDataKey object for the given key string.
      */
     public static IDataKey of(String key) {
+        if (key == null) return null;
         return new IDataKey(key);
     }
 
@@ -95,6 +96,7 @@ class IDataKey extends ArrayDeque<IDataKey.Part> {
      * @return        A new IDataKey object for the given key string.
      */
     public static IDataKey of(String key, boolean literal) {
+        if (key == null) return null;
         return new IDataKey(key, literal);
     }
 
