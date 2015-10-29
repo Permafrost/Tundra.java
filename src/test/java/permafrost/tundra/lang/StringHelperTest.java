@@ -130,4 +130,24 @@ public class StringHelperTest {
     public void testCapitalizeFirstWords() throws Exception {
         assertArrayEquals(new String[] { "This is a test", "This is another test" }, StringHelper.capitalize(new String[] { "this is a test", "this is another test" }, true));
     }
+
+    @Test
+    public void testCompare() throws Exception {
+        assertTrue(StringHelper.compare("abc", "xyz") < 0);
+        assertTrue(StringHelper.compare("xyz", "abc") > 0);
+        assertTrue(StringHelper.compare("abc", "abc") == 0);
+        assertTrue(StringHelper.compare("abc", "ABC") > 0);
+        assertTrue(StringHelper.compare("abc", "ABC", true) == 0);
+        assertTrue(StringHelper.compare("abc", "XYZ", true) < 0);
+        assertTrue(StringHelper.compare("abc", "a b c", false, true) == 0);
+        assertTrue(StringHelper.compare("abc", "a b c", true, true) == 0);
+        assertTrue(StringHelper.compare("abc", "a b z", false, true) < 0);
+        assertTrue(StringHelper.compare("abc", "a b z", true, true) < 0);
+        assertTrue(StringHelper.compare("abz", "a b c", false, true) > 0);
+        assertTrue(StringHelper.compare("abz", "a b c", true, true) > 0);
+        assertTrue(StringHelper.compare("ABC", "a b z", false, true) < 0);
+        assertTrue(StringHelper.compare("ABC", "a b z", true, true) < 0);
+        assertTrue(StringHelper.compare("ABZ", "a b c", false, true) < 0);
+        assertTrue(StringHelper.compare("ABZ", "a b c", true, true) > 0);
+    }
 }

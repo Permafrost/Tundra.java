@@ -717,16 +717,47 @@ public class StringHelper {
     /**
      * Compares two strings lexicographically.
      *
+     * @param string1 The first string to compare.
+     * @param string2 The second string to compare.
+     * @return        Less than 0 if the first string is less than the second string, equal to 0 if the two strings are equal,
+     *                or greater than 0 if the first string is greater than the second string.
+     */
+    public static int compare(String string1, String string2) {
+        return compare(string1, string2, false, false);
+    }
+
+    /**
+     * Compares two strings lexicographically.
+     *
      * @param string1         The first string to compare.
      * @param string2         The second string to compare.
      * @param caseInsensitive Whether the comparison should be case insensitive.
-     * @return Less than 0 if the first string is less than the second string, equal to 0 if the two strings are equal,
-     * or greater than 0 if the first string is greater than the second string.
+     * @return                Less than 0 if the first string is less than the second string, equal to 0 if the two strings are equal,
+     *                        or greater than 0 if the first string is greater than the second string.
      */
     public static int compare(String string1, String string2, boolean caseInsensitive) {
+        return compare(string1, string2, caseInsensitive, false);
+    }
+
+    /**
+     * Compares two strings lexicographically.
+     *
+     * @param string1               The first string to compare.
+     * @param string2               The second string to compare.
+     * @param caseInsensitive       Whether the comparison should be case insensitive.
+     * @param whitespaceInsensitive Whether the comparison should be whitespace insensitive.
+     * @return                      Less than 0 if the first string is less than the second string, equal to 0 if the two strings are equal,
+     *                              or greater than 0 if the first string is greater than the second string.
+     */
+    public static int compare(String string1, String string2, boolean caseInsensitive, boolean whitespaceInsensitive) {
         if (string1 == null && string2 == null) return 0;
         if (string1 == null) return -1;
         if (string2 == null) return 1;
+
+        if (whitespaceInsensitive) {
+            string1 = string1.replaceAll("\\s", "");
+            string2 = string2.replaceAll("\\s", "");
+        }
 
         if (caseInsensitive) {
             return string1.compareToIgnoreCase(string2);
