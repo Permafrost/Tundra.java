@@ -75,6 +75,28 @@ public class ObjectHelper {
     }
 
     /**
+     * Returns the first non-null argument.
+     *
+     * @param objects A list of arguments to be coalesced.
+     * @param <T>     The type of the arguments.
+     * @return        The first non-null argument, or null.
+     */
+    public static <T> T coalesce(T ... objects) {
+        if (objects == null) return null;
+
+        T output = null;
+
+        for (T item : objects) {
+            if (item != null) {
+                output = item;
+                break;
+            }
+        }
+
+        return output;
+    }
+
+    /**
      * Returns true if the given object is an instance of the given class.
      *
      * @param object    The object to be checked against the given class.
