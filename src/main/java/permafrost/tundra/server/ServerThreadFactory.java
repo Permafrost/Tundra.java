@@ -28,12 +28,13 @@ import com.wm.app.b2b.server.InvokeState;
 import com.wm.app.b2b.server.ServerThread;
 import com.wm.lang.ns.NSService;
 import java.util.Stack;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * A thread factory that creates webMethods Integration Server ServerThread threads.
  */
-public class ServerThreadFactory {
+public class ServerThreadFactory implements ThreadFactory {
     /**
      * The name of the factory, used to prefix thread names.
      */
@@ -88,6 +89,7 @@ public class ServerThreadFactory {
      * @param runnable The Runnable to be executed by the thread.
      * @return The newly constructed thread.
      */
+    @Override
     public Thread newThread(Runnable runnable) {
         ServerThread thread = new ServerThread(runnable);
         thread.setInvokeState(cloneInvokeStateWithStack());
