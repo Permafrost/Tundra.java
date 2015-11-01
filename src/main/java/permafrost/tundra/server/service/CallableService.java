@@ -58,7 +58,7 @@ public class CallableService implements Callable<IData> {
      * @param pipeline The input pipeline the service is invoked with.
      */
     public CallableService(String service, Session session, IData pipeline) {
-        this(NSName.create(service), session, pipeline);
+        this(service == null ? null : NSName.create(service), session, pipeline);
     }
 
     /**
@@ -70,6 +70,8 @@ public class CallableService implements Callable<IData> {
      * @param pipeline The input pipeline the service is invoked with.
      */
     public CallableService(NSName service, Session session, IData pipeline) {
+        if (service == null) throw new NullPointerException("service must not be null");
+
         this.service = service;
         this.pipeline = pipeline;
         this.session = session;
