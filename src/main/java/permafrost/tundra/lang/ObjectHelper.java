@@ -35,10 +35,10 @@ import permafrost.tundra.io.StreamHelper;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -174,7 +174,7 @@ public class ObjectHelper {
      * itself if it is not an array.
      */
     public static List<Object> listify(Object item) {
-        List<Object> list = new LinkedList<Object>();
+        List<Object> list = new ArrayList<Object>();
 
         if (item instanceof Object[]) {
             list.addAll(ArrayHelper.toList((Object[])item));

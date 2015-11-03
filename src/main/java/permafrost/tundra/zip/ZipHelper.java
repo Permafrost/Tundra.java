@@ -31,7 +31,7 @@ import permafrost.tundra.lang.ObjectHelper;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -95,7 +95,7 @@ public class ZipHelper {
         if (inputStream == null) return null;
 
         ZipInputStream zipInputStream = null;
-        List<ZipEntryWithData> contents = new LinkedList<ZipEntryWithData>();
+        List<ZipEntryWithData> contents = new ArrayList<ZipEntryWithData>();
         byte[] buffer = new byte[StreamHelper.DEFAULT_BUFFER_SIZE];
 
         try {

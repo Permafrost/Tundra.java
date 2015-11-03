@@ -44,7 +44,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -111,7 +110,7 @@ public class IDataHelper {
      * @return The list of top-level values present in the given IData document.
      */
     public static Object[] getValues(IData document) {
-        List<Object> values = new LinkedList<Object>();
+        List<Object> values = new ArrayList<Object>();
 
         for (Map.Entry<String, Object> entry : IDataMap.of(document)) {
             values.add(entry.getValue());
@@ -138,7 +137,7 @@ public class IDataHelper {
      * @return All leaf values recursively collected from the given document and its children.
      */
     public static Object[] getLeafValues(IData document, Class... classes) {
-        return ArrayHelper.normalize(getLeafValues(new LinkedList<Object>(), document, classes).toArray());
+        return ArrayHelper.normalize(getLeafValues(new ArrayList<Object>(), document, classes).toArray());
     }
 
     /**
@@ -159,7 +158,7 @@ public class IDataHelper {
      * @return All leaf values recursively collected from the given document list and its children.
      */
     public static Object[] getLeafValues(IData[] array, Class... classes) {
-        return ArrayHelper.normalize(getLeafValues(new LinkedList<Object>(), array, classes).toArray());
+        return ArrayHelper.normalize(getLeafValues(new ArrayList<Object>(), array, classes).toArray());
     }
 
     /**
@@ -1820,7 +1819,7 @@ public class IDataHelper {
         // try finding a value that matches the literal key, and if not found try finding a value
         // associated with the leaf key if the key is considered fully-qualified
         if (cursor.next(key)) {
-            List<Object> list = new LinkedList<Object>();
+            List<Object> list = new ArrayList<Object>();
             do {
                 list.addAll(ObjectHelper.listify(cursor.getValue()));
             } while (cursor.next(key));
@@ -1857,7 +1856,7 @@ public class IDataHelper {
                     output = getAsArray(IDataUtil.getIData(cursor, keyPart.getKey()), key);
                 }
             } else {
-                List<Object> list = new LinkedList<Object>();
+                List<Object> list = new ArrayList<Object>();
                 if (keyPart.hasArrayIndex()) {
                     Object value = IDataUtil.get(cursor, keyPart.getKey());
                     if (value != null) {
@@ -2880,7 +2879,7 @@ public class IDataHelper {
                     CompoundKey key = new CompoundKey(criteria, item);
                     List<IData> list = groups.get(key);
                     if (list == null) {
-                        list = new LinkedList<IData>();
+                        list = new ArrayList<IData>();
                         groups.put(key, list);
                     }
                     list.add(item);

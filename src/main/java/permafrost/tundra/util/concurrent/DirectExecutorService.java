@@ -24,7 +24,7 @@
 
 package permafrost.tundra.util.concurrent;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.AbstractExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -82,7 +82,7 @@ public class DirectExecutorService extends AbstractExecutorService {
     @Override
     public List<Runnable> shutdownNow() {
         shutdown();
-        return new LinkedList<Runnable>();
+        return new ArrayList<Runnable>();
     }
 
     /**
