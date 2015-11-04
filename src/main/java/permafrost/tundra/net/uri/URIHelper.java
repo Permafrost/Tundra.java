@@ -81,14 +81,14 @@ public class URIHelper {
             if (scheme != null) IDataUtil.put(cursor, "scheme", scheme);
 
             IData query = null;
-            String ssp = uri.getSchemeSpecificPart();
+            String ssp = uri.getRawSchemeSpecificPart();
 
             if (uri.isOpaque()) {
                 if (ssp.contains("?")) {
-                    query = URIQueryHelper.parse(ssp.substring(ssp.indexOf("?") + 1, ssp.length()), false);
+                    query = URIQueryHelper.parse(ssp.substring(ssp.indexOf("?") + 1, ssp.length()), true);
                     ssp = ssp.substring(0, ssp.indexOf("?"));
                 }
-                if (ssp != null) IDataUtil.put(cursor, "body", ssp);
+                if (ssp != null) IDataUtil.put(cursor, "body", decode(ssp));
             } else {
                 String authority = uri.getAuthority();
                 if (authority != null) {
