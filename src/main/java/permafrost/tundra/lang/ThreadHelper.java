@@ -46,17 +46,8 @@ public class ThreadHelper {
      *
      * @return The currently executing thread.
      */
-    public static Thread getCurrentThread() {
+    public static Thread current() {
         return Thread.currentThread();
-    }
-
-    /**
-     * Returns the currently executing thread in an IData representation.
-     *
-     * @return The currently executing thread in an IData representation.
-     */
-    public static IData getCurrentThreadAsIData() {
-        return toIData(Thread.currentThread());
     }
 
     /**
@@ -64,13 +55,13 @@ public class ThreadHelper {
      *
      * @return A list of all the threads in the current context.
      */
-    public static Thread[] listThreads() {
-        ThreadGroup root = getRootThreadGroup();
+    public static Thread[] list() {
+        ThreadGroup root = root();
 
         int threadCount = 0, iteration = 0;
         Thread[] list = new Thread[threadCount];
 
-        // because ThreadGroup.enumerate isn't thread save, keep trying to
+        // because ThreadGroup.enumerate isn't thread safe, keep trying to
         // enumerate for up to 10 times until we happen to have an array
         // large enough to hold all the threads that exist at the moment
         // enumerate is called
@@ -83,21 +74,12 @@ public class ThreadHelper {
     }
 
     /**
-     * Returns a list of all threads in the current context in an IData[] representation.
-     *
-     * @return A list of all threads in the current context in an IData[] representation.
-     */
-    public static IData[] listThreadsAsIDataArray() {
-        return toIDataArray(listThreads());
-    }
-
-    /**
      * Returns the root thread group.
      *
      * @return The root thread group.
      */
-    public static ThreadGroup getRootThreadGroup() {
-        ThreadGroup group = getCurrentThread().getThreadGroup();
+    public static ThreadGroup root() {
+        ThreadGroup group = current().getThreadGroup();
         ThreadGroup parent = group.getParent();
 
         while (parent != null) {
