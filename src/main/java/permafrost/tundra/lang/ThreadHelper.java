@@ -29,6 +29,8 @@ import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
 import com.wm.data.IDataUtil;
 import java.util.Arrays;
+import java.util.Date;
+import javax.xml.datatype.Duration;
 
 /**
  * A collection of convenience methods for working with Thread objects.
@@ -104,6 +106,30 @@ public class ThreadHelper {
         }
 
         return group;
+    }
+
+    /**
+     * Sleeps the current thread for the given duration.
+     *
+     * @param duration The duration to sleep.
+     */
+    public static void sleep(Duration duration) {
+        if (duration != null) {
+            sleep(duration.getTimeInMillis(new Date()));
+        }
+    }
+
+    /**
+     * Sleeps the current thread for the given duration.
+     *
+     * @param milliseconds The number of milliseconds to sleep.
+     */
+    public static void sleep(long milliseconds) {
+        try {
+            Thread.sleep(milliseconds);
+        } catch(InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
     }
 
     /**
