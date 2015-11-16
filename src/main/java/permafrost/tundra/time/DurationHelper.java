@@ -357,8 +357,9 @@ public class DurationHelper {
             if (pattern == DurationPattern.XML) {
                 output = DATATYPE_FACTORY.newDuration(input);
             } else {
-                BigInteger integerValue = new BigInteger(input);
                 BigDecimal decimalValue = new BigDecimal(input);
+                BigInteger integerValue = decimalValue.toBigInteger();
+
                 switch (pattern) {
                     case MILLISECONDS:
                         // convert milliseconds to fractional seconds

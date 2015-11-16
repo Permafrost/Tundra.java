@@ -26,6 +26,8 @@ package permafrost.tundra.time;
 
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
+import java.math.BigDecimal;
+import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.Duration;
 
@@ -40,6 +42,7 @@ public class DurationHelperTest {
         assertEquals(4, duration.getHours());
         assertEquals(5, duration.getMinutes());
         assertEquals(6, duration.getSeconds());
+        assertEquals(new BigDecimal("6.007"), duration.getField(DatatypeConstants.SECONDS));
         assertEquals(1, duration.getSign());
     }
 
@@ -49,5 +52,12 @@ public class DurationHelperTest {
         assertEquals("1", DurationHelper.emit(duration, DurationPattern.MINUTES));
         assertEquals("60", DurationHelper.emit(duration, DurationPattern.SECONDS));
         assertEquals("60000", DurationHelper.emit(duration, DurationPattern.MILLISECONDS));
+    }
+
+    @Test
+    public void testParseFractionalMilliseconds() throws Exception {
+        BigDecimal milliseconds = new BigDecimal("654.321");
+        Duration duration = DurationHelper.parse(milliseconds.toString(), "milliseconds");
+        assertEquals(milliseconds.divide(new BigDecimal("1000"), 6, BigDecimal.ROUND_UNNECESSARY), duration.getField(DatatypeConstants.SECONDS));
     }
 }
