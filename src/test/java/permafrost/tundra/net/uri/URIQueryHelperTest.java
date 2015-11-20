@@ -36,10 +36,10 @@ public class URIQueryHelperTest {
     @Test
     public void testParse() throws Exception {
         String[] c = { "3", "4", "5" };
-        IData query = URIQueryHelper.parse("a=1&b=2&c=3&c=4&c=5", true);
+        IData query = URIQueryHelper.parse("a=1&b=2=2&c=3&c=4&c=5", true);
         IDataCursor cursor = query.getCursor();
         assertEquals("1", IDataUtil.getString(cursor, "a"));
-        assertEquals("2", IDataUtil.getString(cursor, "b"));
+        assertEquals("2=2", IDataUtil.getString(cursor, "b"));
         assertArrayEquals(c, IDataUtil.getStringArray(cursor, "c"));
         cursor.destroy();
     }

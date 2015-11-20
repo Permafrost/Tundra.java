@@ -74,7 +74,7 @@ public class URIQueryHelper {
         IDataCursor cursor = output.getCursor();
 
         for (String pair : input.split("&")) {
-            String[] tokens = pair.split("=");
+            String[] tokens = pair.split("=", 2);
             String name = tokens.length > 0 ? tokens[0] : "";
             String value = tokens.length > 1 ? tokens[1] : "";
 
