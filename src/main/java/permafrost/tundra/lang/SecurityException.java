@@ -29,7 +29,7 @@ import java.util.Collection;
 /**
  * Throw a SecurityException to indicate an authentication or authorization error.
  */
-public class SecurityException extends BaseException {
+public class SecurityException extends UnrecoverableException {
     /**
      * Constructs a new SecurityException.
      */

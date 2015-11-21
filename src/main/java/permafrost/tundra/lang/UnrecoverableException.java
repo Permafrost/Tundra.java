@@ -27,59 +27,59 @@ package permafrost.tundra.lang;
 import java.util.Collection;
 
 /**
- * Throw a StrictException to indicate that a process or data has failed to meet requirements.
+ * An exception indicating that an unrecoverable error has occurred.
  */
-public class StrictException extends UnrecoverableException {
+public class UnrecoverableException extends BaseException {
     /**
-     * Constructs a new StrictException.
+     * Constructs a new UnrecoverableException.
      */
-    public StrictException() {
+    public UnrecoverableException() {
         super();
     }
 
     /**
-     * Constructs a new StrictException with the given message.
+     * Constructs a new UnrecoverableException with the given message.
      *
-     * @param message A message describing why the StrictException was thrown.
+     * @param message A message describing why the UnrecoverableException was thrown.
      */
-    public StrictException(String message) {
+    public UnrecoverableException(String message) {
         super(message);
     }
 
     /**
-     * Constructs a new StrictException with the given cause.
+     * Constructs a new UnrecoverableException with the given cause.
      *
-     * @param cause The cause of this StrictException.
+     * @param cause The cause of this UnrecoverableException.
      */
-    public StrictException(Throwable cause) {
+    public UnrecoverableException(Throwable cause) {
         super(cause);
     }
 
     /**
-     * Constructs a new StrictException with the given message and cause.
+     * Constructs a new UnrecoverableException with the given message and cause.
      *
-     * @param message A message describing why the StrictException was thrown.
+     * @param message A message describing why the UnrecoverableException was thrown.
      * @param cause   The cause of this Exception.
      */
-    public StrictException(String message, Throwable cause) {
+    public UnrecoverableException(String message, Throwable cause) {
         super(message, cause);
     }
 
     /**
-     * Constructs a new StrictException with the given list of exceptions.
+     * Constructs a new UnrecoverableException with the given list of exceptions.
      *
      * @param exceptions A collection of exceptions this exception will wrap.
      */
-    public StrictException(Collection<? extends Throwable> exceptions) {
+    public UnrecoverableException(Collection<? extends Throwable> exceptions) {
         super(exceptions);
     }
 
     /**
-     * Constructs a new StrictException with the given list of exceptions.
+     * Constructs a new UnrecoverableException with the given list of exceptions.
      *
      * @param exceptions A collection of exceptions this exception will wrap.
      */
-    public StrictException(Throwable... exceptions) {
+    public UnrecoverableException(Throwable... exceptions) {
         super(exceptions);
     }
 }
