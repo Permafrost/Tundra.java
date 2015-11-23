@@ -94,6 +94,7 @@ public class ServerThreadFactory implements ThreadFactory {
         ServerThread thread = new ServerThread(runnable);
         thread.setInvokeState(cloneInvokeStateWithStack());
         thread.setName(String.format("%s Thread#%03d", name, count.getAndIncrement()));
+        thread.setUncaughtExceptionHandler(UncaughtExceptionLogger.getInstance());
         thread.setPriority(priority);
         return thread;
     }
