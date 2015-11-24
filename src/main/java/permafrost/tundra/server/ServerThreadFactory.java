@@ -36,9 +36,9 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class ServerThreadFactory implements ThreadFactory {
     /**
-     * The name of the factory, used to prefix thread names.
+     * The prefix and suffix used on all created thread names.
      */
-    private String name;
+    private String threadNamePrefix, threadNameSuffix;
 
     /**
      * The count of threads created by this factory, used to suffix thread names.
@@ -58,27 +58,50 @@ public class ServerThreadFactory implements ThreadFactory {
     /**
      * Constructs a new ServerThreadFactory.
      *
-     * @param name  The name of the factory, used to prefix thread names.
+     * @param threadNamePrefix The prefix used on all created thread names.
      * @param state The invoke state to clone for each thread created.
      */
-    public ServerThreadFactory(String name, InvokeState state) {
-        this(name, state, Thread.NORM_PRIORITY);
+    public ServerThreadFactory(String threadNamePrefix, InvokeState state) {
+        this(threadNamePrefix, null, state);
     }
 
     /**
      * Constructs a new ServerThreadFactory.
      *
-     * @param name  The name of the factory, used to prefix thread names.
+     * @param threadNamePrefix The prefix used on all created thread names.
+     * @param threadNameSuffix The suffix used on all created thread names.
      * @param state The invoke state to clone for each thread created.
      */
-    public ServerThreadFactory(String name, InvokeState state, int priority) {
-        if (name == null) throw new NullPointerException("name must not be null");
+    public ServerThreadFactory(String threadNamePrefix, String threadNameSuffix, InvokeState state) {
+        this(threadNamePrefix, threadNameSuffix, state, Thread.NORM_PRIORITY);
+    }
+
+    /**
+     * Constructs a new ServerThreadFactory.
+     *
+     * @param threadNamePrefix The prefix used on all created thread names.
+     * @param state The invoke state to clone for each thread created.
+     */
+    public ServerThreadFactory(String threadNamePrefix, InvokeState state, int priority) {
+        this(threadNamePrefix, null, state, priority);
+    }
+
+    /**
+     * Constructs a new ServerThreadFactory.
+     *
+     * @param threadNamePrefix  The threadNamePrefix of the factory, used to prefix thread names.
+     * @param state The invoke state to clone for each thread created.
+     * @param priority The priority used for each thread created.
+     */
+    public ServerThreadFactory(String threadNamePrefix, String threadNameSuffix, InvokeState state, int priority) {
+        if (threadNamePrefix == null) throw new NullPointerException("threadNamePrefix must not be null");
         if (state == null) throw new NullPointerException("state must not be null");
         if (priority < Thread.MIN_PRIORITY || priority > Thread.MAX_PRIORITY) {
             throw new IllegalArgumentException("priority out of range");
         }
 
-        this.name = name;
+        this.threadNamePrefix = threadNamePrefix;
+        this.threadNameSuffix = threadNameSuffix;
         this.state = state;
         this.priority = priority;
     }
@@ -93,7 +116,11 @@ public class ServerThreadFactory implements ThreadFactory {
     public Thread newThread(Runnable runnable) {
         ServerThread thread = new ServerThread(runnable);
         thread.setInvokeState(cloneInvokeStateWithStack());
-        thread.setName(String.format("%s Thread#%03d", name, count.getAndIncrement()));
+        if (threadNameSuffix != null) {
+            thread.setName(String.format("%s Thread#%03d %s", threadNamePrefix, count.getAndIncrement(), threadNameSuffix));
+        } else {
+            thread.setName(String.format("%s Thread#%03d", threadNamePrefix, count.getAndIncrement()));
+        }
         thread.setUncaughtExceptionHandler(UncaughtExceptionLogger.getInstance());
         thread.setPriority(priority);
         return thread;
