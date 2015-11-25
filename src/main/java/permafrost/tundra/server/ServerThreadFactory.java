@@ -27,6 +27,7 @@ package permafrost.tundra.server;
 import com.wm.app.b2b.server.InvokeState;
 import com.wm.app.b2b.server.ServerThread;
 import com.wm.lang.ns.NSService;
+import permafrost.tundra.lang.ThreadHelper;
 import java.util.Stack;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicLong;
@@ -96,14 +97,11 @@ public class ServerThreadFactory implements ThreadFactory {
     public ServerThreadFactory(String threadNamePrefix, String threadNameSuffix, InvokeState state, int priority) {
         if (threadNamePrefix == null) throw new NullPointerException("threadNamePrefix must not be null");
         if (state == null) throw new NullPointerException("state must not be null");
-        if (priority < Thread.MIN_PRIORITY || priority > Thread.MAX_PRIORITY) {
-            throw new IllegalArgumentException("priority out of range");
-        }
 
         this.threadNamePrefix = threadNamePrefix;
         this.threadNameSuffix = threadNameSuffix;
         this.state = state;
-        this.priority = priority;
+        this.priority = ThreadHelper.normalizePriority(priority);
     }
 
     /**
