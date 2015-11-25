@@ -115,6 +115,25 @@ public class ThreadHelper {
     }
 
     /**
+     * Returns a within valid range thread priority given a priority
+     * that may or may not be within the valid range.
+     *
+     * @param priority The thread priority to be normalized.
+     * @return         If the given priority is less than the minimum allowed, the minimum priority is returned;
+     *                 If the given priority is more than the maximum allowed, the maximum priority is returned;
+     *                 Otherwise the given priority is returned unmodified.
+     */
+    public static int normalizePriority(int priority) {
+        if (priority < Thread.MIN_PRIORITY) {
+            priority = Thread.MIN_PRIORITY;
+        } else if (priority > Thread.MAX_PRIORITY) {
+            priority = Thread.MAX_PRIORITY;
+        }
+
+        return priority;
+    }
+
+    /**
      * Converts a Thread object to an IData representation.
      *
      * @param thread The Thread to be converted.
