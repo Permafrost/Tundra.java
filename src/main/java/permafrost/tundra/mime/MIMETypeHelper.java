@@ -42,7 +42,10 @@ public class MIMETypeHelper {
      */
     private MIMETypeHelper() {}
 
-    public static final String DEFAULT_MIME_TYPE = "application/octet-stream";
+    /**
+     * The default MIME media type for arbitrary content.
+     */
+    public static final String DEFAULT_MIME_TYPE = System.getProperty("watt.server.content.type.default", "application/octet-stream");
 
     /**
      * Parses the given MIME type string to an IData representation.
