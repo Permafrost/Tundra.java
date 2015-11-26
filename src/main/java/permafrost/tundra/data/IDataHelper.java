@@ -2254,7 +2254,7 @@ public class IDataHelper {
         IDataCursor cursor = output.getCursor();
         for (Object key : map.keySet()) {
             if (key != null) {
-                put(output, key.toString(), normalize(map.get(key)));
+                put(output, key.toString(), normalize(map.get(key)), true);
             }
         }
         cursor.destroy();
