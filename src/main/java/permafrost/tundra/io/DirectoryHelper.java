@@ -291,4 +291,35 @@ public class DirectoryHelper {
     public static String join(String parent, String child) {
         return FileHelper.normalize(join(FileHelper.construct(parent), child));
     }
+
+    /**
+     * Deletes all empty child directories in the given directory, and
+     * optionally deletes the given directory itself if empty.
+     *
+     * @param directory  The directory to be compacted.
+     * @param deleteSelf If true the given directory will also be deleted if empty
+     */
+    public static void compact(File directory, boolean deleteSelf) throws IOException {
+        if (directory == null || !directory.isDirectory()) return;
+
+        File[] children = directory.listFiles();
+
+        if (children != null) {
+            // compact all child directories recursively
+            for (File child : children) {
+                if (child.isDirectory()) compact(child, true);
+            }
+
+            // after compacting children, delete this directory if required
+            if (deleteSelf) {
+                // re-list files after compacting children
+                if (children.length > 0) children = directory.listFiles();
+
+                // delete this directory if it is empty
+                if (children != null && children.length == 0 && !directory.delete()) {
+                    throw new IOException("Directory could not be deleted: " + FileHelper.normalize(directory));
+                }
+            }
+        }
+    }
 }
