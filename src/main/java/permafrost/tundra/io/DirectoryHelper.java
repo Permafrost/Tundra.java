@@ -303,11 +303,18 @@ public class DirectoryHelper {
         if (directory == null || !directory.isDirectory()) return;
 
         File[] children = directory.listFiles();
+        Throwable cause = null;
 
         if (children != null) {
             // compact all child directories recursively
             for (File child : children) {
-                if (child.isDirectory()) compact(child, true);
+                if (child.isDirectory()) {
+                    try {
+                        compact(child, true);
+                    } catch (IOException ex) {
+                        cause = ex;
+                    }
+                }
             }
 
             // after compacting children, delete this directory if required
@@ -318,6 +325,8 @@ public class DirectoryHelper {
                 // delete this directory if it is empty
                 if (children != null && children.length == 0 && !directory.delete()) {
                     throw new IOException("Directory could not be deleted: " + FileHelper.normalize(directory));
+                } else if (cause != null) {
+                    throw new IOException("Directory could not be deleted: " + FileHelper.normalize(directory), cause);
                 }
             }
         }
