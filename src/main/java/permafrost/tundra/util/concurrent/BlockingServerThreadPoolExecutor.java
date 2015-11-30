@@ -31,14 +31,13 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import com.wm.app.b2b.server.InvokeState;
 import com.wm.app.b2b.server.ServerAPI;
-import com.wm.app.b2b.server.ServiceException;
 import permafrost.tundra.server.ServerThreadFactory;
 
 /**
  * A Integration Server ThreadPoolExecutor which blocks on submit when all threads are busy, and forcibly stops
  * all threads on shutdown.
  */
-public class BlockingThreadPoolExecutor extends ThreadPoolExecutor {
+public class BlockingServerThreadPoolExecutor extends ThreadPoolExecutor {
     private static final long THREAD_KEEP_ALIVE_TIMEOUT_SECONDS = 60;
     private static final long SHUTDOWN_TIMEOUT_SECONDS = 60;
 
@@ -48,14 +47,14 @@ public class BlockingThreadPoolExecutor extends ThreadPoolExecutor {
     protected Map<Runnable, Thread> executingThreads;
 
     /**
-     * Creates a new BlockingThreadPoolExecutor.
+     * Creates a new BlockingServerThreadPoolExecutor.
      *
      * @param threadPoolSize   The number of threads to allocate to the pool.
      * @param threadNamePrefix The prefix to use on all created thread names.
      * @param invokeState      The invoke state to clone for each thread created.
      * @param threadPriority   The priority each created thread will have.
      */
-    BlockingThreadPoolExecutor(int threadPoolSize, String threadNamePrefix, InvokeState invokeState, int threadPriority) {
+    BlockingServerThreadPoolExecutor(int threadPoolSize, String threadNamePrefix, InvokeState invokeState, int threadPriority) {
         super(threadPoolSize, threadPoolSize, THREAD_KEEP_ALIVE_TIMEOUT_SECONDS, TimeUnit.SECONDS, new SynchronousQueue<Runnable>(true), new ServerThreadFactory(threadNamePrefix, invokeState, threadPriority), new BlockingRejectedExecutionHandler());
         executingThreads = new ConcurrentHashMap<Runnable, Thread>(threadPoolSize);
     }
@@ -86,7 +85,8 @@ public class BlockingThreadPoolExecutor extends ThreadPoolExecutor {
     }
 
     /**
-     * Shutdown the pool immediately, wait for a bit, and then stop all threads forcibly.
+     * Shutdown the pool immediately, wait for a bit, and then stop all threads forcibly. This is unfortunately
+     * required because service invocations do not respond to Thread.interrupt().
      */
     void onShutdown() {
         try {
