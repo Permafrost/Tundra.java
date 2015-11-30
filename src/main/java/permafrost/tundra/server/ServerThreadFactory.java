@@ -39,31 +39,31 @@ public class ServerThreadFactory implements ThreadFactory {
     /**
      * The prefix and suffix used on all created thread names.
      */
-    private String threadNamePrefix, threadNameSuffix;
+    protected String threadNamePrefix, threadNameSuffix;
 
     /**
      * The count of threads created by this factory, used to suffix thread names.
      */
-    private AtomicLong count = new AtomicLong(1);
+    protected AtomicLong count = new AtomicLong(1);
 
     /**
      * The priority threads will be created with.
      */
-    private int priority;
+    protected int threadPriority;
 
     /**
      * The invoke state threads will be created with.
      */
-    private InvokeState state;
+    protected InvokeState invokeState;
 
     /**
      * Constructs a new ServerThreadFactory.
      *
      * @param threadNamePrefix The prefix used on all created thread names.
-     * @param state The invoke state to clone for each thread created.
+     * @param invokeState      The invoke state to clone for each thread created.
      */
-    public ServerThreadFactory(String threadNamePrefix, InvokeState state) {
-        this(threadNamePrefix, null, state);
+    public ServerThreadFactory(String threadNamePrefix, InvokeState invokeState) {
+        this(threadNamePrefix, null, invokeState);
     }
 
     /**
@@ -71,37 +71,39 @@ public class ServerThreadFactory implements ThreadFactory {
      *
      * @param threadNamePrefix The prefix used on all created thread names.
      * @param threadNameSuffix The suffix used on all created thread names.
-     * @param state The invoke state to clone for each thread created.
+     * @param invokeState      The invoke state to clone for each thread created.
      */
-    public ServerThreadFactory(String threadNamePrefix, String threadNameSuffix, InvokeState state) {
-        this(threadNamePrefix, threadNameSuffix, state, Thread.NORM_PRIORITY);
+    public ServerThreadFactory(String threadNamePrefix, String threadNameSuffix, InvokeState invokeState) {
+        this(threadNamePrefix, threadNameSuffix, Thread.NORM_PRIORITY, invokeState);
     }
 
     /**
      * Constructs a new ServerThreadFactory.
      *
      * @param threadNamePrefix The prefix used on all created thread names.
-     * @param state The invoke state to clone for each thread created.
+     * @param threadPriority   The priority used for each thread created.
+     * @param invokeState      The invoke state to clone for each thread created.
      */
-    public ServerThreadFactory(String threadNamePrefix, InvokeState state, int priority) {
-        this(threadNamePrefix, null, state, priority);
+    public ServerThreadFactory(String threadNamePrefix, int threadPriority, InvokeState invokeState) {
+        this(threadNamePrefix, null, threadPriority, invokeState);
     }
 
     /**
      * Constructs a new ServerThreadFactory.
      *
-     * @param threadNamePrefix  The threadNamePrefix of the factory, used to prefix thread names.
-     * @param state The invoke state to clone for each thread created.
-     * @param priority The priority used for each thread created.
+     * @param threadNamePrefix The threadNamePrefix of the factory, used to prefix thread names.
+     * @param threadNameSuffix The suffix used on all created thread names.
+     * @param threadPriority   The priority used for each thread created.
+     * @param invokeState      The invoke state to clone for each thread created.
      */
-    public ServerThreadFactory(String threadNamePrefix, String threadNameSuffix, InvokeState state, int priority) {
+    public ServerThreadFactory(String threadNamePrefix, String threadNameSuffix, int threadPriority, InvokeState invokeState) {
         if (threadNamePrefix == null) throw new NullPointerException("threadNamePrefix must not be null");
-        if (state == null) throw new NullPointerException("state must not be null");
+        if (invokeState == null) throw new NullPointerException("invokeState must not be null");
 
         this.threadNamePrefix = threadNamePrefix;
         this.threadNameSuffix = threadNameSuffix;
-        this.state = state;
-        this.priority = ThreadHelper.normalizePriority(priority);
+        this.invokeState = invokeState;
+        this.threadPriority = ThreadHelper.normalizePriority(threadPriority);
     }
 
     /**
@@ -115,23 +117,23 @@ public class ServerThreadFactory implements ThreadFactory {
         ServerThread thread = new ServerThread(runnable);
         thread.setInvokeState(cloneInvokeStateWithStack());
         if (threadNameSuffix != null) {
-            thread.setName(String.format("%s Thread#%03d %s", threadNamePrefix, count.getAndIncrement(), threadNameSuffix));
+            thread.setName(String.format("%s #%03d %s", threadNamePrefix, count.getAndIncrement(), threadNameSuffix));
         } else {
-            thread.setName(String.format("%s Thread#%03d", threadNamePrefix, count.getAndIncrement()));
+            thread.setName(String.format("%s #%03d", threadNamePrefix, count.getAndIncrement()));
         }
         thread.setUncaughtExceptionHandler(UncaughtExceptionLogger.getInstance());
-        thread.setPriority(priority);
+        thread.setPriority(threadPriority);
         return thread;
     }
 
     /**
-     * Clones the invoke state with its call stack intact.
+     * Clones the invoke invokeState with its call stack intact.
      *
-     * @return A clone of the invoke state used for new threads.
+     * @return A clone of the invoke invokeState used for new threads.
      */
-    private InvokeState cloneInvokeStateWithStack() {
-        InvokeState outputState = (InvokeState)state.clone();
-        Stack stack = (Stack)state.getCallStack().clone();
+    protected InvokeState cloneInvokeStateWithStack() {
+        InvokeState outputState = (InvokeState)invokeState.clone();
+        Stack stack = (Stack)invokeState.getCallStack().clone();
         while (!stack.empty()) {
             NSService service = (NSService)stack.remove(0);
             outputState.pushService(service);

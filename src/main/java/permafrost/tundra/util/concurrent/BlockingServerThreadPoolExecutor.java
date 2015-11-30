@@ -24,81 +24,23 @@
 
 package permafrost.tundra.util.concurrent;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import com.wm.app.b2b.server.InvokeState;
-import com.wm.app.b2b.server.ServerAPI;
-import permafrost.tundra.server.ServerThreadFactory;
 
 /**
- * A Integration Server ThreadPoolExecutor which blocks on submit when all threads are busy, and forcibly stops
- * all threads on shutdown.
+ * A Integration Server ThreadPoolExecutor which blocks on submit when all threads are busy.
  */
-public class BlockingServerThreadPoolExecutor extends ThreadPoolExecutor {
-    private static final long THREAD_KEEP_ALIVE_TIMEOUT_SECONDS = 60;
-    private static final long SHUTDOWN_TIMEOUT_SECONDS = 60;
-
-    /**
-     * Contains all executing commands and the thread that is executing it.
-     */
-    protected Map<Runnable, Thread> executingThreads;
-
+public class BlockingServerThreadPoolExecutor extends ServerThreadPoolExecutor {
     /**
      * Creates a new BlockingServerThreadPoolExecutor.
      *
      * @param threadPoolSize   The number of threads to allocate to the pool.
      * @param threadNamePrefix The prefix to use on all created thread names.
-     * @param invokeState      The invoke state to clone for each thread created.
+     * @param threadNameSuffix The suffix used on all created thread names.
      * @param threadPriority   The priority each created thread will have.
+     * @param invokeState      The invoke state to clone for each thread created.
      */
-    BlockingServerThreadPoolExecutor(int threadPoolSize, String threadNamePrefix, InvokeState invokeState, int threadPriority) {
-        super(threadPoolSize, threadPoolSize, THREAD_KEEP_ALIVE_TIMEOUT_SECONDS, TimeUnit.SECONDS, new SynchronousQueue<Runnable>(true), new ServerThreadFactory(threadNamePrefix, invokeState, threadPriority), new BlockingRejectedExecutionHandler());
-        executingThreads = new ConcurrentHashMap<Runnable, Thread>(threadPoolSize);
-    }
-
-    /**
-     * Save a reference to the executing command and thread.
-     *
-     * @param thread  The thread allocated to execute this command.
-     * @param command The command to be executed.
-     */
-    @Override
-    protected void beforeExecute(Thread thread, Runnable command) {
-        executingThreads.put(command, thread);
-        super.beforeExecute(thread, command);
-    }
-
-    /**
-     * Remove this command from the list of currently executing threads.
-     *
-     * @param command   The command that has finished executing.
-     * @param exception The uncaught exception the command threw, if relevant.
-     */
-    @Override
-    protected void afterExecute(Runnable command, Throwable exception) {
-        executingThreads.remove(command);
-        if (exception != null) ServerAPI.logError(exception);
-        super.afterExecute(command, exception);
-    }
-
-    /**
-     * Shutdown the pool immediately, wait for a bit, and then stop all threads forcibly. This is unfortunately
-     * required because service invocations do not respond to Thread.interrupt().
-     */
-    void onShutdown() {
-        try {
-            shutdownNow();
-            awaitTermination(SHUTDOWN_TIMEOUT_SECONDS, TimeUnit.SECONDS);
-        } catch(InterruptedException ex) {
-            // ignore interruption
-        }
-
-        for (Map.Entry<Runnable, Thread> executingThread : executingThreads.entrySet()) {
-            Thread thread = executingThread.getValue();
-            if (thread != null) thread.stop();
-        }
+    public BlockingServerThreadPoolExecutor(int threadPoolSize, String threadNamePrefix, String threadNameSuffix, int threadPriority, InvokeState invokeState) {
+        super(threadPoolSize, threadNamePrefix, threadNameSuffix, threadPriority, invokeState, new SynchronousQueue<Runnable>(true), new BlockingRejectedExecutionHandler());
     }
 }
