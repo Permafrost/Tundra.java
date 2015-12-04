@@ -51,7 +51,21 @@ public class ArrayHelper {
      * @return A copy of the given array with the given item appended to the end.
      */
     public static <T> T[] append(T[] array, T item, Class<T> klass) {
-        return insert(array, item, -1, klass);
+        return append(array, item, klass, true);
+    }
+
+    /**
+     * Returns a new array, with the given element inserted at the end.
+     *
+     * @param array         The array to append the item to.
+     * @param item          The item to be appended.
+     * @param klass         The class of the item being appended.
+     * @param includeNull   If true, null items will be inserted. If false, null items are not inserted.
+     * @param <T>           The class of the item being appended.
+     * @return              A copy of the given array with the given item appended to the end.
+     */
+    public static <T> T[] append(T[] array, T item, Class<T> klass, boolean includeNull) {
+        return insert(array, item, -1, klass, includeNull);
     }
 
     /**
@@ -341,17 +355,39 @@ public class ArrayHelper {
     /**
      * Returns a new array with the given item inserted at the given index.
      *
-     * @param array The array which is to be copied to a new array.
-     * @param item  The item to be inserted.
-     * @param index The zero-based index at which the item is to be inserted; supports ruby-style reverse indexing
-     *              where, for example, -1 is the last item and -2 is the second last item in the array.
-     * @param klass The class of the items stored in the array.
-     * @param <T>   The class of the items stored in the array.
-     * @return A new array which includes all the items from the given array, with the given item inserted at the given
-     * index, and existing items at and after the given index shifted to the right (by adding one to their indices).
+     * @param array         The array which is to be copied to a new array.
+     * @param item          The item to be inserted.
+     * @param index         The zero-based index at which the item is to be inserted; supports ruby-style reverse
+     *                      indexing where, for example, -1 is the last item and -2 is the second last item in the
+     *                      array.
+     * @param klass         The class of the items stored in the array.
+     * @param <T>           The class of the items stored in the array.
+     * @return              A new array which includes all the items from the given array, with the given item inserted
+     *                      at the given index, and existing items at and after the given index shifted to the right
+     *                      (by adding one to their indices).
      */
     public static <T> T[] insert(T[] array, T item, int index, Class<T> klass) {
+        return insert(array, item, index, klass, true);
+    }
+
+    /**
+     * Returns a new array with the given item inserted at the given index.
+     *
+     * @param array         The array which is to be copied to a new array.
+     * @param item          The item to be inserted.
+     * @param index         The zero-based index at which the item is to be inserted; supports ruby-style reverse
+     *                      indexing where, for example, -1 is the last item and -2 is the second last item in the
+     *                      array.
+     * @param klass         The class of the items stored in the array.
+     * @param includeNull   If true, null items will be inserted. If false, null items are not inserted.
+     * @param <T>           The class of the items stored in the array.
+     * @return              A new array which includes all the items from the given array, with the given item inserted
+     *                      at the given index, and existing items at and after the given index shifted to the right
+     *                      (by adding one to their indices).
+     */
+    public static <T> T[] insert(T[] array, T item, int index, Class<T> klass, boolean includeNull) {
         if (array == null) array = instantiate(klass);
+        if (item == null && !includeNull) return array;
 
         ArrayList<T> list = new ArrayList<T>(Arrays.asList(array));
 
@@ -534,14 +570,28 @@ public class ArrayHelper {
     /**
      * Returns a new array with a new element inserted at the beginning.
      *
-     * @param array The array to be prepended.
-     * @param item  The item to prepend to the array.
-     * @param klass The class of the items stored in the array.
-     * @param <T>   The class of the items stored in the array.
-     * @return A new copy of the given array with the given item prepended to the start of the array.
+     * @param array         The array to be prepended.
+     * @param item          The item to prepend to the array.
+     * @param klass         The class of the items stored in the array.
+     * @param <T>           The class of the items stored in the array.
+     * @return              A new copy of the given array with the given item prepended to the start of the array.
      */
     public static <T> T[] prepend(T[] array, T item, Class<T> klass) {
-        return insert(array, item, 0, klass);
+        return prepend(array, item, klass, true);
+    }
+
+    /**
+     * Returns a new array with a new element inserted at the beginning.
+     *
+     * @param array         The array to be prepended.
+     * @param item          The item to prepend to the array.
+     * @param klass         The class of the items stored in the array.
+     * @param includeNull   If true, null items will be inserted. If false, null items are not inserted.
+     * @param <T>           The class of the items stored in the array.
+     * @return              A new copy of the given array with the given item prepended to the start of the array.
+     */
+    public static <T> T[] prepend(T[] array, T item, Class<T> klass, boolean includeNull) {
+        return insert(array, item, 0, klass, includeNull);
     }
 
     /**
