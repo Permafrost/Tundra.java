@@ -69,6 +69,41 @@ public class ArrayHelper {
     }
 
     /**
+     * Returns the first non-null item from the given array.
+     *
+     * @param array The array to be coalesced.
+     * @param <T>   The class of items stored in the array.
+     * @return      The first non-null item stored in the array.
+     */
+    public static <T> T coalesce(T[] array) {
+        return coalesce(array, null);
+    }
+
+
+    /**
+     * Returns the first non-null item from the given array, or defaultValue if all items are null.
+     *
+     * @param array         The array to be coalesced.
+     * @param defaultValue  The value returned if all items in the array are null.
+     * @param <T>           The class of items stored in the array.
+     * @return              The first non-null item stored in the array.
+     */
+    public static <T> T coalesce(T[] array, T defaultValue) {
+        T result = null;
+
+        if (array != null && array.length > 0) {
+            for (int i = 0; i < array.length; i++) {
+                result = array[i];
+                if (result != null) break;
+            }
+        }
+
+        if (result == null) result = defaultValue;
+
+        return result;
+    }
+
+    /**
      * Returns a new array with all null elements removed.
      *
      * @param array The array to be compacted.
