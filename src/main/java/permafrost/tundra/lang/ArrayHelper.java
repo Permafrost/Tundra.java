@@ -643,6 +643,26 @@ public class ArrayHelper {
     }
 
     /**
+     * Returns an array of integers representing containing the ordered sequence number for each item in the given
+     * array.
+     *
+     * @param array The array to return sequence numbers for.
+     * @param start The sequence number to use for the first item in the list.
+     * @param <T>   The class of the items stored in the array.
+     * @return      An array of integer sequence numbers.
+     */
+    public static <T> int[] sequence(T[] array, int start) {
+        if (array == null) return null;
+        int[] output = new int[array.length];
+
+        for (int i = 0; i < array.length; i++) {
+            output[i] = start + i;
+        }
+
+        return output;
+    }
+
+    /**
      * Returns a new array which is a subset of elements from the given array.
      *
      * @param array  The array to be sliced.
