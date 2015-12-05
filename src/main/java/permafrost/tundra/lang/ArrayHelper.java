@@ -24,6 +24,8 @@
 
 package permafrost.tundra.lang;
 
+import com.wm.data.IData;
+import permafrost.tundra.data.IDataHelper;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -131,23 +133,33 @@ public class ArrayHelper {
      */
     public static <T> T[][] compact(T[][] table) {
         if (table == null) return null;
-
         List<T[]> list = new ArrayList<T[]>(table.length);
 
-        for (int i = 0; i < table.length; i++) {
-            T[] row = compact(table[i]);
-            if (row != null) list.add(row);
+        for (T[] row : table) {
+            if (row != null) list.add(compact(row));
         }
 
-        return list.toArray(Arrays.copyOf(table, 0));
+        return list.toArray(Arrays.copyOf(table, list.size()));
     }
 
     /**
-     * Returns a new array which contains all the elements from the given arrays.
+     * Returns a new array which contains all the items from the given arrays in the sequence provided.
      *
-     * @param arrays One or more arrays to be concatenated together.
-     * @param <T>    The class of item stored in the array.
-     * @return A new array which contains all the elements from the given arrays.
+     * @param operands  An IData document containing the arrays to be concatenated.
+     * @param <T>       The class of item stored in the array.
+     * @return          A new array which contains all the elements from the given arrays.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T[] concatenate(IData operands) {
+        return concatenate((T[][])IDataHelper.getValues(operands));
+    }
+
+    /**
+     * Returns a new array which contains all the items from the given arrays in the sequence provided.
+     *
+     * @param arrays    One or more arrays to be concatenated together.
+     * @param <T>       The class of item stored in the array.
+     * @return          A new array which contains all the elements from the given arrays.
      */
     public static <T> T[] concatenate(T[]... arrays) {
         if (arrays == null || arrays.length == 0) return null;
@@ -165,6 +177,24 @@ public class ArrayHelper {
         }
 
         return list.toArray(Arrays.copyOf(arrays[0], length));
+    }
+
+    /**
+     * Returns an array containing only the items in the first array that are not also in the second array.
+     *
+     * @param firstArray  The first array.
+     * @param secondArray The second array.
+     * @param <T>         The component type of the arrays.
+     * @return            A new array containing on the items in the first array that are not also in the second array.
+     */
+    public static <T> T[] difference(T[] firstArray, T[] secondArray) {
+        if (firstArray == null || secondArray == null) return firstArray;
+
+        List<T> list = new ArrayList<T>(firstArray.length);
+        list.addAll(Arrays.asList(firstArray));
+        list.removeAll(Arrays.asList(secondArray));
+
+        return list.toArray(Arrays.copyOf(firstArray, list.size()));
     }
 
     /**
@@ -190,6 +220,18 @@ public class ArrayHelper {
         }
 
         return array;
+    }
+
+    /**
+     * Returns true if the given arrays are equal.
+     *
+     * @param operands  An IData document containing the arrays to be compared for equality.
+     * @param <T>       The class of item stored in the array.
+     * @return          True if the given arrays are all considered equivalent, otherwise false.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> boolean equal(IData operands) {
+        return equal((T[][])IDataHelper.getValues(operands));
     }
 
     /**
@@ -338,6 +380,31 @@ public class ArrayHelper {
     }
 
     /**
+     * Returns a new array which is a one-dimensional recursive flattening of the given array.
+     *
+     * @param array The array to be flattened.
+     * @return      A new array which is a one-dimensional recursive flattening of the given array.
+     */
+    @SuppressWarnings("unchecked")
+    public static Object[] flatten(Object[] array) {
+        if (array == null || array.length == 0) return array;
+
+        ArrayList list = new ArrayList(array.length);
+
+        for (Object item : array) {
+            if (item != null && item.getClass().isArray()) {
+                item = flatten((Object[])item);
+                list.ensureCapacity(list.size() + ((Object[])item).length);
+                list.addAll(Arrays.asList((Object[])item));
+            } else {
+                list.add(item);
+            }
+        }
+
+        return normalize(list);
+    }
+
+    /**
      * Grows the size of the given array by the given count, and pads with the given item.
      *
      * @param array The array to be resized, must not be null.
@@ -361,7 +428,6 @@ public class ArrayHelper {
      */
     public static <T> T[] shrink(T[] array, int count) {
         if (array == null) return null;
-
         return resize(array, array.length - count);
     }
 
@@ -445,6 +511,18 @@ public class ArrayHelper {
         list.add(index, item);
 
         return list.toArray(instantiate(klass, list.size()));
+    }
+
+    /**
+     * Returns a new array that contains only the items present in all the given arrays.
+     *
+     * @param operands An IData document containing the arrays to be intersected.
+     * @param <T>      The array component class.
+     * @return         A new array containing only the items present in all given arrays.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T[] intersect(IData operands) {
+        return intersect((T[][])IDataHelper.getValues(operands));
     }
 
     /**
@@ -662,6 +740,17 @@ public class ArrayHelper {
     }
 
     /**
+     * Returns the length of the given array.
+     *
+     * @param array The array to return the length of.
+     * @param <T>   The array component class.
+     * @return      The length of the array, or 0 if it is null.
+     */
+    public static <T> int length(T[] array) {
+        return (array == null? 0 : array.length);
+    }
+
+    /**
      * Returns a new array with all elements from the given array but in reverse order.
      *
      * @param array The array to be reversed.
@@ -675,26 +764,6 @@ public class ArrayHelper {
         Collections.reverse(list);
 
         return list.toArray(Arrays.copyOf(array, list.size()));
-    }
-
-    /**
-     * Returns an array of integers representing containing the ordered sequence number for each item in the given
-     * array.
-     *
-     * @param array The array to return sequence numbers for.
-     * @param start The sequence number to use for the first item in the list.
-     * @param <T>   The class of the items stored in the array.
-     * @return      An array of integer sequence numbers.
-     */
-    public static <T> int[] sequence(T[] array, int start) {
-        if (array == null) return null;
-        int[] output = new int[array.length];
-
-        for (int i = 0; i < array.length; i++) {
-            output[i] = start + i;
-        }
-
-        return output;
     }
 
     /**
@@ -794,7 +863,6 @@ public class ArrayHelper {
      * @param <T>   The class of items to be stored in the array.
      * @return A new zero-length array of the given class.
      */
-    @SuppressWarnings("unchecked")
     public static <T> T[] instantiate(Class<T> klass) {
         return instantiate(klass, 0);
     }
@@ -807,9 +875,21 @@ public class ArrayHelper {
      * @param <T>    The class of items to be stored in the array.
      * @return A new array of the given class with the given length.
      */
-    @SuppressWarnings("unchecked")
     public static <T> T[] instantiate(Class<T> klass, int length) {
-        return (T[])java.lang.reflect.Array.newInstance(klass, length);
+        return instantiate(klass, new int[] {length});
+    }
+
+    /**
+     * Dynamically instantiates a new array of the given class with the given length.
+     *
+     * @param klass      The class of items to be stored in the array.
+     * @param dimensions The desired length of the returned array.
+     * @param <T>        The class of items to be stored in the array.
+     * @return A new array of the given class with the given length.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T[] instantiate(Class<T> klass, int... dimensions) {
+        return (T[])java.lang.reflect.Array.newInstance(klass, dimensions);
     }
 
     /**
