@@ -370,6 +370,35 @@ public class StringHelper {
     }
 
     /**
+     * Concatenates all string leaf values in the given IData document.
+     *
+     * @param operands An IData document containing strings to be concatenated.
+     * @return         All string leaf values in the IData document concatenated together.
+     */
+    @SuppressWarnings("unchecked")
+    public static String concatenate(IData operands) {
+        return concatenate((String[])IDataHelper.getLeafValues(operands, String.class));
+    }
+
+    /**
+     * Concatenates all given strings.
+     *
+     * @param strings A list of strings to be concatenated.
+     * @return        All given strings concatenated together.
+     */
+    public static String concatenate(String ...strings) {
+        if (strings == null || strings.length == 0) return null;
+
+        StringBuilder builder = new StringBuilder();
+
+        for(String string : strings) {
+            if (string != null) builder.append(string);
+        }
+
+        return builder.toString();
+    }
+
+    /**
      * Returns the given string with leading and trailing whitespace removed.
      *
      * @param string The string to be trimmed.
