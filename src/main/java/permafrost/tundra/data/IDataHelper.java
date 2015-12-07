@@ -137,7 +137,12 @@ public class IDataHelper {
      * @return All leaf values recursively collected from the given document and its children.
      */
     public static Object[] getLeafValues(IData document, Class... classes) {
-        return ArrayHelper.normalize(getLeafValues(new ArrayList<Object>(), document, classes).toArray());
+        Object[] values = ArrayHelper.normalize(getLeafValues(new ArrayList<Object>(), document, classes).toArray());
+        if (values != null && values.length > 0) {
+            return values;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -158,7 +163,12 @@ public class IDataHelper {
      * @return All leaf values recursively collected from the given document list and its children.
      */
     public static Object[] getLeafValues(IData[] array, Class... classes) {
-        return ArrayHelper.normalize(getLeafValues(new ArrayList<Object>(), array, classes).toArray());
+        Object[] values = ArrayHelper.normalize(getLeafValues(new ArrayList<Object>(), array, classes).toArray());
+        if (values != null && values.length > 0) {
+            return values;
+        } else {
+            return null;
+        }
     }
 
     /**
