@@ -370,29 +370,84 @@ public class StringHelper {
     }
 
     /**
-     * Concatenates all string leaf values in the given IData document.
+     * Concatenates all non-null string leaf values in the given IData document.
      *
-     * @param operands An IData document containing strings to be concatenated.
-     * @return         All string leaf values in the IData document concatenated together.
+     * @param operands      An IData document containing strings to be concatenated.
+     * @return              All string leaf values in the IData document concatenated together.
      */
-    @SuppressWarnings("unchecked")
     public static String concatenate(IData operands) {
-        return concatenate((String[])IDataHelper.getLeafValues(operands, String.class));
+        return concatenate(operands, null, false);
     }
 
     /**
-     * Concatenates all given strings.
+     * Concatenates all non-null string leaf values in the given IData document, separated by the given separator
+     * string.
      *
-     * @param strings A list of strings to be concatenated.
-     * @return        All given strings concatenated together.
+     * @param operands      An IData document containing strings to be concatenated.
+     * @param separator     An optional separator string to be used between items of the array.
+     * @return              All string leaf values in the IData document concatenated together.
+     */
+    public static String concatenate(IData operands, String separator) {
+        return concatenate(operands, separator, false);
+    }
+
+    /**
+     * Concatenates all string leaf values in the given IData document, separated by the given separator string.
+     *
+     * @param operands      An IData document containing strings to be concatenated.
+     * @param separator     An optional separator string to be used between items of the array.
+     * @param includeNulls  If true, null values will be included in the output string, otherwise they are ignored.
+     * @return              All string leaf values in the IData document concatenated together.
+     */
+    @SuppressWarnings("unchecked")
+    public static String concatenate(IData operands, String separator, boolean includeNulls) {
+        return concatenate(separator, includeNulls, (String[])IDataHelper.getLeafValues(operands, String.class));
+    }
+
+    /**
+     * Concatenates all given non-null strings.
+     *
+     * @param strings       A list of strings to be concatenated.
+     * @return              All given strings concatenated together.
      */
     public static String concatenate(String ...strings) {
-        if (strings == null || strings.length == 0) return null;
+        return concatenate(null, false, strings);
+    }
+
+    /**
+     * Concatenates all given strings, separated by the given separator string.
+     *
+     * @param separator     An optional separator string to be used between items of the array.
+     * @param strings       A list of strings to be concatenated.
+     * @return              All given strings concatenated together.
+     */
+    public static String concatenate(String separator, String ...strings) {
+        return concatenate(separator, false, strings);
+    }
+
+    /**
+     * Concatenates all given strings, separated by the given separator string.
+     *
+     * @param separator     An optional separator string to be used between items of the array.
+     * @param includeNulls  If true, null values will be included in the output string, otherwise they are ignored.
+     * @param strings       A list of strings to be concatenated.
+     * @return              All given strings concatenated together.
+     */
+    public static String concatenate(String separator, boolean includeNulls, String ...strings) {
+        if (strings == null || strings.length == 0) return includeNulls ? null : "";
 
         StringBuilder builder = new StringBuilder();
+        boolean separatorRequired = false;
 
-        for(String string : strings) {
-            if (string != null) builder.append(string);
+        for (String string : strings) {
+            boolean includeItem = includeNulls || string != null;
+
+            if (separator != null && separatorRequired && includeItem) builder.append(separator);
+
+            if (includeItem) {
+                builder.append(string);
+                separatorRequired = true;
+            }
         }
 
         return builder.toString();
