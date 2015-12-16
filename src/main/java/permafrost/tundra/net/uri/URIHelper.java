@@ -425,4 +425,22 @@ public class URIHelper {
 
         return output;
     }
+
+    /**
+     * Validates if the given string can be parsed as a URI.
+     *
+     * @param uri   The string to be validated as a URI.
+     * @param raise If true, throws an exception if the string is not a valid URI.
+     * @return      True if the given string is a valid URI, otherwise false.
+     * @throws URISyntaxException If raise is true and the given string is not a valid URI.
+     */
+    public static boolean validate(String uri, boolean raise) throws URISyntaxException {
+        boolean valid = false;
+        try {
+            valid = parse(uri) != null;
+        } catch(URISyntaxException ex) {
+            if (raise) throw ex;
+        }
+        return valid;
+    }
 }
