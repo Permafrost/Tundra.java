@@ -1663,7 +1663,8 @@ public class IDataHelper {
      * Returns the value associated with the given key from the given IData document, or if null the specified default
      * value.
      *
-     * @param scope     An IData document.
+     * @param pipeline     An IData document against which absolute variables are resolved.
+     * @param scope        An IData document against which relative variables are resolved.
      * @param key          A simple or fully-qualified key identifying the value in the given IData document to be
      *                     returned.
      * @param defaultValue A default value to be returned if the existing value associated with the given key is null.
@@ -3059,8 +3060,8 @@ public class IDataHelper {
         /**
          * This method is not implemented.
          *
-         * @param document Not used.
-         * @throws UnsupportedOperationException as this method is not implemented.
+         * @param  document                         Not used.
+         * @throws UnsupportedOperationException    as this method is not implemented.
          */
         public void setIData(IData document) {
             throw new UnsupportedOperationException("method not implemented");
@@ -3069,9 +3070,9 @@ public class IDataHelper {
         /**
          * Compares this compound key with another compound key.
          *
-         * @param other The other key to be compared with.
-         * @return 0 if the two keys are equal, < 0 if this key is less than the other key, > 0 if this key is greater
-         * than the other key.
+         * @param  other    The other key to be compared with.
+         * @return          0 if the two keys are equal, less than 0 if this key is less than the other key,
+         *                  greater than 0 if this key is greater than the other key.
          */
         public int compareTo(CompoundKey other) {
             if (other == null) return 1;
@@ -3081,8 +3082,8 @@ public class IDataHelper {
         /**
          * Returns true if this object is equal to the other object.
          *
-         * @param other The object to compare for equality with.
-         * @return True if this object is equal to the other object.
+         * @param  other    The object to compare for equality with.
+         * @return          True if this object is equal to the other object.
          */
         public boolean equals(Object other) {
             boolean result = false;

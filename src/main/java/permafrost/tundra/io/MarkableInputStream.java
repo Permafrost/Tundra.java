@@ -37,12 +37,12 @@ public class MarkableInputStream extends FilterInputStream {
     /**
      * Creates a new MarkableInputStream, which wraps the given input stream object in a stream that supports the mark
      * and reset methods.
-     * <p/>
+     *
      * To provide support for mark and reset methods to a given input stream, this class creates a temporary backing
      * file, then copies the entire contents of the given stream to the file, and then uses the file for reading the
      * MarkableInputStream.
      *
-     * @param inputStream The stream to be wrapped.
+     * @param  inputStream The stream to be wrapped.
      * @throws IOException If an I/O error occurs while reading from the stream.
      */
     public MarkableInputStream(InputStream inputStream) throws IOException {
