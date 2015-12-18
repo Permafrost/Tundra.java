@@ -28,6 +28,7 @@ import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
 import com.wm.data.IDataUtil;
+import permafrost.tundra.data.IDataHelper;
 import permafrost.tundra.lang.ArrayHelper;
 import permafrost.tundra.lang.CharsetHelper;
 import java.io.UnsupportedEncodingException;
@@ -427,20 +428,14 @@ public class URIHelper {
     }
 
     /**
-     * Validates if the given string can be parsed as a URI.
+     * Performs variable substitution on the components of the given URI string.
      *
-     * @param uri   The string to be validated as a URI.
-     * @param raise If true, throws an exception if the string is not a valid URI.
-     * @return      True if the given string is a valid URI, otherwise false.
-     * @throws URISyntaxException If raise is true and the given string is not a valid URI.
+     * @param uri   The URI string to perform variable substitution on.
+     * @param scope The scope variables are resolved against.
+     * @return      The resulting URI string after variable substitution.
+     * @throws URISyntaxException If the given string is not a valid URI.
      */
-    public static boolean validate(String uri, boolean raise) throws URISyntaxException {
-        boolean valid = false;
-        try {
-            valid = parse(uri) != null;
-        } catch(URISyntaxException ex) {
-            if (raise) throw ex;
-        }
-        return valid;
+    public static String substitute(String uri, IData scope) throws URISyntaxException {
+        return emit(IDataHelper.substitute(parse(uri), scope, true));
     }
 }
