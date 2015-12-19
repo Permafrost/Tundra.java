@@ -32,6 +32,7 @@ import permafrost.tundra.data.IDataHelper;
 import permafrost.tundra.data.IDataMap;
 import permafrost.tundra.lang.ExceptionHelper;
 import java.util.Enumeration;
+import java.util.IllegalFormatCodePointException;
 import javax.activation.MimeType;
 import javax.activation.MimeTypeParameterList;
 import javax.activation.MimeTypeParseException;
@@ -46,6 +47,45 @@ public class MIMETypeHelper {
      * The default MIME media type for arbitrary content.
      */
     public static final String DEFAULT_MIME_TYPE = System.getProperty("watt.server.content.type.default", "application/octet-stream");
+
+    /**
+     * Returns a new MimeType object given a MIME media type string.
+     * @param  string   A MIME media type string.
+     * @return          A MimeType object representing the given string.
+     */
+    public static MimeType of(String string) {
+        if (string == null) return null;
+
+        MimeType type;
+
+        try {
+            type = new MimeType(string);
+        } catch(MimeTypeParseException ex) {
+            throw new IllegalArgumentException(ex);
+        }
+
+        return type;
+    }
+
+    /**
+     * Returns the given MimeType if not null, otherwise the default MimeType.
+     *
+     * @param type The MimeType to be normalized.
+     * @return     The given MimeType if not null, otherwise the default MimeType.
+     */
+    public static MimeType normalize(MimeType type) {
+        if (type == null) type = getDefault();
+        return type;
+    }
+
+    /**
+     * Returns the default MimeType.
+     *
+     * @return     The default MimeType.
+     */
+    public static MimeType getDefault() {
+        return of(DEFAULT_MIME_TYPE);
+    }
 
     /**
      * Parses the given MIME type string to an IData representation.

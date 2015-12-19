@@ -24,33 +24,36 @@
 
 package permafrost.tundra.lang;
 
-import permafrost.tundra.mime.MIMETypeHelper;
-import javax.activation.MimeType;
-import javax.activation.MimeTypeParseException;
+import permafrost.tundra.data.Content;
+import permafrost.tundra.data.ContentAttached;
 
 /**
  * An exception indicating that a transport error has occurred.
  */
-public class TransportException extends RecoverableException {
+public class TransportException extends RecoverableException implements ContentAttached {
     /**
      * The content associated with this exception.
      */
-    protected byte[] content;
+    protected Content content;
+
     /**
-     * The content type associated with this exception's content.
+     * Constructs a new TransportException with the given message.
+     *
+     * @param  message                  A message describing why the TransportException was thrown.
      */
-    protected MimeType contentType;
+    public TransportException(String message) {
+        this(message, null);
+    }
+
 
     /**
      * Constructs a new TransportException with the given message.
      *
      * @param  message                  A message describing why the TransportException was thrown.
      * @param  content                  The content associated with the exception.
-     * @param  contentType              The content type associated with the content.
-     * @throws MimeTypeParseException   If the content type cannot be parsed as a MIME media type.
      */
-    public TransportException(String message, byte[] content, String contentType) throws MimeTypeParseException {
-        this(message, content, contentType, null);
+    public TransportException(String message, Content content) {
+        this(message, content, null);
     }
 
     /**
@@ -58,18 +61,11 @@ public class TransportException extends RecoverableException {
      *
      * @param  message                  A message describing why the TransportException was thrown.
      * @param  content                  The content associated with the exception.
-     * @param  contentType              The content type associated with the content.
      * @param  cause                    The cause of this Exception.
-     * @throws MimeTypeParseException   If the content type cannot be parsed as a MIME media type.
      */
-    public TransportException(String message, byte[] content, String contentType, Throwable cause) throws MimeTypeParseException {
+    public TransportException(String message, Content content, Throwable cause) {
         super(message, cause);
-        this.content = content;
-        if (contentType != null) {
-            this.contentType = new MimeType(contentType);
-        } else {
-            this.contentType = new MimeType(MIMETypeHelper.DEFAULT_MIME_TYPE);
-        }
+        this.content = Content.normalize(content);
     }
 
     /**
@@ -78,16 +74,16 @@ public class TransportException extends RecoverableException {
      *
      * @return The content associated with the exception.
      */
-    public byte[] getContent() {
-        return this.content;
+    public Content getContent() {
+        return content;
     }
 
     /**
-     * Returns the content type associated with the content of this exception.
+     * Sets the content associated with this exception.
      *
-     * @return The content type associated with the content of this exception.
+     * @param  content The content to be attached to this exception.
      */
-    public MimeType getContentType() {
-        return this.contentType;
+    public void setContent(Content content) {
+        this.content = Content.normalize(content);
     }
 }
