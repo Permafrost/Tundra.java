@@ -25,9 +25,12 @@
 package permafrost.tundra.lang;
 
 import com.wm.app.b2b.server.ServiceException;
+import com.wm.data.IData;
+import com.wm.util.coder.IDataCodable;
+import permafrost.tundra.data.IDataMap;
 import java.util.Collection;
 
-public class BaseException extends ServiceException {
+public class BaseException extends ServiceException implements IDataCodable {
     /**
      * Constructs a new BaseException.
      */
@@ -80,5 +83,29 @@ public class BaseException extends ServiceException {
      */
     public BaseException(Throwable... exceptions) {
         super(ExceptionHelper.getMessage(exceptions));
+    }
+
+    /**
+     * Returns an IData representation of this object.
+     *
+     * @return An IData representation of this object.
+     */
+    public IData getIData() {
+        IDataMap map = new IDataMap();
+        map.put("$exception", this);
+        map.put("$exception?", "true");
+        map.put("$exception.class", getClass().getName());
+        map.put("$exception.message", getMessage());
+        return map;
+    }
+
+    /**
+     * This method has not been implemented.
+     *
+     * @param  document                         An IData document.
+     * @throws UnsupportedOperationException    This method has not been implemented.
+     */
+    public void setIData(IData document) {
+        throw new UnsupportedOperationException("setIData(IData) not implemented");
     }
 }
