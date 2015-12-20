@@ -24,8 +24,10 @@
 
 package permafrost.tundra.lang;
 
+import com.wm.data.IData;
 import permafrost.tundra.data.Content;
 import permafrost.tundra.data.ContentAttached;
+import permafrost.tundra.data.IDataMap;
 
 /**
  * An exception indicating that a transport error has occurred.
@@ -85,5 +87,17 @@ public class TransportException extends RecoverableException implements ContentA
      */
     public void setContent(Content content) {
         this.content = Content.normalize(content);
+    }
+
+    /**
+     * Returns an IData representation of this object.
+     *
+     * @return An IData representation of this object.
+     */
+    @Override
+    public IData getIData() {
+        IDataMap map = IDataMap.of(super.getIData());
+        map.put("$exception.content", content.getIData());
+        return map;
     }
 }
