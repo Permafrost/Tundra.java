@@ -24,6 +24,8 @@
 
 package permafrost.tundra.data;
 
+import com.wm.data.IData;
+import com.wm.util.coder.IDataCodable;
 import permafrost.tundra.lang.BytesHelper;
 import permafrost.tundra.lang.CharsetHelper;
 import permafrost.tundra.mime.MIMETypeHelper;
@@ -35,7 +37,7 @@ import javax.activation.MimeType;
 /**
  * A generic class for holding arbitrary binary data.
  */
-public class Content {
+public class Content implements IDataCodable {
     /**
      * The arbitrary binary data held by this object.
      */
@@ -183,6 +185,31 @@ public class Content {
      */
     public boolean isEmpty() {
         return data.length == 0;
+    }
+
+    /**
+     * Returns an IData representation of this object.
+     *
+     * @return An IData representation of this object.
+     */
+    public IData getIData() {
+        IDataMap map = new IDataMap();
+
+        byte[] content = getData();
+        map.put("$content", content);
+        map.put("$content.type", getType().toString());
+
+        return map;
+    }
+
+    /**
+     * This method has not been implemented.
+     *
+     * @param  document                         An IData document.
+     * @throws UnsupportedOperationException    This method has not been implemented.
+     */
+    public void setIData(IData document) {
+        throw new UnsupportedOperationException("setIData(IData) not implemented");
     }
 
     /**
