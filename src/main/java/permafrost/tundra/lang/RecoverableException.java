@@ -24,6 +24,8 @@
 
 package permafrost.tundra.lang;
 
+import com.wm.data.IData;
+import permafrost.tundra.data.IDataMap;
 import java.util.Collection;
 
 /**
@@ -81,5 +83,17 @@ public class RecoverableException extends BaseException {
      */
     public RecoverableException(Throwable... exceptions) {
         super(exceptions);
+    }
+
+    /**
+     * Returns an IData representation of this object.
+     *
+     * @return An IData representation of this object.
+     */
+    @Override
+    public IData getIData() {
+        IDataMap map = IDataMap.of(super.getIData());
+        map.put("$exception.recoverable?", "true");
+        return map;
     }
 }
