@@ -779,14 +779,33 @@ public class ArrayHelper {
      */
     public static <T> T[] slice(T[] array, int index, int length) {
         if (array == null || array.length == 0) return array;
-        // support reverse/tail length
-        if (length < 0) length = array.length + length;
-        // support reverse/tail indexing
-        if (index < 0) index += array.length;
-        // don't slice past the end of the array
-        if ((length += index) > array.length) length = array.length;
 
-        return Arrays.copyOfRange(array, index, length);
+        int inputLength = array.length, endIndex;
+
+        // support reverse length
+        if (length < 0) {
+            // support reverse indexing
+            if (index < 0) {
+                endIndex = index + inputLength + 1;
+            } else {
+                if (index >= inputLength) index = inputLength - 1;
+                endIndex = index + 1;
+            }
+            index = endIndex + length;
+        } else {
+            // support reverse indexing
+            if (index < 0) index += inputLength;
+            endIndex = index + length;
+        }
+
+        if (index < inputLength && endIndex > 0) {
+            if (index < 0) index = 0;
+            if (endIndex > inputLength) endIndex = inputLength;
+        } else if (index >= inputLength) {
+            index = endIndex = 0;
+        }
+
+        return Arrays.copyOfRange(array, index, endIndex);
     }
 
     /**

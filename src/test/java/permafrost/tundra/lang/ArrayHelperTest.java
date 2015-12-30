@@ -161,4 +161,74 @@ public class ArrayHelperTest {
 
         assertEquals(false, ArrayHelper.equal(array1, array2));
     }
+
+    @Test
+    public void testForwardSlice() throws Exception {
+        String[] array1 = { "a", "b", "c", "d", "e" };
+        String[] expected = { "b", "c" };
+
+        String[] actual = ArrayHelper.slice(array1, 1, 2);
+
+        assertArrayEquals(expected, actual);
+    }
+
+    @Test
+    public void testForwardSliceLengthPastEnd() throws Exception {
+        String[] array1 = { "a", "b", "c", "d", "e" };
+        String[] expected = { "b", "c", "d", "e" };
+
+        String[] actual = ArrayHelper.slice(array1, 1, 20);
+
+        assertArrayEquals(expected, actual);
+    }
+
+    @Test
+    public void testForwardSliceEntireArray() throws Exception {
+        String[] array1 = { "a", "b", "c", "d", "e" };
+        String[] expected = { "a", "b", "c", "d", "e" };
+
+        String[] actual = ArrayHelper.slice(array1, 0, 5);
+
+        assertArrayEquals(expected, actual);
+    }
+
+    @Test
+    public void testForwardSliceIndexPastEnd() throws Exception {
+        String[] array1 = { "a", "b", "c", "d", "e" };
+        String[] expected = { };
+
+        String[] actual = ArrayHelper.slice(array1, 5, 10);
+
+        assertArrayEquals(expected, actual);
+    }
+
+    @Test
+    public void testReverseSlice() throws Exception {
+        String[] array1 = { "a", "b", "c", "d", "e" };
+        String[] expected = { "c", "d" };
+
+        String[] actual = ArrayHelper.slice(array1, 3, -2);
+
+        assertArrayEquals(expected, actual);
+    }
+
+    @Test
+    public void testForwardSliceWithNegativeIndex() throws Exception {
+        String[] array1 = { "a", "b", "c", "d", "e" };
+        String[] expected = { "c", "d" };
+
+        String[] actual = ArrayHelper.slice(array1, -3, 2);
+
+        assertArrayEquals(expected, actual);
+    }
+
+    @Test
+    public void testReverseSliceWithNegativeIndex() throws Exception {
+        String[] array1 = { "a", "b", "c", "d", "e" };
+        String[] expected = { "c", "d" };
+
+        String[] actual = ArrayHelper.slice(array1, -2, -2);
+
+        assertArrayEquals(expected, actual);
+    }
 }
