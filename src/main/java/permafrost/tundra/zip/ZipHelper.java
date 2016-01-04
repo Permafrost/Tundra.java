@@ -81,7 +81,7 @@ public final class ZipHelper {
             StreamHelper.close(zipOutputStream);
         }
 
-        return (InputStream)ObjectHelper.convert(byteArrayOutputStream == null ? null : byteArrayOutputStream.toByteArray(), ObjectConvertMode.STREAM);
+        return (InputStream)ObjectHelper.convert(byteArrayOutputStream.toByteArray(), ObjectConvertMode.STREAM);
     }
 
     /**
