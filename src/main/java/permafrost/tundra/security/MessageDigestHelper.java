@@ -38,7 +38,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.AbstractMap;
 import java.util.Map;
 
-public class MessageDigestHelper {
+public final class MessageDigestHelper {
     /**
      * Disallow instantiation of this class.
      */

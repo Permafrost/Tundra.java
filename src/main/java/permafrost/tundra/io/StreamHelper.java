@@ -45,7 +45,7 @@ import java.nio.charset.Charset;
 /**
  * A collection of convenience methods for working with streams.
  */
-public class StreamHelper {
+public final class StreamHelper {
     /**
      * The default buffer size used by Tundra.
      */

@@ -32,7 +32,7 @@ import permafrost.tundra.lang.ExceptionHelper;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-public class NameHelper {
+public final class NameHelper {
     /**
      * Disallow instantiation of this class.
      */

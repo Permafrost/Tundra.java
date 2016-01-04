@@ -27,7 +27,7 @@ package permafrost.tundra.net.http;
 /**
  * A collection of convenience methods for working with HTTP.
  */
-public class HTTPHelper {
+public final class HTTPHelper {
     private static final java.util.Map<Integer, String> RESPONSE_STATUSES = new java.util.TreeMap<Integer, String>();
     private static final String DEFAULT_RESPONSE_MESSAGE = "Unassigned";
 

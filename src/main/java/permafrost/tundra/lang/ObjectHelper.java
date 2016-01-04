@@ -46,7 +46,7 @@ import java.util.TreeSet;
 /**
  * A collection of convenience methods for working with Objects.
  */
-public class ObjectHelper {
+public final class ObjectHelper {
     /**
      * Disallow instantiation of this class.
      */

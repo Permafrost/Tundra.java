@@ -50,7 +50,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 /**
  * A collection of convenience methods for working with datetimes.
  */
-public class DateTimeHelper {
+public final class DateTimeHelper {
     public static final String DEFAULT_DATETIME_PATTERN = "datetime";
     private static final Map<String, String> NAMED_PATTERNS = new TreeMap<String, String>();
     private static final Pattern DB2_DATETIME_PATTERN = Pattern.compile("(\\d{4})-(\\d{2})-(\\d{2})-(\\d{2})\\.(\\d{2})\\.(\\d{2})\\.(\\d{6})");

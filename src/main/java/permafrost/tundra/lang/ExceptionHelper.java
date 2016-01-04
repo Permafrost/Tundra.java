@@ -33,7 +33,7 @@ import java.util.Collection;
 /**
  * A collection of convenience methods for working with Integration Server service exceptions.
  */
-public class ExceptionHelper {
+public final class ExceptionHelper {
     /**
      * Disallow instantiation of this class.
      */

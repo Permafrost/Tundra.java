@@ -39,7 +39,7 @@ import java.util.Locale;
 /**
  * A collection of convenience methods for working with decimals.
  */
-public class BigDecimalHelper {
+public final class BigDecimalHelper {
     /**
      * The default rounding mode used by the methods in this class.
      */

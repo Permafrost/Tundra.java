@@ -40,7 +40,7 @@ import java.util.zip.ZipOutputStream;
 /**
  * A collection of convenience methods for working with ZIP compression.
  */
-public class ZipHelper {
+public final class ZipHelper {
     /**
      * Disallow instantiation of this class.
      */

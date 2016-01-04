@@ -32,7 +32,7 @@ import java.nio.charset.Charset;
 /**
  * A collection of convenience methods for working with byte[] objects.
  */
-public class BytesHelper {
+public final class BytesHelper {
     /**
      * Disallow instantiation of this class.
      */

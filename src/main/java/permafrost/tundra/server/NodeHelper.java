@@ -40,7 +40,7 @@ import java.util.regex.Pattern;
 /**
  * A collection of convenience methods for working with webMethods Integration Server namespace nodes.
  */
-public class NodeHelper {
+public final class NodeHelper {
     /**
      * Disallow instantiation of this class.
      */

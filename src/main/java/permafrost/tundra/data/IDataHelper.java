@@ -53,7 +53,7 @@ import java.util.regex.Pattern;
 /**
  * A collection of convenience methods for working with IData objects.
  */
-public class IDataHelper {
+public final class IDataHelper {
     /**
      * Disallow instantiation of this class.
      */

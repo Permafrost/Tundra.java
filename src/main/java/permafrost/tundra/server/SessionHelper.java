@@ -39,7 +39,7 @@ import permafrost.tundra.time.DurationPattern;
 /**
  * A collection of convenience methods for working with webMethods Integration Server sessions.
  */
-public class SessionHelper {
+public final class SessionHelper {
     /**
      * Disallow instantiation of this class.
      */

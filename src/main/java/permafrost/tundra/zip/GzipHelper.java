@@ -37,7 +37,7 @@ import java.util.zip.GZIPOutputStream;
 /**
  * A collection of convenience methods for working with GZIP compression.
  */
-public class GzipHelper {
+public final class GzipHelper {
     /**
      * Disallow instantiation of this class.
      */

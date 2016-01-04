@@ -32,7 +32,7 @@ import com.wm.data.IDataUtil;
 /**
  * A collection of convenience methods for working with StackTraceElement objects.
  */
-public class StackTraceElementHelper {
+public final class StackTraceElementHelper {
     /**
      * Disallow instantiation of this class.
      */

@@ -43,7 +43,7 @@ import java.util.TreeSet;
 /**
  * A collection of convenience methods for working with webMethods Integration Server packages.
  */
-public class PackageHelper {
+public final class PackageHelper {
     /**
      * Disallow instantiation of this class.
      */

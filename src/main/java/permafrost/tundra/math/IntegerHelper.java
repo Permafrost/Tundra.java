@@ -27,7 +27,7 @@ package permafrost.tundra.math;
 /**
  * A collection of convenience methods for working with integers.
  */
-public class IntegerHelper {
+public final class IntegerHelper {
     /**
      * The default value used when parsing a null string.
      */

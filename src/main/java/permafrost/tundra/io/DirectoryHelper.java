@@ -34,7 +34,7 @@ import javax.xml.datatype.Duration;
 /**
  * A collection of convenience methods for working with file system directories.
  */
-public class DirectoryHelper {
+public final class DirectoryHelper {
     /**
      * Disallow instantiation of this class;
      */

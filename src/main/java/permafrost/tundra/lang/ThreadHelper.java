@@ -35,7 +35,7 @@ import javax.xml.datatype.Duration;
 /**
  * A collection of convenience methods for working with Thread objects.
  */
-public class ThreadHelper {
+public final class ThreadHelper {
     /**
      * Disallow instantiation of this class.
      */

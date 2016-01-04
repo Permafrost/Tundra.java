@@ -37,7 +37,7 @@ import java.util.regex.Pattern;
 /**
  * A collection of convenience methods for working with time zones.
  */
-public class TimeZoneHelper {
+public final class TimeZoneHelper {
     /**
      * A sorted set of all time zone IDs known to the JVM.
      */

@@ -29,7 +29,7 @@ import java.util.UUID;
 /**
  * A collection of convenience methods for working with IDs.
  */
-public class IdentityHelper {
+public final class IdentityHelper {
     /**
      * Disallow instantiation of this class.
      */

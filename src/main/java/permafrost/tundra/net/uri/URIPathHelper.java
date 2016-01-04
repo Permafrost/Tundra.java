@@ -30,7 +30,7 @@ import permafrost.tundra.lang.ArrayHelper;
 /**
  * A collection of convenience methods for working with URI paths.
  */
-public class URIPathHelper {
+public final class URIPathHelper {
     private static final java.util.regex.Pattern PATH_PATTERN = java.util.regex.Pattern.compile("/+");
 
     /**

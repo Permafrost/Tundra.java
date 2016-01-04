@@ -27,7 +27,7 @@ package permafrost.tundra.lang;
 /**
  * A collection of convenience methods for working with booleans.
  */
-public class BooleanHelper {
+public final class BooleanHelper {
     /**
      * Disallow instantiation of this class.
      */

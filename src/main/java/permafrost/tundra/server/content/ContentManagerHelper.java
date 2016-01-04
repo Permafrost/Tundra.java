@@ -33,7 +33,7 @@ import java.util.TreeMap;
 /**
  * A collection of convenience methods for working with the Integration Server ContentManager.
  */
-public class ContentManagerHelper {
+public final class ContentManagerHelper {
     /**
      * Disallow instantiation of this class.
      */

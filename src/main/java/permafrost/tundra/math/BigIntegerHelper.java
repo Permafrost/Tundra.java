@@ -32,7 +32,7 @@ import java.math.BigInteger;
 /**
  * A collection of convenience methods for working with integers.
  */
-public class BigIntegerHelper {
+public final class BigIntegerHelper {
     /**
      * The default radix used by methods in this class.
      */

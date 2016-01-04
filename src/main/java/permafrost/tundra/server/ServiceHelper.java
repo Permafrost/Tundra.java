@@ -49,7 +49,7 @@ import javax.activation.MimeTypeParseException;
 /**
  * A collection of convenience methods for working with webMethods Integration Server services.
  */
-public class ServiceHelper {
+public final class ServiceHelper {
     /**
      * Disallow instantiation of this class.
      */

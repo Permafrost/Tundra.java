@@ -37,7 +37,7 @@ import javax.activation.MimeType;
 import javax.activation.MimeTypeParameterList;
 import javax.activation.MimeTypeParseException;
 
-public class MIMETypeHelper {
+public final class MIMETypeHelper {
     /**
      * Disallow instantiation of this class.
      */

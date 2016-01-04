@@ -50,7 +50,7 @@ import java.util.regex.Pattern;
 /**
  * A collection of convenience methods for working with String objects.
  */
-public class StringHelper {
+public final class StringHelper {
     /**
      * Disallow instantiation of this class.
      */

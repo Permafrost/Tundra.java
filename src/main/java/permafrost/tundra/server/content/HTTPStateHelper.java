@@ -33,7 +33,7 @@ import com.wm.net.HttpHeader;
 /**
  * A collection of convenience methods for working with the Integration Server HTTPState object.
  */
-public class HTTPStateHelper {
+public final class HTTPStateHelper {
     /**
      * Disallow instantiation of this class.
      */

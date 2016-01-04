@@ -37,7 +37,7 @@ import javax.xml.datatype.Duration;
 /**
  * A collection of convenience methods for working with durations.
  */
-public class DurationHelper {
+public final class DurationHelper {
     public static final long MILLISECONDS_PER_SECOND = 1000;
     public static final long MILLISECONDS_PER_MINUTE = 60 * MILLISECONDS_PER_SECOND;
     public static final long MILLISECONDS_PER_HOUR = 60 * MILLISECONDS_PER_MINUTE;

@@ -37,7 +37,7 @@ import java.util.TreeMap;
 /**
  * A collection of convenience methods for working with the webMethods Integration Server system.
  */
-public class SystemHelper {
+public final class SystemHelper {
     /**
      * Disallow instantiation of this class.
      */

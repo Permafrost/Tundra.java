@@ -32,7 +32,7 @@ import java.util.Locale;
 /**
  * A collection of convenience methods for working with Locale objects.
  */
-public class LocaleHelper {
+public final class LocaleHelper {
     /**
      * Disallow instantiation of this class.
      */

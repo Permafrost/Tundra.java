@@ -24,7 +24,7 @@
 
 package permafrost.tundra.lang;
 
-public class ClassHelper {
+public final class ClassHelper {
     /**
      * Disallow instantiation of this class.
      */

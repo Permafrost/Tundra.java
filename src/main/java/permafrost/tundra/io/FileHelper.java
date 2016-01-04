@@ -52,7 +52,7 @@ import java.util.Date;
 /**
  * A collection of convenience methods for working with files.
  */
-public class FileHelper {
+public final class FileHelper {
     /**
      * Disallow instantiation of this class.
      */
