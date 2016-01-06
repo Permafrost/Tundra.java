@@ -27,6 +27,7 @@ package permafrost.tundra.server;
 import com.wm.app.b2b.server.InvokeState;
 import com.wm.app.b2b.server.ServerThread;
 import com.wm.lang.ns.NSService;
+import permafrost.tundra.lang.IdentityHelper;
 import permafrost.tundra.lang.ThreadHelper;
 import java.util.Stack;
 import java.util.concurrent.ThreadFactory;
@@ -116,10 +117,11 @@ public class ServerThreadFactory implements ThreadFactory {
     public Thread newThread(Runnable runnable) {
         ServerThread thread = new ServerThread(runnable);
         thread.setInvokeState(cloneInvokeStateWithStack());
+        String threadContext = IdentityHelper.generate();
         if (threadNameSuffix != null) {
-            thread.setName(String.format("%s #%03d %s", threadNamePrefix, count.getAndIncrement(), threadNameSuffix));
+            thread.setName(String.format("%s #%03d ThreadContext=%s %s", threadNamePrefix, count.getAndIncrement(), threadContext, threadNameSuffix));
         } else {
-            thread.setName(String.format("%s #%03d", threadNamePrefix, count.getAndIncrement()));
+            thread.setName(String.format("%s #%03d ThreadContext=%s", threadNamePrefix, count.getAndIncrement(), threadContext));
         }
         thread.setUncaughtExceptionHandler(UncaughtExceptionLogger.getInstance());
         thread.setPriority(threadPriority);
