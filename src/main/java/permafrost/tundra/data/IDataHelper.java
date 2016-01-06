@@ -1574,6 +1574,28 @@ public final class IDataHelper {
     }
 
     /**
+     * Returns the value associated with the given key as a one-dimensional array; if the value is a
+     * multi-dimensional array it is first flattened.
+     *
+     * @param document  The IData document which contains the values to be flattened.
+     * @param key       The fully-qualified key identifying the values to be flattened.
+     * @return          A one-dimensional flattened array containing the values associated with the given key.
+     */
+    public static Object[] flatten(IData document, String key) {
+        Object value = get(document, key);
+
+        Object[] array = null;
+
+        if (value instanceof Object[]) {
+            array = ArrayHelper.flatten((Object[])value);
+        } else if (value != null) {
+            array = ArrayHelper.normalize(new Object[] { value });
+        }
+
+        return array;
+    }
+
+    /**
      * Returns the value associated with the given key from the given IData document.
      *
      * @param document An IData document.
