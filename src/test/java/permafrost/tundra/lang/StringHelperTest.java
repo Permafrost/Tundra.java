@@ -150,4 +150,16 @@ public class StringHelperTest {
         assertTrue(StringHelper.compare("ABZ", "a b c", false, true) < 0);
         assertTrue(StringHelper.compare("ABZ", "a b c", true, true) > 0);
     }
+
+    @Test
+    public void testTruncate() throws Exception {
+        assertEquals("abc", StringHelper.truncate("abc", 5, true));
+        assertEquals("abc", StringHelper.truncate("abc", 5, false));
+        assertEquals("a…", StringHelper.truncate("abc", 2, true));
+        assertEquals("ab", StringHelper.truncate("abc", 2, false));
+        assertEquals("", StringHelper.truncate("abc", 0, true));
+        assertEquals("", StringHelper.truncate("abc", 0, false));
+        assertEquals("…c", StringHelper.truncate("abc", -2, true));
+        assertEquals("bc", StringHelper.truncate("abc", -2, false));
+    }
 }

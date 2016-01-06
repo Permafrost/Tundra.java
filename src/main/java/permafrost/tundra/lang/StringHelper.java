@@ -254,6 +254,48 @@ public final class StringHelper {
     }
 
     /**
+     * Truncates the given string to the given length. If the string length is less than or equal to the desired
+     * length it is returned unmodified, otherwise it is truncated to length - 1 and suffixed with the ellipsis
+     * character.
+     *
+     * @param input     The string to be truncated.
+     * @param length    The length to truncate the string to.
+     * @return          The truncated string.
+     */
+    public static String truncate(String input, int length) {
+        return truncate(input, length, true);
+    }
+
+    /**
+     * Truncates the given string to the given length. If the string length is less than or equal to the desired
+     * length it is returned unmodified, otherwise it is truncated to the desired length.
+     *
+     * @param input     The string to be truncated.
+     * @param length    The length to truncate the string to.
+     * @param ellipsis  If true, the returned string is suffixed with an ellipsis character when truncated.
+     * @return          The truncated string.
+     */
+    public static String truncate(String input, int length, boolean ellipsis) {
+        if (input == null) return null;
+
+        if (input.length() > Math.abs(length)) {
+            if (ellipsis && length != 0) {
+                if (length > 0) {
+                    input = slice(input, 0, length - 1) + "…";
+                } else {
+                    input = "…" + slice(input, -1, length + 1);
+                }
+            } else if (length < 0){
+                input = slice(input, -1, length);
+            } else {
+                input = slice(input, 0, length);
+            }
+        }
+
+        return input;
+    }
+
+    /**
      * Converts a null input string to an empty string, or returns the string unmodified if not null.
      *
      * @param input    The string to be converted to an empty string if null.
