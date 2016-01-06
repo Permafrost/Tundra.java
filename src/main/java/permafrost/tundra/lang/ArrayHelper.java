@@ -388,20 +388,32 @@ public final class ArrayHelper {
     @SuppressWarnings("unchecked")
     public static Object[] flatten(Object[] array) {
         if (array == null || array.length == 0) return array;
+        return normalize(flatten(array, new ArrayList(array.length)));
+    }
 
-        ArrayList list = new ArrayList(array.length);
-
-        for (Object item : array) {
-            if (item != null && item.getClass().isArray()) {
-                item = flatten((Object[])item);
-                list.ensureCapacity(list.size() + ((Object[])item).length);
-                list.addAll(Arrays.asList((Object[])item));
-            } else {
-                list.add(item);
+    /**
+     * Performs a one-dimensional recursive flattening of the given array into the given list.
+     *
+     * @param array The array to be flattened.
+     * @param list  The list to add the flattened items to.
+     */
+    @SuppressWarnings("unchecked")
+    private static ArrayList flatten(Object[] array, ArrayList list) {
+        if (array != null) {
+            for (Object item : array) {
+                if (item instanceof Object[]) {
+                    int length = ((Object[])item).length;
+                    if (length > 0) {
+                        list.ensureCapacity(list.size() + length);
+                        flatten((Object[])item, list);
+                    }
+                } else {
+                    list.add(item);
+                }
             }
         }
 
-        return normalize(list);
+        return list;
     }
 
     /**

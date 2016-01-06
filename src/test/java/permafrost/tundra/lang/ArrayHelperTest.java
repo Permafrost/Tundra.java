@@ -231,4 +231,14 @@ public class ArrayHelperTest {
 
         assertArrayEquals(expected, actual);
     }
+
+    @Test
+    public void testFlatten() throws Exception {
+        String[][] array = new String[2][];
+
+        array[0] = new String[] { "a", "b", "c" };
+        array[1] = new String[] { "d", "e" };
+
+        assertArrayEquals(new String[] { "a", "b", "c", "d", "e" }, ArrayHelper.flatten(array));
+    }
 }
