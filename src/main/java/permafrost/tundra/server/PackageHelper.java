@@ -31,6 +31,7 @@ import com.wm.app.b2b.server.PackageState;
 import com.wm.app.b2b.server.PackageStore;
 import com.wm.app.b2b.server.ServerAPI;
 import com.wm.data.IData;
+import com.wm.lang.ns.NSService;
 import permafrost.tundra.data.IDataMap;
 import permafrost.tundra.io.FileHelper;
 import permafrost.tundra.lang.BooleanHelper;
@@ -71,14 +72,20 @@ public final class PackageHelper {
     }
 
     /**
-     * Returns the package with the given name if it exists on this Integration Server in an IData representation.
+     * Returns the invoking package.
      *
-     * @param packageName The name of the package.
-     * @return The IData representation of the package with the given name, or null if no package with the given name
-     * exists.
+     * @return The invoking package.
      */
-    public static IData getPackageAsIData(String packageName) {
-        return toIData(getPackage(packageName));
+    public static Package self() {
+        NSService service = ServiceHelper.self();
+
+        Package pkg = null;
+
+        if (service != null) {
+            pkg = getPackage(service.getPackage().getName());
+        }
+
+        return pkg;
     }
 
     /**
@@ -118,25 +125,6 @@ public final class PackageHelper {
         }
 
         return packageSet.toArray(new Package[packageSet.size()]);
-    }
-
-    /**
-     * Returns a list of packages on this Integration Server as an IData[].
-     *
-     * @return A list of packages on this Integration Server as an IData[].
-     */
-    public static IData[] listAsIDataArray() {
-        return listAsIDataArray(false);
-    }
-
-    /**
-     * Returns a list of packages on this Integration Server as an IData[].
-     *
-     * @param enabledOnly If true, only returns enabled packages.
-     * @return A list of packages on this Integration Server as an IData[].
-     */
-    public static IData[] listAsIDataArray(boolean enabledOnly) {
-        return toIDataArray(list(enabledOnly));
     }
 
     /**
