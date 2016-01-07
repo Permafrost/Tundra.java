@@ -24,12 +24,14 @@
 
 package permafrost.tundra.server;
 
+import com.wm.app.b2b.server.InvokeState;
 import com.wm.app.b2b.server.ServerAPI;
 import com.wm.app.b2b.server.Service;
 import com.wm.app.b2b.server.ServiceException;
 import com.wm.app.b2b.server.ServiceSetupException;
 import com.wm.data.IData;
 import com.wm.lang.ns.NSName;
+import com.wm.lang.ns.NSService;
 import com.wm.lang.ns.NSServiceType;
 import com.wm.net.HttpHeader;
 import permafrost.tundra.data.IDataMap;
@@ -43,6 +45,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.Map;
+import java.util.Stack;
 import javax.activation.MimeType;
 import javax.activation.MimeTypeParseException;
 
@@ -92,6 +95,20 @@ public final class ServiceHelper {
      */
     public static void create(String packageName, String serviceName) throws ServiceException {
         create(packageName, serviceName, null, null);
+    }
+
+    /**
+     * Returns the invoking service.
+     *
+     * @return The invoking service.
+     */
+    public static NSService self() {
+        NSService self = null;
+        Stack stack = InvokeState.getCurrentState().getCallStack();
+        if (stack.size() > 1) {
+            self = (NSService)stack.get(stack.size() - 2); // this will return this service's caller
+        }
+        return self;
     }
 
     /**
