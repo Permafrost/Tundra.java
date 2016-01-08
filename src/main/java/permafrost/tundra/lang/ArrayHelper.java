@@ -382,37 +382,61 @@ public final class ArrayHelper {
     /**
      * Returns a new array which is a one-dimensional recursive flattening of the given array.
      *
-     * @param array The array to be flattened.
-     * @return      A new array which is a one-dimensional recursive flattening of the given array.
+     * @param array         The array to be flattened.
+     * @return              A new array which is a one-dimensional recursive flattening of the given array.
      */
-    @SuppressWarnings("unchecked")
     public static Object[] flatten(Object[] array) {
-        if (array == null || array.length == 0) return array;
-        return normalize(flatten(array, new ArrayList(array.length)));
+        return flatten(array, true);
+    }
+
+    /**
+     * Returns a new array which is a one-dimensional recursive flattening of the given array.
+     *
+     * @param array         The array to be flattened.
+     * @param includeNulls  If true, null items in the given array will be included in the returned array.
+     * @return              A new array which is a one-dimensional recursive flattening of the given array.
+     */
+    public static Object[] flatten(Object[] array, boolean includeNulls) {
+        return normalize(flatten(array, new ArrayList<Object>(array.length), includeNulls));
     }
 
     /**
      * Performs a one-dimensional recursive flattening of the given array into the given list.
      *
-     * @param array The array to be flattened.
-     * @param list  The list to add the flattened items to.
+     * @param array         The array to be flattened.
+     * @param list          The list to add the flattened items to.
+     * @return              The given list with the added items from the given array. The list is mutated in place,
+     *                      and is only returned to allow method chaining.
      */
-    @SuppressWarnings("unchecked")
-    private static ArrayList flatten(Object[] array, ArrayList list) {
-        if (array != null) {
+    public static List<Object> flatten(Object[] array, List<Object> list) {
+        return flatten(array, list, true);
+    }
+
+    /**
+     * Performs a one-dimensional recursive flattening of the given array into the given list.
+     *
+     * @param array         The array to be flattened.
+     * @param list          The list to add the flattened items to.
+     * @param includeNulls  If true, null items in the given array will be added to the given list.
+     * @return              The given list with the added items from the given array. The list is mutated in place,
+     *                      and is only returned to allow method chaining.
+     */
+    public static List<Object> flatten(Object[] array, List<Object> list, boolean includeNulls) {
+        if (array != null && list != null) {
             for (Object item : array) {
                 if (item instanceof Object[]) {
                     int length = ((Object[])item).length;
                     if (length > 0) {
-                        list.ensureCapacity(list.size() + length);
-                        flatten((Object[])item, list);
+                        if (list instanceof ArrayList) {
+                            ((ArrayList)list).ensureCapacity(list.size() + length);
+                        }
+                        flatten((Object[])item, list, includeNulls);
                     }
-                } else {
+                } else if (includeNulls || item != null){
                     list.add(item);
                 }
             }
         }
-
         return list;
     }
 

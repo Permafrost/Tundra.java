@@ -1567,7 +1567,7 @@ public final class IDataHelper {
 
         IDataCursor cursor = document.getCursor();
         cursor.first();
-        while (cursor.delete()) ;
+        while (cursor.delete());
         cursor.destroy();
 
         if (keysToBePreserved != null) IDataUtil.merge(saved, document);
@@ -1577,22 +1577,38 @@ public final class IDataHelper {
      * Returns the value associated with the given key as a one-dimensional array; if the value is a
      * multi-dimensional array it is first flattened.
      *
-     * @param document  The IData document which contains the values to be flattened.
-     * @param key       The fully-qualified key identifying the values to be flattened.
-     * @return          A one-dimensional flattened array containing the values associated with the given key.
+     * @param document      The IData document which contains the values to be flattened.
+     * @param keys          One or more fully-qualified keys identifying the values to be flattened.
+     * @return              A one-dimensional flattened array containing the values associated with the given keys.
      */
-    public static Object[] flatten(IData document, String key) {
-        Object value = get(document, key);
+    public static Object[] flatten(IData document, String... keys) {
+        return flatten(document, true, keys);
+    }
 
-        Object[] array = null;
+    /**
+     * Returns the value associated with the given key as a one-dimensional array; if the value is a
+     * multi-dimensional array it is first flattened.
+     *
+     * @param document      The IData document which contains the values to be flattened.
+     * @param includeNulls  If true null values will be included in the returned array.
+     * @param keys          One or more fully-qualified keys identifying the values to be flattened.
+     * @return              A one-dimensional flattened array containing the values associated with the given keys.
+     */
+    public static Object[] flatten(IData document, boolean includeNulls, String... keys) {
+        if (document == null || keys == null) return null;
 
-        if (value instanceof Object[]) {
-            array = ArrayHelper.flatten((Object[])value);
-        } else if (value != null) {
-            array = ArrayHelper.normalize(new Object[] { value });
+        ArrayList<Object> list = new ArrayList<Object>();
+
+        for (String key : keys) {
+            Object value = get(document, key);
+            if (value instanceof Object[]) {
+                ArrayHelper.flatten((Object[])value, list, includeNulls);
+            } else if (includeNulls || value != null) {
+                list.add(value);
+            }
         }
 
-        return array;
+        return list.size() == 0 ? null : ArrayHelper.normalize(list);
     }
 
     /**
