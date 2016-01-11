@@ -1582,7 +1582,7 @@ public final class IDataHelper {
      * @return              A one-dimensional flattened array containing the values associated with the given keys.
      */
     public static Object[] flatten(IData document, String... keys) {
-        return flatten(document, true, keys);
+        return flatten(document, false, keys);
     }
 
     /**
