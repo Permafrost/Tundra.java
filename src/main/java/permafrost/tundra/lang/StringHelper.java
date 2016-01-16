@@ -263,7 +263,7 @@ public final class StringHelper {
      * @return          The truncated string.
      */
     public static String truncate(String input, int length) {
-        return truncate(input, length, true);
+        return truncate(input, length, false);
     }
 
     /**
