@@ -379,9 +379,9 @@ public final class DirectoryHelper {
 
         for (File child : children) {
             if (FileHelper.exists(child)) {
-                totalSize.add(BigInteger.valueOf(child.length()));
+                totalSize = totalSize.add(BigInteger.valueOf(child.length()));
             } else if (recurse && exists(child)) {
-                totalSize.add(size(child, recurse));
+                totalSize = totalSize.add(size(child, recurse));
             }
         }
 
