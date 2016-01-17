@@ -268,28 +268,42 @@ public final class DirectoryHelper {
         return purge(FileHelper.construct(directory), olderThan, recurse);
     }
 
+
     /**
-     * Creates a new path given a parent directory and child item.
+     * Creates a new path given a parent directory and children.
      *
      * @param  parent   The parent directory.
-     * @param  child    The child item.
+     * @param  children The child path items.
      * @return          A new path
      */
-    public static File join(File parent, String child) {
-        if (parent == null) return null;
-        if (child == null) return parent;
-        return new File(parent, child);
+    public static File join(File parent, String... children) {
+        File path = null;
+
+        if (parent != null || (children != null && children.length > 0)) {
+            if (parent != null) path = parent;
+
+            if (children != null) {
+                for (String child : children) {
+                    if (path == null) {
+                        path = new File(child);
+                    } else {
+                        path = new File(path, child);
+                    }
+                }
+            }
+        }
+
+        return path;
     }
 
     /**
-     * Creates a new path given a parent directory and child item.
+     * Creates a new path given a list of path items.
      *
-     * @param  parent   The parent directory.
-     * @param  child    The child item.
+     * @param  path     The path items.
      * @return          A new path
      */
-    public static String join(String parent, String child) {
-        return FileHelper.normalize(join(FileHelper.construct(parent), child));
+    public static String join(String... path) {
+        return FileHelper.normalize(join(null, path));
     }
 
     /**
