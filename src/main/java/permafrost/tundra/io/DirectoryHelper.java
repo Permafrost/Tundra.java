@@ -30,6 +30,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 import javax.xml.datatype.Duration;
 
@@ -416,20 +417,20 @@ public final class DirectoryHelper {
         BigInteger totalSize = size(directory, recurse);
 
         if (allowedSize != null && totalSize.compareTo(allowedSize) > 0) {
-            BigInteger requiredReductionSize = allowedSize.subtract(totalSize);
+            BigInteger requiredReductionSize = totalSize.subtract(allowedSize);
 
             DirectoryLister directoryLister = new DirectoryLister(directory, recurse);
             DirectoryListing directoryListing = directoryLister.list();
             List<File> files = directoryListing.listFiles();
 
-            files.sort(new FileModificationComparator(true));
+            Collections.sort(files, new FileModificationComparator(true));
 
             BigInteger totalReductionSize = BigInteger.ZERO;
 
             for (File file : files) {
                 if (FileHelper.exists(file)) {
                     long fileSize = file.length();
-                    if (file.delete()) totalReductionSize.add(BigInteger.valueOf(fileSize));
+                    if (file.delete()) totalReductionSize = totalReductionSize.add(BigInteger.valueOf(fileSize));
                 }
 
                 if (totalReductionSize.compareTo(requiredReductionSize) > 0) {
