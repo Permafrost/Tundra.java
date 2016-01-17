@@ -28,6 +28,7 @@ import permafrost.tundra.time.DateTimeHelper;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.Calendar;
 import javax.xml.datatype.Duration;
 
@@ -345,5 +346,44 @@ public final class DirectoryHelper {
                 }
             }
         }
+    }
+
+    /**
+     * Returns the total size in bytes of all files in the given directory.
+     *
+     * @param directory     The directory to calculate the size of.
+     * @param recurse       If true, will recursively calculate the size of the entire directory tree including all
+     *                      child directories.
+     * @return              The total size in bytes of all files in the given directory.
+     * @throws IOException  If the given directory does not exist or is a file.
+     */
+    public static BigInteger size(String directory, boolean recurse) throws IOException {
+        return size(FileHelper.construct(directory), recurse);
+    }
+
+    /**
+     * Returns the total size in bytes of all files in the given directory.
+     *
+     * @param directory     The directory to calculate the size of.
+     * @param recurse       If true, will recursively calculate the size of the entire directory tree including all
+     *                      child directories.
+     * @return              The total size in bytes of all files in the given directory.
+     * @throws IOException  If the given directory does not exist or is a file.
+     */
+    public static BigInteger size(File directory, boolean recurse) throws IOException {
+        if (!exists(directory)) throw new FileNotFoundException("Unable to calculate size of directory as it does not exist: " + FileHelper.normalize(directory));
+
+        BigInteger totalSize = BigInteger.ZERO;
+        File[] children = directory.listFiles();
+
+        for (File child : children) {
+            if (FileHelper.exists(child)) {
+                totalSize.add(BigInteger.valueOf(child.length()));
+            } else if (recurse && exists(child)) {
+                totalSize.add(size(child, recurse));
+            }
+        }
+
+        return totalSize;
     }
 }
