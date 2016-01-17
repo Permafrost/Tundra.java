@@ -30,6 +30,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Calendar;
+import java.util.List;
 import javax.xml.datatype.Duration;
 
 /**
@@ -385,5 +386,56 @@ public final class DirectoryHelper {
         }
 
         return totalSize;
+    }
+
+    /**
+     * Reduces the size in bytes of a directory to an allowable size by deleting the least recently used
+     * files.
+     *
+     * @param directory     The directory to be squeezed.
+     * @param allowedSize   The allowable size of the directory in bytes.
+     * @param recurse       If true, child directories will be included in the total size and their files
+     *                      may be deleted when reducing the total size of the parent.
+     * @throws IOException  If the given directory does not exist or is not a file.
+     */
+    public static void squeeze(String directory, BigInteger allowedSize, boolean recurse) throws IOException {
+        squeeze(FileHelper.construct(directory), allowedSize, recurse);
+    }
+
+    /**
+     * Reduces the size in bytes of a directory to an allowable size by deleting the least recently used
+     * files.
+     *
+     * @param directory     The directory to be squeezed.
+     * @param allowedSize   The allowable size of the directory in bytes.
+     * @param recurse       If true, child directories will be included in the total size and their files
+     *                      may be deleted when reducing the total size of the parent.
+     * @throws IOException  If the given directory does not exist or is not a file.
+     */
+    public static void squeeze(File directory, BigInteger allowedSize, boolean recurse) throws IOException {
+        BigInteger totalSize = size(directory, recurse);
+
+        if (allowedSize != null && totalSize.compareTo(allowedSize) > 0) {
+            BigInteger requiredReductionSize = allowedSize.subtract(totalSize);
+
+            DirectoryLister directoryLister = new DirectoryLister(directory, recurse);
+            DirectoryListing directoryListing = directoryLister.list();
+            List<File> files = directoryListing.listFiles();
+
+            files.sort(new FileModificationComparator(true));
+
+            BigInteger totalReductionSize = BigInteger.ZERO;
+
+            for (File file : files) {
+                if (FileHelper.exists(file)) {
+                    long fileSize = file.length();
+                    if (file.delete()) totalReductionSize.add(BigInteger.valueOf(fileSize));
+                }
+
+                if (totalReductionSize.compareTo(requiredReductionSize) > 0) {
+                    break;
+                }
+            }
+        }
     }
 }
