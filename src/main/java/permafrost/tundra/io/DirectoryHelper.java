@@ -277,7 +277,7 @@ public final class DirectoryHelper {
      *
      * @param  parent   The parent directory.
      * @param  children The child path items.
-     * @return          A new path
+     * @return          A new path.
      */
     public static File join(File parent, String... children) {
         File path = null;
@@ -288,7 +288,7 @@ public final class DirectoryHelper {
             if (children != null) {
                 for (String child : children) {
                     if (path == null) {
-                        path = new File(child);
+                        path = FileHelper.construct(child);
                     } else {
                         path = new File(path, child);
                     }
@@ -303,7 +303,7 @@ public final class DirectoryHelper {
      * Creates a new path given a list of path items.
      *
      * @param  path     The path items.
-     * @return          A new path
+     * @return          A new path.
      */
     public static String join(String... path) {
         return FileHelper.normalize(join(null, path));
