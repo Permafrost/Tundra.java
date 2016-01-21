@@ -97,7 +97,7 @@ public class ArraySplitter<T> {
      * @return The head of the array.
      */
     public T[] getHead() {
-        return Arrays.copyOfRange(array, 0, count);
+        return Arrays.copyOf(array, count);
     }
 
     /**
