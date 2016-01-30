@@ -125,4 +125,18 @@ public class ListHelper {
         if (list == null) return null;
         return list.toArray(ArrayHelper.instantiate(klass, list.size()));
     }
+
+    /**
+     * Converts the given array to a list.
+     *
+     * @param array The array to be converted.
+     * @param klass The component type of the list and resulting array.
+     * @param <E>   The component type of the array and resulting list.
+     * @return      A list representation of the given array.
+     */
+    public static <E> List<E> listify(E[] array, Class<E> klass) {
+        if (array == null) return null;
+        List<E> list = create(array.length);
+        return append(list, array);
+    }
 }
