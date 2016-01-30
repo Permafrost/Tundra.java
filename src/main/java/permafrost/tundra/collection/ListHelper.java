@@ -32,7 +32,7 @@ import java.util.List;
  * A collection of convenience methods for working with java.util.List objects.
  */
 public class ListHelper {
-    public static int DEFAULT_LIST_CAPACITY = 10;
+    public static int DEFAULT_LIST_CAPACITY = 64;
 
     /**
      * Disallow instantiation of this class.
@@ -85,11 +85,9 @@ public class ListHelper {
      */
     private static <E> int calculateMinimumCapacity(List<E> list, E ... items) {
         int minCapacity = 0;
-        if (list != null) minCapacity = list.size();
-        if (items != null) {
-            minCapacity = minCapacity + items.length;
+        if (items != null && list != null) {
+            minCapacity = list.size() + items.length;
         }
-
         return minCapacity;
     }
 
