@@ -33,11 +33,11 @@ import java.sql.SQLException;
 /**
  * A collection of methods for working with Integration Server user scheduled tasks.
  */
-public class ScheduleHelper {
+public class SchedulerHelper {
     /**
      * Disallow instantiation of this class.
      */
-    private ScheduleHelper() {}
+    private SchedulerHelper() {}
 
     /**
      * Starts the Integration Server user task scheduler.
