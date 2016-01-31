@@ -244,10 +244,27 @@ public final class IDataHelper {
      * @return The list of flattened values.
      */
     private static List<Object> getLeafValues(List<Object> values, Object value, Class... classes) {
+        boolean recurse = true;
+
+        // if one of the requested classes is an IData compatible class, then we can't recurse IData documents
+        if (classes != null && classes.length > 0) {
+            for (Class klass : classes) {
+                if (klass != null && (klass == IData.class || klass == IDataCodable.class || klass == IDataPortable.class || klass == ValuesCodable.class)) {
+                    recurse = false;
+                    break;
+                }
+            }
+        }
+
         if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
             values = getLeafValues(values, toIDataArray(value), classes);
         } else if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
-            values = getLeafValues(values, toIData(value), classes);
+            value = toIData(value);
+            if (recurse) {
+                values = getLeafValues(values, toIData(value), classes);
+            } else {
+                values.add(value);
+            }
         } else if (value instanceof Object[][]) {
             values = getLeafValues(values, (Object[][])value, classes);
         } else if (value instanceof Object[]) {
