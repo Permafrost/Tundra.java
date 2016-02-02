@@ -172,7 +172,30 @@ public final class IDataHelper {
     }
 
     /**
-     * Returns all leaf values that are instances of the given classes from the given IData.
+     * Determine if IData leaves/children should be recursed.
+     *
+     * @param classes The list of classes the leaves are required to be instances of.
+     * @return        True if IData leaves should be recursed.
+     */
+    private static boolean recurseIDataLeaves(Class ... classes) {
+        boolean recurse = true;
+
+        // if one of the requested classes is an IData compatible class, then we shouldn't recurse IData documents
+        if (classes != null && classes.length > 0) {
+            for (Class klass : classes) {
+                if (klass != null && (klass == IData.class || klass == IDataCodable.class || klass == IDataPortable.class || klass == ValuesCodable.class)) {
+                    recurse = false;
+                    break;
+                }
+            }
+        }
+
+        return recurse;
+    }
+
+
+    /**
+     * Returns all leaf values that are instances of the given classes from the given top-level IData.
      *
      * @param values  The list to add the flattened values to.
      * @param value   The IData to getLeafValues.
@@ -180,8 +203,21 @@ public final class IDataHelper {
      * @return The list of flattened values.
      */
     private static List<Object> getLeafValues(List<Object> values, IData value, Class... classes) {
+        return getLeafValues(values, value, recurseIDataLeaves(classes), classes);
+    }
+
+    /**
+     * Returns all leaf values that are instances of the given classes from the given IData.
+     *
+     * @param values  The list to add the flattened values to.
+     * @param value   The IData to getLeafValues.
+     * @param recurse If true, all IData objects will be recursed to construct the list of leaf values.
+     * @param classes List of classes the returned values must be instances of.
+     * @return The list of flattened values.
+     */
+    private static List<Object> getLeafValues(List<Object> values, IData value, boolean recurse, Class... classes) {
         for (Map.Entry<String, Object> entry : IDataMap.of(value)) {
-            values = getLeafValues(values, entry.getValue(), classes);
+            values = getLeafValues(values, entry.getValue(), recurse, classes);
         }
 
         return values;
@@ -192,12 +228,26 @@ public final class IDataHelper {
      *
      * @param values  The list to add the flattened values to.
      * @param value   The IData[] to getLeafValues.
+     * @param recurse If true, all IData objects will be recursed to construct the list of leaf values.
      * @param classes List of classes the returned values must be instances of.
      * @return The list of flattened values.
      */
     private static List<Object> getLeafValues(List<Object> values, IData[] value, Class... classes) {
+        return getLeafValues(values, value, recurseIDataLeaves(classes), classes);
+    }
+
+    /**
+     * Returns all leaf values that are instances of the given classes from the given IData[].
+     *
+     * @param values  The list to add the flattened values to.
+     * @param value   The IData[] to getLeafValues.
+     * @param recurse If true, all IData objects will be recursed to construct the list of leaf values.
+     * @param classes List of classes the returned values must be instances of.
+     * @return The list of flattened values.
+     */
+    private static List<Object> getLeafValues(List<Object> values, IData[] value, boolean recurse, Class... classes) {
         for (IData item : value) {
-            values = getLeafValues(values, item, classes);
+            values = getLeafValues(values, item, recurse, classes);
         }
 
         return values;
@@ -208,12 +258,13 @@ public final class IDataHelper {
      *
      * @param values  The list to add the flattened values to.
      * @param value   The Object[][] to getLeafValues.
+     * @param recurse If true, all IData objects will be recursed to construct the list of leaf values.
      * @param classes List of classes the returned values must be instances of.
      * @return The list of flattened values.
      */
-    private static List<Object> getLeafValues(List<Object> values, Object[][] value, Class... classes) {
+    private static List<Object> getLeafValues(List<Object> values, Object[][] value, boolean recurse, Class... classes) {
         for (Object[] array : value) {
-            values = getLeafValues(values, array, classes);
+            values = getLeafValues(values, array, recurse, classes);
         }
 
         return values;
@@ -224,12 +275,13 @@ public final class IDataHelper {
      *
      * @param values  The list to add the flattened values to.
      * @param value   The Object[] to getLeafValues.
+     * @param recurse If true, all IData objects will be recursed to construct the list of leaf values.
      * @param classes List of classes the returned values must be instances of.
      * @return The list of flattened values.
      */
-    private static List<Object> getLeafValues(List<Object> values, Object[] value, Class... classes) {
+    private static List<Object> getLeafValues(List<Object> values, Object[] value, boolean recurse, Class... classes) {
         for (Object item : value) {
-            values = getLeafValues(values, item, classes);
+            values = getLeafValues(values, item, recurse, classes);
         }
 
         return values;
@@ -240,35 +292,24 @@ public final class IDataHelper {
      *
      * @param values  The list to add the flattened values to.
      * @param value   The Object to getLeafValues.
+     * @param recurse If true, all IData objects will be recursed to construct the list of leaf values.
      * @param classes List of classes the returned values must be instances of.
      * @return The list of flattened values.
      */
-    private static List<Object> getLeafValues(List<Object> values, Object value, Class... classes) {
-        boolean recurse = true;
-
-        // if one of the requested classes is an IData compatible class, then we can't recurse IData documents
-        if (classes != null && classes.length > 0) {
-            for (Class klass : classes) {
-                if (klass != null && (klass == IData.class || klass == IDataCodable.class || klass == IDataPortable.class || klass == ValuesCodable.class)) {
-                    recurse = false;
-                    break;
-                }
-            }
-        }
-
+    private static List<Object> getLeafValues(List<Object> values, Object value, boolean recurse, Class... classes) {
         if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
-            values = getLeafValues(values, toIDataArray(value), classes);
+            values = getLeafValues(values, toIDataArray(value), recurse, classes);
         } else if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
             value = toIData(value);
             if (recurse) {
-                values = getLeafValues(values, toIData(value), classes);
+                values = getLeafValues(values, toIData(value), recurse, classes);
             } else {
                 values.add(value);
             }
         } else if (value instanceof Object[][]) {
-            values = getLeafValues(values, (Object[][])value, classes);
+            values = getLeafValues(values, (Object[][])value, recurse, classes);
         } else if (value instanceof Object[]) {
-            values = getLeafValues(values, (Object[])value, classes);
+            values = getLeafValues(values, (Object[])value, recurse, classes);
         } else {
             if (classes == null || classes.length == 0) {
                 values.add(value);
