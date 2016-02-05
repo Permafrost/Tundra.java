@@ -48,7 +48,20 @@ public class ListHelper {
      * @return              The given list.
      */
     public static <E> List<E> append(List<E> list, E ... items) {
-        return append(list, calculateMinimumCapacity(list, items), items);
+        return append(list, false, items);
+    }
+
+    /**
+     * Appends the given items to the given list.
+     *
+     * @param list          The list to append the items to.
+     * @param includeNulls  If true, null values will be appended, otherwise they will not.
+     * @param items         The items to be added to the list.
+     * @param <E>           The component type of the list.
+     * @return              The given list.
+     */
+    public static <E> List<E> append(List<E> list, boolean includeNulls, E ... items) {
+        return append(list, calculateMinimumCapacity(list, items), includeNulls, items);
     }
 
     /**
@@ -61,17 +74,21 @@ public class ListHelper {
      * @return              The given list.
      */
     public static <E> List<E> append(List<E> list, int minCapacity, E ... items) {
-        if (list == null) {
-            list = create(minCapacity);
-        } else if (list instanceof ArrayList) {
-            ((ArrayList)list).ensureCapacity(minCapacity);
-        }
-        if (items != null) {
-            for (E item : items) {
-                if (item != null) list.add(item);
-            }
-        }
+        return append(list, minCapacity, false, items);
+    }
 
+    /**
+     * Appends the given items to the given list.
+     *
+     * @param list          The list to append the items to.
+     * @param minCapacity   The minimum capacity the list should have before adding the items.
+     * @param includeNulls  If true, null values will be appended, otherwise they will not.
+     * @param items         The items to be added to the list.
+     * @param <E>           The component type of the list.
+     * @return              The given list.
+     */
+    public static <E> List<E> append(List<E> list, int minCapacity, boolean includeNulls, E ... items) {
+        CollectionHelper.append(createOrGrow(list, minCapacity), includeNulls, items);
         return list;
     }
 
@@ -84,9 +101,28 @@ public class ListHelper {
      * @return      The minimum capacity required of the given list to hold the given items.
      */
     private static <E> int calculateMinimumCapacity(List<E> list, E ... items) {
+        return calculateMinimumCapacity(list, 0, items);
+    }
+
+    /**
+     * Returns the minimum capacity required of a list to hold the given items.
+     *
+     * @param list  The list whose minimum capacity is to be calculated.
+     * @param items The items to be added to the list.
+     * @param <E>   The component type of the list.
+     * @return      The minimum capacity required of the given list to hold the given items.
+     */
+    private static <E> int calculateMinimumCapacity(List<E> list, int index, E ... items) {
         int minCapacity = 0;
         if (items != null && list != null) {
-            minCapacity = list.size() + items.length;
+            // support reverse/tail indexing
+            if (index < 0) index += list.size();
+
+            if (index > list.size()) {
+                minCapacity = index + items.length;
+            } else {
+                minCapacity = list.size() + items.length;
+            }
         }
         return minCapacity;
     }
@@ -111,6 +147,159 @@ public class ListHelper {
     public static <E> List<E> create(int initialCapacity) {
         if (initialCapacity < DEFAULT_LIST_CAPACITY) initialCapacity = DEFAULT_LIST_CAPACITY;
         return new ArrayList<E>(initialCapacity);
+    }
+
+    /**
+     * Grows the given list to the given capacity, or creates a new list if the given list is null.
+     *
+     * @param list          The list to be grown, or null.
+     * @param minCapacity   The capacity to grow the list to.
+     * @param <E>           The component type of the list.
+     * @return              Either the given list grown to the given capacity, or a new list.
+     */
+    private static <E> List<E> createOrGrow(List<E> list, int minCapacity) {
+        if (list == null) {
+            list = create(minCapacity);
+        } else if (list instanceof ArrayList) {
+            ((ArrayList)list).ensureCapacity(minCapacity);
+        }
+        return list;
+    }
+
+    /**
+     * Prepends the given items to the front of the given list, shifting the existing items if any to the right.
+     *
+     * @param list          The list to insert the items into.
+     * @param items         The items to be added to the list.
+     * @param <E>           The component type of the list.
+     * @return              The given list.
+     */
+    public static <E> List<E> prepend(List<E> list, E ...items) {
+        return prepend(list, false, items);
+    }
+
+    /**
+     * Prepends the given items to the front of the given list, shifting the existing items if any to the right.
+     *
+     * @param list          The list to insert the items into.
+     * @param includeNulls  If true, null values will be appended, otherwise they will not.
+     * @param items         The items to be added to the list.
+     * @param <E>           The component type of the list.
+     * @return              The given list.
+     */
+    public static <E> List<E> prepend(List<E> list, boolean includeNulls, E ...items) {
+        return prepend(list, calculateMinimumCapacity(list, items), includeNulls, items);
+    }
+
+    /**
+     * Prepends the given items to the front of the given list, shifting the existing items if any to the right.
+     *
+     * @param list          The list to insert the items into.
+     * @param minCapacity   The minimum capacity the list should have before adding the items.
+     * @param items         The items to be added to the list.
+     * @param <E>           The component type of the list.
+     * @return              The given list.
+     */
+    public static <E> List<E> prepend(List<E> list, int minCapacity, E ...items) {
+        return prepend(list, minCapacity, false, items);
+    }
+
+    /**
+     * Prepends the given items to the front of the given list, shifting the existing items if any to the right.
+     *
+     * @param list          The list to insert the items into.
+     * @param minCapacity   The minimum capacity the list should have before adding the items.
+     * @param includeNulls  If true, null values will be appended, otherwise they will not.
+     * @param items         The items to be added to the list.
+     * @param <E>           The component type of the list.
+     * @return              The given list.
+     */
+    public static <E> List<E> prepend(List<E> list, int minCapacity, boolean includeNulls, E ...items) {
+        return insert(list, minCapacity, includeNulls, 0, items);
+    }
+
+    /**
+     * Inserts the given items at the given index, shifting the existing items if any to the right.
+     *
+     * @param list          The list to insert the items into.
+     * @param index         The index at which the items will be inserted.
+     * @param items         The items to be added to the list.
+     * @param <E>           The component type of the list.
+     * @return              The given list.
+     */
+    public static <E> List<E> insert(List<E> list, int index, E ...items) {
+        return insert(list, false, index, items);
+    }
+
+    /**
+     * Inserts the given items at the given index, shifting the existing items if any to the right.
+     *
+     * @param list          The list to insert the items into.
+     * @param includeNulls  If true, null values will be appended, otherwise they will not.
+     * @param index         The index at which the items will be inserted.
+     * @param items         The items to be added to the list.
+     * @param <E>           The component type of the list.
+     * @return              The given list.
+     */
+    public static <E> List<E> insert(List<E> list, boolean includeNulls, int index, E ...items) {
+        return insert(list, calculateMinimumCapacity(list, index, items), includeNulls, index, items);
+    }
+
+    /**
+     * Inserts the given items at the given index, shifting the existing items if any to the right.
+     *
+     * @param list          The list to insert the items into.
+     * @param minCapacity   The minimum capacity the list should have before adding the items.
+     * @param index         The index at which the items will be inserted.
+     * @param items         The items to be added to the list.
+     * @param <E>           The component type of the list.
+     * @return              The given list.
+     */
+    public static <E> List<E> insert(List<E> list, int minCapacity, int index, E ...items) {
+        return insert(list, minCapacity, false, index, items);
+    }
+
+    /**
+     * Inserts the given items at the given index, shifting the existing items if any to the right.
+     *
+     * @param list          The list to insert the items into.
+     * @param minCapacity   The minimum capacity the list should have before adding the items.
+     * @param includeNulls  If true, null values will be appended, otherwise they will not.
+     * @param index         The index at which the items will be inserted.
+     * @param items         The items to be added to the list.
+     * @param <E>           The component type of the list.
+     * @return              The given list.
+     */
+    public static <E> List<E> insert(List<E> list, int minCapacity, boolean includeNulls, int index, E ...items) {
+        list = createOrGrow(list, minCapacity);
+
+        if (items != null) {
+            // support reverse/tail indexing
+            if (index < 0) index += list.size() + 1;
+
+            int capacity;
+            if (index < 0) {
+                capacity = (index * -1) + list.size() + items.length;
+                index = 0;
+            } else {
+                capacity = index;
+            }
+
+            if (capacity >= list.size()) {
+                // fill the list with nulls if it needs to be extended
+                for (int i = list.size(); i < capacity; i++) {
+                    list.add(i, null);
+                }
+            }
+
+            for (E item : items) {
+                if (includeNulls || item != null) {
+                    list.add(index++, item);
+                }
+            }
+        }
+
+        return list;
     }
 
     /**
