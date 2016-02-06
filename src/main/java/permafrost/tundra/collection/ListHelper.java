@@ -130,6 +130,24 @@ public class ListHelper {
     }
 
     /**
+     * Removes all items from the given list, or returns a new list if the given list is null.
+     *
+     * @param list  The list to be cleared.
+     * @param klass The component type of the list and resulting array.
+     * @param <E>   The component type of the list.
+     * @return      The cleared list.
+     */
+    public static <E> List<E> clear(List<E> list, Class<E> klass) {
+        if (list == null) {
+            list = create();
+        } else {
+            CollectionHelper.clear(list);
+        }
+
+        return list;
+    }
+
+    /**
      * Creates a new list.
      *
      * @param <E>             The component type of the list.
