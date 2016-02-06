@@ -24,7 +24,6 @@
 
 package permafrost.tundra.collection;
 
-import permafrost.tundra.lang.ArrayHelper;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -116,7 +115,9 @@ public class ListHelper {
         int minCapacity = 0;
         if (items != null && list != null) {
             // support reverse/tail indexing
-            if (index < 0) index += list.size();
+            if (index < 0) {
+                index = Math.abs(index) - 1;
+            }
 
             if (index > list.size()) {
                 minCapacity = index + items.length;
@@ -277,18 +278,19 @@ public class ListHelper {
             // support reverse/tail indexing
             if (index < 0) index += list.size() + 1;
 
-            int capacity;
+            int capacity, fillIndex;
             if (index < 0) {
-                capacity = (index * -1) + list.size() + items.length;
-                index = 0;
+                capacity = Math.abs(index) + list.size() + items.length - 1;
+                index = fillIndex = 0;
             } else {
                 capacity = index;
+                fillIndex = list.size();
             }
 
-            if (capacity >= list.size()) {
+            if (capacity > list.size()) {
                 // fill the list with nulls if it needs to be extended
                 for (int i = list.size(); i < capacity; i++) {
-                    list.add(i, null);
+                    list.add(fillIndex, null);
                 }
             }
 
@@ -300,19 +302,6 @@ public class ListHelper {
         }
 
         return list;
-    }
-
-    /**
-     * Converts the given list to an array.
-     *
-     * @param list  The list to be converted.
-     * @param klass The component type of the list and resulting array.
-     * @param <E>   The component type of the list and resulting array.
-     * @return      An array representation of the given list.
-     */
-    public static <E> E[] arrayify(List<E> list, Class<E> klass) {
-        if (list == null) return null;
-        return list.toArray(ArrayHelper.instantiate(klass, list.size()));
     }
 
     /**

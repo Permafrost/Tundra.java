@@ -100,7 +100,6 @@ public class ListHelperTest {
         List<String> list = new ArrayList<String>();
         list.add("a");
 
-
         ListHelper.insert(list, 4, "b");
 
         assertEquals(5, list.size());
@@ -116,11 +115,34 @@ public class ListHelperTest {
         List<String> list = new ArrayList<String>();
         ListHelper.insert(list, -4, "a");
 
-        assertEquals(5, list.size());
+        assertEquals(4, list.size());
         assertEquals("a", list.get(0));
         assertEquals(null, list.get(1));
         assertEquals(null, list.get(2));
         assertEquals(null, list.get(3));
-        assertEquals(null, list.get(4));
+    }
+
+    @Test
+    public void testInsertToEmptyListWithReverseIndexMinusOne() throws Exception {
+        List<String> list = new ArrayList<String>();
+
+        ListHelper.insert(list, -1, "a");
+
+        assertEquals(1, list.size());
+        assertEquals("a", list.get(0));
+    }
+
+    @Test
+    public void testInsertToListWithOutOfRangeMinusIndex() throws Exception {
+        List<String> list = new ArrayList<String>();
+        list.add("a");
+
+        ListHelper.insert(list, -4, "b");
+
+        assertEquals(4, list.size());
+        assertEquals("b", list.get(0));
+        assertEquals(null, list.get(1));
+        assertEquals(null, list.get(2));
+        assertEquals("a", list.get(3));
     }
 }
