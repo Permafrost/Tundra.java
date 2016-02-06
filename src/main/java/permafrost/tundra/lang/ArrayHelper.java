@@ -528,20 +528,21 @@ public final class ArrayHelper {
 
         ArrayList<T> list = new ArrayList<T>(Arrays.asList(array));
 
-        int capacity;
+        int capacity, fillIndex;
         if (index < 0) index += list.size() + 1;
         if (index < 0) {
             capacity = (index * -1) + list.size();
-            index = 0;
+            index = fillIndex = 0;
         } else {
             capacity = index;
+            fillIndex = list.size();
         }
 
         list.ensureCapacity(capacity);
-        if (capacity >= list.size()) {
+        if (capacity > list.size()) {
             // fill the list with nulls if it needs to be extended
             for (int i = list.size(); i < capacity; i++) {
-                list.add(i, null);
+                list.add(fillIndex, null);
             }
         }
         list.add(index, item);

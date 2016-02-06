@@ -241,4 +241,49 @@ public class ArrayHelperTest {
 
         assertArrayEquals(new String[] { "a", "b", "c", "d", "e" }, ArrayHelper.flatten(array));
     }
+
+    @Test
+    public void testInsertNullArray() throws Exception {
+        assertArrayEquals(new String[] { "a" }, ArrayHelper.insert(null, "a", 0, String.class));
+    }
+
+    @Test
+    public void testInsertAtZero() throws Exception {
+        assertArrayEquals(new String[] { "c", "a", "b" }, ArrayHelper.insert(new String[] { "a", "b" }, "c", 0, String.class));
+    }
+
+    @Test
+    public void testInsertAtOne() throws Exception {
+        assertArrayEquals(new String[] { "a", "c", "b" }, ArrayHelper.insert(new String[] { "a", "b" }, "c", 1, String.class));
+    }
+
+    @Test
+    public void testInsertAtTwo() throws Exception {
+        assertArrayEquals(new String[] { "a", "b", "c" }, ArrayHelper.insert(new String[] { "a", "b" }, "c", 2, String.class));
+    }
+
+    @Test
+    public void testInsertAtFour() throws Exception {
+        assertArrayEquals(new String[] { "a", "b", null, null, "c" }, ArrayHelper.insert(new String[] { "a", "b" }, "c", 4, String.class));
+    }
+
+    @Test
+    public void testInsertAtMinusOne() throws Exception {
+        assertArrayEquals(new String[] { "a", "b", "c" }, ArrayHelper.insert(new String[] { "a", "b" }, "c", -1, String.class));
+    }
+
+    @Test
+    public void testInsertAtMinusTwo() throws Exception {
+        assertArrayEquals(new String[] { "a", "c", "b" }, ArrayHelper.insert(new String[] { "a", "b" }, "c", -2, String.class));
+    }
+
+    @Test
+    public void testInsertAtMinusThree() throws Exception {
+        assertArrayEquals(new String[] { "c", "a", "b" }, ArrayHelper.insert(new String[] { "a", "b" }, "c", -3, String.class));
+    }
+
+    @Test
+    public void testInsertAtMinusFour() throws Exception {
+        assertArrayEquals(new String[] { "c", null, "a", "b" }, ArrayHelper.insert(new String[] { "a", "b" }, "c", -4, String.class));
+    }
 }
