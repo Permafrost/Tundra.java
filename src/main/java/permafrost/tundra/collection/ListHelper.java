@@ -86,8 +86,9 @@ public class ListHelper {
      * @param <E>           The component type of the list.
      * @return              The given list.
      */
+    @SuppressWarnings("unchecked")
     public static <E> List<E> append(List<E> list, int minCapacity, boolean includeNulls, E ... items) {
-        CollectionHelper.append(createOrGrow(list, minCapacity), includeNulls, items);
+        list = (List)CollectionHelper.append(createOrGrow(list, minCapacity), includeNulls, items);
         return list;
     }
 
