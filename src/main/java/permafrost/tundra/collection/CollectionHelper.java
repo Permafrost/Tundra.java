@@ -24,7 +24,9 @@
 
 package permafrost.tundra.collection;
 
+import permafrost.tundra.lang.ArrayHelper;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * A collection of convenience methods for working with java.util.Collection objects.
@@ -75,5 +77,32 @@ public class CollectionHelper {
         }
 
         return collection;
+    }
+
+    /**
+     * Removes all elements from the given collection.
+     *
+     * @param collection    The collection to be cleared.
+     * @param <E>           The component type of the collection.
+     * @return              The cleared collection.
+     */
+    public static <E> Collection<E> clear(Collection<E> collection) {
+        if (collection != null) {
+            collection.clear();
+        }
+        return collection;
+    }
+
+    /**
+     * Converts the given collection to an array.
+     *
+     * @param collection    The collection to be converted.
+     * @param klass         The component type of the collection and resulting array.
+     * @param <E>           The component type of the collection and resulting array.
+     * @return              An array representation of the given collection.
+     */
+    public static <E> E[] arrayify(Collection<E> collection, Class<E> klass) {
+        if (collection == null) return null;
+        return collection.toArray(ArrayHelper.instantiate(klass, collection.size()));
     }
 }
