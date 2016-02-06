@@ -531,7 +531,7 @@ public final class ArrayHelper {
         int capacity, fillIndex;
         if (index < 0) index += list.size() + 1;
         if (index < 0) {
-            capacity = (index * -1) + list.size();
+            capacity = Math.abs(index) + list.size();
             index = fillIndex = 0;
         } else {
             capacity = index;
