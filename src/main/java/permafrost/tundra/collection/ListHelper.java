@@ -26,6 +26,8 @@ package permafrost.tundra.collection;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * A collection of convenience methods for working with java.util.List objects.
@@ -449,5 +451,68 @@ public class ListHelper {
         }
 
         return reverseList;
+    }
+
+    /**
+     * Returns a set intersection of the given lists.
+     *
+     * @param lists The lists to find the set intersection of.
+     * @param <E>   The component type of the lists.
+     * @return      The set intersection of the given lists.
+     */
+    public static <E> List<E> intersect(List<E> ... lists) {
+        List<E> results = create();
+
+        boolean seeded = false;
+
+        for (List<E> list : lists) {
+            if (list != null) {
+                if (seeded) {
+                    results.retainAll(list);
+                } else {
+                    results.addAll(list);
+                    seeded = true;
+                }
+            }
+        }
+
+        return results;
+    }
+
+    /**
+     * Returns the set difference of the given lists.
+     *
+     * @param firstList     The list to be subtracted from.
+     * @param secondList    The list subtracted from the first list.
+     * @param <E>           The component type of the lists.
+     * @return              The set difference of the two lists.
+     */
+    public static <E> List<E> difference(List<E> firstList, List<E> secondList) {
+        List<E> results = create();
+
+        if (firstList != null) results.addAll(firstList);
+        if (secondList != null) results.removeAll(secondList);
+
+        return results;
+    }
+
+    /**
+     * Returns a new list with all duplicate items removed.
+     *
+     * @param list  A list.
+     * @param <E>   The component type of the list.
+     * @return      A new list containing only the unique items from the given list.
+     */
+    public static <E> List<E> unique(List<E> list) {
+        Set<E> set = new TreeSet<E>();
+
+        if (list != null) {
+            set.addAll(list);
+        }
+
+        List<E> results = create(set.size());
+        results.addAll(set);
+
+        return results;
     }
 }
