@@ -26,7 +26,6 @@ package permafrost.tundra.collection;
 
 import permafrost.tundra.lang.ArrayHelper;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * A collection of convenience methods for working with java.util.Collection objects.
@@ -104,5 +103,18 @@ public class CollectionHelper {
     public static <E> E[] arrayify(Collection<E> collection, Class<E> klass) {
         if (collection == null) return null;
         return collection.toArray(ArrayHelper.instantiate(klass, collection.size()));
+    }
+
+    /**
+     * Returns true if the given collection includes the given item.
+     *
+     * @param collection    The collection to check item existence in.
+     * @param item          The item whose existence in the collection is to be checked.
+     * @param <E>           The component type of the collection.
+     * @return              True if the given collection contains the given item.
+     */
+    public static <E> boolean includes(Collection<E> collection, E item) {
+        if (collection == null) return false;
+        return collection.contains(item);
     }
 }
