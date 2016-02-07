@@ -27,6 +27,7 @@ package permafrost.tundra.collection;
 import static org.junit.Assert.*;
 import org.junit.Test;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ListHelperTest {
@@ -144,5 +145,17 @@ public class ListHelperTest {
         assertEquals(null, list.get(1));
         assertEquals(null, list.get(2));
         assertEquals("a", list.get(3));
+    }
+
+    @Test
+    public void testReverse() throws Exception {
+        List<String> list = Arrays.asList("a", "b", "c");
+
+        List<String> reverse = ListHelper.reverse(list);
+
+        assertEquals(3, reverse.size());
+        assertEquals("c", reverse.get(0));
+        assertEquals("b", reverse.get(1));
+        assertEquals("a", reverse.get(2));
     }
 }

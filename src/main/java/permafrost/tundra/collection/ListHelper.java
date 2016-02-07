@@ -336,4 +336,118 @@ public class ListHelper {
         List<E> list = create(array.length);
         return append(list, array);
     }
+
+    /**
+     * Returns true if an item exists at the given index in the given list.
+     *
+     * @param list  The list to check item existence in.
+     * @param index The index to check item existence of.
+     * @param <E>   The component type of the list.
+     * @return      True if an item exists at the given index in the given list.
+     */
+    public static <E> boolean exists(List<E> list, int index) {
+        if (list == null) return false;
+
+        // support negative/reverse indexing
+        if (index < 0) index += list.size();
+
+        return index >= 0 && index < list.size();
+    }
+
+    /**
+     * Returns the item at the given index from the given list.
+     *
+     * @param list  The list to get the item from.
+     * @param index The index of the item to return.
+     * @param <E>   The component type of the list.
+     * @return      The item at the given index in the given list, or null if the list is null or the item does not
+     *              exist.
+     */
+    public static <E> E get(List<E> list, int index) {
+        E item = null;
+
+        // support negative/reverse indexing
+        if (index < 0) index += list.size();
+
+        if (exists(list, index)) {
+            item = list.get(index);
+        }
+
+        return item;
+    }
+
+    /**
+     * Replaces the value of the item at the given index in the given list.
+     *
+     * @param list  The list to replace a value in.
+     * @param index The index of the item whose value is to be replaced.
+     * @param item  The new value for the item.
+     * @param <E>   The component type of the list.
+     * @return      The previous value of the item at the given index.
+     */
+    public static <E> E set(List<E> list, int index, E item) {
+        if (list == null) throw new NullPointerException("list must not be null");
+
+        // support negative/reverse indexing
+        if (index < 0) index += list.size();
+
+        return list.set(index, item);
+    }
+
+    /**
+     * Removes the item at the given index in the given list.
+     *
+     * @param list  The list to remove the item from.
+     * @param index The index of the item to be removed.
+     * @param <E>   The component type of the list.
+     * @return      The item previously at the given index.
+     */
+    public static <E> E remove(List<E> list, int index) {
+        if (list == null) throw new NullPointerException("list must not be null");
+
+        // support negative/reverse indexing
+        if (index < 0) index += list.size();
+
+        return list.remove(index);
+    }
+
+    /**
+     * Removes and returns the given count of items from the head of the given list.
+     *
+     * @param list  The list to take the items from.
+     * @param count The number of items to take from the list.
+     * @param <E>   The component type of the list.
+     * @return      A new list containing the items taken from the head of the given list.
+     */
+    public static <E> List<E> take(List<E> list, int count) {
+        if (list == null) return null;
+        if (count < 0) throw new IllegalArgumentException("count must not be negative");
+
+        List<E> head = create(count);
+
+        while(head.size() < count || list.size() > 0) {
+            head.add(list.remove(0));
+        }
+
+        return head;
+    }
+
+    /**
+     * Returns a new list with the items in the given list in reverse order.
+     *
+     * @param list  The list to be reversed.
+     * @param <E>   The component type of the list.
+     * @return      The reverse of the given list.
+     */
+    public static <E> List<E> reverse(List<E> list) {
+        if (list == null) return null;
+
+        List<E> reverseList = create();
+
+        for (int i = list.size() - 1; i >= 0; i--) {
+            reverseList.add(list.get(i));
+        }
+
+        return reverseList;
+    }
 }
