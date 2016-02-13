@@ -106,11 +106,11 @@ public final class IDataHelper {
     /**
      * Returns all the top-level values from the given document.
      *
-     * @param document An IData document from which to return all values.
-     * @return The list of top-level values present in the given IData document.
+     * @param document  An IData document from which to return all values.
+     * @return          The list of top-level values present in the given IData document.
      */
     public static Object[] getValues(IData document) {
-        List<Object> values = new ArrayList<Object>();
+        List<Object> values = new ArrayList<Object>(size(document));
 
         for (Map.Entry<String, Object> entry : IDataMap.of(document)) {
             values.add(entry.getValue());
