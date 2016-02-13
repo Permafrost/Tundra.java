@@ -62,8 +62,8 @@ public final class IDataHelper {
     /**
      * Returns all the keys in the given IData document.
      *
-     * @param document An IData document to retrieve the keys from.
-     * @return The list of keys present in the given IData document.
+     * @param document  An IData document to retrieve the keys from.
+     * @return          The list of keys present in the given IData document.
      */
     public static String[] getKeys(IData document) {
         return getKeys(document, (Pattern)null);
@@ -74,7 +74,7 @@ public final class IDataHelper {
      *
      * @param document      An IData document to retrieve the keys from.
      * @param patternString A regular expression pattern which the returned set of keys must match.
-     * @return The list of keys present in the given IData document that match the given regular expression pattern.
+     * @return              The list of keys present in the given IData document that match the given regular expression pattern.
      */
     public static String[] getKeys(IData document, String patternString) {
         return getKeys(document, patternString == null ? null : Pattern.compile(patternString));
@@ -122,8 +122,8 @@ public final class IDataHelper {
     /**
      * Returns all leaf values from the given document.
      *
-     * @param document The document to getLeafValues.
-     * @return All leaf values recursively collected from the given document and its children.
+     * @param document  The document to getLeafValues.
+     * @return          All leaf values recursively collected from the given document and its children.
      */
     public static Object[] getLeafValues(IData document) {
         return getLeafValues(document, new Class[0]);
@@ -132,9 +132,9 @@ public final class IDataHelper {
     /**
      * Returns all leaf values that are instances of the given classes from the given document.
      *
-     * @param document The document to getLeafValues.
-     * @param classes  List of classes the returned values must be instances of.
-     * @return All leaf values recursively collected from the given document and its children.
+     * @param document  The document to getLeafValues.
+     * @param classes   List of classes the returned values must be instances of.
+     * @return          All leaf values recursively collected from the given document and its children.
      */
     public static Object[] getLeafValues(IData document, Class... classes) {
         Object[] values = ArrayHelper.normalize(getLeafValues(new ArrayList<Object>(), document, classes).toArray());
@@ -149,7 +149,7 @@ public final class IDataHelper {
      * Returns all leaf values from the given document list.
      *
      * @param array The document list to getLeafValues.
-     * @return All leaf values recursively collected from the given document list and its children.
+     * @return      All leaf values recursively collected from the given document list and its children.
      */
     public static Object[] getLeafValues(IData[] array) {
         return getLeafValues(array, new Class[0]);
@@ -158,9 +158,9 @@ public final class IDataHelper {
     /**
      * Returns all leaf values that are instances of the given classes from the given document list.
      *
-     * @param array   The document list to getLeafValues.
-     * @param classes List of classes the returned values must be instances of.
-     * @return All leaf values recursively collected from the given document list and its children.
+     * @param array     The document list to getLeafValues.
+     * @param classes   List of classes the returned values must be instances of.
+     * @return          All leaf values recursively collected from the given document list and its children.
      */
     public static Object[] getLeafValues(IData[] array, Class... classes) {
         Object[] values = ArrayHelper.normalize(getLeafValues(new ArrayList<Object>(), array, classes).toArray());
@@ -197,23 +197,35 @@ public final class IDataHelper {
     /**
      * Returns all leaf values that are instances of the given classes from the given top-level IData.
      *
-     * @param values  The list to add the flattened values to.
-     * @param value   The IData to getLeafValues.
-     * @param classes List of classes the returned values must be instances of.
-     * @return The list of flattened values.
+     * @param values    The list to add the flattened values to.
+     * @param value     The IData to getLeafValues.
+     * @param classes   List of classes the returned values must be instances of.
+     * @return          The list of flattened values.
      */
     private static List<Object> getLeafValues(List<Object> values, IData value, Class... classes) {
         return getLeafValues(values, value, recurseIDataLeaves(classes), classes);
     }
 
     /**
+     * Returns all leaf values that are instances of the given classes from the given IData[].
+     *
+     * @param values    The list to add the flattened values to.
+     * @param value     The IData[] to getLeafValues.
+     * @param classes   List of classes the returned values must be instances of.
+     * @return          The list of flattened values.
+     */
+    private static List<Object> getLeafValues(List<Object> values, IData[] value, Class... classes) {
+        return getLeafValues(values, value, recurseIDataLeaves(classes), classes);
+    }
+
+    /**
      * Returns all leaf values that are instances of the given classes from the given IData.
      *
-     * @param values  The list to add the flattened values to.
-     * @param value   The IData to getLeafValues.
-     * @param recurse If true, all IData objects will be recursed to construct the list of leaf values.
-     * @param classes List of classes the returned values must be instances of.
-     * @return The list of flattened values.
+     * @param values    The list to add the flattened values to.
+     * @param value     The IData to getLeafValues.
+     * @param recurse   If true, all IData objects will be recursed to construct the list of leaf values.
+     * @param classes   List of classes the returned values must be instances of.
+     * @return          The list of flattened values.
      */
     private static List<Object> getLeafValues(List<Object> values, IData value, boolean recurse, Class... classes) {
         for (Map.Entry<String, Object> entry : IDataMap.of(value)) {
@@ -226,24 +238,11 @@ public final class IDataHelper {
     /**
      * Returns all leaf values that are instances of the given classes from the given IData[].
      *
-     * @param values  The list to add the flattened values to.
-     * @param value   The IData[] to getLeafValues.
-     * @param recurse If true, all IData objects will be recursed to construct the list of leaf values.
-     * @param classes List of classes the returned values must be instances of.
-     * @return The list of flattened values.
-     */
-    private static List<Object> getLeafValues(List<Object> values, IData[] value, Class... classes) {
-        return getLeafValues(values, value, recurseIDataLeaves(classes), classes);
-    }
-
-    /**
-     * Returns all leaf values that are instances of the given classes from the given IData[].
-     *
-     * @param values  The list to add the flattened values to.
-     * @param value   The IData[] to getLeafValues.
-     * @param recurse If true, all IData objects will be recursed to construct the list of leaf values.
-     * @param classes List of classes the returned values must be instances of.
-     * @return The list of flattened values.
+     * @param values    The list to add the flattened values to.
+     * @param value     The IData[] to getLeafValues.
+     * @param recurse   If true, all IData objects will be recursed to construct the list of leaf values.
+     * @param classes   List of classes the returned values must be instances of.
+     * @return          The list of flattened values.
      */
     private static List<Object> getLeafValues(List<Object> values, IData[] value, boolean recurse, Class... classes) {
         for (IData item : value) {
@@ -256,11 +255,11 @@ public final class IDataHelper {
     /**
      * Returns all leaf values that are instances of the given classes from the given Object[][].
      *
-     * @param values  The list to add the flattened values to.
-     * @param value   The Object[][] to getLeafValues.
-     * @param recurse If true, all IData objects will be recursed to construct the list of leaf values.
-     * @param classes List of classes the returned values must be instances of.
-     * @return The list of flattened values.
+     * @param values    The list to add the flattened values to.
+     * @param value     The Object[][] to getLeafValues.
+     * @param recurse   If true, all IData objects will be recursed to construct the list of leaf values.
+     * @param classes   List of classes the returned values must be instances of.
+     * @return          The list of flattened values.
      */
     private static List<Object> getLeafValues(List<Object> values, Object[][] value, boolean recurse, Class... classes) {
         for (Object[] array : value) {
@@ -273,11 +272,11 @@ public final class IDataHelper {
     /**
      * Returns all leaf values that are instances of the given classes from the given Object[].
      *
-     * @param values  The list to add the flattened values to.
-     * @param value   The Object[] to getLeafValues.
-     * @param recurse If true, all IData objects will be recursed to construct the list of leaf values.
-     * @param classes List of classes the returned values must be instances of.
-     * @return The list of flattened values.
+     * @param values    The list to add the flattened values to.
+     * @param value     The Object[] to getLeafValues.
+     * @param recurse   If true, all IData objects will be recursed to construct the list of leaf values.
+     * @param classes   List of classes the returned values must be instances of.
+     * @return          The list of flattened values.
      */
     private static List<Object> getLeafValues(List<Object> values, Object[] value, boolean recurse, Class... classes) {
         for (Object item : value) {
@@ -290,11 +289,11 @@ public final class IDataHelper {
     /**
      * Returns all leaf values that are instances of the given classes from the given Object.
      *
-     * @param values  The list to add the flattened values to.
-     * @param value   The Object to getLeafValues.
-     * @param recurse If true, all IData objects will be recursed to construct the list of leaf values.
-     * @param classes List of classes the returned values must be instances of.
-     * @return The list of flattened values.
+     * @param values    The list to add the flattened values to.
+     * @param value     The Object to getLeafValues.
+     * @param recurse   If true, all IData objects will be recursed to construct the list of leaf values.
+     * @param classes   List of classes the returned values must be instances of.
+     * @return          The list of flattened values.
      */
     private static List<Object> getLeafValues(List<Object> values, Object value, boolean recurse, Class... classes) {
         if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
@@ -330,7 +329,7 @@ public final class IDataHelper {
      * Merges multiple IData documents into a single new IData document.
      *
      * @param documents One or more IData documents to be merged.
-     * @return A new IData document containing the keys and values from all merged input documents.
+     * @return          A new IData document containing the keys and values from all merged input documents.
      */
     public static IData merge(IData... documents) {
         IData output = IDataFactory.create();
@@ -347,8 +346,8 @@ public final class IDataHelper {
     /**
      * Returns the number of top-level key value pairs in the given IData document.
      *
-     * @param document An IData document.
-     * @return The number of key value pairs in the given IData document.
+     * @param document  An IData document.
+     * @return          The number of key value pairs in the given IData document.
      */
     public static int size(IData document) {
         int size = 0;
@@ -363,9 +362,9 @@ public final class IDataHelper {
     /**
      * Returns the number of occurrences of the given key in the given IData document.
      *
-     * @param document An IData document.
-     * @param key      The key whose occurrences are to be counted.
-     * @return The number of occurrences of the given key in the given IData document.
+     * @param document  An IData document.
+     * @param key       The key whose occurrences are to be counted.
+     * @return          The number of occurrences of the given key in the given IData document.
      */
     public static int size(IData document, String key) {
         return size(document, key, false);
@@ -374,11 +373,11 @@ public final class IDataHelper {
     /**
      * Returns the number of occurrences of the given key in the given IData document.
      *
-     * @param document An IData document.
-     * @param key      The key whose occurrences are to be counted.
-     * @param literal  If true, the key will be treated as a literal key, rather than potentially as a fully-qualified
-     *                 key.
-     * @return The number of occurrences of the given key in the given IData document.
+     * @param document  An IData document.
+     * @param key       The key whose occurrences are to be counted.
+     * @param literal   If true, the key will be treated as a literal key, rather than potentially as a fully-qualified
+     *                  key.
+     * @return          The number of occurrences of the given key in the given IData document.
      */
     public static int size(IData document, String key, boolean literal) {
         int size = 0;
@@ -400,9 +399,9 @@ public final class IDataHelper {
     /**
      * Returns the number of occurrences of the given fully-qualified key in the given IData document.
      *
-     * @param document An IData document.
-     * @param key      The parsed fully-qualified key whose occurrences are to be counted.
-     * @return The number of occurrences of the given parsed fully-qualified key in the given IData document.
+     * @param document  An IData document.
+     * @param key       The parsed fully-qualified key whose occurrences are to be counted.
+     * @return          The number of occurrences of the given parsed fully-qualified key in the given IData document.
      */
     private static int size(IData document, IDataKey key) {
         int size = 0;
@@ -438,10 +437,10 @@ public final class IDataHelper {
     /**
      * Returns the number of occurrences of the given nth key in the given IData document.
      *
-     * @param document An IData document.
-     * @param key      The key whose occurrence is to be counted.
-     * @param n        The nth occurrence to be counted.
-     * @return The number of occurrences of the given nth key in the given IData document.
+     * @param document  An IData document.
+     * @param key       The key whose occurrence is to be counted.
+     * @param n         The nth occurrence to be counted.
+     * @return          The number of occurrences of the given nth key in the given IData document.
      */
     private static int size(IData document, String key, int n) {
         int size = 0;
@@ -460,9 +459,9 @@ public final class IDataHelper {
     /**
      * Returns true if the given key exists in the given IData document.
      *
-     * @param document An IData document.
-     * @param key      The key to check the existence of.
-     * @return True if the given key exists in the given IData document.
+     * @param document  An IData document.
+     * @param key       The key to check the existence of.
+     * @return          True if the given key exists in the given IData document.
      */
     public static boolean exists(IData document, String key) {
         return exists(document, key, false);
@@ -471,11 +470,11 @@ public final class IDataHelper {
     /**
      * Returns true if the given key exists in the given IData document.
      *
-     * @param document An IData document.
-     * @param key      The key to check the existence of.
-     * @param literal  If true, the key will be treated as a literal key, rather than potentially as a fully-qualified
-     *                 key.
-     * @return True if the given key exists in the given IData document.
+     * @param document  An IData document.
+     * @param key       The key to check the existence of.
+     * @param literal   If true, the key will be treated as a literal key, rather than potentially as a fully-qualified
+     *                  key.
+     * @return          True if the given key exists in the given IData document.
      */
     public static boolean exists(IData document, String key, boolean literal) {
         return size(document, key, literal) > 0;
@@ -484,9 +483,9 @@ public final class IDataHelper {
     /**
      * Removes the given key from the given IData document, returning the associated value if one exists.
      *
-     * @param document The document to remove the key from.
-     * @param key      The key to remove.
-     * @return The value that was associated with the given key.
+     * @param document  The document to remove the key from.
+     * @param key       The key to remove.
+     * @return          The value that was associated with the given key.
      */
     public static Object remove(IData document, String key) {
         return remove(document, key, false);
@@ -495,11 +494,11 @@ public final class IDataHelper {
     /**
      * Removes the given key from the given IData document, returning the associated value if one exists.
      *
-     * @param document The document to remove the key from.
-     * @param key      The key to remove.
-     * @param literal  If true, the key will be treated as a literal key, rather than potentially as a fully-qualified
-     *                 key.
-     * @return The value that was associated with the given key.
+     * @param document  The document to remove the key from.
+     * @param key       The key to remove.
+     * @param literal   If true, the key will be treated as a literal key, rather than potentially as a fully-qualified
+     *                  key.
+     * @return          The value that was associated with the given key.
      */
     public static Object remove(IData document, String key, boolean literal) {
         Object value = get(document, key, literal);
@@ -511,9 +510,9 @@ public final class IDataHelper {
      * Removes all occurrences of the given key from the given IData document, returning the associated values if there
      * were any.
      *
-     * @param document The document to remove the key from.
-     * @param key      The key to remove.
-     * @return The values that were associated with the given key.
+     * @param document  The document to remove the key from.
+     * @param key       The key to remove.
+     * @return          The values that were associated with the given key.
      */
     public static Object[] removeAll(IData document, String key) {
         return removeAll(document, key, false);
@@ -523,11 +522,11 @@ public final class IDataHelper {
      * Removes all occurrences of the given key from the given IData document, returning the associated values if there
      * were any.
      *
-     * @param document The document to remove the key from.
-     * @param key      The key to remove.
-     * @param literal  If true, the key will be treated as a literal key, rather than potentially as a fully-qualified
-     *                 key.
-     * @return The values that were associated with the given key.
+     * @param document  The document to remove the key from.
+     * @param key       The key to remove.
+     * @param literal   If true, the key will be treated as a literal key, rather than potentially as a fully-qualified
+     *                  key.
+     * @return          The values that were associated with the given key.
      */
     public static Object[] removeAll(IData document, String key, boolean literal) {
         Object[] value = getAsArray(document, key, literal);
@@ -538,8 +537,8 @@ public final class IDataHelper {
     /**
      * Returns a recursive clone of the given IData document.
      *
-     * @param document An IData document to be duplicated.
-     * @return A new IData document which is a copy of the given IData document.
+     * @param document  An IData document to be duplicated.
+     * @return          A new IData document which is a copy of the given IData document.
      */
     public static IData duplicate(IData document) {
         return duplicate(document, true);
@@ -548,9 +547,9 @@ public final class IDataHelper {
     /**
      * Returns a clone of the given IData document.
      *
-     * @param document An IData document to be duplicated.
-     * @param recurse  When true, nested IData documents and IData[] document lists will also be duplicated.
-     * @return A new IData document which is a copy of the given IData document.
+     * @param document  An IData document to be duplicated.
+     * @param recurse   When true, nested IData documents and IData[] document lists will also be duplicated.
+     * @return          A new IData document which is a copy of the given IData document.
      */
     public static IData duplicate(IData document, boolean recurse) {
         IData output = null;
@@ -572,10 +571,10 @@ public final class IDataHelper {
     /**
      * Removes the value with the given key from the given IData document.
      *
-     * @param document An IData document.
-     * @param key      A simple or fully-qualified key identifying the value to be removed from the given IData
-     *                 document.
-     * @return The given IData document.
+     * @param document  An IData document.
+     * @param key       A simple or fully-qualified key identifying the value to be removed from the given IData
+     *                  document.
+     * @return          The given IData document.
      */
     public static IData drop(IData document, String key) {
         return drop(document, key, false);
@@ -670,9 +669,9 @@ public final class IDataHelper {
     /**
      * Removes all occurrences of the given key from the given IData document.
      *
-     * @param document The IData document to remove the key from.
-     * @param key      The key to be removed.
-     * @return The given IData document, to allow for method chaining.
+     * @param document  The IData document to remove the key from.
+     * @param key       The key to be removed.
+     * @return          The given IData document, to allow for method chaining.
      */
     public static IData dropAll(IData document, String key) {
         return dropAll(document, key, false);
@@ -681,11 +680,11 @@ public final class IDataHelper {
     /**
      * Removes all occurrences of the given key from the given IData document.
      *
-     * @param document The IData document to remove the key from.
-     * @param key      The key to be removed.
-     * @param literal  If true, the key will be treated as a literal key, rather than potentially as a fully-qualified
-     *                 key.
-     * @return The given IData document, to allow for method chaining.
+     * @param document  The IData document to remove the key from.
+     * @param key       The key to be removed.
+     * @param literal   If true, the key will be treated as a literal key, rather than potentially as a fully-qualified
+     *                  key.
+     * @return          The given IData document, to allow for method chaining.
      */
     public static IData dropAll(IData document, String key, boolean literal) {
         if (document != null && key != null) {
@@ -707,9 +706,9 @@ public final class IDataHelper {
     /**
      * Removes all occurrences of the given key from the given IData document.
      *
-     * @param document An IData document.
-     * @param key      A fully-qualified key identifying the values to be removed from the given IData document.
-     * @return The given IData document.
+     * @param document  An IData document.
+     * @param key       A fully-qualified key identifying the values to be removed from the given IData document.
+     * @return          The given IData document.
      */
     private static IData dropAll(IData document, IDataKey key) {
         if (document != null && key != null && key.size() > 0) {
@@ -743,10 +742,10 @@ public final class IDataHelper {
     /**
      * Renames a key from source to target within the given IData document.
      *
-     * @param document An IData document.
-     * @param source   A simple or fully-qualified key identifying the value in the given IData document to be renamed.
-     * @param target   The new simple or fully-qualified key for the renamed value.
-     * @return The given IData document.
+     * @param document  An IData document.
+     * @param source    A simple or fully-qualified key identifying the value in the given IData document to be renamed.
+     * @param target    The new simple or fully-qualified key for the renamed value.
+     * @return          The given IData document.
      */
     public static IData rename(IData document, String source, String target) {
         return rename(document, source, target, false);
@@ -755,12 +754,12 @@ public final class IDataHelper {
     /**
      * Renames a key from source to target within the given IData document.
      *
-     * @param document An IData document.
-     * @param source   A simple or fully-qualified key identifying the value in the given IData document to be renamed.
-     * @param target   The new simple or fully-qualified key for the renamed value.
-     * @param literal  If true, the key will be treated as a literal key, rather than potentially as a fully-qualified
-     *                 key.
-     * @return The given IData document.
+     * @param document  An IData document.
+     * @param source    A simple or fully-qualified key identifying the value in the given IData document to be renamed.
+     * @param target    The new simple or fully-qualified key for the renamed value.
+     * @param literal   If true, the key will be treated as a literal key, rather than potentially as a fully-qualified
+     *                  key.
+     * @return          The given IData document.
      */
     public static IData rename(IData document, String source, String target, boolean literal) {
         if (document != null && source != null && target != null && !source.equals(target)) {
@@ -773,10 +772,10 @@ public final class IDataHelper {
     /**
      * Copies a value from source key to target key within the given IData document.
      *
-     * @param document An IData document.
-     * @param source   A simple or fully-qualified key identifying the value in the given IData document to be copied.
-     * @param target   A simple or fully-qualified key the source value will be copied to.
-     * @return The given IData document.
+     * @param document  An IData document.
+     * @param source    A simple or fully-qualified key identifying the value in the given IData document to be copied.
+     * @param target    A simple or fully-qualified key the source value will be copied to.
+     * @return          The given IData document.
      */
     public static IData copy(IData document, String source, String target) {
         return copy(document, source, target, false);
@@ -785,12 +784,12 @@ public final class IDataHelper {
     /**
      * Copies a value from source key to target key within the given IData document.
      *
-     * @param document An IData document.
-     * @param source   A simple or fully-qualified key identifying the value in the given IData document to be copied.
-     * @param target   A simple or fully-qualified key the source value will be copied to.
-     * @param literal  If true, the key will be treated as a literal key, rather than potentially as a fully-qualified
-     *                 key.
-     * @return The given IData document.
+     * @param document  An IData document.
+     * @param source    A simple or fully-qualified key identifying the value in the given IData document to be copied.
+     * @param target    A simple or fully-qualified key the source value will be copied to.
+     * @param literal   If true, the key will be treated as a literal key, rather than potentially as a fully-qualified
+     *                  key.
+     * @return          The given IData document.
      */
     public static IData copy(IData document, String source, String target, boolean literal) {
         if (document != null && source != null && target != null && !source.equals(target)) {
@@ -802,10 +801,10 @@ public final class IDataHelper {
     /**
      * Amends the given IData document with the key value pairs specified in the amendments IData document.
      *
-     * @param document   The IData document to be amended.
-     * @param amendments The list of key value pairs to amend the document with.
-     * @param scope      The scope against which to resolve variable substitution statements.
-     * @return The amended IData document.
+     * @param document      The IData document to be amended.
+     * @param amendments    The list of key value pairs to amend the document with.
+     * @param scope         The scope against which to resolve variable substitution statements.
+     * @return              The amended IData document.
      */
     public static IData amend(IData document, IData[] amendments, IData scope) {
         if (amendments == null) return document;
@@ -835,9 +834,9 @@ public final class IDataHelper {
     /**
      * Trims all string values, then converts empty strings to nulls, then compacts by removing all null values.
      *
-     * @param document An IData document to be squeezed.
-     * @param recurse  Whether to also squeeze embedded IData and IData[] objects.
-     * @return A new IData document that is the given IData squeezed.
+     * @param document  An IData document to be squeezed.
+     * @param recurse   Whether to also squeeze embedded IData and IData[] objects.
+     * @return          A new IData document that is the given IData squeezed.
      */
     public static IData squeeze(IData document, boolean recurse) {
         if (document == null) return null;
@@ -892,9 +891,9 @@ public final class IDataHelper {
     /**
      * Returns a new IData[] with all empty and null items removed.
      *
-     * @param array   An IData[] to be squeezed.
-     * @param recurse Whether to also squeeze embedded IData and IData[] objects.
-     * @return A new IData[] that is the given IData[] squeezed.
+     * @param array     An IData[] to be squeezed.
+     * @param recurse   Whether to also squeeze embedded IData and IData[] objects.
+     * @return          A new IData[] that is the given IData[] squeezed.
      */
     public static IData[] squeeze(IData[] array, boolean recurse) {
         if (array == null) return null;
@@ -970,8 +969,8 @@ public final class IDataHelper {
     /**
      * Returns a string created by concatenating each element of the given IData document.
      *
-     * @param document The IData document to be converted to a string.
-     * @return A string representation of the given IData document.
+     * @param document  The IData document to be converted to a string.
+     * @return          A string representation of the given IData document.
      */
     public static String join(IData document) {
         return join(document, true);
@@ -980,9 +979,9 @@ public final class IDataHelper {
     /**
      * Returns a string created by concatenating each element of the given IData document.
      *
-     * @param document The IData document to be converted to a string.
-     * @param includeNulls If true, null values will be included in the output string, otherwise they are ignored.
-     * @return A string representation of the given IData document.
+     * @param document      The IData document to be converted to a string.
+     * @param includeNulls  If true, null values will be included in the output string, otherwise they are ignored.
+     * @return              A string representation of the given IData document.
      */
     public static String join(IData document, boolean includeNulls) {
         return join(document, null, null, null, includeNulls);
@@ -992,11 +991,11 @@ public final class IDataHelper {
      * Returns a string created by concatenating each element of the given IData document, separated by the given
      * separator strings.
      *
-     * @param document The IData document to be converted to a string.
-     * @param itemSeparator The string to use to delimit entries in IData documents.
-     * @param listSeparator The string to use to delimit list items.
-     * @param valueSeparator The string to use to delimit key value pairs.
-     * @return A string representation of the given IData document.
+     * @param document          The IData document to be converted to a string.
+     * @param itemSeparator     The string to use to delimit entries in IData documents.
+     * @param listSeparator     The string to use to delimit list items.
+     * @param valueSeparator    The string to use to delimit key value pairs.
+     * @return                  A string representation of the given IData document.
      */
     public static String join(IData document, String itemSeparator, String listSeparator, String valueSeparator) {
         return join(document, itemSeparator, listSeparator, valueSeparator, true);
@@ -1006,12 +1005,12 @@ public final class IDataHelper {
      * Returns a string created by concatenating each element of the given IData document, separated by the given
      * separator strings.
      *
-     * @param document The IData document to be converted to a string.
-     * @param itemSeparator The string to use to delimit entries in IData documents.
-     * @param listSeparator The string to use to delimit list items.
-     * @param valueSeparator The string to use to delimit key value pairs.
-     * @param includeNulls If true, null values will be included in the output string, otherwise they are ignored.
-     * @return A string representation of the given IData document.
+     * @param document          The IData document to be converted to a string.
+     * @param itemSeparator     The string to use to delimit entries in IData documents.
+     * @param listSeparator     The string to use to delimit list items.
+     * @param valueSeparator    The string to use to delimit key value pairs.
+     * @param includeNulls      If true, null values will be included in the output string, otherwise they are ignored.
+     * @return                  A string representation of the given IData document.
      */
     public static String join(IData document, String itemSeparator, String listSeparator, String valueSeparator, boolean includeNulls) {
         if (document == null) return null;
@@ -1060,7 +1059,7 @@ public final class IDataHelper {
      * Returns a string created by concatenating each element of the given IData[] document list.
      *
      * @param array The IData[] document list to be converted to a string.
-     * @return A string representation of the given IData document.
+     * @return      A string representation of the given IData document.
      */
     public static String join(IData[] array) {
         return join(array, null, null, null, true);
@@ -1070,11 +1069,11 @@ public final class IDataHelper {
      * Returns a string created by concatenating each element of the given IData[] document list, separated by the given
      * separator strings.
      *
-     * @param array The IData[] document list to be converted to a string.
-     * @param itemSeparator The string to use to delimit entries in IData documents.
-     * @param listSeparator The string to use to delimit list items.
-     * @param valueSeparator The string to use to delimit key value pairs.
-     * @return A string representation of the given IData document.
+     * @param array             The IData[] document list to be converted to a string.
+     * @param itemSeparator     The string to use to delimit entries in IData documents.
+     * @param listSeparator     The string to use to delimit list items.
+     * @param valueSeparator    The string to use to delimit key value pairs.
+     * @return                  A string representation of the given IData document.
      */
     public static String join(IData[] array, String itemSeparator, String listSeparator, String valueSeparator) {
         return join(array, itemSeparator, listSeparator, valueSeparator, true);
@@ -1084,12 +1083,12 @@ public final class IDataHelper {
      * Returns a string created by concatenating each element of the given IData[] document list, separated by the given
      * separator strings.
      *
-     * @param array The IData[] document list to be converted to a string.
-     * @param itemSeparator The string to use to delimit entries in IData documents.
-     * @param listSeparator The string to use to delimit list items.
-     * @param valueSeparator The string to use to delimit key value pairs.
-     * @param includeNulls If true, null values will be included in the output string, otherwise they are ignored.
-     * @return A string representation of the given IData document.
+     * @param array             The IData[] document list to be converted to a string.
+     * @param itemSeparator     The string to use to delimit entries in IData documents.
+     * @param listSeparator     The string to use to delimit list items.
+     * @param valueSeparator    The string to use to delimit key value pairs.
+     * @param includeNulls      If true, null values will be included in the output string, otherwise they are ignored.
+     * @return                  A string representation of the given IData document.
      */
     public static String join(IData[] array, String itemSeparator, String listSeparator, String valueSeparator, boolean includeNulls) {
         if (array == null) return null;
@@ -1120,9 +1119,9 @@ public final class IDataHelper {
     /**
      * Converts all non-string values to strings, except for IData and IData[] compatible objects.
      *
-     * @param document The IData document to stringify.
-     * @param recurse  Whether embedded IData and IData[] objects should also be stringified recursively.
-     * @return The stringified IData document.
+     * @param document  The IData document to stringify.
+     * @param recurse   Whether embedded IData and IData[] objects should also be stringified recursively.
+     * @return          The stringified IData document.
      */
     public static IData stringify(IData document, boolean recurse) {
         if (document == null) return null;
@@ -1164,9 +1163,9 @@ public final class IDataHelper {
     /**
      * Converts all non-string values to strings, except for IData and IData[] compatible objects.
      *
-     * @param array   The IData[] to stringify.
-     * @param recurse Whether to stringify embedded IData and IData[] objects recursively.
-     * @return The stringified IData[].
+     * @param array     The IData[] to stringify.
+     * @param recurse   Whether to stringify embedded IData and IData[] objects recursively.
+     * @return          The stringified IData[].
      */
     public static IData[] stringify(IData[] array, boolean recurse) {
         if (array == null) return null;
@@ -1183,9 +1182,9 @@ public final class IDataHelper {
     /**
      * Converts all null values to empty strings.
      *
-     * @param document The IData document to blankify.
-     * @param recurse  Whether embedded IData and IData[] objects should be recursively blankified.
-     * @return The blankified IData.
+     * @param document  The IData document to blankify.
+     * @param recurse   Whether embedded IData and IData[] objects should be recursively blankified.
+     * @return          The blankified IData.
      */
     public static IData blankify(IData document, boolean recurse) {
         if (document == null) return null;
@@ -1217,9 +1216,9 @@ public final class IDataHelper {
     /**
      * Converts all null values to empty strings.
      *
-     * @param array   The IData[] to blankify.
-     * @param recurse Whether embedded IData and IData[] objects should be recursively blankified.
-     * @return The blankified IData[].
+     * @param array     The IData[] to blankify.
+     * @param recurse   Whether embedded IData and IData[] objects should be recursively blankified.
+     * @return          The blankified IData[].
      */
     public static IData[] blankify(IData[] array, boolean recurse) {
         if (array == null) return null;
@@ -1236,9 +1235,9 @@ public final class IDataHelper {
     /**
      * Converts the value associated with the given key to an array in the given IData document.
      *
-     * @param document An IData document.
-     * @param key      The key whose associated value is to be converted to an array.
-     * @return The given IData with the given key's value converted to an array.
+     * @param document  An IData document.
+     * @param key       The key whose associated value is to be converted to an array.
+     * @return          The given IData with the given key's value converted to an array.
      */
     public static IData arrayify(IData document, String key) {
         if (exists(document, key)) {
@@ -1252,9 +1251,9 @@ public final class IDataHelper {
     /**
      * Removes all null values from the given IData document.
      *
-     * @param document The IData document to be compacted.
-     * @param recurse  Whether embedded IData and IData[] objects should be recursively compacted.
-     * @return The compacted IData.
+     * @param document  The IData document to be compacted.
+     * @param recurse   Whether embedded IData and IData[] objects should be recursively compacted.
+     * @return          The compacted IData.
      */
     public static IData compact(IData document, boolean recurse) {
         if (document == null) return null;
@@ -1292,9 +1291,9 @@ public final class IDataHelper {
     /**
      * Removes all null values from the given IData[].
      *
-     * @param array   The IData[] to be compacted.
-     * @param recurse Whether embedded IData and IData[] objects should be recursively compacted.
-     * @return The compacted IData[].
+     * @param array     The IData[] to be compacted.
+     * @param recurse   Whether embedded IData and IData[] objects should be recursively compacted.
+     * @return          The compacted IData[].
      */
     public static IData[] compact(IData[] array, boolean recurse) {
         if (array == null) return null;
@@ -1313,8 +1312,8 @@ public final class IDataHelper {
     /**
      * Performs variable substitution on all elements of the given IData input document.
      *
-     * @param document The IData document to perform variable substitution on.
-     * @return The variable substituted IData.
+     * @param document  The IData document to perform variable substitution on.
+     * @return          The variable substituted IData.
      */
     public static IData substitute(IData document) {
         return substitute(document, null, null, true);
@@ -1323,10 +1322,10 @@ public final class IDataHelper {
     /**
      * Performs variable substitution on all elements of the given IData input document.
      *
-     * @param document The IData document to perform variable substitution on.
-     * @param recurse  Whether embedded IData and IData[] should have variable substitution recursively performed on
-     *                 them.
-     * @return The variable substituted IData.
+     * @param document  The IData document to perform variable substitution on.
+     * @param recurse   Whether embedded IData and IData[] should have variable substitution recursively performed on
+     *                  them.
+     * @return          The variable substituted IData.
      */
     public static IData substitute(IData document, boolean recurse) {
         return substitute(document, null, null, recurse);
@@ -1335,11 +1334,11 @@ public final class IDataHelper {
     /**
      * Performs variable substitution on all elements of the given IData input document.
      *
-     * @param document The IData document to perform variable substitution on.
-     * @param scope    The scope against which variables are are resolved.
-     * @param recurse  Whether embedded IData and IData[] should have variable substitution recursively performed on
-     *                 them.
-     * @return The variable substituted IData.
+     * @param document  The IData document to perform variable substitution on.
+     * @param scope     The scope against which variables are are resolved.
+     * @param recurse   Whether embedded IData and IData[] should have variable substitution recursively performed on
+     *                  them.
+     * @return          The variable substituted IData.
      */
     public static IData substitute(IData document, IData scope, boolean recurse) {
         return substitute(document, null, scope, recurse);
@@ -1348,12 +1347,12 @@ public final class IDataHelper {
     /**
      * Performs variable substitution on all elements of the given IData input document.
      *
-     * @param document     The IData document to perform variable substitution on.
-     * @param defaultValue The value to substitute if a variable cannot be resolved.
-     * @param scope        The scope against which variables are are resolved.
-     * @param recurse      Whether embedded IData and IData[] should have variable substitution recursively performed on
-     *                     them.
-     * @return The variable substituted IData.
+     * @param document      The IData document to perform variable substitution on.
+     * @param defaultValue  The value to substitute if a variable cannot be resolved.
+     * @param scope         The scope against which variables are are resolved.
+     * @param recurse       Whether embedded IData and IData[] should have variable substitution recursively performed on
+     *                      them.
+     * @return              The variable substituted IData.
      */
     public static IData substitute(IData document, String defaultValue, IData scope, boolean recurse) {
         if (document == null) return null;
@@ -1392,12 +1391,12 @@ public final class IDataHelper {
     /**
      * Performs variable substitution on all elements of the given IData[].
      *
-     * @param array        The IData[] to perform variable substitution on.
-     * @param defaultValue The value to substitute if a variable cannot be resolved.
-     * @param scope        The scope against which variables are are resolved.
-     * @param recurse      Whether embedded IData and IData[] should have variable substitution recursively performed on
-     *                     them.
-     * @return The variable substituted IData[].
+     * @param array         The IData[] to perform variable substitution on.
+     * @param defaultValue  The value to substitute if a variable cannot be resolved.
+     * @param scope         The scope against which variables are are resolved.
+     * @param recurse       Whether embedded IData and IData[] should have variable substitution recursively performed on
+     *                      them.
+     * @return              The variable substituted IData[].
      */
     public static IData[] substitute(IData[] array, String defaultValue, IData scope, boolean recurse) {
         if (array == null) return null;
@@ -1415,7 +1414,7 @@ public final class IDataHelper {
      * Normalizes the given Object.
      *
      * @param value An Object to be normalized.
-     * @return A new normalized version of the given Object.
+     * @return      A new normalized version of the given Object.
      */
     private static Object normalize(Object value) {
         if (value instanceof IData[]) {
@@ -1451,7 +1450,7 @@ public final class IDataHelper {
      * Normalizes the given Object[].
      *
      * @param array The Object[] to be normalized.
-     * @return Normalized version of the Object[].
+     * @return      Normalized version of the Object[].
      */
     private static Object[] normalize(Object[] array) {
         return (Object[])normalize((Object)ArrayHelper.normalize(array));
@@ -1461,8 +1460,8 @@ public final class IDataHelper {
      * Returns a new IData document, where all nested IData and IData[] objects are implemented with the same class, and
      * all fully-qualified keys are replaced with their representative nested structure.
      *
-     * @param document An IData document to be normalized.
-     * @return A new normalized version of the given IData document.
+     * @param document  An IData document to be normalized.
+     * @return          A new normalized version of the given IData document.
      */
     public static IData normalize(IData document) {
         if (document == null) return null;
@@ -1480,8 +1479,8 @@ public final class IDataHelper {
     /**
      * Converts a java.util.Map to an IData object.
      *
-     * @param map A java.util.Map to be converted to an IData object.
-     * @return An IData representation of the given java.util.Map object.
+     * @param map   A java.util.Map to be converted to an IData object.
+     * @return      An IData representation of the given java.util.Map object.
      */
     private static IData normalize(Map map) {
         return normalize(toIData(map));
@@ -1490,8 +1489,8 @@ public final class IDataHelper {
     /**
      * Normalizes a java.util.Collection to an Object[].
      *
-     * @param collection A java.util.Collection to be converted to an Object[].
-     * @return An Object[] representation of the given java.util.Collection object.
+     * @param collection    A java.util.Collection to be converted to an Object[].
+     * @return              An Object[] representation of the given java.util.Collection object.
      */
     private static Object[] normalize(Collection collection) {
         return normalize(ArrayHelper.toArray(collection));
@@ -1500,8 +1499,8 @@ public final class IDataHelper {
     /**
      * Normalizes an IDataCodable object to an IData representation.
      *
-     * @param document An IDataCodable object to be normalized.
-     * @return An IData representation for the given IDataCodable object.
+     * @param document  An IDataCodable object to be normalized.
+     * @return          An IData representation for the given IDataCodable object.
      */
     public static IData normalize(IDataCodable document) {
         return normalize(toIData(document));
@@ -1512,7 +1511,7 @@ public final class IDataHelper {
      * and all fully-qualified keys are replaced with their representative nested structure.
      *
      * @param array An IDataCodable[] list to be normalized.
-     * @return A new normalized IData[] version of the given IDataCodable[] list.
+     * @return      A new normalized IData[] version of the given IDataCodable[] list.
      */
     public static IData[] normalize(IDataCodable[] array) {
         return normalize(toIDataArray(array));
@@ -1521,8 +1520,8 @@ public final class IDataHelper {
     /**
      * Normalizes an IDataPortable object to an IData representation.
      *
-     * @param document An IDataPortable object to be normalized.
-     * @return An IData representation for the given IDataPortable object.
+     * @param document  An IDataPortable object to be normalized.
+     * @return          An IData representation for the given IDataPortable object.
      */
     public static IData normalize(IDataPortable document) {
         return normalize(toIData(document));
@@ -1533,7 +1532,7 @@ public final class IDataHelper {
      * and all fully-qualified keys are replaced with their representative nested structure.
      *
      * @param array An IDataPortable[] list to be normalized.
-     * @return A new normalized IData[] version of the given IDataPortable[] list.
+     * @return      A new normalized IData[] version of the given IDataPortable[] list.
      */
     public static IData[] normalize(IDataPortable[] array) {
         return normalize(toIDataArray(array));
@@ -1542,8 +1541,8 @@ public final class IDataHelper {
     /**
      * Normalizes an ValuesCodable object to an IData representation.
      *
-     * @param document An ValuesCodable object to be normalized.
-     * @return An IData representation for the given ValuesCodable object.
+     * @param document  An ValuesCodable object to be normalized.
+     * @return          An IData representation for the given ValuesCodable object.
      */
     public static IData normalize(ValuesCodable document) {
         return normalize(toIData(document));
@@ -1554,7 +1553,7 @@ public final class IDataHelper {
      * and all fully-qualified keys are replaced with their representative nested structure.
      *
      * @param array An ValuesCodable[] list to be normalized.
-     * @return A new normalized IData[] version of the given ValuesCodable[] list.
+     * @return      A new normalized IData[] version of the given ValuesCodable[] list.
      */
     public static IData[] normalize(ValuesCodable[] array) {
         return normalize(toIDataArray(array));
@@ -1565,7 +1564,7 @@ public final class IDataHelper {
      * are replaced with their representative nested structure.
      *
      * @param array An IData[] document list to be normalized.
-     * @return A new normalized version of the given IData[] document list.
+     * @return      A new normalized version of the given IData[] document list.
      */
     public static IData[] normalize(IData[] array) {
         if (array == null) return null;
@@ -1582,7 +1581,7 @@ public final class IDataHelper {
      * Normalizes a com.wm.util.Table object to an IData[] representation.
      *
      * @param table A com.wm.util.Table object to be normalized.
-     * @return An IData[] representation of the given com.wm.util.Table object.
+     * @return      An IData[] representation of the given com.wm.util.Table object.
      */
     public static IData[] normalize(Table table) {
         return normalize(toIDataArray(table));
@@ -1592,7 +1591,7 @@ public final class IDataHelper {
      * Normalizes a Map[] object to an IData[] representation.
      *
      * @param array A Map[] object to be normalized.
-     * @return An IData[] representation of the given Map[] object.
+     * @return      An IData[] representation of the given Map[] object.
      */
     public static IData[] normalize(Map[] array) {
         return normalize(toIDataArray(array));
@@ -1672,10 +1671,10 @@ public final class IDataHelper {
     /**
      * Returns the value associated with the given key from the given IData document.
      *
-     * @param document An IData document.
-     * @param key      A simple or fully-qualified key identifying the value in the given IData document to be
-     *                 returned.
-     * @return The value associated with the given key in the given IData document.
+     * @param document  An IData document.
+     * @param key       A simple or fully-qualified key identifying the value in the given IData document to be
+     *                  returned.
+     * @return          The value associated with the given key in the given IData document.
      */
     public static Object get(IData document, String key) {
         return get(null, document, key);
@@ -1712,12 +1711,12 @@ public final class IDataHelper {
      * Returns the value associated with the given key from the given IData document, or if null the specified default
      * value.
      *
-     * @param document     An IData document.
-     * @param key          A simple or fully-qualified key identifying the value in the given IData document to be
-     *                     returned.
-     * @param defaultValue A default value to be returned if the existing value associated with the given key is null.
-     * @return Either the value associated with the given key in the given IData document, or the given defaultValue if
-     * null.
+     * @param document      An IData document.
+     * @param key           A simple or fully-qualified key identifying the value in the given IData document to be
+     *                      returned.
+     * @param defaultValue  A default value to be returned if the existing value associated with the given key is null.
+     * @return              Either the value associated with the given key in the given IData document, or the given
+     *                      defaultValue if null.
      */
     public static Object get(IData document, String key, Object defaultValue) {
         return get(document, key, defaultValue, false);
@@ -1726,13 +1725,13 @@ public final class IDataHelper {
     /**
      * Returns the value associated with the given key from the given scope (if relative) or pipeline (if absolute).
      *
-     * @param pipeline     The pipeline, required if the key is an absolute path.
-     * @param scope        An IData document used to scope the key if it is relative.
-     * @param key          A simple or fully-qualified key identifying the value in the given IData document to be
-     *                     returned.
-     * @param defaultValue A default value to be returned if the existing value associated with the given key is null.
-     * @return Either the value associated with the given key in the given IData document, or the given defaultValue if
-     * null.
+     * @param pipeline      The pipeline, required if the key is an absolute path.
+     * @param scope         An IData document used to scope the key if it is relative.
+     * @param key           A simple or fully-qualified key identifying the value in the given IData document to be
+     *                      returned.
+     * @param defaultValue  A default value to be returned if the existing value associated with the given key is null.
+     * @return              Either the value associated with the given key in the given IData document, or the given
+     *                      defaultValue if null.
      */
     public static Object get(IData pipeline, IData scope, String key, Object defaultValue) {
         return get(pipeline, scope, key, defaultValue, false);
@@ -1742,14 +1741,14 @@ public final class IDataHelper {
      * Returns the value associated with the given key from the given IData document, or if null the specified default
      * value.
      *
-     * @param document     An IData document.
-     * @param key          A simple or fully-qualified key identifying the value in the given IData document to be
-     *                     returned.
-     * @param defaultValue A default value to be returned if the existing value associated with the given key is null.
-     * @param literal      If true, the key will be treated as a literal key, rather than potentially as a
-     *                     fully-qualified key.
-     * @return Either the value associated with the given key in the given IData document, or the given defaultValue if
-     * null.
+     * @param document      An IData document.
+     * @param key           A simple or fully-qualified key identifying the value in the given IData document to be
+     *                      returned.
+     * @param defaultValue  A default value to be returned if the existing value associated with the given key is null.
+     * @param literal       If true, the key will be treated as a literal key, rather than potentially as a
+     *                      fully-qualified key.
+     * @return              Either the value associated with the given key in the given IData document, or the given
+     *                      defaultValue if null.
      */
     public static Object get(IData document, String key, Object defaultValue, boolean literal) {
         return get(null, document, key, defaultValue, literal);
@@ -1759,15 +1758,15 @@ public final class IDataHelper {
      * Returns the value associated with the given key from the given IData document, or if null the specified default
      * value.
      *
-     * @param pipeline     An IData document against which absolute variables are resolved.
-     * @param scope        An IData document against which relative variables are resolved.
-     * @param key          A simple or fully-qualified key identifying the value in the given IData document to be
-     *                     returned.
-     * @param defaultValue A default value to be returned if the existing value associated with the given key is null.
-     * @param literal      If true, the key will be treated as a literal key, rather than potentially as a
-     *                     fully-qualified key.
-     * @return Either the value associated with the given key in the given IData document, or the given defaultValue if
-     * null.
+     * @param pipeline      An IData document against which absolute variables are resolved.
+     * @param scope         An IData document against which relative variables are resolved.
+     * @param key           A simple or fully-qualified key identifying the value in the given IData document to be
+     *                      returned.
+     * @param defaultValue  A default value to be returned if the existing value associated with the given key is null.
+     * @param literal       If true, the key will be treated as a literal key, rather than potentially as a
+     *                      fully-qualified key.
+     * @return              Either the value associated with the given key in the given IData document, or the given
+     *                      defaultValue if null.
      */
     public static Object get(IData pipeline, IData scope, String key, Object defaultValue, boolean literal) {
         Object value = get(pipeline, scope, key, literal);
@@ -1875,10 +1874,10 @@ public final class IDataHelper {
     /**
      * Returns the nth value associated with the given key.
      *
-     * @param document The IData document to return the value from.
-     * @param key      The key whose associated value is to be returned.
-     * @param n        Determines which occurrence of the key to return the value for.
-     * @return The value associated with the nth occurrence of the given key in the given IData document.
+     * @param document  The IData document to return the value from.
+     * @param key       The key whose associated value is to be returned.
+     * @param n         Determines which occurrence of the key to return the value for.
+     * @return          The value associated with the nth occurrence of the given key in the given IData document.
      */
     private static Object get(IData document, String key, int n) {
         if (document == null || key == null || n < 0) return null;
@@ -1898,10 +1897,10 @@ public final class IDataHelper {
     /**
      * Returns the value associated with the given key from the given IData document as an array.
      *
-     * @param document An IData document.
-     * @param key      A simple or fully-qualified key identifying the value in the given IData document to be
-     *                 returned.
-     * @return The value associated with the given key in the given IData document as an array.
+     * @param document  An IData document.
+     * @param key       A simple or fully-qualified key identifying the value in the given IData document to be
+     *                  returned.
+     * @return          The value associated with the given key in the given IData document as an array.
      */
     public static Object[] getAsArray(IData document, String key) {
         return getAsArray(document, key, false);
@@ -1910,12 +1909,12 @@ public final class IDataHelper {
     /**
      * Returns the value associated with the given key from the given IData document as an array.
      *
-     * @param document An IData document.
-     * @param key      A simple or fully-qualified key identifying the value in the given IData document to be
-     *                 returned.
-     * @param literal  If true, the key will be treated as a literal key, rather than potentially as a fully-qualified
-     *                 key.
-     * @return The value associated with the given key in the given IData document as an array.
+     * @param document  An IData document.
+     * @param key       A simple or fully-qualified key identifying the value in the given IData document to be
+     *                  returned.
+     * @param literal   If true, the key will be treated as a literal key, rather than potentially as a fully-qualified
+     *                  key.
+     * @return          The value associated with the given key in the given IData document as an array.
      */
     public static Object[] getAsArray(IData document, String key, boolean literal) {
         if (document == null || key == null) return null;
@@ -1943,9 +1942,9 @@ public final class IDataHelper {
     /**
      * Returns the value associated with the given fully-qualified key from the given IData document as an array.
      *
-     * @param document An IData document.
-     * @param key      A fully-qualified key identifying the value in the given IData document to be returned.
-     * @return The value associated with the given key in the given IData document as an array.
+     * @param document  An IData document.
+     * @param key       A fully-qualified key identifying the value in the given IData document to be returned.
+     * @return          The value associated with the given key in the given IData document as an array.
      */
     private static Object[] getAsArray(IData document, IDataKey key) {
         Object[] output = null;
@@ -1995,10 +1994,10 @@ public final class IDataHelper {
      * Sets the value associated with the given key in the given IData document. Note that this method mutates the given
      * IData document in place.
      *
-     * @param document An IData document.
-     * @param key      A simple or fully-qualified key identifying the value to be set.
-     * @param value    The value to be set.
-     * @return The input IData document with the value set.
+     * @param document  An IData document.
+     * @param key       A simple or fully-qualified key identifying the value to be set.
+     * @param value     The value to be set.
+     * @return          The input IData document with the value set.
      */
     public static IData put(IData document, String key, Object value) {
         return put(document, key, value, false);
@@ -2008,12 +2007,12 @@ public final class IDataHelper {
      * Sets the value associated with the given key in the given IData document. Note that this method mutates the given
      * IData document in place.
      *
-     * @param document An IData document.
-     * @param key      A simple or fully-qualified key identifying the value to be set.
-     * @param value    The value to be set.
-     * @param literal  If true, the key will be treated as a literal key, rather than potentially as a fully-qualified
-     *                 key.
-     * @return The input IData document with the value set.
+     * @param document  An IData document.
+     * @param key       A simple or fully-qualified key identifying the value to be set.
+     * @param value     The value to be set.
+     * @param literal   If true, the key will be treated as a literal key, rather than potentially as a fully-qualified
+     *                  key.
+     * @return          The input IData document with the value set.
      */
     public static IData put(IData document, String key, Object value, boolean literal) {
         return put(document, key, value, literal, true);
@@ -2023,14 +2022,14 @@ public final class IDataHelper {
      * Sets the value associated with the given key in the given IData document. Note that this method mutates the given
      * IData document in place.
      *
-     * @param document    An IData document.
-     * @param key         A simple or fully-qualified key identifying the value to be set.
-     * @param value       The value to be set.
-     * @param literal     If true, the key will be treated as a literal key, rather than potentially as a
-     *                    fully-qualified key.
-     * @param includeNull When true the value is set even when null, otherwise the value is only set when it is not
-     *                    null.
-     * @return The input IData document with the value set.
+     * @param document      An IData document.
+     * @param key           A simple or fully-qualified key identifying the value to be set.
+     * @param value         The value to be set.
+     * @param literal       If true, the key will be treated as a literal key, rather than potentially as a
+     *                      fully-qualified key.
+     * @param includeNull   When true the value is set even when null, otherwise the value is only set when it is not
+     *                      null.
+     * @return              The input IData document with the value set.
      */
     public static IData put(IData document, String key, Object value, boolean literal, boolean includeNull) {
         return put(document, IDataKey.of(key, literal), value, includeNull);
@@ -2040,12 +2039,12 @@ public final class IDataHelper {
      * Sets the value associated with the given key in the given IData document. Note that this method mutates the given
      * IData document in place.
      *
-     * @param document          An IData document.
-     * @param key               A fully-qualified key identifying the value to be set.
-     * @param value             The value to be set.
-     * @param includeNull       When true the value is set even when null, otherwise the value is only set when it is
-     *                          not null.
-     * @return The input IData document with the value set.
+     * @param document      An IData document.
+     * @param key           A fully-qualified key identifying the value to be set.
+     * @param value         The value to be set.
+     * @param includeNull   When true the value is set even when null, otherwise the value is only set when it is
+     *                      not null.
+     * @return              The input IData document with the value set.
      */
     private static IData put(IData document, IDataKey key, Object value, boolean includeNull) {
         if (!includeNull && value == null) return document;
@@ -2098,11 +2097,11 @@ public final class IDataHelper {
      * Sets the value associated with the given nth key in the given IData document. Note that this method mutates the
      * given IData document in place.
      *
-     * @param document The IData document to set the key's associated value in.
-     * @param key      The key whose value is to be set.
-     * @param n        Determines which occurrence of the key to set the value for.
-     * @param value    The value to be set.
-     * @return The IData document with the given nth key set to the given value.
+     * @param document  The IData document to set the key's associated value in.
+     * @param key       The key whose value is to be set.
+     * @param n         Determines which occurrence of the key to set the value for.
+     * @param value     The value to be set.
+     * @return          The IData document with the given nth key set to the given value.
      */
     private static IData put(IData document, String key, int n, Object value) {
         if (document == null || key == null || n < 0) return null;
@@ -2120,9 +2119,9 @@ public final class IDataHelper {
     /**
      * Converts the given object to a Map object, if possible.
      *
-     * @param object The object to be converted.
-     * @return A Map representation of the given object if its type is compatible (IData, IDataCodable, IDataPortable,
-     * ValuesCodable), otherwise null.
+     * @param object    The object to be converted.
+     * @return          A Map representation of the given object if its type is compatible (IData, IDataCodable,
+     *                  IDataPortable, ValuesCodable), otherwise null.
      */
     private static Map<String, Object> toMap(Object object) {
         if (object == null) return null;
@@ -2145,8 +2144,8 @@ public final class IDataHelper {
     /**
      * Converts an IData object to a Map object.
      *
-     * @param document An IData object to be converted.
-     * @return A Map representation of the given IData object.
+     * @param document  An IData object to be converted.
+     * @return          A Map representation of the given IData object.
      */
     public static Map<String, Object> toMap(IData document) {
         if (document == null) return null;
@@ -2176,8 +2175,8 @@ public final class IDataHelper {
     /**
      * Converts an IDataCodable object to a Map object.
      *
-     * @param document An IDataCodable object to be converted.
-     * @return A Map representation of the given IDataCodable object.
+     * @param document  An IDataCodable object to be converted.
+     * @return          A Map representation of the given IDataCodable object.
      */
     public static Map<String, Object> toMap(IDataCodable document) {
         return toMap(toIData(document));
@@ -2186,8 +2185,8 @@ public final class IDataHelper {
     /**
      * Converts an IDataPortable object to a Map object.
      *
-     * @param document An IDataPortable object to be converted.
-     * @return A Map representation of the given IDataPortable object.
+     * @param document  An IDataPortable object to be converted.
+     * @return          A Map representation of the given IDataPortable object.
      */
     public static Map<String, Object> toMap(IDataPortable document) {
         return toMap(toIData(document));
@@ -2196,8 +2195,8 @@ public final class IDataHelper {
     /**
      * Converts an ValuesCodable object to a Map object.
      *
-     * @param document An ValuesCodable object to be converted.
-     * @return A Map representation of the given ValuesCodable object.
+     * @param document  An ValuesCodable object to be converted.
+     * @return          A Map representation of the given ValuesCodable object.
      */
     public static Map<String, Object> toMap(ValuesCodable document) {
         return toMap(toIData(document));
@@ -2206,9 +2205,9 @@ public final class IDataHelper {
     /**
      * Converts an object to a List object, if possible.
      *
-     * @param object An object to be converted.
-     * @return A List representation of the given object, if the object was a compatible type (IData[], Table,
-     * IDataCodable[], IDataPortable[], ValuesCodable[]), otherwise null.
+     * @param object    An object to be converted.
+     * @return          A List representation of the given object, if the object was a compatible type (IData[],
+     *                  Table, IDataCodable[], IDataPortable[], ValuesCodable[]), otherwise null.
      */
     private static List<Map<String, Object>> toList(Object object) {
         if (object == null) return null;
@@ -2234,7 +2233,7 @@ public final class IDataHelper {
      * Converts an IData[] object to a List object.
      *
      * @param array An IData[] object to be converted.
-     * @return A List representation of the given IData[] object.
+     * @return      A List representation of the given IData[] object.
      */
     public static List<Map<String, Object>> toList(IData[] array) {
         if (array == null) return null;
@@ -2252,7 +2251,7 @@ public final class IDataHelper {
      * Converts a Table object to a List object.
      *
      * @param table An Table object to be converted.
-     * @return A List representation of the given Table object.
+     * @return      A List representation of the given Table object.
      */
     public static List<Map<String, Object>> toList(Table table) {
         return toList(toIDataArray(table));
@@ -2262,7 +2261,7 @@ public final class IDataHelper {
      * Converts an IDataCodable[] object to a List object.
      *
      * @param array An IDataCodable[] object to be converted.
-     * @return A List representation of the given IDataCodable[] object.
+     * @return      A List representation of the given IDataCodable[] object.
      */
     public static List<Map<String, Object>> toList(IDataCodable[] array) {
         return toList(toIDataArray(array));
@@ -2272,7 +2271,7 @@ public final class IDataHelper {
      * Converts an IDataPortable[] object to a List object.
      *
      * @param array An IDataPortable[] object to be converted.
-     * @return A List representation of the given IDataPortable[] object.
+     * @return      A List representation of the given IDataPortable[] object.
      */
     public static List<Map<String, Object>> toList(IDataPortable[] array) {
         return toList(toIDataArray(array));
@@ -2282,7 +2281,7 @@ public final class IDataHelper {
      * Converts an ValuesCodable[] object to a java.util.List object.
      *
      * @param array An ValuesCodable[] object to be converted.
-     * @return A List representation of the given ValuesCodable[] object.
+     * @return      A List representation of the given ValuesCodable[] object.
      */
     public static List<Map<String, Object>> toList(ValuesCodable[] array) {
         return toList(toIDataArray(array));
@@ -2291,9 +2290,9 @@ public final class IDataHelper {
     /**
      * Returns an IData representation of the given object, if possible.
      *
-     * @param object The object to convert.
-     * @return An IData representing the given object if its type is compatible (IData, IDataCodable, IDataPortable,
-     * ValuesCodable), otherwise null.
+     * @param object    The object to convert.
+     * @return          An IData representing the given object if its type is compatible (IData, IDataCodable,
+     *                  IDataPortable, ValuesCodable), otherwise null.
      */
     public static IData toIData(Object object) {
         if (object == null) return null;
@@ -2318,8 +2317,8 @@ public final class IDataHelper {
     /**
      * Returns an IData representation of the given IDataCodable object.
      *
-     * @param document The IDataCodable object to be converted to an IData object.
-     * @return An IData representation of the give IDataCodable object.
+     * @param document  The IDataCodable object to be converted to an IData object.
+     * @return          An IData representation of the give IDataCodable object.
      */
     public static IData toIData(IDataCodable document) {
         if (document == null) return null;
@@ -2329,8 +2328,8 @@ public final class IDataHelper {
     /**
      * Returns an IData representation of the given IDataPortable object.
      *
-     * @param document The IDataPortable object to be converted to an IData object.
-     * @return An IData representation of the give IDataPortable object.
+     * @param document  The IDataPortable object to be converted to an IData object.
+     * @return          An IData representation of the give IDataPortable object.
      */
     public static IData toIData(IDataPortable document) {
         if (document == null) return null;
@@ -2340,8 +2339,8 @@ public final class IDataHelper {
     /**
      * Returns an IData representation of the given ValuesCodable object.
      *
-     * @param document The ValuesCodable object to be converted to an IData object.
-     * @return An IData representation of the give ValuesCodable object.
+     * @param document  The ValuesCodable object to be converted to an IData object.
+     * @return          An IData representation of the give ValuesCodable object.
      */
     public static IData toIData(ValuesCodable document) {
         if (document == null) return null;
@@ -2351,8 +2350,8 @@ public final class IDataHelper {
     /**
      * Returns an IData representation of the given Map.
      *
-     * @param map The Map to be converted.
-     * @return An IData representation of the given map.
+     * @param map   The Map to be converted.
+     * @return      An IData representation of the given map.
      */
     public static IData toIData(Map map) {
         if (map == null) return null;
@@ -2372,9 +2371,9 @@ public final class IDataHelper {
     /**
      * Returns an IData[] representation of the given object, if possible.
      *
-     * @param object The Table object to be converted to an IData[] object.
-     * @return An IData[] representation of the give object if the object was a compatible type (IData[], Table,
-     * IDataCodable[], IDataPortable[], ValuesCodable[]), otherwise null.
+     * @param object    The Table object to be converted to an IData[] object.
+     * @return          An IData[] representation of the give object if the object was a compatible type (IData[],
+     *                  Table, IDataCodable[], IDataPortable[], ValuesCodable[]), otherwise null.
      */
     public static IData[] toIDataArray(Object object) {
         if (object == null) return null;
@@ -2402,7 +2401,7 @@ public final class IDataHelper {
      * Returns an IData[] representation of the given Table object.
      *
      * @param table The Table object to be converted to an IData[] object.
-     * @return An IData[] representation of the give Table object.
+     * @return      An IData[] representation of the give Table object.
      */
     public static IData[] toIDataArray(Table table) {
         if (table == null) return null;
@@ -2413,7 +2412,7 @@ public final class IDataHelper {
      * Returns an IData[] representation of the given IDataCodable[] object.
      *
      * @param array The IDataCodable[] object to be converted to an IData[] object.
-     * @return An IData[] representation of the give IDataCodable[] object.
+     * @return      An IData[] representation of the give IDataCodable[] object.
      */
     public static IData[] toIDataArray(IDataCodable[] array) {
         if (array == null) return null;
@@ -2428,7 +2427,7 @@ public final class IDataHelper {
      * Returns an IData[] representation of the given IDataPortable[] object.
      *
      * @param array The IDataPortable[] object to be converted to an IData[] object.
-     * @return An IData[] representation of the give IDataPortable[] object.
+     * @return      An IData[] representation of the give IDataPortable[] object.
      */
     public static IData[] toIDataArray(IDataPortable[] array) {
         if (array == null) return null;
@@ -2443,7 +2442,7 @@ public final class IDataHelper {
      * Returns an IData[] representation of the given ValuesCodable[] object.
      *
      * @param array The ValuesCodable[] object to be converted to an IData[] object.
-     * @return An IData[] representation of the give ValuesCodable[] object.
+     * @return      An IData[] representation of the give ValuesCodable[] object.
      */
     public static IData[] toIDataArray(ValuesCodable[] array) {
         if (array == null) return null;
@@ -2458,7 +2457,7 @@ public final class IDataHelper {
      * Returns an IData[] representation of the given Map[] object.
      *
      * @param array The Map[] object to be converted to an IData[] object.
-     * @return An IData[] representation of the give Map[] object.
+     * @return      An IData[] representation of the give Map[] object.
      */
     public static IData[] toIDataArray(Map[] array) {
         if (array == null) return null;
@@ -2473,7 +2472,7 @@ public final class IDataHelper {
      * Returns the union set of keys present in every item in the given IData[] document list.
      *
      * @param array An IData[] to retrieve the union set of keys from.
-     * @return The union set of keys from the given IData[].
+     * @return      The union set of keys from the given IData[].
      */
     public static String[] getKeys(IData[] array) {
         return getKeys(array, (Pattern)null);
@@ -2485,7 +2484,7 @@ public final class IDataHelper {
      *
      * @param array         An IData[] to retrieve the union set of keys from.
      * @param patternString A regular expression pattern the returned keys must match.
-     * @return The union set of keys from the given IData[].
+     * @return              The union set of keys from the given IData[].
      */
     public static String[] getKeys(IData[] array, String patternString) {
         return getKeys(array, patternString == null ? null : Pattern.compile(patternString));
@@ -2495,9 +2494,9 @@ public final class IDataHelper {
      * Returns the union set of keys present in every item in the given IData[] document list that match the given
      * regular expression pattern.
      *
-     * @param array   An IData[] to retrieve the union set of keys from.
-     * @param pattern A regular expression pattern the returned keys must match.
-     * @return The union set of keys from the given IData[].
+     * @param array     An IData[] to retrieve the union set of keys from.
+     * @param pattern   A regular expression pattern the returned keys must match.
+     * @return          The union set of keys from the given IData[].
      */
     public static String[] getKeys(IData[] array, Pattern pattern) {
         java.util.Set<String> keys = new java.util.LinkedHashSet<String>();
@@ -2525,9 +2524,9 @@ public final class IDataHelper {
      * Converts an IData document to an IData[] document list with each item representing each key value tuple from the
      * given document.
      *
-     * @param document An IData document to pivot.
-     * @param recurse  Whether to recursively pivot embedded IData objects.
-     * @return The given IData document pivoted.
+     * @param document  An IData document to pivot.
+     * @param recurse   Whether to recursively pivot embedded IData objects.
+     * @return          The given IData document pivoted.
      */
     public static IData[] pivot(IData document, boolean recurse) {
         if (document == null) return null;
@@ -2575,7 +2574,7 @@ public final class IDataHelper {
      * @param array     The IData[] to be pivoted.
      * @param delimiter The delimiter to use when building a compound key.
      * @param pivotKeys The keys to pivot on.
-     * @return The IData document representing the pivoted IData[].
+     * @return          The IData document representing the pivoted IData[].
      */
     public static IData pivot(IData[] array, String delimiter, String... pivotKeys) {
         if (array == null || pivotKeys == null || pivotKeys.length == 0) return null;
@@ -2607,9 +2606,9 @@ public final class IDataHelper {
     /**
      * Sorts the given IData document by its keys in natural ascending order.
      *
-     * @param document An IData document to be sorted by its keys.
-     * @return A new IData document which is duplicate of the given input IData document but with its keys sorted in
-     * natural ascending order.
+     * @param document  An IData document to be sorted by its keys.
+     * @return          A new IData document which is duplicate of the given input IData document but with its keys
+     *                  sorted in natural ascending order.
      */
     public static IData sort(IData document) {
         return sort(document, true);
@@ -2618,11 +2617,11 @@ public final class IDataHelper {
     /**
      * Sorts the given IData document by its keys in natural ascending order.
      *
-     * @param document An IData document to be sorted by its keys.
-     * @param recurse  A boolean which when true will also recursively sort nested IData document and IData[] document
-     *                 lists.
-     * @return A new IData document which is duplicate of the given input IData document but with its keys sorted in
-     * natural ascending order.
+     * @param document  An IData document to be sorted by its keys.
+     * @param recurse   A boolean which when true will also recursively sort nested IData document and IData[] document
+     *                  lists.
+     * @return          A new IData document which is duplicate of the given input IData document but with its keys
+     *                  sorted in natural ascending order.
      */
     public static IData sort(IData document, boolean recurse) {
         return sort(document, recurse, false);
@@ -2631,12 +2630,12 @@ public final class IDataHelper {
     /**
      * Sorts the given IData document by its keys in natural ascending or descending order.
      *
-     * @param document   An IData document to be sorted by its keys.
-     * @param recurse    A boolean which when true will also recursively sort nested IData document and IData[] document
-     *                   lists.
-     * @param descending Whether to sort in descending or ascending order.
-     * @return A new IData document which is duplicate of the given input IData document but with its keys sorted in
-     * natural ascending order.
+     * @param document      An IData document to be sorted by its keys.
+     * @param recurse       A boolean which when true will also recursively sort nested IData document and IData[]
+     *                      document lists.
+     * @param descending    Whether to sort in descending or ascending order.
+     * @return              A new IData document which is duplicate of the given input IData document but with its keys
+     *                      sorted in natural ascending order.
      */
     public static IData sort(IData document, boolean recurse, boolean descending) {
         if (document == null) return null;
@@ -2685,7 +2684,7 @@ public final class IDataHelper {
      *
      * @param array An IData[] array to be sorted.
      * @param key   The key to use to sort the array.
-     * @return A new IData[] array sorted by the given key.
+     * @return      A new IData[] array sorted by the given key.
      */
     public static IData[] sort(IData[] array, String key) {
         return sort(array, key, true);
@@ -2699,7 +2698,7 @@ public final class IDataHelper {
      * @param key       The key to use to sort the array.
      * @param ascending When true, the array will be sorted in ascending order, otherwise it will be sorted in
      *                  descending order.
-     * @return A new IData[] array sorted by the given key.
+     * @return          A new IData[] array sorted by the given key.
      */
     public static IData[] sort(IData[] array, String key, boolean ascending) {
         String[] keys = null;
@@ -2717,7 +2716,7 @@ public final class IDataHelper {
      *
      * @param array An IData[] array to be sorted.
      * @param keys  The list of keys in order of precedence to use to sort the array.
-     * @return A new IData[] array sorted by the given keys.
+     * @return      A new IData[] array sorted by the given keys.
      */
     public static IData[] sort(IData[] array, String[] keys) {
         return sort(array, keys, true);
@@ -2731,7 +2730,7 @@ public final class IDataHelper {
      * @param keys      The list of keys in order of precedence to use to sort the array.
      * @param ascending When true, the array will be sorted in ascending order, otherwise it will be sorted in
      *                  descending order.
-     * @return A new IData[] array sorted by the given keys.
+     * @return          A new IData[] array sorted by the given keys.
      */
     public static IData[] sort(IData[] array, String[] keys, boolean ascending) {
         if (array == null || array.length < 2 || keys == null || keys.length == 0) return array;
@@ -2747,9 +2746,9 @@ public final class IDataHelper {
     /**
      * Returns a new IData[] array with all elements sorted according to the specified criteria.
      *
-     * @param array    An IData[] array to be sorted.
-     * @param criteria One or more sort criteria.
-     * @return A new IData[] array sorted by the given criteria.
+     * @param array     An IData[] array to be sorted.
+     * @param criteria  One or more sort criteria.
+     * @return          A new IData[] array sorted by the given criteria.
      */
     public static IData[] sort(IData[] array, IDataComparisonCriterion... criteria) {
         if (array == null) return null;
@@ -2766,9 +2765,9 @@ public final class IDataHelper {
     /**
      * Returns a new IData[] array with all elements sorted according to the specified criteria.
      *
-     * @param array    An IData[] array to be sorted.
-     * @param criteria One or more sort criteria specified as an IData[].
-     * @return A new IData[] array sorted by the given criteria.
+     * @param array     An IData[] array to be sorted.
+     * @param criteria  One or more sort criteria specified as an IData[].
+     * @return          A new IData[] array sorted by the given criteria.
      */
     public static IData[] sort(IData[] array, IData[] criteria) {
         return sort(array, IDataComparisonCriterion.of(criteria));
@@ -2777,9 +2776,9 @@ public final class IDataHelper {
     /**
      * Returns a new IData[] array with all elements sorted according to the specified criteria.
      *
-     * @param array      An IData[] array to be sorted.
-     * @param comparator An IDataComparator object used to determine element ordering.
-     * @return A new IData[] array sorted by the given criteria.
+     * @param array         An IData[] array to be sorted.
+     * @param comparator    An IDataComparator object used to determine element ordering.
+     * @return              A new IData[] array sorted by the given criteria.
      */
     public static IData[] sort(IData[] array, IDataComparator comparator) {
         if (array == null) return null;
@@ -2789,10 +2788,10 @@ public final class IDataHelper {
     /**
      * Returns the values associated with the given key from each item in the given IData[] document list.
      *
-     * @param array        An IData[] array to return values from.
-     * @param key          A fully-qualified key identifying the values to return.
-     * @param defaultValue The default value returned if the key does not exist.
-     * @return The values associated with the given key from each IData item in the given array.
+     * @param array         An IData[] array to return values from.
+     * @param key           A fully-qualified key identifying the values to return.
+     * @param defaultValue  The default value returned if the key does not exist.
+     * @return              The values associated with the given key from each IData item in the given array.
      */
     public static Object[] getValues(IData[] array, String key, Object defaultValue) {
         if (array == null || key == null) return null;
@@ -3002,8 +3001,8 @@ public final class IDataHelper {
      * list.
      *
      * @param array The IData[] document list to find the unique set of.
-     * @return A new IData[] document list only containing the first occurrence of each IData containing a distinct set
-     * of values.
+     * @return      A new IData[] document list only containing the first occurrence of each IData containing a
+     *              distinct set of values.
      */
     public static IData[] unique(IData[] array) {
         return unique(array, (String[])null);
@@ -3016,8 +3015,8 @@ public final class IDataHelper {
      * @param array The IData[] document list to find the unique set of.
      * @param keys  The keys whose associated values will be used to determine uniqueness. If not specified, all keys
      *              will be used to determine uniqueness.
-     * @return A new IData[] document list only containing the first occurrence of each IData containing a distinct set
-     * of values associated with the given list of keys.
+     * @return      A new IData[] document list only containing the first occurrence of each IData containing a distinct
+     *              set of values associated with the given list of keys.
      */
     public static IData[] unique(IData[] array, String... keys) {
         IData[] output = null;
