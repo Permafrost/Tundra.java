@@ -83,12 +83,12 @@ public final class IDataHelper {
     /**
      * Returns the keys that match the given regular expression pattern in the given IData document.
      *
-     * @param document An IData document to retrieve the keys from.
-     * @param pattern  A regular expression pattern which the returned set of keys must match.
-     * @return The list of keys present in the given IData document that match the given regular expression pattern.
+     * @param document  An IData document to retrieve the keys from.
+     * @param pattern   A regular expression pattern which the returned set of keys must match.
+     * @return          The list of keys present in the given IData document that match the given regular expression pattern.
      */
     public static String[] getKeys(IData document, Pattern pattern) {
-        java.util.List<String> keys = new java.util.ArrayList<String>();
+        java.util.List<String> keys = new java.util.ArrayList<String>(size(document));
         for (Map.Entry<String, Object> entry : IDataMap.of(document)) {
             String key = entry.getKey();
 
