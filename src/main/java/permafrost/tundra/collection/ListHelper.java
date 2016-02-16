@@ -423,7 +423,7 @@ public class ListHelper {
 
         List<E> head = create(count);
 
-        while(head.size() < count || list.size() > 0) {
+        while(head.size() < count && list.size() > 0) {
             head.add(list.remove(0));
         }
 
