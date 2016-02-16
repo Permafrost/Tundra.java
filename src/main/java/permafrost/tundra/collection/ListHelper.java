@@ -25,9 +25,9 @@
 package permafrost.tundra.collection;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
 /**
  * A collection of convenience methods for working with java.util.List objects.
@@ -504,7 +504,7 @@ public class ListHelper {
      * @return      A new list containing only the unique items from the given list.
      */
     public static <E> List<E> unique(List<E> list) {
-        Set<E> set = new TreeSet<E>();
+        Set<E> set = new LinkedHashSet<E>();
 
         if (list != null) {
             set.addAll(list);
