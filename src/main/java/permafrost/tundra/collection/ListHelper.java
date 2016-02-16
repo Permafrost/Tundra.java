@@ -366,16 +366,12 @@ public class ListHelper {
      *              exist.
      */
     public static <E> E get(List<E> list, int index) {
-        E item = null;
+        if (list == null) throw new NullPointerException("list must not be null");
 
         // support negative/reverse indexing
         if (index < 0) index += list.size();
 
-        if (exists(list, index)) {
-            item = list.get(index);
-        }
-
-        return item;
+        return list.get(index);
     }
 
     /**
