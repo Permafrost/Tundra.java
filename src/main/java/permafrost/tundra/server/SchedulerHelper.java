@@ -68,4 +68,20 @@ public class SchedulerHelper {
         stop();
         start();
     }
+
+    /**
+     * Returns the name of this Integration Server task scheduler node.
+     *
+     * @return The name of this Integration Server task scheduler node.
+     * @throws ServiceException If an error occurs retrieving the name.
+     */
+    public static String self() throws ServiceException {
+        String name = null;
+        try {
+            name = ScheduleManager.getNodeName();
+        } catch(Exception ex) {
+            ExceptionHelper.raise(ex);
+        }
+        return name;
+    }
 }
