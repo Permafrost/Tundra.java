@@ -33,8 +33,6 @@ import java.util.Set;
  * A collection of convenience methods for working with java.util.List objects.
  */
 public class ListHelper {
-    public static int DEFAULT_LIST_CAPACITY = 64;
-
     /**
      * Disallow instantiation of this class.
      */
@@ -156,7 +154,7 @@ public class ListHelper {
      * @return                A new list.
      */
     public static <E> List<E> create() {
-        return create(DEFAULT_LIST_CAPACITY);
+        return new ArrayList<E>();
     }
 
     /**
@@ -167,7 +165,6 @@ public class ListHelper {
      * @return                A new list.
      */
     public static <E> List<E> create(int initialCapacity) {
-        if (initialCapacity < DEFAULT_LIST_CAPACITY) initialCapacity = DEFAULT_LIST_CAPACITY;
         return new ArrayList<E>(initialCapacity);
     }
 
