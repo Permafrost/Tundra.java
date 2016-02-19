@@ -27,21 +27,21 @@ package permafrost.tundra.io.filter;
 /**
  * A FilenameFilter that only accepts objects that match the given wildcard expression.
  */
-public class WildcardFilter extends RegularExpressionFilter {
+public class WildcardFilenameFilter extends RegularExpressionFilenameFilter {
     /**
-     * Constructs a new WilcardFilter using the given wildcard pattern.
+     * Constructs a new WildcardFilenameFilter using the given wildcard pattern.
      *
      * @param pattern A wildcard pattern to use for filtering files.
      */
-    public WildcardFilter(String pattern) {
+    public WildcardFilenameFilter(String pattern) {
         super(toRegularExpression(pattern));
     }
 
     /**
      * Returns a regular expression representation of the given wildcard pattern.
      *
-     * @param wildcardPattern The wildcardPattern to be converted to a regular expression.
-     * @return A regular expression representation of the given wildcard pattern.
+     * @param wildcardPattern   The wildcard pattern to be converted to a regular expression.
+     * @return                  A regular expression representation of the given wildcard pattern.
      */
     protected static String toRegularExpression(String wildcardPattern) {
         StringBuilder buffer = new StringBuilder();

@@ -99,8 +99,8 @@ public abstract class AbstractDirectoryListing implements DirectoryListing {
     /**
      * Converts a List to a String[].
      *
-     * @param list The List to be converted.
-     * @return The String[] representation of the given list.
+     * @param list  The List to be converted.
+     * @return      The String[] representation of the given list.
      */
     private String[] convertListToStringArray(List<File> list) {
         if (list == null) return null;

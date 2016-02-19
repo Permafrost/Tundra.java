@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2015 Lachlan Dowding
+ * Copyright (c) 2016 Lachlan Dowding
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,41 +28,32 @@ import java.io.File;
 import java.io.FilenameFilter;
 
 /**
- * A FilenameFilter that only accepts directories.
+ * A FilenameFilter that negates another FilenameFilter.
  */
-public class DirectoryFilter implements FilenameFilter {
+public class NotFilenameFilter implements FilenameFilter {
     /**
-     * Initialization on demand holder idiom.
+     * The FilenameFilter that is negated by this object.
      */
-    private static class Holder {
-        /**
-         * The singleton instance of the class.
-         */
-        static final DirectoryFilter INSTANCE = new DirectoryFilter();
+    protected FilenameFilter filter;
+
+    /**
+     * Constructs a new NotFilenameFilter to negate the given FilenameFilter.
+     *
+     * @param filter    The FilenameFilter object to be negated.
+     */
+    public NotFilenameFilter(FilenameFilter filter) {
+        if (filter == null) throw new NullPointerException("filter must not be null");
+        this.filter = filter;
     }
 
     /**
-     * Disallow instantiation of this class.
-     */
-    private DirectoryFilter() {}
-
-    /**
-     * Returns the singleton instance of this class.
+     * Returns true if the given parent and child passes all chained filters.
      *
-     * @return The singleton instance of this class.
-     */
-    public static DirectoryFilter getInstance() {
-        return Holder.INSTANCE;
-    }
-
-    /**
-     * Returns true if the given child is a directory.
-     *
-     * @param parent The parent directory being filtered.
-     * @param child  The child filename being filtered.
-     * @return True if the given child is a directory.
+     * @param parent    The parent directory being filtered.
+     * @param child     The child filename being filtered.
+     * @return          True if the given parent and child passes all chained filters.
      */
     public boolean accept(File parent, String child) {
-        return (new File(parent, child)).isDirectory();
+        return !filter.accept(parent, child);
     }
 }

@@ -26,43 +26,44 @@ package permafrost.tundra.io.filter;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 /**
- * A FilenameFilter that only accepts files.
+ * An abstract FilenameFilter that chains together other filters.
  */
-public class FileFilter implements FilenameFilter {
+public abstract class ConditionalFilenameFilter implements FilenameFilter {
     /**
-     * Initialization on demand holder idiom.
+     * The list of chained FilenameFilter objects.
      */
-    private static class Holder {
-        /**
-         * The singleton instance of the class.
-         */
-        static final FileFilter INSTANCE = new FileFilter();
-    }
+    protected List<FilenameFilter> filters = new ArrayList<FilenameFilter>();
 
     /**
-     * Disallow instantiation of this class.
-     */
-    private FileFilter() {}
-
-    /**
-     * Returns the singleton instance of this class.
+     * Adds a FilenameFilter object to the list of chained filters.
      *
-     * @return The singleton instance of this class.
+     * @param filter    The FilenameFilter object to be added to the chain.
      */
-    public static FileFilter getInstance() {
-        return Holder.INSTANCE;
+    public void add(FilenameFilter filter) {
+        filters.add(filter);
     }
 
     /**
-     * Returns true if the given child is a file.
+     * Adds a collection of FilenameFilter objects to the list of chained filters.
      *
-     * @param parent The parent directory being filtered.
-     * @param child  The child filename being filtered.
-     * @return True if the given child is a file.
+     * @param filters   A collection of FilenameFilter object to be added to the chain.
      */
-    public boolean accept(File parent, String child) {
-        return (new File(parent, child)).isFile();
+    public void addAll(Collection<FilenameFilter> filters) {
+        filters.addAll(filters);
     }
+
+    /**
+     * Returns true if the given parent and child passes all filters.
+     *
+     * @param parent    The parent directory being filtered.
+     * @param child     The child filename being filtered.
+     * @return          True if the given parent and child passes all filters.
+     */
+    public abstract boolean accept(File parent, String child);
 }

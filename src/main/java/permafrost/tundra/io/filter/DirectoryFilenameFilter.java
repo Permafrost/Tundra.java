@@ -24,49 +24,45 @@
 
 package permafrost.tundra.io.filter;
 
-import permafrost.tundra.io.FileHelper;
 import java.io.File;
 import java.io.FilenameFilter;
-import java.util.regex.Pattern;
 
 /**
- * A FilenameFilter that only accepts objects whose names match the given regular expression.
+ * A FilenameFilter that only accepts directories.
  */
-public class RegularExpressionFilter implements FilenameFilter {
-    protected Pattern pattern;
-
+public class DirectoryFilenameFilter implements FilenameFilter {
     /**
-     * Constructs a new RegularExpressionFilter using the given pattern.
-     *
-     * @param pattern A regular expression pattern to be used to filter files.
+     * Initialization on demand holder idiom.
      */
-    public RegularExpressionFilter(String pattern) {
-        this(Pattern.compile(pattern));
+    private static class Holder {
+        /**
+         * The singleton instance of the class.
+         */
+        static final DirectoryFilenameFilter INSTANCE = new DirectoryFilenameFilter();
     }
 
     /**
-     * Constructs a new RegularExpressionFilter using the given pattern.
-     *
-     * @param pattern A regular expression pattern to be used to filter files.
+     * Disallow instantiation of this class.
      */
-    public RegularExpressionFilter(Pattern pattern) {
-        if (pattern == null) throw new IllegalArgumentException("pattern must not be null");
+    private DirectoryFilenameFilter() {}
 
-        if (FileHelper.isCaseInsensitive()) {
-            this.pattern = Pattern.compile(pattern.pattern(), pattern.flags() | Pattern.CASE_INSENSITIVE);
-        } else {
-            this.pattern = pattern;
-        }
+    /**
+     * Returns the singleton instance of this class.
+     *
+     * @return The singleton instance of this class.
+     */
+    public static DirectoryFilenameFilter getInstance() {
+        return Holder.INSTANCE;
     }
 
     /**
-     * Returns true if the given child matches the specified regular expression.
+     * Returns true if the given child is a directory.
      *
-     * @param parent The parent directory being filtered.
-     * @param child  The child filename being filtered.
-     * @return True if the given child matches the specified regular expression.
+     * @param parent    The parent directory being filtered.
+     * @param child     The child filename being filtered.
+     * @return          True if the given child is a directory.
      */
     public boolean accept(File parent, String child) {
-        return pattern.matcher(child).matches();
+        return (new File(parent, child)).isDirectory();
     }
 }

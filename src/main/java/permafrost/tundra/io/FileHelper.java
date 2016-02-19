@@ -29,8 +29,8 @@ import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
 import com.wm.data.IDataUtil;
-import permafrost.tundra.io.filter.RegularExpressionFilter;
-import permafrost.tundra.io.filter.WildcardFilter;
+import permafrost.tundra.io.filter.RegularExpressionFilenameFilter;
+import permafrost.tundra.io.filter.WildcardFilenameFilter;
 import permafrost.tundra.lang.CharsetHelper;
 import permafrost.tundra.lang.StringHelper;
 import permafrost.tundra.mime.MIMETypeHelper;
@@ -624,9 +624,9 @@ public final class FileHelper {
         if (file != null && pattern != null) {
             java.io.FilenameFilter filter;
             if (patternIsRegularExpression) {
-                filter = new RegularExpressionFilter(pattern);
+                filter = new RegularExpressionFilenameFilter(pattern);
             } else {
-                filter = new WildcardFilter(pattern);
+                filter = new WildcardFilenameFilter(pattern);
             }
             match = filter.accept(file.getParentFile(), file.getName());
         }

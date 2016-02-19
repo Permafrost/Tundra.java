@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2015 Lachlan Dowding
+ * Copyright (c) 2016 Lachlan Dowding
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,54 +26,44 @@ package permafrost.tundra.io.filter;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 
 /**
- * A FilenameFilter that chains together other filters.
+ * Chains multiple FilenameFilter objects with a logical AND operation.
  */
-public class ChainFilter implements FilenameFilter {
-    protected List<FilenameFilter> filters;
-
+public class AndFilenameFilter extends ConditionalFilenameFilter {
     /**
-     * Constructs a new ChainFilter from the given list of FilenameFilter objects.
+     * Constructs a new AndFilenameFilter.
      *
-     * @param filters A list of FilenameFilter objects to be chained together.
+     * @param filters   The list of filters to be chained with a logical AND operation.
      */
-    public ChainFilter(FilenameFilter... filters) {
-        this.filters = Arrays.asList(filters);
+    public AndFilenameFilter(FilenameFilter ...filters) {
+        this(filters == null ? null : Arrays.asList(filters));
     }
 
     /**
-     * Constructs a new ChainFilter from the given list of FilenameFilter objects.
+     * Constructs a new AndFilenameFilter.
      *
-     * @param filters A list of FilenameFilter objects to be chained together.
+     * @param filters   The list of filters to be chained with a logical AND operation.
      */
-    public ChainFilter(Collection<FilenameFilter> filters) {
-        this.filters = new ArrayList<FilenameFilter>(filters.size());
-        this.filters.addAll(filters);
+    public AndFilenameFilter(Collection<FilenameFilter> filters) {
+        addAll(filters);
     }
 
     /**
      * Returns true if the given parent and child passes all chained filters.
      *
-     * @param parent The parent directory being filtered.
-     * @param child  The child filename being filtered.
-     * @return True if the given parent and child passes all chained filters.
+     * @param parent    The parent directory being filtered.
+     * @param child     The child filename being filtered.
+     * @return          True if the given parent and child passes all chained filters.
      */
     public boolean accept(File parent, String child) {
-        boolean accept = true;
-
-        if (filters != null) {
-            for (FilenameFilter filter : filters) {
-                if (filter != null) {
-                    accept = accept && filter.accept(parent, child);
-                    if (!accept) break; // short circuit the chain if file was rejected
-                }
+        for (FilenameFilter filter : filters) {
+            if (filter != null) {
+                if (!filter.accept(parent, child)) return false;
             }
         }
-        return accept;
+        return !filters.isEmpty();
     }
 }
