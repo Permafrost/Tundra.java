@@ -107,9 +107,9 @@ public final class URIHelper {
                     if (user != null) IDataUtil.put(sc, "user", user);
                     if (password != null) IDataUtil.put(sc, "password", password);
 
-                    // hosts are case-insensitive, according to RFC 2396
+                    // hosts are case-insensitive, according to RFC 2396, but we will preserve the case to be safe
                     String host = uri.getHost();
-                    if (host != null) IDataUtil.put(sc, "host", host.toLowerCase());
+                    if (host != null) IDataUtil.put(sc, "host", host);
 
                     // if port is -1, then it wasn't specified in the URI
                     int port = uri.getPort();
@@ -210,9 +210,9 @@ public final class URIHelper {
 
                     if (registry == null) {
                         IDataCursor sc = server.getCursor();
+
+                        // hosts are case-insensitive, according to RFC 2396, but we will preserve the case to be safe
                         String host = IDataUtil.getString(sc, "host");
-                        // hosts are case-insensitive, according to RFC 2396
-                        if (host != null) host = host.toLowerCase();
 
                         String portString = IDataUtil.getString(sc, "port");
                         int port = -1;
