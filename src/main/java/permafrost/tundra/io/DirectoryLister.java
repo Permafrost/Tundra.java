@@ -29,6 +29,7 @@ import permafrost.tundra.io.filter.DirectoryFilenameFilter;
 import permafrost.tundra.io.filter.FileFilenameFilter;
 import permafrost.tundra.io.filter.NotFilenameFilter;
 import permafrost.tundra.io.filter.OrFilenameFilter;
+import permafrost.tundra.lang.ArrayHelper;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
@@ -66,6 +67,17 @@ public class DirectoryLister {
      */
     public DirectoryLister(String directory, boolean recurse) {
         this(directory, recurse, null, null);
+    }
+
+    /**
+     * Constructs a new DirectoryLister for listing the contents of a given directory.
+     *
+     * @param directory     The directory whose contents are to be listed.
+     * @param recurse       If true, all child directories will be recursively listed also.
+     * @param inclusion     A filters to include filenames from the returned listing.
+     */
+    public DirectoryLister(String directory, boolean recurse, FilenameFilter inclusion) {
+        this(directory, recurse, null, ArrayHelper.arrayify(inclusion));
     }
 
     /**
