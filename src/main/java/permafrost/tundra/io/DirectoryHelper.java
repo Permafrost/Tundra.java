@@ -27,6 +27,7 @@ package permafrost.tundra.io;
 import permafrost.tundra.time.DateTimeHelper;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Calendar;
@@ -206,12 +207,13 @@ public final class DirectoryHelper {
      *
      * @param  directory                The directory to be purged.
      * @param  duration                 The age files must be before they are deleted.
+     * @param  filter                   An optional FilenameFilter used to filter which files are deleted.
      * @param  recurse                  If true, then child files and directories will also be recursively purged.
      * @return                          The number of files deleted.
      * @throws FileNotFoundException    If the directory does not exist.
      */
-    public static long purge(File directory, Duration duration, boolean recurse) throws FileNotFoundException {
-        return purge(directory, DateTimeHelper.earlier(duration), recurse);
+    public static long purge(File directory, Duration duration, FilenameFilter filter, boolean recurse) throws FileNotFoundException {
+        return purge(directory, DateTimeHelper.earlier(duration), filter, recurse);
     }
 
     /**
@@ -220,12 +222,13 @@ public final class DirectoryHelper {
      *
      * @param  directory                The directory to be purged.
      * @param  duration                 The age files must be before they are deleted.
+     * @param  filter                   An optional FilenameFilter used to filter which files are deleted.
      * @param  recurse                  If true, then child files and directories will also be recursively purged.
      * @return                          The number of files deleted.
      * @throws FileNotFoundException    If the directory does not exist.
      */
-    public static long purge(String directory, Duration duration, boolean recurse) throws FileNotFoundException {
-        return purge(FileHelper.construct(directory), duration, recurse);
+    public static long purge(String directory, Duration duration, FilenameFilter filter, boolean recurse) throws FileNotFoundException {
+        return purge(FileHelper.construct(directory), duration, filter, recurse);
     }
 
     /**
@@ -234,22 +237,23 @@ public final class DirectoryHelper {
      *
      * @param  directory                The directory to be purged.
      * @param  olderThan                Only files modified prior to this datetime will be deleted.
+     * @param  filter                   An optional FilenameFilter used to filter which files are deleted.
      * @param  recurse                  If true, then child files and directories will also be recursively purged.
      * @return                          The number of files deleted.
      * @throws FileNotFoundException    If the directory does not exist.
      */
-    public static long purge(File directory, Calendar olderThan, boolean recurse) throws FileNotFoundException {
+    public static long purge(File directory, Calendar olderThan, FilenameFilter filter, boolean recurse) throws FileNotFoundException {
         long count = 0;
 
         for (String item : list(directory)) {
             File child = new File(directory, item);
             if (child.exists()) {
-                if (child.isFile()) {
+                if (child.isFile() && (filter == null || filter.accept(directory, item))) {
                     Calendar modified = Calendar.getInstance();
                     modified.setTime(new java.util.Date(child.lastModified()));
                     if (modified.compareTo(olderThan) <= 0 && child.delete()) count += 1;
                 } else if (recurse && child.isDirectory()) {
-                    count += purge(child, olderThan, recurse);
+                    count += purge(child, olderThan, filter, recurse);
                 }
             }
         }
@@ -263,14 +267,14 @@ public final class DirectoryHelper {
      *
      * @param  directory                The directory to be purged.
      * @param  olderThan                Only files modified prior to this datetime will be deleted.
+     * @param  filter                   An optional FilenameFilter used to filter which files are deleted.
      * @param  recurse                  If true, then child files and directories will also be recursively purged.
      * @return                          The number of files deleted.
      * @throws FileNotFoundException    If the directory does not exist.
      */
-    public static long purge(String directory, Calendar olderThan, boolean recurse) throws FileNotFoundException {
-        return purge(FileHelper.construct(directory), olderThan, recurse);
+    public static long purge(String directory, Calendar olderThan, FilenameFilter filter, boolean recurse) throws FileNotFoundException {
+        return purge(FileHelper.construct(directory), olderThan, filter, recurse);
     }
-
 
     /**
      * Creates a new path given a parent directory and children.
