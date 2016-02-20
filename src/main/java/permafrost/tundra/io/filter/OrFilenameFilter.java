@@ -35,6 +35,11 @@ import java.util.Collection;
 public class OrFilenameFilter extends ConditionalFilenameFilter {
     /**
      * Constructs a new OrFilenameFilter.
+     */
+    public OrFilenameFilter() {}
+
+    /**
+     * Constructs a new OrFilenameFilter.
      *
      * @param filters   The list of filters to be chained with a logical OR operation.
      */

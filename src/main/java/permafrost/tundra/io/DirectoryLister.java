@@ -27,15 +27,10 @@ package permafrost.tundra.io;
 import permafrost.tundra.io.filter.AndFilenameFilter;
 import permafrost.tundra.io.filter.DirectoryFilenameFilter;
 import permafrost.tundra.io.filter.FileFilenameFilter;
-import permafrost.tundra.io.filter.NotFilenameFilter;
-import permafrost.tundra.io.filter.OrFilenameFilter;
-import permafrost.tundra.lang.ArrayHelper;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -66,7 +61,7 @@ public class DirectoryLister {
      * @param recurse       If true, all child directories will be recursively listed also.
      */
     public DirectoryLister(String directory, boolean recurse) {
-        this(directory, recurse, null, null);
+        this(directory, recurse, null);
     }
 
     /**
@@ -74,10 +69,10 @@ public class DirectoryLister {
      *
      * @param directory     The directory whose contents are to be listed.
      * @param recurse       If true, all child directories will be recursively listed also.
-     * @param inclusion     A filters to include filenames from the returned listing.
+     * @param filter        A FilenameFilter used to filter the listing results.
      */
-    public DirectoryLister(String directory, boolean recurse, FilenameFilter inclusion) {
-        this(directory, recurse, null, ArrayHelper.arrayify(inclusion));
+    public DirectoryLister(String directory, boolean recurse, FilenameFilter filter) {
+        this(FileHelper.construct(directory), recurse, filter);
     }
 
     /**
@@ -87,7 +82,7 @@ public class DirectoryLister {
      * @param recurse       If true, all child directories will be recursively listed also.
      */
     public DirectoryLister(File directory, boolean recurse) {
-        this(directory, recurse, null, null);
+        this(directory, recurse, null);
     }
 
     /**
@@ -95,37 +90,17 @@ public class DirectoryLister {
      *
      * @param directory     The directory whose contents are to be listed.
      * @param recurse       If true, all child directories will be recursively listed also.
-     * @param exclusions    A list of filters to exclude filenames from the returned listing.
-     * @param inclusions    A list of filters to include filenames from the returned listing.
+     * @param filter        A FilenameFilter used to filter the listing results.
      */
-    public DirectoryLister(String directory, boolean recurse, FilenameFilter[] exclusions, FilenameFilter[] inclusions) {
-        this(FileHelper.construct(directory), recurse, exclusions == null ? null : Arrays.asList(exclusions), inclusions == null ? null : Arrays.asList(inclusions));
-    }
-
-    /**
-     * Constructs a new DirectoryLister for listing the contents of a given directory.
-     *
-     * @param directory     The directory whose contents are to be listed.
-     * @param recurse       If true, all child directories will be recursively listed also.
-     * @param exclusions    A list of filters to exclude filenames from the returned listing.
-     * @param inclusions    A list of filters to include filenames from the returned listing.
-     */
-    public DirectoryLister(File directory, boolean recurse, Collection<FilenameFilter> exclusions, Collection<FilenameFilter> inclusions) {
+    public DirectoryLister(File directory, boolean recurse, FilenameFilter filter) {
         if (directory == null) throw new NullPointerException("directory must not be null");
 
         this.directory = directory;
         this.recurse = recurse;
 
-        if (exclusions != null && exclusions.size() > 0) {
-            FilenameFilter exclusionsFilter = new NotFilenameFilter(new OrFilenameFilter(exclusions));
-            this.directoryFilter.add(exclusionsFilter);
-            this.fileFilter.add(exclusionsFilter);
-        }
-
-        if (inclusions != null && inclusions.size() > 0) {
-            FilenameFilter inclusionsFilter = new OrFilenameFilter(inclusions);
-            this.directoryFilter.add(inclusionsFilter);
-            this.fileFilter.add(inclusionsFilter);
+        if (filter != null) {
+            this.directoryFilter.add(filter);
+            this.fileFilter.add(filter);
         }
     }
 

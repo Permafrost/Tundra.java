@@ -35,6 +35,11 @@ import java.util.Collection;
 public class AndFilenameFilter extends ConditionalFilenameFilter {
     /**
      * Constructs a new AndFilenameFilter.
+     */
+    public AndFilenameFilter() {}
+
+    /**
+     * Constructs a new AndFilenameFilter.
      *
      * @param filters   The list of filters to be chained with a logical AND operation.
      */

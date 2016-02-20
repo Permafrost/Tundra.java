@@ -41,7 +41,7 @@ public class RegularExpressionFilenameFilter implements FilenameFilter {
      * @param pattern A regular expression pattern to be used to filter files.
      */
     public RegularExpressionFilenameFilter(String pattern) {
-        this(Pattern.compile(pattern));
+        this(pattern == null ? null : Pattern.compile(pattern));
     }
 
     /**
@@ -50,7 +50,7 @@ public class RegularExpressionFilenameFilter implements FilenameFilter {
      * @param pattern A regular expression pattern to be used to filter files.
      */
     public RegularExpressionFilenameFilter(Pattern pattern) {
-        if (pattern == null) throw new IllegalArgumentException("pattern must not be null");
+        if (pattern == null) throw new NullPointerException("pattern must not be null");
 
         if (FileHelper.isCaseInsensitive()) {
             // the file system is case insensitive so convert the pattern to be case insensitive

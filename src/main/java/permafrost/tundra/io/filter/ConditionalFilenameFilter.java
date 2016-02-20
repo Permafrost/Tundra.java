@@ -46,7 +46,7 @@ public abstract class ConditionalFilenameFilter implements FilenameFilter {
      * @param filter    The FilenameFilter object to be added to the chain.
      */
     public void add(FilenameFilter filter) {
-        this.filters.add(filter);
+        if (filter != null) this.filters.add(filter);
     }
 
     /**
@@ -54,8 +54,8 @@ public abstract class ConditionalFilenameFilter implements FilenameFilter {
      *
      * @param filters   A collection of FilenameFilter object to be added to the chain.
      */
-    public void addAll(Collection<FilenameFilter> filters) {
-        this.filters.addAll(filters);
+    public void addAll(Collection<? extends FilenameFilter> filters) {
+        if (filters != null) this.filters.addAll(filters);
     }
 
     /**
