@@ -61,18 +61,18 @@ public class DirectoryLister {
      * @param recurse       If true, all child directories will be recursively listed also.
      */
     public DirectoryLister(String directory, boolean recurse) {
-        this(directory, recurse, null);
+        this(directory, null, recurse);
     }
 
     /**
      * Constructs a new DirectoryLister for listing the contents of a given directory.
      *
      * @param directory     The directory whose contents are to be listed.
-     * @param recurse       If true, all child directories will be recursively listed also.
      * @param filter        A FilenameFilter used to filter the listing results.
+     * @param recurse       If true, all child directories will be recursively listed also.
      */
-    public DirectoryLister(String directory, boolean recurse, FilenameFilter filter) {
-        this(FileHelper.construct(directory), recurse, filter);
+    public DirectoryLister(String directory, FilenameFilter filter, boolean recurse) {
+        this(FileHelper.construct(directory), filter, recurse);
     }
 
     /**
@@ -82,17 +82,17 @@ public class DirectoryLister {
      * @param recurse       If true, all child directories will be recursively listed also.
      */
     public DirectoryLister(File directory, boolean recurse) {
-        this(directory, recurse, null);
+        this(directory, null, recurse);
     }
 
     /**
      * Constructs a new DirectoryLister for listing the contents of a given directory.
      *
      * @param directory     The directory whose contents are to be listed.
-     * @param recurse       If true, all child directories will be recursively listed also.
      * @param filter        A FilenameFilter used to filter the listing results.
+     * @param recurse       If true, all child directories will be recursively listed also.
      */
-    public DirectoryLister(File directory, boolean recurse, FilenameFilter filter) {
+    public DirectoryLister(File directory,  FilenameFilter filter, boolean recurse) {
         if (directory == null) throw new NullPointerException("directory must not be null");
 
         this.directory = directory;

@@ -399,12 +399,14 @@ public final class DirectoryHelper {
      *
      * @param directory     The directory to be squeezed.
      * @param allowedSize   The allowable size of the directory in bytes.
+     * @param filter        An optional FilenameFilter used to filter which files are deleted.
      * @param recurse       If true, child directories will be included in the total size and their files
      *                      may be deleted when reducing the total size of the parent.
+     * @return              The resulting total size in bytes of all files in the given directory.
      * @throws IOException  If the given directory does not exist or is not a file.
      */
-    public static void squeeze(String directory, BigInteger allowedSize, boolean recurse) throws IOException {
-        squeeze(FileHelper.construct(directory), allowedSize, recurse);
+    public static BigInteger squeeze(String directory, BigInteger allowedSize, FilenameFilter filter, boolean recurse) throws IOException {
+        return squeeze(FileHelper.construct(directory), allowedSize, filter, recurse);
     }
 
     /**
@@ -413,17 +415,19 @@ public final class DirectoryHelper {
      *
      * @param directory     The directory to be squeezed.
      * @param allowedSize   The allowable size of the directory in bytes.
+     * @param filter        An optional FilenameFilter used to filter which files are deleted.
      * @param recurse       If true, child directories will be included in the total size and their files
      *                      may be deleted when reducing the total size of the parent.
+     * @return              The resulting total size in bytes of all files in the given directory.
      * @throws IOException  If the given directory does not exist or is not a file.
      */
-    public static void squeeze(File directory, BigInteger allowedSize, boolean recurse) throws IOException {
+    public static BigInteger squeeze(File directory, BigInteger allowedSize, FilenameFilter filter, boolean recurse) throws IOException {
         BigInteger totalSize = size(directory, recurse);
 
         if (allowedSize != null && totalSize.compareTo(allowedSize) > 0) {
             BigInteger requiredReductionSize = totalSize.subtract(allowedSize);
 
-            DirectoryLister directoryLister = new DirectoryLister(directory, recurse);
+            DirectoryLister directoryLister = new DirectoryLister(directory, filter, recurse);
             DirectoryListing directoryListing = directoryLister.list();
             List<File> files = directoryListing.listFiles();
 
@@ -442,5 +446,7 @@ public final class DirectoryHelper {
                 }
             }
         }
+
+        return size(directory, recurse);
     }
 }
