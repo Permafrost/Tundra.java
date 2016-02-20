@@ -24,34 +24,36 @@
 
 package permafrost.tundra.io.filter;
 
+import permafrost.tundra.io.FileHelper;
+import java.io.File;
+import java.io.FilenameFilter;
+
 /**
- * The different types of filename filters supported by the InclusionFilenameFilter and ExclusionFilenameFilter classes.
+ * A FilenameFilter which matches the given literal.
  */
-public enum FilenameFilterType {
-    REGULAR_EXPRESSION, WILDCARD, LITERAL;
+public class LiteralFilenameFilter implements FilenameFilter {
     /**
-     * The default FilenameFilterType, if none is specified.
+     * The literal filename to be matched.
      */
-    public static final FilenameFilterType DEFAULT_FILENAME_FILTER_TYPE = REGULAR_EXPRESSION;
+    protected String filename;
 
     /**
-     * Returns an FilenameFilterType for the given string value.
+     * Constructs a new LiteralFilenameFilter.
      *
-     * @param value The value to be converted to an FilenameFilterType.
-     * @return      The FilenameFilterType representing the given value.
+     * @param filename The literal filename to be matched by this filter.
      */
-    public static FilenameFilterType normalize(String value) {
-        if (value != null && (value.equalsIgnoreCase("regex") || value.equalsIgnoreCase("regular expression"))) value = "REGULAR_EXPRESSION";
-        return normalize(value == null ? null : valueOf(value.trim().toUpperCase()));
+    public LiteralFilenameFilter(String filename) {
+        this.filename = filename;
     }
 
     /**
-     * Normalizes an FilenameFilterType.
+     * Returns true if the given child matches the specified literal.
      *
-     * @param type The FilenameFilterType to be normalized.
-     * @return      If the given type is null the default type, otherwise the given type.
+     * @param parent    The parent directory being filtered.
+     * @param child     The child filename being filtered.
+     * @return          True if the given child matches the specified literal.
      */
-    public static FilenameFilterType normalize(FilenameFilterType type) {
-        return type == null ? DEFAULT_FILENAME_FILTER_TYPE : type;
+    public boolean accept(File parent, String child) {
+        return FileHelper.isCaseInsensitive() ? child.equalsIgnoreCase(filename) : child.equals(filename);
     }
 }
