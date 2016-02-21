@@ -39,9 +39,10 @@ public class BlockingServerThreadPoolExecutor extends ServerThreadPoolExecutor {
      * @param threadNamePrefix The prefix to use on all created thread names.
      * @param threadNameSuffix The suffix used on all created thread names.
      * @param threadPriority   The priority each created thread will have.
+     * @param daemon           Whether the created threads should be daemon threads.
      * @param invokeState      The invoke state to clone for each thread created.
      */
-    public BlockingServerThreadPoolExecutor(int threadPoolSize, String threadNamePrefix, String threadNameSuffix, int threadPriority, InvokeState invokeState) {
-        super(threadPoolSize, threadNamePrefix, threadNameSuffix, threadPriority, invokeState, new SynchronousQueue<Runnable>(true), new BlockingRejectedExecutionHandler());
+    public BlockingServerThreadPoolExecutor(int threadPoolSize, String threadNamePrefix, String threadNameSuffix, int threadPriority, boolean daemon, InvokeState invokeState) {
+        super(threadPoolSize, threadNamePrefix, threadNameSuffix, threadPriority, daemon, invokeState, new SynchronousQueue<Runnable>(true), new BlockingRejectedExecutionHandler());
     }
 }

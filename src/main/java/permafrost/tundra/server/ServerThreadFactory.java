@@ -58,6 +58,11 @@ public class ServerThreadFactory implements ThreadFactory {
     protected InvokeState invokeState;
 
     /**
+     * Whether created threads should be daemon threads.
+     */
+    protected boolean daemon;
+
+    /**
      * Constructs a new ServerThreadFactory.
      *
      * @param threadNamePrefix The prefix used on all created thread names.
@@ -98,6 +103,19 @@ public class ServerThreadFactory implements ThreadFactory {
      * @param invokeState      The invoke state to clone for each thread created.
      */
     public ServerThreadFactory(String threadNamePrefix, String threadNameSuffix, int threadPriority, InvokeState invokeState) {
+        this(threadNamePrefix, threadNameSuffix, threadPriority, false, invokeState);
+    }
+
+    /**
+     * Constructs a new ServerThreadFactory.
+     *
+     * @param threadNamePrefix The threadNamePrefix of the factory, used to prefix thread names.
+     * @param threadNameSuffix The suffix used on all created thread names.
+     * @param threadPriority   The priority used for each thread created.
+     * @param daemon           Whether the created threads should be daemon threads.
+     * @param invokeState      The invoke state to clone for each thread created.
+     */
+    public ServerThreadFactory(String threadNamePrefix, String threadNameSuffix, int threadPriority, boolean daemon, InvokeState invokeState) {
         if (threadNamePrefix == null) throw new NullPointerException("threadNamePrefix must not be null");
         if (invokeState == null) throw new NullPointerException("invokeState must not be null");
 
@@ -105,13 +123,14 @@ public class ServerThreadFactory implements ThreadFactory {
         this.threadNameSuffix = threadNameSuffix;
         this.invokeState = invokeState;
         this.threadPriority = ThreadHelper.normalizePriority(threadPriority);
+        this.daemon = daemon;
     }
 
     /**
      * Returns a newly constructed Thread that will execute the given Runnable.
      *
-     * @param runnable The Runnable to be executed by the thread.
-     * @return The newly constructed thread.
+     * @param runnable  The Runnable to be executed by the thread.
+     * @return          The newly constructed thread.
      */
     @Override
     public Thread newThread(Runnable runnable) {
@@ -125,6 +144,7 @@ public class ServerThreadFactory implements ThreadFactory {
         }
         thread.setUncaughtExceptionHandler(UncaughtExceptionLogger.getInstance());
         thread.setPriority(threadPriority);
+        thread.setDaemon(daemon);
         return thread;
     }
 
