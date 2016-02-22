@@ -1187,4 +1187,27 @@ public final class StringHelper {
 
         return output;
     }
+
+    /**
+     * Repeats the given string atom the given count times, returning the result.
+     *
+     * @param atom  A string to be repeated.
+     * @param count The number of times to repeat the string.
+     * @return      A new string containing the given string atom repeated the given number of times.
+     */
+    public static String repeat(String atom, int count) {
+        if (atom == null) return null;
+        if (count < 0) throw new IllegalArgumentException("count must be >= 0");
+
+        // short-circuit when only 1 repeat is required
+        if (count == 1) return atom;
+
+        StringBuilder builder = new StringBuilder();
+
+        for (int i = 0; i < count; i++) {
+            builder.append(atom);
+        }
+
+        return builder.toString();
+    }
 }

@@ -26,12 +26,14 @@ package permafrost.tundra.lang;
 
 import com.wm.data.IData;
 import permafrost.tundra.data.IDataHelper;
+import permafrost.tundra.data.IDataMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A collection of convenience methods for working with arrays.
@@ -145,13 +147,27 @@ public final class ArrayHelper {
     /**
      * Returns a new array which contains all the items from the given arrays in the sequence provided.
      *
-     * @param operands  An IData document containing the arrays to be concatenated.
-     * @param <T>       The class of item stored in the array.
-     * @return          A new array which contains all the elements from the given arrays.
+     * @param operands          An IData document containing the arrays to be concatenated.
+     * @param componentClass    The component class of the arrays.
+     * @param <T>               The component class of the arrays.
+     * @return                  A new array which contains all the elements from the given arrays.
      */
     @SuppressWarnings("unchecked")
-    public static <T> T[] concatenate(IData operands) {
-        return concatenate((T[][])IDataHelper.getValues(operands));
+    public static <T> T[] concatenate(IData operands, Class<T> componentClass) {
+        if (operands == null) return null;
+
+        List<T[]> list = new ArrayList<T[]>(IDataHelper.size(operands));
+
+        Class arrayClass = ClassHelper.getArrayClass(componentClass, 1);
+
+        for (Map.Entry<String, Object> entry : IDataMap.of(operands)) {
+            Object value = entry.getValue();
+            if (value != null && arrayClass.isInstance(value)) {
+                list.add((T[])value);
+            }
+        }
+
+        return concatenate(list);
     }
 
     /**
@@ -162,8 +178,19 @@ public final class ArrayHelper {
      * @return          A new array which contains all the elements from the given arrays.
      */
     public static <T> T[] concatenate(T[]... arrays) {
-        if (arrays == null || arrays.length == 0) return null;
-        if (arrays.length == 1) return Arrays.copyOf(arrays[0], arrays[0].length);
+        return concatenate(arrays == null ? null : Arrays.asList(arrays));
+    }
+
+    /**
+     * Returns a new array which contains all the items from the given arrays in the sequence provided.
+     *
+     * @param arrays    One or more arrays to be concatenated together.
+     * @param <T>       The class of item stored in the array.
+     * @return          A new array which contains all the elements from the given arrays.
+     */
+    public static <T> T[] concatenate(List<T[]> arrays) {
+        if (arrays == null || arrays.size() == 0) return null;
+        if (arrays.size() == 1) return Arrays.copyOf(arrays.get(0), arrays.get(0).length);
 
         int length = 0;
         for (T[] array : arrays) {
@@ -176,7 +203,7 @@ public final class ArrayHelper {
             if (array != null) Collections.addAll(list, array);
         }
 
-        return list.toArray(Arrays.copyOf(arrays[0], length));
+        return list.toArray(Arrays.copyOf(arrays.get(0), length));
     }
 
     /**
@@ -225,41 +252,67 @@ public final class ArrayHelper {
     /**
      * Returns true if the given arrays are equal.
      *
-     * @param operands  An IData document containing the arrays to be compared for equality.
-     * @param <T>       The class of item stored in the array.
-     * @return          True if the given arrays are all considered equivalent, otherwise false.
+     * @param operands          An IData document containing the arrays to be compared for equality.
+     * @param componentClass    The component class of the arrays.
+     * @param <T>               The component class of the arrays.
+     * @return                  True if the given arrays are all considered equivalent, otherwise false.
      */
     @SuppressWarnings("unchecked")
-    public static <T> boolean equal(IData operands) {
-        return equal((T[][])IDataHelper.getValues(operands));
+    public static <T> boolean equal(IData operands, Class<T> componentClass) {
+        if (operands == null) return false;
+
+        List<T[]> list = new ArrayList<T[]>(IDataHelper.size(operands));
+
+        Class arrayClass = ClassHelper.getArrayClass(componentClass, 1);
+        for (Map.Entry<String, Object> entry : IDataMap.of(operands)) {
+            Object value = entry.getValue();
+            if (value != null && arrayClass.isInstance(value)) {
+                list.add((T[])value);
+            }
+        }
+
+        return equal(list);
     }
 
     /**
      * Returns true if the given arrays are equal.
      *
-     * @param arrays One or more arrays to be compared for equality.
-     * @param <T>    The class of item stored in the array.
-     * @return True if the given arrays are all considered equivalent, otherwise false.
+     * @param arrays    One or more arrays to be compared for equality.
+     * @param <T>       The class of item stored in the array.
+     * @return          True if the given arrays are all considered equivalent, otherwise false.
      */
     public static <T> boolean equal(T[]... arrays) {
+        return equal(arrays == null ? null : Arrays.asList(arrays));
+    }
+
+    /**
+     * Returns true if the given arrays are equal.
+     *
+     * @param arrays    One or more arrays to be compared for equality.
+     * @param <T>       The class of item stored in the array.
+     * @return          True if the given arrays are all considered equivalent, otherwise false.
+     */
+    public static <T> boolean equal(List<T[]> arrays) {
         if (arrays == null) return false;
-        if (arrays.length < 2) return false;
+        if (arrays.size() < 2) return false;
 
         boolean result = true;
 
-        for (int i = 0; i < arrays.length - 1; i++) {
-            for (int j = i + 1; j < arrays.length; j++) {
-                if (arrays[i] != null && arrays[j] != null) {
-                    result = (arrays[i].length == arrays[j].length);
+        for (int i = 0; i < arrays.size() - 1; i++) {
+            for (int j = i + 1; j < arrays.size(); j++) {
+                T[] firstArray = arrays.get(i);
+                T[] secondArray = arrays.get(j);
+                if (firstArray != null && secondArray != null) {
+                    result = (firstArray.length == secondArray.length);
 
                     if (result) {
-                        for (int k = 0; k < arrays[i].length; k++) {
-                            result = ObjectHelper.equal(arrays[i][k], arrays[j][k]);
+                        for (int k = 0; k < firstArray.length; k++) {
+                            result = ObjectHelper.equal(firstArray[k], secondArray[k]);
                             if (!result) break;
                         }
                     }
                 } else {
-                    result = arrays[i] == null && arrays[j] == null;
+                    result = firstArray == null && secondArray == null;
                 }
                 if (!result) break;
             }
@@ -553,34 +606,57 @@ public final class ArrayHelper {
     /**
      * Returns a new array that contains only the items present in all the given arrays.
      *
-     * @param operands An IData document containing the arrays to be intersected.
-     * @param <T>      The array component class.
-     * @return         A new array containing only the items present in all given arrays.
+     * @param operands          An IData document containing the arrays to be intersected.
+     * @param componentClass    The component class of the arrays.
+     * @param <T>               The component class of the arrays.
+     * @return                  A new array containing only the items present in all given arrays.
      */
     @SuppressWarnings("unchecked")
-    public static <T> T[] intersect(IData operands) {
-        return intersect((T[][])IDataHelper.getValues(operands));
+    public static <T> T[] intersect(IData operands, Class<T> componentClass) {
+        if (operands == null) return null;
+
+        List<T[]> list = new ArrayList<T[]>(IDataHelper.size(operands));
+
+        Class arrayClass = ClassHelper.getArrayClass(componentClass, 1);
+        for (Map.Entry<String, Object> entry : IDataMap.of(operands)) {
+            Object value = entry.getValue();
+            if (value != null && arrayClass.isInstance(value)) {
+                list.add((T[])value);
+            }
+        }
+
+        return intersect(list);
     }
 
     /**
      * Returns a new array that contains only the items present in all the given arrays.
      *
-     * @param arrays One or more arrays to be intersected.
-     * @param <T>    The class of the items stored in the arrays.
-     * @return A new array which is a set intersection of the given arrays.
+     * @param arrays    One or more arrays to be intersected.
+     * @param <T>       The class of the items stored in the arrays.
+     * @return          A new array which is a set intersection of the given arrays.
      */
-    @SuppressWarnings("unchecked")
     public static <T> T[] intersect(T[]... arrays) {
-        if (arrays == null || arrays.length == 0) return null;
+        return intersect(arrays == null ? null : Arrays.asList(arrays));
+    }
 
-        List<T> intersection = new ArrayList<T>(arrays[0].length);
-        intersection.addAll(Arrays.asList(arrays[0]));
+    /**
+     * Returns a new array that contains only the items present in all the given arrays.
+     *
+     * @param arrays    One or more arrays to be intersected.
+     * @param <T>       The class of the items stored in the arrays.
+     * @return          A new array which is a set intersection of the given arrays.
+     */
+    public static <T> T[] intersect(List<T[]> arrays) {
+        if (arrays == null || arrays.size() == 0) return null;
 
-        for (int i = 1; i < arrays.length; i++) {
-            intersection.retainAll(Arrays.asList(arrays[i]));
+        List<T> intersection = new ArrayList<T>(arrays.get(0).length);
+        intersection.addAll(Arrays.asList(arrays.get(0)));
+
+        for (int i = 1; i < arrays.size(); i++) {
+            intersection.retainAll(Arrays.asList(arrays.get(i)));
         }
 
-        return intersection.toArray(Arrays.copyOf(arrays[0], intersection.size()));
+        return intersection.toArray(Arrays.copyOf(arrays.get(0), intersection.size()));
     }
 
     /**
@@ -915,37 +991,37 @@ public final class ArrayHelper {
     /**
      * Dynamically instantiates a new zero-length array of the given class.
      *
-     * @param klass The class of items to be stored in the array.
-     * @param <T>   The class of items to be stored in the array.
-     * @return A new zero-length array of the given class.
+     * @param componentClass    The class of items to be stored in the array.
+     * @param <T>               The class of items to be stored in the array.
+     * @return                  A new zero-length array of the given class.
      */
-    public static <T> T[] instantiate(Class<T> klass) {
-        return instantiate(klass, 0);
+    public static <T> T[] instantiate(Class<T> componentClass) {
+        return instantiate(componentClass, 0);
     }
 
     /**
      * Dynamically instantiates a new array of the given class with the given length.
      *
-     * @param klass  The class of items to be stored in the array.
-     * @param length The desired length of the returned array.
-     * @param <T>    The class of items to be stored in the array.
-     * @return A new array of the given class with the given length.
+     * @param componentClass    The class of items to be stored in the array.
+     * @param length            The desired length of the returned array.
+     * @param <T>               The class of items to be stored in the array.
+     * @return                  A new array of the given class with the given length.
      */
-    public static <T> T[] instantiate(Class<T> klass, int length) {
-        return instantiate(klass, new int[] {length});
+    public static <T> T[] instantiate(Class<T> componentClass, int length) {
+        return instantiate(componentClass, new int[] {length});
     }
 
     /**
      * Dynamically instantiates a new array of the given class with the given length.
      *
-     * @param klass      The class of items to be stored in the array.
-     * @param dimensions The desired length of the returned array.
-     * @param <T>        The class of items to be stored in the array.
-     * @return A new array of the given class with the given length.
+     * @param componentClass    The class of items to be stored in the array.
+     * @param dimensions        The desired length of the returned array.
+     * @param <T>               The class of items to be stored in the array.
+     * @return                  A new array of the given class with the given length.
      */
     @SuppressWarnings("unchecked")
-    public static <T> T[] instantiate(Class<T> klass, int... dimensions) {
-        return (T[])java.lang.reflect.Array.newInstance(klass, dimensions);
+    public static <T> T[] instantiate(Class<T> componentClass, int... dimensions) {
+        return (T[])java.lang.reflect.Array.newInstance(componentClass, dimensions);
     }
 
     /**

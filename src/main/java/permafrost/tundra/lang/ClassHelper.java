@@ -51,4 +51,20 @@ public final class ClassHelper {
         return classes;
     }
 
+    /**
+     * Returns the array class associated with the given component class and number of dimensions.
+     *
+     * @param componentClass    The component class to use for the array class.
+     * @param dimensions        The array dimensions to use.
+     * @param <T>               The component class of the array.
+     * @return                  The array class associated with the given component class and number of dimensions.
+     */
+    public static <T> Class getArrayClass(Class<T> componentClass, int dimensions) {
+        if (dimensions < 1) throw new IllegalArgumentException("array dimensions must be >= 1");
+        try {
+            return Class.forName(StringHelper.repeat("[", dimensions) + "L" + componentClass.getName() + ";");
+        } catch(ClassNotFoundException ex) {
+            throw new IllegalArgumentException(ex);
+        }
+    }
 }
