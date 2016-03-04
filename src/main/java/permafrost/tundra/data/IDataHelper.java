@@ -1148,9 +1148,10 @@ public final class IDataHelper {
                 value = DateTimeHelper.emit((Calendar)value);
             } else if (value instanceof Date) {
                 value = DateTimeHelper.emit((Date)value);
-            } else {
+            } else if (value != null){
                 value = value.toString();
             }
+            
             outputCursor.insertAfter(key, value);
         }
 
