@@ -44,6 +44,7 @@ public final class ContentManagerHelper {
      *
      * @return The registered content types and associated content handler factories.
      */
+    @SuppressWarnings("unchecked")
     public static Map<String, ContentHandlerFactory> getRegistrations() {
         Map<String, ContentHandlerFactory> registrations = new TreeMap<String, ContentHandlerFactory>();
 
