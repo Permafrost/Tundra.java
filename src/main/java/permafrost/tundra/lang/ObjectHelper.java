@@ -60,7 +60,7 @@ public final class ObjectHelper {
      * @return True if the two objects are equal, otherwise false.
      */
     public static boolean equal(Object firstObject, Object secondObject) {
-        boolean result = true;
+        boolean result;
         if (firstObject != null && secondObject != null) {
             if (firstObject instanceof IData && secondObject instanceof IData) {
                 result = IDataUtil.equals((IData)firstObject, (IData)secondObject);
