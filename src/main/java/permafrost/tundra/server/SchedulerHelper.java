@@ -46,9 +46,7 @@ public class SchedulerHelper {
     public static void start() throws ServiceException {
         try {
             ScheduleManager.init();
-        } catch(IOException ex) {
-            ExceptionHelper.raise(ex);
-        } catch(SQLException ex) {
+        } catch(Exception ex) {
             ExceptionHelper.raise(ex);
         }
     }
