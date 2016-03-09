@@ -24,7 +24,7 @@
 
 package permafrost.tundra.net.uri;
 
-import permafrost.tundra.flow.VariableSubstitutor;
+import permafrost.tundra.flow.variable.SubstitutionHelper;
 import permafrost.tundra.lang.ArrayHelper;
 
 /**
@@ -50,7 +50,7 @@ public final class URIPathHelper {
         if (input.endsWith("/")) input = input.substring(0, input.length() - 1);
 
         java.util.List<String> list = new java.util.ArrayList<String>();
-        java.util.regex.Matcher substitutionMatcher = VariableSubstitutor.matcher(input);
+        java.util.regex.Matcher substitutionMatcher = SubstitutionHelper.matcher(input);
 
         int index = 0;
         while (substitutionMatcher.find()) {

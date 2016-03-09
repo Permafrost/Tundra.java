@@ -24,6 +24,7 @@
 
 package permafrost.tundra.data;
 
+import com.wm.app.b2b.server.ServiceException;
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
@@ -33,7 +34,7 @@ import com.wm.util.Table;
 import com.wm.util.coder.IDataCodable;
 import com.wm.util.coder.ValuesCodable;
 import permafrost.tundra.flow.ConditionEvaluator;
-import permafrost.tundra.flow.VariableSubstitutor;
+import permafrost.tundra.flow.variable.SubstitutionHelper;
 import permafrost.tundra.lang.ArrayHelper;
 import permafrost.tundra.lang.ObjectHelper;
 import permafrost.tundra.lang.StringHelper;
@@ -806,7 +807,7 @@ public final class IDataHelper {
      * @param scope         The scope against which to resolve variable substitution statements.
      * @return              The amended IData document.
      */
-    public static IData amend(IData document, IData[] amendments, IData scope) {
+    public static IData amend(IData document, IData[] amendments, IData scope) throws ServiceException {
         if (amendments == null) return document;
 
         IData output = duplicate(document);
@@ -819,8 +820,8 @@ public final class IDataHelper {
                 String condition = IDataUtil.getString(cursor, "condition");
                 cursor.destroy();
 
-                key = VariableSubstitutor.substitute(key, scope);
-                value = VariableSubstitutor.substitute(value, scope);
+                key = SubstitutionHelper.substitute(key, scope);
+                value = SubstitutionHelper.substitute(value, scope);
 
                 if ((condition == null) || ConditionEvaluator.evaluate(condition, scope)) {
                     output = IDataHelper.put(output, key, value);
@@ -1305,107 +1306,6 @@ public final class IDataHelper {
             for (int i = 0; i < array.length; i++) {
                 output[i] = compact(array[i], recurse);
             }
-        }
-
-        return output;
-    }
-
-    /**
-     * Performs variable substitution on all elements of the given IData input document.
-     *
-     * @param document  The IData document to perform variable substitution on.
-     * @return          The variable substituted IData.
-     */
-    public static IData substitute(IData document) {
-        return substitute(document, null, null, true);
-    }
-
-    /**
-     * Performs variable substitution on all elements of the given IData input document.
-     *
-     * @param document  The IData document to perform variable substitution on.
-     * @param recurse   Whether embedded IData and IData[] should have variable substitution recursively performed on
-     *                  them.
-     * @return          The variable substituted IData.
-     */
-    public static IData substitute(IData document, boolean recurse) {
-        return substitute(document, null, null, recurse);
-    }
-
-    /**
-     * Performs variable substitution on all elements of the given IData input document.
-     *
-     * @param document  The IData document to perform variable substitution on.
-     * @param scope     The scope against which variables are are resolved.
-     * @param recurse   Whether embedded IData and IData[] should have variable substitution recursively performed on
-     *                  them.
-     * @return          The variable substituted IData.
-     */
-    public static IData substitute(IData document, IData scope, boolean recurse) {
-        return substitute(document, null, scope, recurse);
-    }
-
-    /**
-     * Performs variable substitution on all elements of the given IData input document.
-     *
-     * @param document      The IData document to perform variable substitution on.
-     * @param defaultValue  The value to substitute if a variable cannot be resolved.
-     * @param scope         The scope against which variables are are resolved.
-     * @param recurse       Whether embedded IData and IData[] should have variable substitution recursively performed on
-     *                      them.
-     * @return              The variable substituted IData.
-     */
-    public static IData substitute(IData document, String defaultValue, IData scope, boolean recurse) {
-        if (document == null) return null;
-        if (scope == null) scope = document;
-
-        IData output = IDataFactory.create();
-        IDataCursor inputCursor = document.getCursor();
-        IDataCursor outputCursor = output.getCursor();
-
-        while (inputCursor.next()) {
-            String key = inputCursor.getKey();
-            Object value = inputCursor.getValue();
-
-            if (value != null) {
-                if (recurse && (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[])) {
-                    value = substitute(toIDataArray(value), defaultValue, scope, recurse);
-                } else if (recurse && (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable)) {
-                    value = substitute(toIData(value), defaultValue, scope, recurse);
-                } else if (value instanceof String) {
-                    value = VariableSubstitutor.substitute((String)value, defaultValue, scope);
-                } else if (value instanceof String[]) {
-                    value = VariableSubstitutor.substitute((String[])value, defaultValue, scope);
-                } else if (value instanceof String[][]) {
-                    value = VariableSubstitutor.substitute((String[][])value, defaultValue, scope);
-                }
-            }
-            IDataUtil.put(outputCursor, key, value);
-        }
-
-        inputCursor.destroy();
-        outputCursor.destroy();
-
-        return output;
-    }
-
-    /**
-     * Performs variable substitution on all elements of the given IData[].
-     *
-     * @param array         The IData[] to perform variable substitution on.
-     * @param defaultValue  The value to substitute if a variable cannot be resolved.
-     * @param scope         The scope against which variables are are resolved.
-     * @param recurse       Whether embedded IData and IData[] should have variable substitution recursively performed on
-     *                      them.
-     * @return              The variable substituted IData[].
-     */
-    public static IData[] substitute(IData[] array, String defaultValue, IData scope, boolean recurse) {
-        if (array == null) return null;
-
-        IData[] output = new IData[array.length];
-
-        for (int i = 0; i < array.length; i++) {
-            output[i] = substitute(array[i], defaultValue, scope, recurse);
         }
 
         return output;

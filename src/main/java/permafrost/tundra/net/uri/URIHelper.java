@@ -24,11 +24,12 @@
 
 package permafrost.tundra.net.uri;
 
+import com.wm.app.b2b.server.ServiceException;
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
 import com.wm.data.IDataUtil;
-import permafrost.tundra.data.IDataHelper;
+import permafrost.tundra.flow.variable.SubstitutionHelper;
 import permafrost.tundra.lang.ArrayHelper;
 import permafrost.tundra.lang.CharsetHelper;
 import java.io.UnsupportedEncodingException;
@@ -435,7 +436,7 @@ public final class URIHelper {
      * @return      The resulting URI string after variable substitution.
      * @throws URISyntaxException If the given string is not a valid URI.
      */
-    public static String substitute(String uri, IData scope) throws URISyntaxException {
-        return emit(IDataHelper.substitute(parse(uri), scope, true));
+    public static String substitute(String uri, IData scope) throws ServiceException, URISyntaxException {
+        return emit(SubstitutionHelper.substitute(parse(uri), scope, true));
     }
 }
