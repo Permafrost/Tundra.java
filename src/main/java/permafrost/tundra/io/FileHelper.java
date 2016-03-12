@@ -81,7 +81,7 @@ public final class FileHelper {
     public static String getMIMEType(File file) {
         String type = null;
         if (file != null) type = MimeTypes.getTypeFromName(file.getName());
-        if (type == null) type = MIMETypeHelper.DEFAULT_MIME_TYPE;
+        if (type == null) type = MIMETypeHelper.DEFAULT_MIME_TYPE_STRING;
         return type;
     }
 

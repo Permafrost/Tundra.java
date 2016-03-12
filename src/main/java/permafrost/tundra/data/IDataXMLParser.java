@@ -46,6 +46,10 @@ public class IDataXMLParser extends IDataTextParser {
         private static final IDataXMLParser INSTANCE = new IDataXMLParser();
     }
 
+    static {
+        IDataTextParsers.registerFileExtensions(Holder.INSTANCE, "values");
+    }
+
     /**
      * Disallow instantiation of this class.
      */

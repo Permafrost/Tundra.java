@@ -182,7 +182,7 @@ public final class ServiceHelper {
      * @throws ServiceException If the MIME content type is malformed.
      */
     private static void setContentType(HttpHeader response, String contentType, Charset charset) throws ServiceException {
-        if (contentType == null) contentType = MIMETypeHelper.DEFAULT_MIME_TYPE;
+        if (contentType == null) contentType = MIMETypeHelper.DEFAULT_MIME_TYPE_STRING;
 
         try {
             MimeType mimeType = new MimeType(contentType);

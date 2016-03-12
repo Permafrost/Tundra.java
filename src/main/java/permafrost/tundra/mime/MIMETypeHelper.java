@@ -24,6 +24,7 @@
 
 package permafrost.tundra.mime;
 
+import com.wm.app.b2b.server.MimeTypes;
 import com.wm.app.b2b.server.ServiceException;
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;
@@ -32,7 +33,6 @@ import permafrost.tundra.data.IDataHelper;
 import permafrost.tundra.data.IDataMap;
 import permafrost.tundra.lang.ExceptionHelper;
 import java.util.Enumeration;
-import java.util.IllegalFormatCodePointException;
 import javax.activation.MimeType;
 import javax.activation.MimeTypeParameterList;
 import javax.activation.MimeTypeParseException;
@@ -46,25 +46,27 @@ public final class MIMETypeHelper {
     /**
      * The default MIME media type for arbitrary content.
      */
-    public static final String DEFAULT_MIME_TYPE = System.getProperty("watt.server.content.type.default", "application/octet-stream");
+    private static final ImmutableMimeType DEFAULT_MIME_TYPE = of(System.getProperty("watt.server.content.type.default", "application/octet-stream"));
+
+    /**
+     * The default MIME media type for arbitrary content as a string.
+     */
+    public static final String DEFAULT_MIME_TYPE_STRING = DEFAULT_MIME_TYPE.toString();
 
     /**
      * Returns a new MimeType object given a MIME media type string.
+     *
      * @param  string   A MIME media type string.
      * @return          A MimeType object representing the given string.
      */
-    public static MimeType of(String string) {
+    public static ImmutableMimeType of(String string) {
         if (string == null) return null;
 
-        MimeType type;
-
         try {
-            type = new MimeType(string);
+            return new ImmutableMimeType(string);
         } catch(MimeTypeParseException ex) {
             throw new IllegalArgumentException(ex);
         }
-
-        return type;
     }
 
     /**
@@ -73,9 +75,14 @@ public final class MIMETypeHelper {
      * @param type The MimeType to be normalized.
      * @return     The given MimeType if not null, otherwise the default MimeType.
      */
-    public static MimeType normalize(MimeType type) {
-        if (type == null) type = getDefault();
-        return type;
+    public static ImmutableMimeType normalize(MimeType type) {
+        if (type == null) return getDefault();
+
+        try {
+            return new ImmutableMimeType(type);
+        } catch(MimeTypeParseException ex) {
+            throw new IllegalArgumentException(ex);
+        }
     }
 
     /**
@@ -83,8 +90,28 @@ public final class MIMETypeHelper {
      *
      * @return     The default MimeType.
      */
-    public static MimeType getDefault() {
-        return of(DEFAULT_MIME_TYPE);
+    public static ImmutableMimeType getDefault() {
+        return DEFAULT_MIME_TYPE;
+    }
+
+    /**
+     * Returns the MIME type associated with the given filename extension.
+     *
+     * @param extension The filename extension.
+     * @return          The MIME type associated with the given extension.
+     */
+    public static ImmutableMimeType fromExtension(String extension) {
+        return normalize(of(MimeTypes.getTypeFromExtension(extension)));
+    }
+
+    /**
+     * Returns the MIME type associated with the given filename.
+     *
+     * @param filename  The filename.
+     * @return          The MIME type associated with the given filename.
+     */
+    public static ImmutableMimeType fromFilename(String filename) {
+        return normalize(of(MimeTypes.getTypeFromName(filename)));
     }
 
     /**
@@ -118,7 +145,7 @@ public final class MIMETypeHelper {
         if (type == null) throw new IllegalArgumentException("type must not be null");
         if (subtype == null) throw new IllegalArgumentException("subtype must not be null");
 
-        MimeType mimeType = new MimeType(type, subtype);
+        ImmutableMimeType mimeType = new ImmutableMimeType(type, subtype);
 
         if (parameters != null) {
             parameters = IDataHelper.sort(parameters, false, true);
@@ -152,19 +179,16 @@ public final class MIMETypeHelper {
      * Returns true if the given MIME type strings are considered equivalent because their types and subtypes match
      * (parameters are not considered in the comparison).
      *
-     * @param string1 The first MIME type string to be compare.
-     * @param string2 The second MIME type string to be compared.
-     * @return True if the two MIME type strings are considered equal, otherwise false.
-     * @throws MimeTypeParseException If either of the MIME type strings are malformed.
+     * @param string1                   The first MIME type string to be compare.
+     * @param string2                   The second MIME type string to be compared.
+     * @return                          True if the two MIME type strings are considered equal, otherwise false.
+     * @throws MimeTypeParseException   If either of the MIME type strings are malformed.
      */
     public static boolean equal(String string1, String string2) throws MimeTypeParseException {
         if (string1 == null && string2 == null) return true;
         if (string1 == null || string2 == null) return false;
 
-        MimeType mimeType1 = new MimeType(string1);
-        MimeType mimeType2 = new MimeType(string2);
-
-        return mimeType1.match(mimeType2);
+        return new ImmutableMimeType(string1).equals(new ImmutableMimeType(string2));
     }
 
     /**
@@ -180,7 +204,7 @@ public final class MIMETypeHelper {
         boolean valid = false;
         if (string != null) {
             try {
-                MimeType type = new MimeType(string);
+                ImmutableMimeType type = new ImmutableMimeType(string);
                 valid = true;
             } catch (MimeTypeParseException ex) {
                 if (raise) ExceptionHelper.raise(ex);
