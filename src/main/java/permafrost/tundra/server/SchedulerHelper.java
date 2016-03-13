@@ -27,8 +27,6 @@ package permafrost.tundra.server;
 import com.wm.app.b2b.server.ServiceException;
 import com.wm.app.b2b.server.scheduler.ScheduleManager;
 import permafrost.tundra.lang.ExceptionHelper;
-import java.io.IOException;
-import java.sql.SQLException;
 
 /**
  * A collection of methods for working with Integration Server user scheduled tasks.
