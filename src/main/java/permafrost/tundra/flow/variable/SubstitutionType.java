@@ -24,34 +24,80 @@
 
 package permafrost.tundra.flow.variable;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.EnumSet;
+import java.util.List;
+
 /**
  * The different types of variable substitution supported by the SubstitutionHelper methods.
  */
 public enum SubstitutionType {
-    LOCAL, GLOBAL, ALL;
+    LOCAL, GLOBAL, PROPERTIES, ENVIRONMENT;
 
     /**
-     * The default comparison type, if none is specified.
+     * The default substitution type, if none is specified.
      */
     public static final SubstitutionType DEFAULT_SUBSTITUTION_TYPE = LOCAL;
 
     /**
-     * Returns an SubstitutionType for the given string value.
-     *
-     * @param value The value to be converted to an SubstitutionType.
-     * @return      The SubstitutionType representing the given value.
+     * The default substitution set, if none is specified.
      */
-    public static SubstitutionType normalize(String value) {
-        return normalize(value == null ? null : valueOf(value.trim().toUpperCase()));
+    public static final EnumSet<SubstitutionType> DEFAULT_SUBSTITUTION_SET = EnumSet.of(DEFAULT_SUBSTITUTION_TYPE);
+
+    /**
+     * Returns an EnumSet of SubstitutionType for the given string values.
+     *
+     * @param values The values to be converted to an EnumSet of SubstitutionType.
+     * @return       The EnumSet of SubstitutionType representing the given values.
+     */
+    public static EnumSet<SubstitutionType> normalize(String ...values) {
+        if (values == null || values.length == 0) return DEFAULT_SUBSTITUTION_SET;
+
+        List<SubstitutionType> types = new ArrayList<SubstitutionType>(values.length);
+        for (String value : values) {
+            if (value == null) {
+                types.add(DEFAULT_SUBSTITUTION_TYPE);
+            } else if (value.equalsIgnoreCase("ALL")) {
+                types.add(LOCAL);
+                types.add(GLOBAL);
+            } else {
+                types.add(valueOf(value.trim().toUpperCase()));
+            }
+        }
+
+        return normalize(types);
     }
 
     /**
-     * Normalizes an SubstitutionType.
+     * Normalizes a list of SubstitutionTypes.
      *
-     * @param type  The SubstitutionType to be normalized.
-     * @return      If the given type is null the default type, otherwise the given type.
+     * @param types The SubstitutionTypes to be normalized.
+     * @return      If the given type is null the default type set, otherwise the given types in a set.
      */
-    public static SubstitutionType normalize(SubstitutionType type) {
-        return type == null ? DEFAULT_SUBSTITUTION_TYPE : type;
+    public static EnumSet<SubstitutionType> normalize(SubstitutionType ...types) {
+        return normalize(types == null ? null : Arrays.asList(types));
+    }
+
+    /**
+     * Normalizes a list of SubstitutionTypes.
+     *
+     * @param types The SubstitutionTypes to be normalized.
+     * @return      If the given type is null the default type set, otherwise the given types in a set.
+     */
+    public static EnumSet<SubstitutionType> normalize(Collection<SubstitutionType> types) {
+        return normalize(types == null ? null : EnumSet.copyOf(types));
+    }
+
+    /**
+     * Normalizes an EnumSet of SubstitutionType.
+     *
+     * @param types The EnumSet to be normalized.
+     * @return      If the given EnumSet is null then an EnumSet containing the default type, otherwise the given
+     *              EnumSet.
+     */
+    public static EnumSet<SubstitutionType> normalize(EnumSet<SubstitutionType> types) {
+        return types == null || types.isEmpty() ? DEFAULT_SUBSTITUTION_SET : types;
     }
 }
