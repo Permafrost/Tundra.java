@@ -44,14 +44,9 @@ public final class MIMETypeHelper {
     private MIMETypeHelper() {}
 
     /**
-     * The default MIME media type for arbitrary content.
-     */
-    private static final ImmutableMimeType DEFAULT_MIME_TYPE = of(System.getProperty("watt.server.content.type.default", "application/octet-stream"));
-
-    /**
      * The default MIME media type for arbitrary content as a string.
      */
-    public static final String DEFAULT_MIME_TYPE_STRING = DEFAULT_MIME_TYPE.toString();
+    public static final String DEFAULT_MIME_TYPE_STRING = System.getProperty("watt.server.content.type.default", "application/octet-stream");
 
     /**
      * Returns a new MimeType object given a MIME media type string.
@@ -59,11 +54,11 @@ public final class MIMETypeHelper {
      * @param  string   A MIME media type string.
      * @return          A MimeType object representing the given string.
      */
-    public static ImmutableMimeType of(String string) {
+    public static MimeType of(String string) {
         if (string == null) return null;
 
         try {
-            return new ImmutableMimeType(string);
+            return new MimeType(string);
         } catch(MimeTypeParseException ex) {
             throw new IllegalArgumentException(ex);
         }
@@ -75,14 +70,9 @@ public final class MIMETypeHelper {
      * @param type The MimeType to be normalized.
      * @return     The given MimeType if not null, otherwise the default MimeType.
      */
-    public static ImmutableMimeType normalize(MimeType type) {
+    public static MimeType normalize(MimeType type) {
         if (type == null) return getDefault();
-
-        try {
-            return new ImmutableMimeType(type);
-        } catch(MimeTypeParseException ex) {
-            throw new IllegalArgumentException(ex);
-        }
+        return type;
     }
 
     /**
@@ -90,8 +80,12 @@ public final class MIMETypeHelper {
      *
      * @return     The default MimeType.
      */
-    public static ImmutableMimeType getDefault() {
-        return DEFAULT_MIME_TYPE;
+    public static MimeType getDefault() {
+        try {
+            return new MimeType(DEFAULT_MIME_TYPE_STRING);
+        } catch(MimeTypeParseException ex) {
+            throw new IllegalArgumentException(ex);
+        }
     }
 
     /**
@@ -100,7 +94,7 @@ public final class MIMETypeHelper {
      * @param extension The filename extension.
      * @return          The MIME type associated with the given extension.
      */
-    public static ImmutableMimeType fromExtension(String extension) {
+    public static MimeType fromExtension(String extension) {
         return normalize(of(MimeTypes.getTypeFromExtension(extension)));
     }
 
@@ -110,7 +104,7 @@ public final class MIMETypeHelper {
      * @param filename  The filename.
      * @return          The MIME type associated with the given filename.
      */
-    public static ImmutableMimeType fromFilename(String filename) {
+    public static MimeType fromFilename(String filename) {
         return normalize(of(MimeTypes.getTypeFromName(filename)));
     }
 
@@ -145,7 +139,7 @@ public final class MIMETypeHelper {
         if (type == null) throw new IllegalArgumentException("type must not be null");
         if (subtype == null) throw new IllegalArgumentException("subtype must not be null");
 
-        ImmutableMimeType mimeType = new ImmutableMimeType(type, subtype);
+        MimeType mimeType = new MimeType(type, subtype);
 
         if (parameters != null) {
             parameters = IDataHelper.sort(parameters, false, true);
@@ -204,7 +198,7 @@ public final class MIMETypeHelper {
         boolean valid = false;
         if (string != null) {
             try {
-                ImmutableMimeType type = new ImmutableMimeType(string);
+                MimeType type = new MimeType(string);
                 valid = true;
             } catch (MimeTypeParseException ex) {
                 if (raise) ExceptionHelper.raise(ex);

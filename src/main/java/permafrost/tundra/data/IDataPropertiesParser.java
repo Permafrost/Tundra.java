@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2015 Lachlan Dowding
+ * Copyright (c) 2016 Lachlan Dowding
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,17 +25,19 @@
 package permafrost.tundra.data;
 
 import com.wm.data.IData;
-import com.wm.util.coder.IDataXMLCoder;
-import permafrost.tundra.lang.CharsetHelper;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
+import java.util.Map;
+import java.util.Properties;
 
 /**
- * Deserializes and serializes IData objects from and to XML.
+ * Deserializes and serializes IData objects from and to Java properties format.
  */
-public class IDataXMLParser extends IDataTextParser {
+public class IDataPropertiesParser extends IDataTextParser {
     /**
      * Initialization on demand holder idiom.
      */
@@ -43,20 +45,20 @@ public class IDataXMLParser extends IDataTextParser {
         /**
          * The singleton instance of the class.
          */
-        private static final IDataXMLParser INSTANCE = new IDataXMLParser();
+        private static final IDataPropertiesParser INSTANCE = new IDataPropertiesParser();
     }
 
     /**
      * Disallow instantiation of this class.
      */
-    private IDataXMLParser() {}
+    private IDataPropertiesParser() {}
 
     /**
      * Returns the singleton instance of this class.
      *
      * @return The singleton instance of this class.
      */
-    public static IDataXMLParser getInstance() {
+    public static IDataPropertiesParser getInstance() {
         return Holder.INSTANCE;
     }
 
@@ -66,24 +68,25 @@ public class IDataXMLParser extends IDataTextParser {
      * @return The MIME type this parser handles.
      */
     public String getContentType() {
-        return "text/xml";
+        return "text/x-java-properties";
     }
 
     /**
-     * Returns an IData representation of the XML data read from the given input stream.
+     * Returns an IData representation of the Java properties data read from the given input stream.
      *
-     * @param inputStream The input stream to be decoded.
-     * @param charset     The character set to use.
-     * @return An IData representation of the given input stream data.
-     * @throws IOException If there is a problem reading from the stream.
+     * @param inputStream   The input stream to be decoded.
+     * @param charset       The character set to use.
+     * @return              An IData representation of the given input stream data.
+     * @throws IOException  If there is a problem reading from the stream.
      */
     public IData decode(InputStream inputStream, Charset charset) throws IOException {
-        IDataXMLCoder parser = new IDataXMLCoder(CharsetHelper.normalize(charset).displayName());
-        return parser.decode(inputStream);
+        Properties properties = new Properties();
+        properties.load(new InputStreamReader(inputStream, charset));
+        return IDataHelper.toIData(properties);
     }
 
     /**
-     * Serializes the given IData document as XML to the given output stream.
+     * Serializes the given IData document as Java properties to the given output stream.
      *
      * @param outputStream The stream to write the encoded IData to.
      * @param document     The IData document to be encoded.
@@ -91,7 +94,16 @@ public class IDataXMLParser extends IDataTextParser {
      * @throws IOException If there is a problem writing to the stream.
      */
     public void encode(OutputStream outputStream, IData document, Charset charset) throws IOException {
-        IDataXMLCoder parser = new IDataXMLCoder(CharsetHelper.normalize(charset).displayName());
-        parser.encode(outputStream, document);
+        Properties properties = new Properties();
+
+        for (Map.Entry<String, Object> entry : IDataMap.of(document)) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+            if (value != null) {
+                properties.put(key, value.toString());
+            }
+        }
+
+        properties.store(new OutputStreamWriter(outputStream, charset), null);
     }
 }
