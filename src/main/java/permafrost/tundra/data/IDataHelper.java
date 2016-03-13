@@ -345,6 +345,46 @@ public final class IDataHelper {
     }
 
     /**
+     * Merges multiple IData documents into a single new IData document.
+     *
+     * @param recurse   If true, a recursive merge is performed.
+     * @param documents One or more IData documents to be merged.
+     * @return          A new IData document containing the keys and values from all merged input documents.
+     */
+    public static IData merge(boolean recurse, IData... documents) {
+        IData output = IDataFactory.create();
+        if (documents != null) {
+            for (IData document : documents) {
+                if (document != null) {
+                    IDataCursor documentCursor = document.getCursor();
+                    IDataCursor outputCursor = output.getCursor();
+                    try {
+                        while(documentCursor.next()) {
+                            String key = documentCursor.getKey();
+                            Object value = documentCursor.getValue();
+                            Object existingValue = IDataUtil.get(outputCursor, key);
+
+                            if (value != null) {
+                                if (recurse &&
+                                        (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) &&
+                                        (existingValue instanceof IData || existingValue instanceof IDataCodable || existingValue instanceof IDataPortable || existingValue instanceof ValuesCodable)) {
+                                    IDataUtil.put(outputCursor, key, merge(recurse, toIData(existingValue), toIData(value)));
+                                } else {
+                                    IDataUtil.put(outputCursor, key, value);
+                                }
+                            }
+                        }
+                    } finally {
+                        documentCursor.destroy();
+                        outputCursor.destroy();
+                    }
+                }
+            }
+        }
+        return output;
+    }
+
+    /**
      * Returns the number of top-level key value pairs in the given IData document.
      *
      * @param document  An IData document.
