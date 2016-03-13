@@ -757,6 +757,16 @@ public final class FileHelper {
     }
 
     /**
+     * Returns the filename extension for the given file.
+     *
+     * @param file The file whose extension is to be returned.
+     * @return     The filename extension for the given file.
+     */
+    public static String getExtension(File file) {
+        return file == null ? null : MimeTypes.getExtensionFromName(file.getName());
+    }
+
+    /**
      * Returns the base and extension parts of the given file's name.
      *
      * @param filename The file to get the name parts of.
