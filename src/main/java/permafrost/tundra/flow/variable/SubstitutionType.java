@@ -34,7 +34,7 @@ import java.util.List;
  * The different types of variable substitution supported by the SubstitutionHelper methods.
  */
 public enum SubstitutionType {
-    LOCAL, GLOBAL, PROPERTIES, ENVIRONMENT;
+    LOCAL, GLOBAL;
 
     /**
      * The default substitution type, if none is specified.

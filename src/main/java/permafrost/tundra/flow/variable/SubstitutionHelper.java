@@ -134,16 +134,6 @@ public class SubstitutionHelper {
             String key = matcher.group(1);
             Object value = null;
 
-            if (substitutionTypes.contains(SubstitutionType.ENVIRONMENT)) {
-                Object environmentValue = System.getenv(key);
-                if (environmentValue != null) value = environmentValue;
-            }
-
-            if (substitutionTypes.contains(SubstitutionType.PROPERTIES)) {
-                Object propertyValue = System.getProperty(key);
-                if (propertyValue != null) value = propertyValue;
-            }
-
             if (substitutionTypes.contains(SubstitutionType.GLOBAL)) {
                 Object globalValue = GlobalVariableHelper.get(key);
                 if (globalValue != null) value = globalValue;
