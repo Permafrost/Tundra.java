@@ -57,20 +57,14 @@ public final class ThreadHelper {
      */
     public static Thread[] list() {
         ThreadGroup root = root();
+        Thread[] threads = new Thread[root.activeCount() * 2];
+        int threadCount;
 
-        int threadCount = 0, iteration = 0;
-        Thread[] list = new Thread[threadCount];
-
-        // because ThreadGroup.enumerate isn't thread safe, keep trying to
-        // enumerate for up to 10 times until we happen to have an array
-        // large enough to hold all the threads that exist at the moment
-        // enumerate is called
-        while (iteration < 10 && threadCount >= list.length) {
-            list = new Thread[root.activeCount() + (500 * ++iteration)];
-            threadCount = root.enumerate(list, true);
+        while ((threadCount = root.enumerate(threads, true)) == threads.length ) {
+            threads = new Thread[threads.length * 2];
         }
 
-        return Arrays.copyOf(list, threadCount);
+        return Arrays.copyOf(threads, threadCount);
     }
 
     /**
@@ -79,15 +73,14 @@ public final class ThreadHelper {
      * @return The root thread group.
      */
     public static ThreadGroup root() {
-        ThreadGroup group = current().getThreadGroup();
-        ThreadGroup parent = group.getParent();
+        ThreadGroup root = current().getThreadGroup();
+        ThreadGroup parent;
 
-        while (parent != null) {
-            group = parent;
-            parent = group.getParent();
+        while ((parent = root.getParent()) != null) {
+            root = parent;
         }
 
-        return group;
+        return root;
     }
 
     /**
