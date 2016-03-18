@@ -39,7 +39,7 @@ import permafrost.tundra.server.NodeHelper;
  * A collection of convenience methods for dealing with global variables.
  */
 public class GlobalVariableHelper {
-    private static final boolean isSupported = NodeHelper.exists("wm.server.globalvariables:getGlobalVariableValue");;
+    private static final boolean isSupported = NodeHelper.exists("wm.server.globalvariables:getGlobalVariableValue");
 
     /**
      * Disallow instantiation of this class.
