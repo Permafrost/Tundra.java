@@ -30,25 +30,29 @@ import org.junit.Test;
 import permafrost.tundra.io.FileHelper;
 import permafrost.tundra.io.StreamHelper;
 import permafrost.tundra.lang.BytesHelper;
+import permafrost.tundra.lang.CharsetHelper;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.security.MessageDigest;
 import java.util.Map;
 
 public class MessageDigestHelperTest {
     byte[] sha256;
     byte[] data;
+    MessageDigest algorithm;
 
     @Before
     public void setUp() throws Exception {
         data = "this is a test".getBytes();
         sha256 = BytesHelper.hexDecode("2e99758548972a8e8822ad47fa1017ff72f06f3ff6a016851f45c398732bc50c");
+        algorithm = MessageDigestHelper.normalize("SHA-256");
     }
 
     @Test
     public void testGetDigestWithByteArrayInputStream() throws Exception {
-        Map.Entry<InputStream, byte[]> result = MessageDigestHelper.getDigest(MessageDigestAlgorithm.SHA_256, new ByteArrayInputStream(data));
+        Map.Entry<? extends InputStream, byte[]> result = MessageDigestHelper.digest(algorithm, new ByteArrayInputStream(data));
         assertArrayEquals(sha256, result.getValue());
 
         InputStream inputStream = result.getKey();
@@ -67,7 +71,7 @@ public class MessageDigestHelperTest {
         File tempFile = FileHelper.create();
         FileHelper.writeFromBytes(tempFile, data, false);
 
-        Map.Entry<InputStream, byte[]> result = MessageDigestHelper.getDigest(MessageDigestAlgorithm.SHA_256, new FileInputStream(tempFile));
+        Map.Entry<? extends InputStream, byte[]> result = MessageDigestHelper.digest(algorithm, new FileInputStream(tempFile));
         assertArrayEquals(sha256, result.getValue());
 
         InputStream inputStream = result.getKey();
@@ -83,11 +87,11 @@ public class MessageDigestHelperTest {
 
     @Test
     public void testGetDigestWithBytes() throws Exception {
-        assertArrayEquals(sha256, MessageDigestHelper.getDigest(MessageDigestAlgorithm.SHA_256, data));
+        assertArrayEquals(sha256, MessageDigestHelper.digest(algorithm, data));
     }
 
     @Test
     public void testGetDigestWithString() throws Exception {
-        assertArrayEquals(sha256, MessageDigestHelper.getDigest(MessageDigestAlgorithm.SHA_256, new String(data)));
+        assertArrayEquals(sha256, MessageDigestHelper.digest(algorithm, new String(data), CharsetHelper.DEFAULT_CHARSET));
     }
 }

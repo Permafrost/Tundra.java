@@ -27,7 +27,6 @@ package permafrost.tundra.security;
 import permafrost.tundra.io.MarkableInputStream;
 import permafrost.tundra.io.StreamHelper;
 import permafrost.tundra.lang.BytesHelper;
-import permafrost.tundra.lang.CharsetHelper;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,163 +39,134 @@ import java.util.Map;
 
 public final class MessageDigestHelper {
     /**
+     * The default message digest algorithm name.
+     */
+    public static final String DEFAULT_ALGORITHM_NAME = "SHA-512";
+
+    /**
      * Disallow instantiation of this class.
      */
     private MessageDigestHelper() {}
 
     /**
-     * Returns a MessageDigest object for the given algorithm.
+     * Returns a MessageDigest object for the given named algorithm.
      *
-     * @param algorithmName The algorithm to use when calculating a message digest.
-     * @return A MessageDigest that implements the given algorithm.
+     * @param algorithmName             The algorithm to use when calculating a message digest.
+     * @return                          A MessageDigest that implements the given algorithm.
+     * @throws NoSuchAlgorithmException If there is no provider for the named algorithm.
      */
-    private static MessageDigest getInstance(String algorithmName) {
-        return getInstance(MessageDigestAlgorithm.normalize(algorithmName));
+    public static MessageDigest normalize(String algorithmName) throws NoSuchAlgorithmException {
+        if (algorithmName == null) algorithmName = DEFAULT_ALGORITHM_NAME;
+        return MessageDigest.getInstance(algorithmName);
     }
 
     /**
-     * Returns a MessageDigest object for the given algorithm.
+     * Returns either the given algorithm if not null, or the default algorithm if given null.
      *
-     * @param algorithm The algorithm to use when calculating a message digest.
-     * @return A MessageDigest that implements the given algorithm.
+     * @param algorithm                 The algorithm to be normalized.
+     * @return                          Either the given algorithm if not null, or the default algorithm.
+     * @throws NoSuchAlgorithmException If there is no provider for the default algorithm.
      */
-    private static MessageDigest getInstance(MessageDigestAlgorithm algorithm) {
-        try {
-            return MessageDigest.getInstance(MessageDigestAlgorithm.normalize(algorithm).toString());
-        } catch (NoSuchAlgorithmException ex) {
-            throw new RuntimeException(ex);
+    public static MessageDigest normalize(MessageDigest algorithm) throws NoSuchAlgorithmException {
+        if (algorithm == null) return normalize(DEFAULT_ALGORITHM_NAME);
+        return algorithm;
+    }
+
+    /**
+     * Calculates a message digest for the given data using the given algorithm.
+     *
+     * @param algorithm                 The algorithm to use when calculating the message digest.
+     * @param data                      The data to calculate the digest for.
+     * @return                          The message digest calculated for the given data using the given algorithm.
+     * @throws IOException              If an I/O exception occurs reading from the stream.
+     * @throws NoSuchAlgorithmException If there is no provider for the default algorithm.
+     */
+    public static Map.Entry<? extends Object, byte[]> digest(MessageDigest algorithm, Object data, Charset charset) throws IOException, NoSuchAlgorithmException {
+        Map.Entry<? extends Object, byte[]> output = null;
+
+        if (data instanceof String) {
+            byte[] digest = digest(algorithm, (String)data, charset);
+            output = new AbstractMap.SimpleImmutableEntry<String, byte[]>((String)data, digest);
+        } else if (data instanceof byte[]) {
+            byte[] digest = digest(algorithm, (byte[])data);
+            output = new AbstractMap.SimpleImmutableEntry<byte[], byte[]>((byte[])data, digest);
+        } else if (data instanceof InputStream) {
+            output = digest(algorithm, (InputStream)data);
         }
+
+        return output;
     }
 
     /**
      * Calculates a message digest for the given data using the given algorithm.
      *
-     * @param algorithmName The algorithm to use when calculating the message digest.
-     * @param data          The data to calculate the digest for.
-     * @return The message digest calculated for the given data using the given algorithm.
-     * @throws IOException If an I/O exception occurs reading from the stream.
+     * @param algorithm                 The algorithm to use when calculating the message digest.
+     * @param data                      The data to calculate the digest for.
+     * @return                          The message digest calculated for the given data using the given algorithm.
+     * @throws IOException              If an I/O exception occurs reading from the stream.
+     * @throws NoSuchAlgorithmException If there is no provider for the default algorithm.
      */
-    public static Map.Entry<InputStream, byte[]> getDigest(String algorithmName, InputStream data) throws IOException {
-        return getDigest(MessageDigestAlgorithm.normalize(algorithmName), data);
-    }
-
-    /**
-     * Calculates a message digest for the given data using the given algorithm.
-     *
-     * @param algorithm The algorithm to use when calculating the message digest.
-     * @param data      The data to calculate the digest for.
-     * @return The message digest calculated for the given data using the given algorithm.
-     * @throws IOException If an I/O exception occurs reading from the stream.
-     */
-    public static Map.Entry<InputStream, byte[]> getDigest(MessageDigestAlgorithm algorithm, InputStream data) throws IOException {
+    public static Map.Entry<? extends InputStream, byte[]> digest(MessageDigest algorithm, InputStream data) throws IOException, NoSuchAlgorithmException {
         if (data == null) return null;
 
-        byte[] digest;
+        Map.Entry<? extends InputStream, byte[]> output;
 
         if (data instanceof ByteArrayInputStream) {
-            byte[] bytes = StreamHelper.readToBytes(data, false);
-            data.reset();
-            digest = getDigest(algorithm, bytes);
+            // treat ByteArrayInputStream classes differently, to optimise performance in this case
+            output = digest(algorithm, (ByteArrayInputStream)data);
         } else {
-            DigestInputStream digestInputStream = new DigestInputStream(data, getInstance(algorithm));
+            algorithm = normalize(algorithm);
+            DigestInputStream digestInputStream = new DigestInputStream(data, algorithm);
             data = new MarkableInputStream(digestInputStream);
             // generating the digest relies on the fact that the MarkableInputStream constructor reads the entire stream
-            digest = digestInputStream.getMessageDigest().digest();
+            byte[] digest = digestInputStream.getMessageDigest().digest();
+            // turn off the digest function now that its complete
             digestInputStream.on(false);
+            output = new AbstractMap.SimpleImmutableEntry<InputStream, byte[]>(data, digest);
         }
 
-        return new AbstractMap.SimpleImmutableEntry<InputStream, byte[]>(data, digest);
+        return output;
     }
 
     /**
      * Calculates a message digest for the given data using the given algorithm.
      *
-     * @param algorithmName The algorithm to use when calculating the message digest.
-     * @param data          The data to calculate the digest for.
-     * @return The message digest calculated for the given data using the given algorithm.
+     * @param algorithm                 The algorithm to use when calculating the message digest.
+     * @param data                      The data to calculate the digest for.
+     * @return                          The message digest calculated for the given data using the given algorithm.
+     * @throws IOException              If an I/O exception occurs reading from the stream.
+     * @throws NoSuchAlgorithmException If there is no provider for the default algorithm.
      */
-    public static byte[] getDigest(String algorithmName, byte[] data) {
-        return getDigest(MessageDigestAlgorithm.normalize(algorithmName), data);
+    public static Map.Entry<ByteArrayInputStream, byte[]> digest(MessageDigest algorithm, ByteArrayInputStream data) throws IOException, NoSuchAlgorithmException {
+        if (data == null) return null;
+
+        byte[] bytes = StreamHelper.readToBytes(data, false);
+        data.reset();
+
+        return new AbstractMap.SimpleImmutableEntry<ByteArrayInputStream, byte[]>(data, digest(algorithm, bytes));
     }
 
     /**
      * Calculates a message digest for the given data using the given algorithm.
      *
-     * @param algorithm The algorithm to use when calculating the message digest.
-     * @param data      The data to calculate the digest for.
-     * @return The message digest calculated for the given data using the given algorithm.
+     * @param algorithm                 The algorithm to use when calculating the message digest.
+     * @param data                      The data to calculate the digest for.
+     * @return                          The message digest calculated for the given data using the given algorithm.
+     * @throws NoSuchAlgorithmException If there is no provider for the default algorithm.
      */
-    public static byte[] getDigest(MessageDigestAlgorithm algorithm, byte[] data) {
-        return data == null ? null : getInstance(algorithm).digest(data);
+    public static byte[] digest(MessageDigest algorithm, byte[] data) throws NoSuchAlgorithmException {
+        return data == null ? null : normalize(algorithm).digest(data);
     }
 
     /**
      * Calculates a message digest for the given data using the given algorithm.
      *
-     * @param algorithmName The algorithm to use when calculating the message digest.
-     * @param data          The data to calculate the digest for.
-     * @return The message digest calculated for the given data using the given algorithm.
-     */
-    public static byte[] getDigest(String algorithmName, String data) {
-        return getDigest(algorithmName, data, (Charset)null);
-    }
-
-    /**
-     * Calculates a message digest for the given data using the given algorithm.
-     *
-     * @param algorithmName The algorithm to use when calculating the message digest.
-     * @param data          The data to calculate the digest for.
-     * @param charsetName   The charset to use.
-     * @return The message digest calculated for the given data using the given algorithm.
-     */
-    public static byte[] getDigest(String algorithmName, String data, String charsetName) {
-        return getDigest(algorithmName, data, CharsetHelper.normalize(charsetName));
-    }
-
-    /**
-     * Calculates a message digest for the given data using the given algorithm.
-     *
-     * @param algorithmName The algorithm to use when calculating the message digest.
+     * @param algorithm     The algorithm to use when calculating the message digest.
      * @param data          The data to calculate the digest for.
      * @param charset       The charset to use.
      * @return The message digest calculated for the given data using the given algorithm.
      */
-    public static byte[] getDigest(String algorithmName, String data, Charset charset) {
-        return getDigest(MessageDigestAlgorithm.normalize(algorithmName), data, charset);
-    }
-
-    /**
-     * Calculates a message digest for the given data using the given algorithm.
-     *
-     * @param algorithm The algorithm to use when calculating the message digest.
-     * @param data      The data to calculate the digest for.
-     * @return The message digest calculated for the given data using the given algorithm.
-     */
-    public static byte[] getDigest(MessageDigestAlgorithm algorithm, String data) {
-        return getDigest(algorithm, data, (Charset)null);
-    }
-
-    /**
-     * Calculates a message digest for the given data using the given algorithm.
-     *
-     * @param algorithm   The algorithm to use when calculating the message digest.
-     * @param data        The data to calculate the digest for.
-     * @param charsetName The charset to use.
-     * @return The message digest calculated for the given data using the given algorithm.
-     */
-    public static byte[] getDigest(MessageDigestAlgorithm algorithm, String data, String charsetName) {
-        return getDigest(algorithm, data, CharsetHelper.normalize(charsetName));
-    }
-
-    /**
-     * Calculates a message digest for the given data using the given algorithm.
-     *
-     * @param algorithm The algorithm to use when calculating the message digest.
-     * @param data      The data to calculate the digest for.
-     * @param charset   The charset to use.
-     * @return The message digest calculated for the given data using the given algorithm.
-     */
-    public static byte[] getDigest(MessageDigestAlgorithm algorithm, String data, Charset charset) {
-        return getDigest(algorithm, BytesHelper.normalize(data, charset));
+    public static byte[] digest(MessageDigest algorithm, String data, Charset charset) throws NoSuchAlgorithmException {
+        return digest(algorithm, BytesHelper.normalize(data, charset));
     }
 }
