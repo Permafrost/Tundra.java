@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2015 Lachlan Dowding
+ * Copyright (c) 2016 Lachlan Dowding
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,64 +22,64 @@
  * SOFTWARE.
  */
 
-package permafrost.tundra.lang;
+package permafrost.tundra.content;
 
 import java.util.Collection;
 
 /**
- * Throw a ValidationException when data fails validation.
+ * Throw a MalformedException when data is malformed.
  */
-public class ValidationException extends StrictException {
+public class MalformedException extends StrictException {
     /**
-     * Constructs a new ValidationException.
+     * Constructs a new MalformedException.
      */
-    public ValidationException() {
+    public MalformedException() {
         super();
     }
 
     /**
-     * Constructs a new ValidationException with the given message.
+     * Constructs a new MalformedException with the given message.
      *
-     * @param message A message describing why the ValidationException was thrown.
+     * @param message A message describing why the MalformedException was thrown.
      */
-    public ValidationException(String message) {
+    public MalformedException(String message) {
         super(message);
     }
 
     /**
-     * Constructs a new ValidationException with the given cause.
+     * Constructs a new MalformedException with the given cause.
      *
-     * @param cause The cause of this ValidationException.
+     * @param cause The cause of this MalformedException.
      */
-    public ValidationException(Throwable cause) {
+    public MalformedException(Throwable cause) {
         super(cause);
     }
 
     /**
-     * Constructs a new ValidationException with the given message and cause.
+     * Constructs a new MalformedException with the given message and cause.
      *
-     * @param message A message describing why the ValidationException was thrown.
+     * @param message A message describing why the MalformedException was thrown.
      * @param cause   The cause of this Exception.
      */
-    public ValidationException(String message, Throwable cause) {
+    public MalformedException(String message, Throwable cause) {
         super(message, cause);
     }
 
     /**
-     * Constructs a new ValidationException with the given list of exceptions.
+     * Constructs a new MalformedException with the given list of exceptions.
      *
      * @param exceptions A collection of exceptions this exception will wrap.
      */
-    public ValidationException(Collection<? extends Throwable> exceptions) {
+    public MalformedException(Collection<? extends Throwable> exceptions) {
         super(exceptions);
     }
 
     /**
-     * Constructs a new ValidationException with the given list of exceptions.
+     * Constructs a new MalformedException with the given list of exceptions.
      *
      * @param exceptions A collection of exceptions this exception will wrap.
      */
-    public ValidationException(Throwable... exceptions) {
+    public MalformedException(Throwable... exceptions) {
         super(exceptions);
     }
 }

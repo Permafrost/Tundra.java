@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2015 Lachlan Dowding
+ * Copyright (c) 2016 Lachlan Dowding
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,64 +22,64 @@
  * SOFTWARE.
  */
 
-package permafrost.tundra.lang;
+package permafrost.tundra.content;
 
 import java.util.Collection;
 
 /**
- * Throw a StrictException to indicate that a process or data has failed to meet requirements.
+ * Throw a ValidationException when data fails validation.
  */
-public class StrictException extends UnrecoverableException {
+public class ValidationException extends MalformedException {
     /**
-     * Constructs a new StrictException.
+     * Constructs a new ValidationException.
      */
-    public StrictException() {
+    public ValidationException() {
         super();
     }
 
     /**
-     * Constructs a new StrictException with the given message.
+     * Constructs a new ValidationException with the given message.
      *
-     * @param message A message describing why the StrictException was thrown.
+     * @param message A message describing why the ValidationException was thrown.
      */
-    public StrictException(String message) {
+    public ValidationException(String message) {
         super(message);
     }
 
     /**
-     * Constructs a new StrictException with the given cause.
+     * Constructs a new ValidationException with the given cause.
      *
-     * @param cause The cause of this StrictException.
+     * @param cause The cause of this ValidationException.
      */
-    public StrictException(Throwable cause) {
+    public ValidationException(Throwable cause) {
         super(cause);
     }
 
     /**
-     * Constructs a new StrictException with the given message and cause.
+     * Constructs a new ValidationException with the given message and cause.
      *
-     * @param message A message describing why the StrictException was thrown.
+     * @param message A message describing why the ValidationException was thrown.
      * @param cause   The cause of this Exception.
      */
-    public StrictException(String message, Throwable cause) {
+    public ValidationException(String message, Throwable cause) {
         super(message, cause);
     }
 
     /**
-     * Constructs a new StrictException with the given list of exceptions.
+     * Constructs a new ValidationException with the given list of exceptions.
      *
      * @param exceptions A collection of exceptions this exception will wrap.
      */
-    public StrictException(Collection<? extends Throwable> exceptions) {
+    public ValidationException(Collection<? extends Throwable> exceptions) {
         super(exceptions);
     }
 
     /**
-     * Constructs a new StrictException with the given list of exceptions.
+     * Constructs a new ValidationException with the given list of exceptions.
      *
      * @param exceptions A collection of exceptions this exception will wrap.
      */
-    public StrictException(Throwable... exceptions) {
+    public ValidationException(Throwable... exceptions) {
         super(exceptions);
     }
 }

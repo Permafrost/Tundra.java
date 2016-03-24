@@ -22,64 +22,65 @@
  * SOFTWARE.
  */
 
-package permafrost.tundra.lang;
+package permafrost.tundra.content;
 
 import java.util.Collection;
+import permafrost.tundra.lang.UnrecoverableException;
 
 /**
- * Throw a DuplicateException when duplicate data is detected while processing.
+ * Throw a UnsupportedException to indicate that the provided data is not supported.
  */
-public class DuplicateException extends StrictException {
+public class UnsupportedException extends StrictException {
     /**
-     * Constructs a new DuplicateException.
+     * Constructs a new UnsupportedException.
      */
-    public DuplicateException() {
+    public UnsupportedException() {
         super();
     }
 
     /**
-     * Constructs a new DuplicateException with the given message.
+     * Constructs a new UnsupportedException with the given message.
      *
-     * @param message A message describing why the DuplicateException was thrown.
+     * @param message A message describing why the UnsupportedException was thrown.
      */
-    public DuplicateException(String message) {
+    public UnsupportedException(String message) {
         super(message);
     }
 
     /**
-     * Constructs a new DuplicateException with the given cause.
+     * Constructs a new UnsupportedException with the given cause.
      *
-     * @param cause The cause of this DuplicateException.
+     * @param cause The cause of this UnsupportedException.
      */
-    public DuplicateException(Throwable cause) {
+    public UnsupportedException(Throwable cause) {
         super(cause);
     }
 
     /**
-     * Constructs a new DuplicateException with the given message and cause.
+     * Constructs a new UnsupportedException with the given message and cause.
      *
-     * @param message A message describing why the DuplicateException was thrown.
+     * @param message A message describing why the UnsupportedException was thrown.
      * @param cause   The cause of this Exception.
      */
-    public DuplicateException(String message, Throwable cause) {
+    public UnsupportedException(String message, Throwable cause) {
         super(message, cause);
     }
 
     /**
-     * Constructs a new DuplicateException with the given list of exceptions.
+     * Constructs a new UnsupportedException with the given list of exceptions.
      *
      * @param exceptions A collection of exceptions this exception will wrap.
      */
-    public DuplicateException(Collection<? extends Throwable> exceptions) {
+    public UnsupportedException(Collection<? extends Throwable> exceptions) {
         super(exceptions);
     }
 
     /**
-     * Constructs a new DuplicateException with the given list of exceptions.
+     * Constructs a new UnsupportedException with the given list of exceptions.
      *
      * @param exceptions A collection of exceptions this exception will wrap.
      */
-    public DuplicateException(Throwable... exceptions) {
+    public UnsupportedException(Throwable... exceptions) {
         super(exceptions);
     }
 }
