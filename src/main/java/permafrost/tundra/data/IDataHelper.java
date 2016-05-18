@@ -1192,7 +1192,7 @@ public final class IDataHelper {
             } else if (value != null){
                 value = value.toString();
             }
-            
+
             outputCursor.insertAfter(key, value);
         }
 
@@ -1340,15 +1340,13 @@ public final class IDataHelper {
     public static IData[] compact(IData[] array, boolean recurse) {
         if (array == null) return null;
 
-        IData[] output = ArrayHelper.compact(array);
+        IData[] output = new IData[array.length];
 
-        if (recurse) {
-            for (int i = 0; i < array.length; i++) {
-                output[i] = compact(array[i], recurse);
-            }
+        for (int i = 0; i < array.length; i++) {
+            output[i] = compact(array[i], recurse);
         }
 
-        return output;
+        return ArrayHelper.compact(output);
     }
 
     /**
