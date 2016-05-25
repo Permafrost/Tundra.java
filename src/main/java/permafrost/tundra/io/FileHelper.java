@@ -254,13 +254,13 @@ public final class FileHelper {
             ByteArrayOutputStream outputStream = null;
             try {
                 inputStream = new FileInputStream(file);
-                outputStream = new ByteArrayOutputStream(StreamHelper.DEFAULT_BUFFER_SIZE);
+                outputStream = new ByteArrayOutputStream(InputOutputHelper.DEFAULT_BUFFER_SIZE);
 
-                StreamHelper.copy(inputStream, outputStream);
+                InputOutputHelper.copy(inputStream, outputStream);
 
                 content = outputStream.toByteArray();
             } finally {
-                StreamHelper.close(inputStream, outputStream);
+                CloseableHelper.close(inputStream, outputStream);
             }
         }
 
@@ -371,7 +371,7 @@ public final class FileHelper {
      */
     public static File writeFromStream(File file, InputStream content, boolean append) throws IOException {
         if (file == null || !exists(file)) file = create(file);
-        if (content != null) StreamHelper.copy(content, new FileOutputStream(file, append));
+        if (content != null) InputOutputHelper.copy(content, new FileOutputStream(file, append));
         return file;
     }
 
@@ -400,7 +400,7 @@ public final class FileHelper {
      * @throws IOException If there is a problem writing to the file.
      */
     public static File writeFromBytes(File file, byte[] content, boolean append) throws IOException {
-        return writeFromStream(file, StreamHelper.normalize(content), append);
+        return writeFromStream(file, InputStreamHelper.normalize(content), append);
     }
 
     /**
@@ -444,7 +444,7 @@ public final class FileHelper {
      * @throws IOException If there is a problem writing to the file.
      */
     public static File writeFromString(File file, String content, Charset charset, boolean append) throws IOException {
-        return writeFromStream(file, StreamHelper.normalize(content, charset), append);
+        return writeFromStream(file, InputStreamHelper.normalize(content, charset), append);
     }
 
     /**
@@ -519,7 +519,7 @@ public final class FileHelper {
         if (source != null && target != null) {
             InputStream input = new FileInputStream(source);
             OutputStream output = new FileOutputStream(target, append);
-            StreamHelper.copy(input, output);
+            InputOutputHelper.copy(input, output);
         }
     }
 

@@ -27,7 +27,7 @@ package permafrost.tundra.zip;
 import com.wm.data.IData;
 import com.wm.util.coder.IDataCodable;
 import permafrost.tundra.data.IDataMap;
-import permafrost.tundra.io.StreamHelper;
+import permafrost.tundra.io.InputStreamHelper;
 import permafrost.tundra.lang.BytesHelper;
 import permafrost.tundra.lang.CharsetHelper;
 import permafrost.tundra.lang.ObjectConvertMode;
@@ -193,7 +193,7 @@ public class ZipEntryWithData extends ZipEntry implements IDataCodable {
     public static ZipEntryWithData valueOf(IData document) throws IOException {
         if (document == null) return null;
         IDataMap map = IDataMap.of(document);
-        return new ZipEntryWithData((String)map.get("name"), StreamHelper.normalize(map.get("content"), (String)map.get("encoding")));
+        return new ZipEntryWithData((String)map.get("name"), InputStreamHelper.normalize(map.get("content"), CharsetHelper.normalize((String)map.get("encoding"))));
     }
 
     /**

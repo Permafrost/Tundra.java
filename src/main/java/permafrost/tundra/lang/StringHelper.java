@@ -33,7 +33,8 @@ import com.wm.util.Table;
 import com.wm.util.coder.IDataCodable;
 import com.wm.util.coder.ValuesCodable;
 import permafrost.tundra.data.IDataHelper;
-import permafrost.tundra.io.StreamHelper;
+import permafrost.tundra.io.InputOutputHelper;
+import permafrost.tundra.io.InputStreamHelper;
 import permafrost.tundra.math.BigDecimalHelper;
 import permafrost.tundra.math.BigIntegerHelper;
 import permafrost.tundra.time.DateTimeHelper;
@@ -130,7 +131,7 @@ public final class StringHelper {
         if (inputStream == null) return null;
 
         Writer writer = new StringWriter();
-        StreamHelper.copy(new InputStreamReader(StreamHelper.normalize(inputStream), CharsetHelper.normalize(charset)), writer);
+        InputOutputHelper.copy(new InputStreamReader(InputStreamHelper.normalize(inputStream), CharsetHelper.normalize(charset)), writer);
         return writer.toString();
     }
 

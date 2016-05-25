@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2015 Lachlan Dowding
+ * Copyright (c) 2016 Lachlan Dowding
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,31 +24,32 @@
 
 package permafrost.tundra.io;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import org.junit.Test;
-import permafrost.tundra.lang.StringHelper;
-import java.io.File;
+import java.io.Closeable;
+import java.io.IOException;
 
-public class DeleteOnCloseFileInputStreamTest {
+/**
+ * A collection of convenience methods for working with Closeable objects.
+ */
+public class CloseableHelper {
+    /**
+     * Disallow instantiation of this class.
+     */
+    private CloseableHelper() {}
 
-    @Test
-    public void testClose() throws Exception {
-        String content = "this is a test";
-        File tempFile = FileHelper.create();
-        FileHelper.writeFromString(tempFile, content, false);
-        assertTrue(FileHelper.exists(tempFile));
-
-        DeleteOnCloseFileInputStream in = new DeleteOnCloseFileInputStream(tempFile);
-
-        // make sure the input stream can be read from without error
-        assertEquals(content, StringHelper.normalize(InputStreamHelper.read(in, false)));
-
-        // make sure closing the first time deletes the file
-        in.close();
-        assertTrue(!FileHelper.exists(tempFile));
-
-        // make sure closing more than once doesn't cause an error
-        in.close();
+    /**
+     * Closes all given Closeable objects, suppressing any encountered IOExceptions.
+     *
+     * @param closeables One or more Closeable objects to be closed.
+     */
+    public static void close(Closeable... closeables) {
+        if (closeables != null) {
+            for (Closeable closeable : closeables) {
+                try {
+                    if (closeable != null) closeable.close();
+                } catch (IOException ex) {
+                    // suppress the exception
+                }
+            }
+        }
     }
 }

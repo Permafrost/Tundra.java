@@ -28,7 +28,7 @@ import static org.junit.Assert.assertArrayEquals;
 import org.junit.Before;
 import org.junit.Test;
 import permafrost.tundra.io.FileHelper;
-import permafrost.tundra.io.StreamHelper;
+import permafrost.tundra.io.InputStreamHelper;
 import permafrost.tundra.lang.BytesHelper;
 import permafrost.tundra.lang.CharsetHelper;
 import java.io.ByteArrayInputStream;
@@ -57,11 +57,11 @@ public class MessageDigestHelperTest {
 
         InputStream inputStream = result.getKey();
 
-        assertArrayEquals(data, StreamHelper.readToBytes(inputStream, false));
+        assertArrayEquals(data, InputStreamHelper.read(inputStream, false));
         inputStream.reset();
-        assertArrayEquals(data, StreamHelper.readToBytes(inputStream, false));
+        assertArrayEquals(data, InputStreamHelper.read(inputStream, false));
         inputStream.reset();
-        assertArrayEquals(data, StreamHelper.readToBytes(inputStream, false));
+        assertArrayEquals(data, InputStreamHelper.read(inputStream, false));
 
         inputStream.close();
     }
@@ -76,11 +76,11 @@ public class MessageDigestHelperTest {
 
         InputStream inputStream = result.getKey();
 
-        assertArrayEquals(data, StreamHelper.readToBytes(inputStream, false));
+        assertArrayEquals(data, InputStreamHelper.read(inputStream, false));
         inputStream.reset();
-        assertArrayEquals(data, StreamHelper.readToBytes(inputStream, false));
+        assertArrayEquals(data, InputStreamHelper.read(inputStream, false));
         inputStream.reset();
-        assertArrayEquals(data, StreamHelper.readToBytes(inputStream, false));
+        assertArrayEquals(data, InputStreamHelper.read(inputStream, false));
 
         inputStream.close();
     }

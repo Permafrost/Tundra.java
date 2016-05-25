@@ -11,7 +11,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
-import permafrost.tundra.io.StreamHelper;
+import permafrost.tundra.io.InputStreamHelper;
 import java.util.regex.Pattern;
 
 public class IDataHelperTest {
@@ -712,7 +712,7 @@ public class IDataHelperTest {
                 "  </record>\n" +
                 "</IDataXMLCoder>\n";
 
-        IDataMap map = new IDataMap(IDataXMLParser.getInstance().parse(StreamHelper.normalize(xml)));
+        IDataMap map = new IDataMap(IDataXMLParser.getInstance().parse(InputStreamHelper.normalize(xml)));
         IData[] array = (IData[])map.get("array");
 
         IDataComparisonCriterion c1 = new IDataComparisonCriterion("string", "string", false);

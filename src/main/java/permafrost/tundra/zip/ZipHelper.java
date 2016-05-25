@@ -24,7 +24,9 @@
 
 package permafrost.tundra.zip;
 
-import permafrost.tundra.io.StreamHelper;
+import permafrost.tundra.io.CloseableHelper;
+import permafrost.tundra.io.InputOutputHelper;
+import permafrost.tundra.io.InputStreamHelper;
 import permafrost.tundra.lang.BytesHelper;
 import permafrost.tundra.lang.ObjectConvertMode;
 import permafrost.tundra.lang.ObjectHelper;
@@ -66,19 +68,19 @@ public final class ZipHelper {
                 if (contents[i] != null) {
                     String name = contents[i].getName();
                     if (name == null) name = "Untitled " + (i + 1);
-                    InputStream inputStream = StreamHelper.normalize(contents[i].getData());
+                    InputStream inputStream = InputStreamHelper.normalize(contents[i].getData());
 
                     try {
                         zipOutputStream.putNextEntry(new ZipEntry(name));
-                        StreamHelper.copy(inputStream, zipOutputStream, false);
+                        InputOutputHelper.copy(inputStream, zipOutputStream, false);
                     } finally {
-                        StreamHelper.close(inputStream);
+                        CloseableHelper.close(inputStream);
                     }
                 }
             }
         } finally {
             if (zipOutputStream != null) zipOutputStream.closeEntry();
-            StreamHelper.close(zipOutputStream);
+            CloseableHelper.close(zipOutputStream);
         }
 
         return (InputStream)ObjectHelper.convert(byteArrayOutputStream.toByteArray(), ObjectConvertMode.STREAM);
@@ -96,14 +98,14 @@ public final class ZipHelper {
 
         ZipInputStream zipInputStream = null;
         List<ZipEntryWithData> contents = new ArrayList<ZipEntryWithData>();
-        byte[] buffer = new byte[StreamHelper.DEFAULT_BUFFER_SIZE];
+        byte[] buffer = new byte[InputOutputHelper.DEFAULT_BUFFER_SIZE];
 
         try {
-            zipInputStream = new ZipInputStream(StreamHelper.normalize(inputStream));
+            zipInputStream = new ZipInputStream(InputStreamHelper.normalize(inputStream));
             ZipEntry zipEntry;
             while ((zipEntry = zipInputStream.getNextEntry()) != null) {
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                //StreamHelper.copy(zipInputStream, byteArrayOutputStream, false);
+                //InputStreamHelper.copy(zipInputStream, byteArrayOutputStream, false);
 
                 int count;
                 while ((count = zipInputStream.read(buffer)) > 0) {
@@ -114,7 +116,7 @@ public final class ZipHelper {
                 contents.add(new ZipEntryWithData(zipEntry.getName(), byteArrayOutputStream.toByteArray()));
             }
         } finally {
-            StreamHelper.close(zipInputStream);
+            CloseableHelper.close(zipInputStream);
         }
 
         return contents.toArray(new ZipEntryWithData[contents.size()]);
@@ -128,7 +130,7 @@ public final class ZipHelper {
      * @throws IOException If an I/O problem occurs while reading from the stream.
      */
     public static ZipEntryWithData[] decompress(byte[] bytes) throws IOException {
-        return decompress(StreamHelper.normalize(bytes));
+        return decompress(InputStreamHelper.normalize(bytes));
     }
 
     /**

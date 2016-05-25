@@ -54,8 +54,8 @@ public class MarkableInputStream extends FilterInputStream {
         in = new DeleteOnCloseFileInputStream(backingFile);
 
         // if the size of the data is small, read it fully into memory
-        if (backingFile.length() <= StreamHelper.DEFAULT_BUFFER_SIZE) {
-            in = StreamHelper.normalize(BytesHelper.normalize(in));
+        if (backingFile.length() <= InputOutputHelper.DEFAULT_BUFFER_SIZE) {
+            in = InputStreamHelper.normalize(BytesHelper.normalize(in));
         }
     }
 

@@ -31,7 +31,7 @@ import com.wm.util.Table;
 import com.wm.util.coder.IDataCodable;
 import com.wm.util.coder.ValuesCodable;
 import permafrost.tundra.data.IDataHelper;
-import permafrost.tundra.io.StreamHelper;
+import permafrost.tundra.io.InputStreamHelper;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.nio.charset.Charset;
@@ -458,7 +458,7 @@ public final class ObjectHelper {
         } else if (mode == ObjectConvertMode.BASE64) {
             object = BytesHelper.base64Encode(BytesHelper.normalize(object, charset));
         } else if (mode == ObjectConvertMode.STREAM) {
-            object = StreamHelper.normalize(object, charset);
+            object = InputStreamHelper.normalize(object, charset);
         } else {
             throw new IllegalArgumentException("Unsupported conversion mode specified: " + mode);
         }

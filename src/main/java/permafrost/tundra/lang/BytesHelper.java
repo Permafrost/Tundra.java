@@ -24,7 +24,7 @@
 
 package permafrost.tundra.lang;
 
-import permafrost.tundra.io.StreamHelper;
+import permafrost.tundra.io.InputStreamHelper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -80,7 +80,7 @@ public final class BytesHelper {
      * @throws IOException If there is a problem reading from the java.io.InputStream.
      */
     public static byte[] normalize(InputStream inputStream) throws IOException {
-        return StreamHelper.readToBytes(inputStream);
+        return InputStreamHelper.read(inputStream);
     }
 
     /**

@@ -25,7 +25,7 @@
 package permafrost.tundra.security;
 
 import permafrost.tundra.io.MarkableInputStream;
-import permafrost.tundra.io.StreamHelper;
+import permafrost.tundra.io.InputStreamHelper;
 import permafrost.tundra.lang.BytesHelper;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -140,7 +140,7 @@ public final class MessageDigestHelper {
     public static Map.Entry<ByteArrayInputStream, byte[]> digest(MessageDigest algorithm, ByteArrayInputStream data) throws IOException, NoSuchAlgorithmException {
         if (data == null) return null;
 
-        byte[] bytes = StreamHelper.readToBytes(data, false);
+        byte[] bytes = InputStreamHelper.read(data, false);
         data.reset();
 
         return new AbstractMap.SimpleImmutableEntry<ByteArrayInputStream, byte[]>(data, digest(algorithm, bytes));

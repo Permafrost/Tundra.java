@@ -24,7 +24,8 @@
 
 package permafrost.tundra.zip;
 
-import permafrost.tundra.io.StreamHelper;
+import permafrost.tundra.io.InputOutputHelper;
+import permafrost.tundra.io.InputStreamHelper;
 import permafrost.tundra.lang.BytesHelper;
 import permafrost.tundra.lang.CharsetHelper;
 import java.io.ByteArrayOutputStream;
@@ -54,9 +55,9 @@ public final class GzipHelper {
         if (inputStream == null) return null;
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        StreamHelper.copy(StreamHelper.normalize(inputStream), new GZIPOutputStream(byteArrayOutputStream));
+        InputOutputHelper.copy(InputStreamHelper.normalize(inputStream), new GZIPOutputStream(byteArrayOutputStream));
 
-        return StreamHelper.normalize(byteArrayOutputStream.toByteArray());
+        return InputStreamHelper.normalize(byteArrayOutputStream.toByteArray());
     }
 
     /**
@@ -67,7 +68,7 @@ public final class GzipHelper {
      * @throws IOException If an I/O problem occurs when reading from the stream.
      */
     public static InputStream compress(byte[] bytes) throws IOException {
-        return compress(StreamHelper.normalize(bytes));
+        return compress(InputStreamHelper.normalize(bytes));
     }
 
     /**
@@ -79,7 +80,7 @@ public final class GzipHelper {
      * @throws IOException If an I/O problem occurs when reading from the stream.
      */
     public static InputStream compress(String string, Charset charset) throws IOException {
-        return compress(StreamHelper.normalize(string, charset));
+        return compress(InputStreamHelper.normalize(string, charset));
     }
 
     /**
@@ -116,9 +117,9 @@ public final class GzipHelper {
         if (inputStream == null) return null;
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        StreamHelper.copy(new GZIPInputStream(StreamHelper.normalize(inputStream)), byteArrayOutputStream);
+        InputOutputHelper.copy(new GZIPInputStream(InputStreamHelper.normalize(inputStream)), byteArrayOutputStream);
 
-        return StreamHelper.normalize(byteArrayOutputStream.toByteArray());
+        return InputStreamHelper.normalize(byteArrayOutputStream.toByteArray());
     }
 
     /**
@@ -129,7 +130,7 @@ public final class GzipHelper {
      * @throws IOException If an I/O problem occurs when reading from the stream.
      */
     public static InputStream decompress(byte[] bytes) throws IOException {
-        return decompress(StreamHelper.normalize(bytes));
+        return decompress(InputStreamHelper.normalize(bytes));
     }
 
     /**
@@ -140,6 +141,6 @@ public final class GzipHelper {
      * @throws IOException If an I/O problem occurs when reading from the stream.
      */
     public static InputStream decompress(String base64) throws IOException {
-        return decompress(StreamHelper.normalize(BytesHelper.base64Decode(base64)));
+        return decompress(InputStreamHelper.normalize(BytesHelper.base64Decode(base64)));
     }
 }

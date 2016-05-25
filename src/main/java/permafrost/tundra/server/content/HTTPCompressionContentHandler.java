@@ -30,7 +30,7 @@ import com.wm.app.b2b.server.InvokeState;
 import com.wm.app.b2b.server.ProtocolInfoIf;
 import com.wm.net.HttpHeader;
 import com.wm.util.Values;
-import permafrost.tundra.io.StreamHelper;
+import permafrost.tundra.io.InputOutputHelper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.GZIPInputStream;
@@ -71,7 +71,7 @@ public class HTTPCompressionContentHandler extends ProxyContentHandler {
                 String contentEncoding = HTTPStateHelper.getHeader(httpState, HttpHeader.CONTENT_ENCODING);
                 if (contentEncoding != null) {
                     if (contentEncoding.equalsIgnoreCase("gzip")) {
-                        inputStream = new GZIPInputStream(inputStream, StreamHelper.DEFAULT_BUFFER_SIZE);
+                        inputStream = new GZIPInputStream(inputStream, InputOutputHelper.DEFAULT_BUFFER_SIZE);
                         HTTPStateHelper.removeHeader(httpState, HttpHeader.CONTENT_ENCODING);
                     }
                 }

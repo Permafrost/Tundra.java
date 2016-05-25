@@ -24,7 +24,7 @@
 
 package permafrost.tundra.lang;
 
-import permafrost.tundra.io.StreamHelper;
+import permafrost.tundra.io.InputStreamHelper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -134,7 +134,7 @@ public final class CharsetHelper {
      * @throws IOException If an I/O error occurs.
      */
     public static InputStream convert(InputStream content, Charset inCharset, Charset outCharset) throws IOException {
-        return StreamHelper.normalize(convert(BytesHelper.normalize(content), inCharset, outCharset));
+        return InputStreamHelper.normalize(convert(BytesHelper.normalize(content), inCharset, outCharset));
     }
 
     /**
