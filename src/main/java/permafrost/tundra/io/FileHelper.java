@@ -31,8 +31,10 @@ import com.wm.data.IDataFactory;
 import com.wm.data.IDataUtil;
 import permafrost.tundra.io.filter.RegularExpressionFilenameFilter;
 import permafrost.tundra.io.filter.WildcardFilenameFilter;
+import permafrost.tundra.lang.BooleanHelper;
 import permafrost.tundra.lang.CharsetHelper;
 import permafrost.tundra.lang.StringHelper;
+import permafrost.tundra.math.LongHelper;
 import permafrost.tundra.mime.MIMETypeHelper;
 import permafrost.tundra.net.uri.URIHelper;
 import permafrost.tundra.time.DateTimeHelper;
@@ -881,7 +883,7 @@ public final class FileHelper {
         boolean isFile = file.isFile();
         boolean exists = exists(file);
 
-        IDataUtil.put(cursor, "exists?", "" + exists);
+        IDataUtil.put(cursor, "exists?", BooleanHelper.emit(exists));
 
         String parent = getParentDirectoryAsString(file);
         if (parent != null) IDataUtil.put(cursor, "parent", parent);
@@ -898,11 +900,11 @@ public final class FileHelper {
         if (isFile) IDataUtil.put(cursor, "type", getMIMEType(file));
 
         if (exists) {
-            IDataUtil.put(cursor, "length", "" + length(file));
+            IDataUtil.put(cursor, "length", LongHelper.emit(length(file)));
             IDataUtil.put(cursor, "modified", getLastModifiedDateTimeString(file));
-            IDataUtil.put(cursor, "executable?", "" + isExecutable(file));
-            IDataUtil.put(cursor, "readable?", "" + isReadable(file));
-            IDataUtil.put(cursor, "writable?", "" + isWritable(file));
+            IDataUtil.put(cursor, "executable?", BooleanHelper.emit(isExecutable(file)));
+            IDataUtil.put(cursor, "readable?", BooleanHelper.emit(isReadable(file)));
+            IDataUtil.put(cursor, "writable?", BooleanHelper.emit(isWritable(file)));
         }
 
         IDataUtil.put(cursor, "uri", normalize(file));
