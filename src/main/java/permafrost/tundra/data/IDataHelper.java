@@ -2860,6 +2860,7 @@ public final class IDataHelper {
 
     /**
      * Performs a multi-level grouping of the given IData[] by the given criteria.
+     *
      * @param array     The IData[] to be grouped.
      * @param criteria  The multi-level grouping criteria.
      * @return          The grouped IData[].
