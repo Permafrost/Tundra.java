@@ -24,10 +24,10 @@
 
 package permafrost.tundra.xml.dom;
 
+import com.wm.app.b2b.server.ServiceException;
 import com.wm.data.IData;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import permafrost.tundra.data.IDataMap;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
@@ -106,15 +106,18 @@ public class Nodes extends AbstractList<Node> implements NodeList {
      *
      * @return An IData[] representation of this object.
      */
-    public IData[] toIDataArray() {
-        List<IData> output = new ArrayList<IData>(size());
-        for (Node node: this) {
-            IDataMap map = new IDataMap();
-            map.put("node", node);
-            map.put("content", node.getTextContent());
-            output.add(map);
-        }
-        return output.toArray(new IData[output.size()]);
+    public IData[] toIDataArray() throws ServiceException {
+        return toIDataArray(true);
+    }
+
+    /**
+     * Returns an IData[] representation of this object.
+     *
+     * @param recurse   If true, child nodes will be recursed and returned also.
+     * @return          An IData[] representation of this object.
+     */
+    public IData[] toIDataArray(boolean recurse) throws ServiceException {
+        return NodeHelper.toIDataArray(this, recurse);
     }
 
     /**
