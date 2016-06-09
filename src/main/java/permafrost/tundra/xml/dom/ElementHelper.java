@@ -43,30 +43,55 @@ public class ElementHelper {
      * @return          The concatenated text content from the given element's TEXT_NODE and CDATA_SECTION_NODE
      *                  children.
      */
-    public static String getContent(Element element) {
-        String output = null;
+    public static String getTextContent(Element element) {
+        if (element == null) return null;
 
-        if (element != null && element.hasChildNodes()) {
-            boolean hasContent = false;
+        StringBuilder builder = new StringBuilder();
+        boolean hasTextContent = false, hasMixedContent = false;
 
-            StringBuilder builder = new StringBuilder();
-
-            for (Node child : Nodes.of(element.getChildNodes())) {
-                switch(child.getNodeType()) {
-                    case Node.CDATA_SECTION_NODE:
-                    case Node.TEXT_NODE:
-                        hasContent = true;
-                        builder.append(child.getNodeValue());
-                        break;
-                    default:
-                        // for non-text children, do nothing
-                        break;
-                }
+        for (Node child : Nodes.of(element.getChildNodes())) {
+            switch(child.getNodeType()) {
+                case Node.CDATA_SECTION_NODE:
+                case Node.TEXT_NODE:
+                    hasTextContent = true;
+                    builder.append(child.getNodeValue());
+                    break;
+                case Node.ELEMENT_NODE:
+                    hasMixedContent = true;
+                    break;
+                default:
+                    // for non-text children, do nothing
+                    break;
             }
-
-            if (hasContent) output = builder.toString();
         }
 
-        return output;
+        String content = builder.toString();
+        if (!hasTextContent || (hasMixedContent && content.trim().equals(""))) content = null;
+
+        return content;
+    }
+
+    /**
+     * Return true if the given element has any children which are also elements.
+     *
+     * @param element   The element to check for element children.
+     * @return          True if the given element has children which are also elements.
+     */
+    public static boolean hasChildElements(Element element) {
+        boolean hasChildElements = false;
+
+        if (element != null) {
+            if (element.hasChildNodes()) {
+                Nodes nodes = Nodes.of(element.getChildNodes());
+                for (Node node : nodes) {
+                    if (node.getNodeType() == Node.ELEMENT_NODE) {
+                        hasChildElements = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return hasChildElements;
     }
 }
