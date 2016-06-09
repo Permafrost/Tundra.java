@@ -26,6 +26,8 @@ package permafrost.tundra.xml.dom;
 
 import com.wm.app.b2b.server.ServiceException;
 import com.wm.data.IData;
+import com.wm.data.IDataCursor;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -42,6 +44,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.XMLConstants;
+import javax.xml.namespace.NamespaceContext;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
@@ -104,69 +107,183 @@ public class NodeHelper {
     }
 
     /**
-     * Returns an IData representation of the given Node object.
+     * Returns an IData representation of the given Node.
      *
-     * @param node      A Node object.
-     * @return          An IData representation of the given Node object.
+     * @param node              The Node to be parsed.
+     * @return                  An IData[] representation of this object.
      */
-    public static IData toIData(Node node) throws ServiceException {
-        return toIData(node, true);
+    public static IData parse(Node node) {
+        return parse(node, null);
+    }
+
+    /**
+     * Returns an IData representation of the given Node.
+     *
+     * @param node              The Node to be parsed.
+     * @param namespaceContext  Any namespace declarations used in the XML content.
+     * @return                  An IData[] representation of this object.
+     */
+    public static IData parse(Node node, NamespaceContext namespaceContext) {
+        return parse(node, namespaceContext, false);
+    }
+
+    /**
+     * Returns an IData representation of the given Node.
+     *
+     * @param node              The Node to be parsed.
+     * @param namespaceContext  Any namespace declarations used in the XML content.
+     * @param recurse           If true, child elements will be recursed and returned also.
+     * @return                  An IData[] representation of this object.
+     */
+    public static IData parse(Node node, NamespaceContext namespaceContext, boolean recurse) {
+        IDataMap map = new IDataMap();
+        parse(node, namespaceContext, map, recurse);
+        return map;
+    }
+
+    /**
+     * Creates an IData representation of the given Node in the given IDataMap.
+     *
+     * @param node              The Node to be parsed.
+     * @param namespaceContext  Any namespace declarations used in the XML content.
+     * @param output            The IDataMap in which the IData representation is created.
+     * @param recurse           If true, child elements will be recursed and returned also.
+     */
+    private static void parse(Node node, NamespaceContext namespaceContext, IDataMap output, boolean recurse) {
+        if (node == null || output == null) return;
+
+        if (node instanceof Document) {
+            Document document = (Document)node;
+            output.put("@version", document.getXmlVersion(), false);
+            output.put("@standalone", BooleanHelper.emit(document.getXmlStandalone(), "yes", "no"), false);
+            output.put("@encoding", document.getXmlEncoding(), false);
+
+            Node root = document.getDocumentElement();
+            IDataMap child = new IDataMap();
+            parse(root, namespaceContext, child, recurse);
+            output.put(getNodeName(root, namespaceContext), child, false);
+        } else if (node instanceof Element) {
+            Element element = (Element)node;
+
+            boolean hasChildElements = ElementHelper.hasChildElements(element);
+            boolean hasAttributes = element.hasAttributes();
+            String content = ElementHelper.getTextContent(element);
+
+            if (hasAttributes || hasChildElements) {
+                if (element.hasAttributes()) {
+                    NamedNodeMap attributes = element.getAttributes();
+                    int length = attributes.getLength();
+                    for (int i = 0; i < length; i++) {
+                        parse(attributes.item(i), namespaceContext, output, recurse);
+                    }
+                }
+
+                output.put("*body", content, false);
+
+                if (recurse && hasChildElements) {
+                    IDataCursor cursor = output.getCursor();
+                    Nodes children = Nodes.of(element.getChildNodes());
+                    for (Node childNode : children) {
+                        if (childNode.getNodeType() == Node.ELEMENT_NODE) {
+                            Element childElement = (Element)childNode;
+                            String name = getNodeName(childElement, namespaceContext);
+
+                            if (childElement.hasAttributes() || ElementHelper.hasChildElements(childElement)) {
+                                IDataMap childNodeMap = new IDataMap();
+                                parse(childElement, namespaceContext, childNodeMap, recurse);
+                                cursor.insertAfter(name, childNodeMap);
+                            } else {
+                                cursor.insertAfter(name, ElementHelper.getTextContent(childElement));
+                            }
+                        }
+                    }
+                    cursor.destroy();
+                }
+            } else {
+                output.put("*body", content, false);
+            }
+        } else if (node instanceof Attr) {
+            Attr attribute = (Attr)node;
+            output.put("@" + getNodeName(attribute, namespaceContext), attribute.getValue(), false);
+        } else {
+            // do nothing for other node types
+        }
+    }
+
+    /**
+     * Returns the node name using the prefixes defined in the given namespace context rather than
+     * the prefixes used in the parsed XML.
+     *
+     * @param node              The node to return the name of.
+     * @param namespaceContext  The namespace context to use for prefixing qualified names.
+     * @return                  The name of the node.
+     */
+    private static String getNodeName(Node node, NamespaceContext namespaceContext) {
+        if (node == null) return null;
+
+        String name = node.getNodeName();
+        String uri = node.getNamespaceURI();
+        if (uri != null && namespaceContext != null) {
+            String prefix = namespaceContext.getPrefix(uri);
+            if (prefix != null) {
+                name = node.getLocalName();
+                if (!prefix.equals(XMLConstants.DEFAULT_NS_PREFIX)) {
+                    name = prefix + ":" + name;
+                }
+            }
+        }
+
+        return name;
     }
 
     /**
      * Returns an IData representation of the given Node object.
      *
      * @param node      A Node object.
-     * @param recurse   If true, child nodes will be recursed and returned also.
      * @return          An IData representation of the given Node object.
      */
-    public static IData toIData(Node node, boolean recurse) throws ServiceException {
+    public static IData reflect(Node node) throws ServiceException {
+        return reflect(node, false);
+    }
+
+    /**
+     * Returns an IData representation of the given Node object.
+     *
+     * @param node              A Node object.
+     * @param recurse           If true, child nodes will be recursed and returned also.
+     * @return                  An IData representation of the given Node object.
+     */
+    public static IData reflect(Node node, boolean recurse) throws ServiceException {
         if (node == null) return null;
 
-        // if node is a Document, then convert from root node down
+        // if node is a Document, then use its root node instead
         if (node instanceof Document) node = ((Document)node).getDocumentElement();
 
         IDataMap map = new IDataMap();
 
         map.put("node", node);
-        map.put("name", node.getNodeName());
+        map.put("name.qualified", node.getNodeName());
 
         String localName = node.getLocalName();
         if (localName != null) map.put("name.local", localName);
 
-        map.put("type", nodeTypeToString(node.getNodeType()));
-
         String prefix = node.getPrefix();
-        if (prefix != null) map.put("namespace.prefix", prefix);
+        if (prefix != null) map.put("name.prefix", prefix);
 
         String namespaceURI = node.getNamespaceURI();
-        if (namespaceURI != null) map.put("namespace.uri", namespaceURI);
+        if (namespaceURI != null) map.put("name.uri", namespaceURI);
 
-        try {
-            String baseURI = node.getBaseURI();
-            if (baseURI != null) map.put("base.uri", baseURI);
-        } catch (UnsupportedOperationException ex) {
-            // do nothing, not supported
+        map.put("type", nodeTypeToString(node.getNodeType()));
+
+        String value = null;
+        if (node instanceof Element) {
+            value = ElementHelper.getTextContent((Element) node);
+        } else {
+            value = node.getNodeValue();
         }
+        if (value != null) map.put("value", value);
 
-        try {
-            String content = null;
-
-            if (node instanceof Element) {
-                content = ElementHelper.getContent((Element) node);
-            } else {
-                content = node.getNodeValue();
-            }
-
-            if (content != null) {
-                map.put("content", content.trim());
-                map.put("content.raw", content);
-            }
-        } catch (UnsupportedOperationException ex) {
-            // do nothing, not supported
-        }
-
-        if (node.hasAttributes()) map.put("attributes", toIDataArray(node.getAttributes()));
+        if (recurse && node.hasAttributes()) map.put("attributes", reflect(node.getAttributes()));
 
         if (recurse && node.hasChildNodes()) {
             boolean hasElementChildren = false;
@@ -177,11 +294,11 @@ public class NodeHelper {
             for (Node child : children) {
                 if (child.getNodeType() == Node.ELEMENT_NODE) {
                     hasElementChildren = true;
-                    list.add(toIData(child));
+                    list.add(reflect(child, recurse));
                 }
             }
 
-            if (hasElementChildren) map.put("children", list.toArray(new IData[list.size()]));
+            if (hasElementChildren) map.put("elements", list.toArray(new IData[list.size()]));
         }
 
         return map;
@@ -191,7 +308,7 @@ public class NodeHelper {
      * Returns a String representation of the given Node type.
      *
      * @param nodeType  A Node type.
-     * @return          A String represntation of the given Node type.
+     * @return          A String representation of the given Node type.
      */
     private static String nodeTypeToString(int nodeType) {
         String output = null;
@@ -234,30 +351,10 @@ public class NodeHelper {
                 output = "TEXT_NODE";
                 break;
             default:
-                output = "UNKNOWN_NODE";
-                break;
+                throw new IllegalStateException("Unknown org.w3c.dom.Node type specified: " + nodeType);
         }
 
         return output;
-    }
-
-    /**
-     * Returns an IData representation of the given NamedNodeMap.
-     *
-     * @param namedNodeMap  A NamedNodeMap object.
-     * @return              An IData representation of the given NamedNodeMap object.
-     */
-    public static IData toIData(NamedNodeMap namedNodeMap) throws ServiceException {
-        if (namedNodeMap == null) return null;
-
-        IDataMap map = new IDataMap();
-        int length = namedNodeMap.getLength();
-        for (int i = 0; i < length; i++) {
-            Node node = namedNodeMap.item(i);
-            map.put(node.getNodeName(), toIData(node));
-        }
-
-        return map;
     }
 
     /**
@@ -266,13 +363,24 @@ public class NodeHelper {
      * @param namedNodeMap  A NamedNodeMap object.
      * @return              An IData[] representation of the given NamedNodeMap object.
      */
-    public static IData[] toIDataArray(NamedNodeMap namedNodeMap) throws ServiceException {
+    public static IData[] reflect(NamedNodeMap namedNodeMap) throws ServiceException {
+        return reflect(namedNodeMap, false);
+    }
+
+    /**
+     * Returns an IData[] representation of the given NamedNodeMap.
+     *
+     * @param namedNodeMap  A NamedNodeMap object.
+     * @param recurse       If true, child nodes will be recursed and returned also.
+     * @return              An IData[] representation of the given NamedNodeMap object.
+     */
+    public static IData[] reflect(NamedNodeMap namedNodeMap, boolean recurse) throws ServiceException {
         if (namedNodeMap == null) return null;
 
         int length = namedNodeMap.getLength();
         IData[] output = new IData[length];
         for (int i = 0; i < length; i++) {
-            output[i] = toIData(namedNodeMap.item(i));
+            output[i] = reflect(namedNodeMap.item(i), recurse);
         }
 
         return output;
@@ -284,25 +392,25 @@ public class NodeHelper {
      * @param nodeList  A NodeList object.
      * @return          An IData[] representation of the given NodeList object.
      */
-    public static IData[] toIDataArray(NodeList nodeList) throws ServiceException {
-        return toIDataArray(nodeList, true);
+    public static IData[] reflect(NodeList nodeList) throws ServiceException {
+        return reflect(nodeList, false);
     }
 
     /**
      * Returns an IData[] representation of the given NodeList object.
      *
-     * @param nodeList  A NodeList object.
-     * @param recurse   If true, child nodes will be recursed and returned also.
-     * @return          An IData[] representation of the given NodeList object.
+     * @param nodeList          A NodeList object.
+     * @param recurse           If true, child nodes will be recursed and returned also.
+     * @return                  An IData[] representation of the given NodeList object.
      */
-    public static IData[] toIDataArray(NodeList nodeList, boolean recurse) throws ServiceException {
+    public static IData[] reflect(NodeList nodeList, boolean recurse) throws ServiceException {
         if (nodeList == null) return null;
 
         int length = nodeList.getLength();
         IData[] output = new IData[length];
 
         for (int i = 0; i < length; i++) {
-            output[i] = toIData(nodeList.item(i), recurse);
+            output[i] = reflect(nodeList.item(i), recurse);
         }
 
         return output;

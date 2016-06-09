@@ -28,6 +28,7 @@ import com.wm.app.b2b.server.ServiceException;
 import com.wm.data.IData;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import javax.xml.namespace.NamespaceContext;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
@@ -106,8 +107,8 @@ public class Nodes extends AbstractList<Node> implements NodeList {
      *
      * @return An IData[] representation of this object.
      */
-    public IData[] toIDataArray() throws ServiceException {
-        return toIDataArray(true);
+    public IData[] reflect() throws ServiceException {
+        return reflect(false);
     }
 
     /**
@@ -116,8 +117,31 @@ public class Nodes extends AbstractList<Node> implements NodeList {
      * @param recurse   If true, child nodes will be recursed and returned also.
      * @return          An IData[] representation of this object.
      */
-    public IData[] toIDataArray(boolean recurse) throws ServiceException {
-        return NodeHelper.toIDataArray(this, recurse);
+    public IData[] reflect(boolean recurse) throws ServiceException {
+        return NodeHelper.reflect(this, recurse);
+    }
+
+    /**
+     * Returns an IData[] representation of this object.
+     *
+     * @return                  An IData[] representation of this object.
+     */
+    public IData[] parse() {
+        return parse(null);
+    }
+
+    /**
+     * Returns an IData[] representation of this object.
+     *
+     * @param namespaceContext  Any namespace declarations used in the XML content.
+     * @return                  An IData[] representation of this object.
+     */
+    public IData[] parse(NamespaceContext namespaceContext) {
+        IData[] output = new IData[size()];
+        for (int i = 0; i < size(); i++) {
+            output[i] = NodeHelper.parse(get(i), namespaceContext);
+        }
+        return output;
     }
 
     /**
