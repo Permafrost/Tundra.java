@@ -182,8 +182,8 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
     /**
      * Returns true if this map contains a mapping for the specified key.
      *
-     * @param key A key whose presence in this map is to be tested.
-     * @return True if this map contains a mapping for the specified key.
+     * @param key   A key whose presence in this map is to be tested.
+     * @return      True if this map contains a mapping for the specified key.
      */
     @Override
     public boolean containsKey(Object key) {
@@ -198,7 +198,7 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
      * Returns true if this map maps one or more keys to the specified value.
      *
      * @param value The value whose presence in this map is to be tested.
-     * @return True if this map maps one or more keys to the specified value.
+     * @return      True if this map maps one or more keys to the specified value.
      */
     @Override
     public boolean containsValue(Object value) {
@@ -208,8 +208,8 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
     /**
      * Removes the mapping for a key from this map if it is present (optional operation).
      *
-     * @param key A key whose mapping is to be removed from the map.
-     * @return The previous value associated with key, or null if there was no mapping for key.
+     * @param key   A key whose mapping is to be removed from the map.
+     * @return      The previous value associated with key, or null if there was no mapping for key.
      */
     @Override
     public Object remove(Object key) {
@@ -258,18 +258,37 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
     /**
      * Associates the specified value with the specified key in this map.
      *
+     * @param key           Key with which the specified value is to be associated.
+     * @param value         Value to be associated with the specified key.
+     * @param includeNull   If true, null values will be inserted into the map.
+     * @return              The previous value associated with key, or null if there was no mapping for key.
+     */
+    public Object put(String key, Object value, boolean includeNull) {
+        Object previousValue = get(key);
+
+        if (includeNull || value != null) {
+            IDataCursor cursor = this.getCursor();
+            IDataUtil.put(cursor, key, value);
+            cursor.destroy();
+        } else {
+            IDataCursor cursor = this.getCursor();
+            IDataUtil.remove(cursor, key);
+            cursor.destroy();
+        }
+
+        return previousValue;
+    }
+
+    /**
+     * Associates the specified value with the specified key in this map.
+     *
      * @param key   Key with which the specified value is to be associated.
      * @param value Value to be associated with the specified key.
-     * @return The previous value associated with key, or null if there was no mapping for key.
+     * @return      The previous value associated with key, or null if there was no mapping for key.
      */
     @Override
     public Object put(String key, Object value) {
-        Object previousValue = get(key);
-        IDataCursor cursor = this.getCursor();
-        IDataUtil.put(cursor, key, value);
-        cursor.destroy();
-
-        return previousValue;
+        return put(key, value, true);
     }
 
     /**
@@ -314,8 +333,8 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
     /**
      * Returns a new IDataMap wrapping the given IData document.
      *
-     * @param document The document to be wrapped.
-     * @return A new IDataMap wrapping the given IData document.
+     * @param document  The document to be wrapped.
+     * @return          A new IDataMap wrapping the given IData document.
      */
     public static IDataMap of(IData document) {
         if (document instanceof IDataMap) {
