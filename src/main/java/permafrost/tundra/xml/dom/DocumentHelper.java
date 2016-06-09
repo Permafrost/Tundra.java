@@ -58,8 +58,22 @@ public class DocumentHelper {
      * @throws ServiceException If a parsing or I/O error occurs.
      */
     public static Document parse(InputStream content, Charset charset, boolean close) throws ServiceException {
+        return parse(content, charset, close, null);
+    }
+
+    /**
+     * Parses the given content to an XML document.
+     *
+     * @param content           The XML content to parse.
+     * @param charset           The character set that was used to encode the text data in the given stream.
+     * @param close             If true, the given input stream will be closed after the parse is complete.
+     * @param namespaceContext  Any namespace declarations used in the XML content.
+     * @return                  The parsed XML document.
+     * @throws ServiceException If a parsing or I/O error occurs.
+     */
+    public static Document parse(InputStream content, Charset charset, boolean close, NamespaceContext namespaceContext) throws ServiceException {
         try {
-            return parse(InputSourceHelper.normalize(content, charset));
+            return parse(InputSourceHelper.normalize(content, charset), namespaceContext);
         } finally {
             if (close) CloseableHelper.close(content);
         }
@@ -92,6 +106,9 @@ public class DocumentHelper {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             factory.setNamespaceAware(namespaceContext != null);
+            factory.setExpandEntityReferences(true);
+            factory.setIgnoringElementContentWhitespace(true);
+            factory.setIgnoringComments(true);
             DocumentBuilder parser = factory.newDocumentBuilder();
             document = parser.parse(content);
         } catch (ParserConfigurationException ex) {
