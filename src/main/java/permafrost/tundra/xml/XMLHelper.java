@@ -107,41 +107,6 @@ public class XMLHelper {
     }
 
     /**
-     * Parses the given content to an XML document, and closes the stream when done.
-     *
-     * @param content           The XML content to parse.
-     * @return                  The parsed XML document.
-     * @throws ServiceException If a parsing or I/O error occurs.
-     */
-    public static Document parse(InputStream content) throws ServiceException {
-        return parse(content, null);
-    }
-
-    /**
-     * Parses the given content to an XML document, and closes the stream when done.
-     *
-     * @param content           The XML content to parse.
-     * @param close             If true, the given input stream will be closed after the parse is complete.
-     * @return                  The parsed XML document.
-     * @throws ServiceException If a parsing or I/O error occurs.
-     */
-    public static Document parse(InputStream content, boolean close) throws ServiceException {
-        return DocumentHelper.parse(content, null, close);
-    }
-
-    /**
-     * Parses the given content to an XML document, and closes the stream when done.
-     *
-     * @param content           The XML content to parse.
-     * @param charset           The character set that was used to encode the text data in the given stream.
-     * @return                  The parsed XML document.
-     * @throws ServiceException If a parsing or I/O error occurs.
-     */
-    public static Document parse(InputStream content, Charset charset) throws ServiceException {
-        return DocumentHelper.parse(content, CharsetHelper.normalize(charset), true);
-    }
-
-    /**
      * SAX parsing handler that records all errors encountered during a parse.
      */
     private static class DefaultErrorHandler extends DefaultHandler {
