@@ -33,8 +33,9 @@ import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import permafrost.tundra.io.InputStreamHelper;
-import permafrost.tundra.xml.XMLHelper;
+import permafrost.tundra.xml.dom.DocumentHelper;
 import permafrost.tundra.xml.dom.Nodes;
+import permafrost.tundra.xml.sax.InputSourceHelper;
 
 public class XPathHelperTest {
     Document document;
@@ -43,7 +44,7 @@ public class XPathHelperTest {
     public void setUp() throws Exception {
         String content = "<a><z>1</z><z>2</z><z>3</z><b><c>Example</c></b><b><c><d>Example 2</d></c></b><b></b></a>";
 
-        document = XMLHelper.parse(InputStreamHelper.normalize(content));
+        document = DocumentHelper.parse(InputSourceHelper.normalize(InputStreamHelper.normalize(content)));
     }
 
     @Test
