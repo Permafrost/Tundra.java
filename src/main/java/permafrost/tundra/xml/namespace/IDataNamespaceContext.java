@@ -48,12 +48,14 @@ public class IDataNamespaceContext implements NamespaceContext {
      * @param document The IData document used as a source of namespace prefix URI mappings.
      */
     public IDataNamespaceContext(IData document) {
-        IDataMap map = IDataMap.of(document);
-        for (Map.Entry<String, Object> entry : map) {
+        for (Map.Entry<String, Object> entry : IDataMap.of(document)) {
             String key = entry.getKey();
             Object value = entry.getValue();
 
             if (key != null && value != null) {
+                // treat `default` as an alias to the default namespace prefix
+                if (key.equals("default")) key = XMLConstants.DEFAULT_NS_PREFIX;
+
                 namespacesByPrefix.put(key, value.toString());
 
                 List<String> list = namespacesByURI.get(value.toString());
@@ -88,16 +90,9 @@ public class IDataNamespaceContext implements NamespaceContext {
     public String getNamespaceURI(String prefix) {
         if (prefix == null) throw new IllegalArgumentException("prefix must not be null");
 
-        String uri;
-        if (prefix.equals(XMLConstants.DEFAULT_NS_PREFIX)) {
-            uri = namespacesByPrefix.get("default");
-        } else {
-            uri = namespacesByPrefix.get(prefix);
-        }
+        String uri = namespacesByPrefix.get(prefix);
 
-        if (uri == null) uri = XMLConstants.NULL_NS_URI;
-
-        return uri;
+        return uri == null ? XMLConstants.NULL_NS_URI : uri;
     }
 
     /**
