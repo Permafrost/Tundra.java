@@ -154,10 +154,6 @@ public class NodeHelper {
 
         if (node instanceof Document) {
             Document document = (Document)node;
-            output.put("@version", document.getXmlVersion(), false);
-            output.put("@standalone", BooleanHelper.emit(document.getXmlStandalone(), "yes", "no"), false);
-            output.put("@encoding", document.getXmlEncoding(), false);
-
             Node root = document.getDocumentElement();
             IDataMap child = new IDataMap();
             parse(root, namespaceContext, child, recurse);
@@ -222,38 +218,52 @@ public class NodeHelper {
         if (node == null) return null;
 
         String name = node.getNodeName();
-        String uri = node.getNamespaceURI();
-        if (uri != null && namespaceContext != null) {
-            String prefix = namespaceContext.getPrefix(uri);
-            if (prefix != null) {
-                name = node.getLocalName();
-                if (!prefix.equals(XMLConstants.DEFAULT_NS_PREFIX)) {
-                    name = prefix + ":" + name;
+        if (name.startsWith("xmlns:")) {
+            String uri = node.getNodeValue();
+            if (uri != null && namespaceContext != null) {
+                String prefix = namespaceContext.getPrefix(uri);
+                if (prefix != null) {
+                    if (!prefix.equals(XMLConstants.DEFAULT_NS_PREFIX)) {
+                        // correct the prefix on the namespace declaration, if using a different one when parsing
+                        name = "xmlns:" + prefix;
+                    }
+                }
+            }
+        } else {
+            String uri = node.getNamespaceURI();
+            if (uri != null && namespaceContext != null) {
+                String prefix = namespaceContext.getPrefix(uri);
+                if (prefix != null) {
+                    name = node.getLocalName();
+                    if (!prefix.equals(XMLConstants.DEFAULT_NS_PREFIX)) {
+                        name = prefix + ":" + name;
+                    }
                 }
             }
         }
-
         return name;
     }
 
     /**
      * Returns an IData representation of the given Node object.
      *
-     * @param node      A Node object.
-     * @return          An IData representation of the given Node object.
+     * @param node              A Node object.
+     * @param namespaceContext  The namespace context to use for prefixing qualified names.
+     * @return                  An IData representation of the given Node object.
      */
-    public static IData reflect(Node node) throws ServiceException {
-        return reflect(node, false);
+    public static IData reflect(Node node, NamespaceContext namespaceContext) throws ServiceException {
+        return reflect(node, namespaceContext, false);
     }
 
     /**
      * Returns an IData representation of the given Node object.
      *
      * @param node              A Node object.
+     * @param namespaceContext  The namespace context to use for prefixing qualified names.
      * @param recurse           If true, child nodes will be recursed and returned also.
      * @return                  An IData representation of the given Node object.
      */
-    public static IData reflect(Node node, boolean recurse) throws ServiceException {
+    public static IData reflect(Node node, NamespaceContext namespaceContext, boolean recurse) throws ServiceException {
         if (node == null) return null;
 
         // if node is a Document, then use its root node instead
@@ -262,16 +272,20 @@ public class NodeHelper {
         IDataMap map = new IDataMap();
 
         map.put("node", node);
-        map.put("name.qualified", node.getNodeName());
+        map.put("name.qualified", getNodeName(node, namespaceContext));
 
         String localName = node.getLocalName();
         if (localName != null) map.put("name.local", localName);
 
-        String prefix = node.getPrefix();
-        if (prefix != null) map.put("name.prefix", prefix);
-
         String namespaceURI = node.getNamespaceURI();
-        if (namespaceURI != null) map.put("name.uri", namespaceURI);
+        if (namespaceURI != null) {
+            String prefix = node.getPrefix();
+            if (prefix != null) {
+                if (namespaceContext != null) prefix = namespaceContext.getPrefix(namespaceURI);
+                map.put("name.prefix", prefix);
+            }
+            map.put("name.uri", namespaceURI);
+        }
 
         map.put("type", nodeTypeToString(node.getNodeType()));
 
@@ -283,7 +297,7 @@ public class NodeHelper {
         }
         if (value != null) map.put("value", value);
 
-        if (recurse && node.hasAttributes()) map.put("attributes", reflect(node.getAttributes()));
+        if (recurse && node.hasAttributes()) map.put("attributes", reflect(node.getAttributes(), namespaceContext, recurse));
 
         if (recurse && node.hasChildNodes()) {
             boolean hasElementChildren = false;
@@ -294,7 +308,7 @@ public class NodeHelper {
             for (Node child : children) {
                 if (child.getNodeType() == Node.ELEMENT_NODE) {
                     hasElementChildren = true;
-                    list.add(reflect(child, recurse));
+                    list.add(reflect(child, namespaceContext, recurse));
                 }
             }
 
@@ -360,27 +374,18 @@ public class NodeHelper {
     /**
      * Returns an IData[] representation of the given NamedNodeMap.
      *
-     * @param namedNodeMap  A NamedNodeMap object.
-     * @return              An IData[] representation of the given NamedNodeMap object.
+     * @param namedNodeMap      A NamedNodeMap object.
+     * @param namespaceContext  The namespace context to use for prefixing qualified names.
+     * @param recurse           If true, child nodes will be recursed and returned also.
+     * @return                  An IData[] representation of the given NamedNodeMap object.
      */
-    public static IData[] reflect(NamedNodeMap namedNodeMap) throws ServiceException {
-        return reflect(namedNodeMap, false);
-    }
-
-    /**
-     * Returns an IData[] representation of the given NamedNodeMap.
-     *
-     * @param namedNodeMap  A NamedNodeMap object.
-     * @param recurse       If true, child nodes will be recursed and returned also.
-     * @return              An IData[] representation of the given NamedNodeMap object.
-     */
-    public static IData[] reflect(NamedNodeMap namedNodeMap, boolean recurse) throws ServiceException {
+    public static IData[] reflect(NamedNodeMap namedNodeMap, NamespaceContext namespaceContext, boolean recurse) throws ServiceException {
         if (namedNodeMap == null) return null;
 
         int length = namedNodeMap.getLength();
         IData[] output = new IData[length];
         for (int i = 0; i < length; i++) {
-            output[i] = reflect(namedNodeMap.item(i), recurse);
+            output[i] = reflect(namedNodeMap.item(i), namespaceContext, recurse);
         }
 
         return output;
@@ -389,28 +394,19 @@ public class NodeHelper {
     /**
      * Returns an IData[] representation of the given NodeList object.
      *
-     * @param nodeList  A NodeList object.
-     * @return          An IData[] representation of the given NodeList object.
-     */
-    public static IData[] reflect(NodeList nodeList) throws ServiceException {
-        return reflect(nodeList, false);
-    }
-
-    /**
-     * Returns an IData[] representation of the given NodeList object.
-     *
      * @param nodeList          A NodeList object.
+     * @param namespaceContext  The namespace context to use for prefixing qualified names.
      * @param recurse           If true, child nodes will be recursed and returned also.
      * @return                  An IData[] representation of the given NodeList object.
      */
-    public static IData[] reflect(NodeList nodeList, boolean recurse) throws ServiceException {
+    public static IData[] reflect(NodeList nodeList, NamespaceContext namespaceContext, boolean recurse) throws ServiceException {
         if (nodeList == null) return null;
 
         int length = nodeList.getLength();
         IData[] output = new IData[length];
 
         for (int i = 0; i < length; i++) {
-            output[i] = reflect(nodeList.item(i), recurse);
+            output[i] = reflect(nodeList.item(i), namespaceContext, recurse);
         }
 
         return output;

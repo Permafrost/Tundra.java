@@ -105,29 +105,12 @@ public class Nodes extends AbstractList<Node> implements NodeList {
     /**
      * Returns an IData[] representation of this object.
      *
-     * @return An IData[] representation of this object.
-     */
-    public IData[] reflect() throws ServiceException {
-        return reflect(false);
-    }
-
-    /**
-     * Returns an IData[] representation of this object.
-     *
-     * @param recurse   If true, child nodes will be recursed and returned also.
-     * @return          An IData[] representation of this object.
-     */
-    public IData[] reflect(boolean recurse) throws ServiceException {
-        return NodeHelper.reflect(this, recurse);
-    }
-
-    /**
-     * Returns an IData[] representation of this object.
-     *
+     * @param namespaceContext  The namespace context to use for prefixing qualified names.
+     * @param recurse           If true, child nodes will be recursed and returned also.
      * @return                  An IData[] representation of this object.
      */
-    public IData[] parse() {
-        return parse(null);
+    public IData[] reflect(NamespaceContext namespaceContext, boolean recurse) throws ServiceException {
+        return NodeHelper.reflect(this, namespaceContext, recurse);
     }
 
     /**
