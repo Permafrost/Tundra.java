@@ -32,13 +32,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
+import permafrost.tundra.data.IDataMap;
 import permafrost.tundra.io.InputStreamHelper;
 import permafrost.tundra.xml.dom.DocumentHelper;
 import permafrost.tundra.xml.dom.Nodes;
+import permafrost.tundra.xml.namespace.IDataNamespaceContext;
 import permafrost.tundra.xml.sax.InputSourceHelper;
+import javax.xml.xpath.XPathExpressionException;
 
 public class XPathHelperTest {
-    Document document;
+    private Document document;
 
     @Before
     public void setUp() throws Exception {
@@ -81,5 +84,15 @@ public class XPathHelperTest {
     public void evaluateList() throws Exception {
         String query = "/a[1]/z";
         assertTrue(XPathHelper.evaluate(document, XPathHelper.compile(query), "1", "2", "3"));
+    }
+
+    @Test(expected = XPathExpressionException.class)
+    public void testCompilingExpressionWithNamespacePrefixButNoNamespaceContextForPrefix() throws Exception {
+        String query = "/abc:def";
+
+        IDataMap namespace = new IDataMap();
+        namespace.put("xyz", "http://example.com");
+
+        XPathHelper.compile(query, IDataNamespaceContext.of(namespace));
     }
 }

@@ -24,10 +24,8 @@
 
 package permafrost.tundra.xml.xpath;
 
-import com.wm.app.b2b.server.ServiceException;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import permafrost.tundra.lang.ExceptionHelper;
 import permafrost.tundra.xml.dom.Nodes;
 import java.util.Arrays;
 import java.util.List;
@@ -50,24 +48,26 @@ public class XPathHelper {
     /**
      * Evaluates if the given XPathExpression resolves against the given Node with the given content.
      *
-     * @param context           The XML content to select from.
-     * @param expression        The XPath expression used to select from the given Node.
-     * @return                  True if the XPath expression resolved against the given Node has the expected content.
-     * @throws ServiceException If a parsing error occurs.
+     * @param context                   The XML content to select from.
+     * @param expression                The XPath expression used to select from the given Node.
+     * @return                          True if the XPath expression resolved against the given Node has the expected
+     *                                  content.
+     * @throws XPathExpressionException If a parsing error occurs.
      */
-    public static boolean evaluate(Node context, XPathExpression expression, String ... expectedContent) throws ServiceException {
+    public static boolean evaluate(Node context, XPathExpression expression, String ... expectedContent) throws XPathExpressionException {
         return evaluate(context, expression, expectedContent == null ? null : Arrays.asList(expectedContent));
     }
 
     /**
      * Evaluates if the given XPathExpression resolves against the given Node with the given content.
      *
-     * @param context           The XML content to select from.
-     * @param expression        The XPath expression used to select from the given Node.
-     * @return                  True if the XPath expression resolved against the given Node has the expected content.
-     * @throws ServiceException If a parsing error occurs.
+     * @param context                   The XML content to select from.
+     * @param expression                The XPath expression used to select from the given Node.
+     * @return                          True if the XPath expression resolved against the given Node has the expected
+     *                                  content.
+     * @throws XPathExpressionException If a parsing error occurs.
      */
-    public static boolean evaluate(Node context, XPathExpression expression, List<String> expectedContent) throws ServiceException {
+    public static boolean evaluate(Node context, XPathExpression expression, List<String> expectedContent) throws XPathExpressionException {
         boolean result = false;
 
         if (context != null && expression != null) {
@@ -87,12 +87,12 @@ public class XPathHelper {
     /**
      * Returns true if the given XPath expression can be found in the given XML content.
      *
-     * @param context           The content to query.
-     * @param expression        The XPath expression to query against the give content.
-     * @return                  True if the given XPath expression is found in the given XML content.
-     * @throws ServiceException If a parsing error occurs.
+     * @param context                   The content to query.
+     * @param expression                The XPath expression to query against the give content.
+     * @return                          True if the given XPath expression is found in the given XML content.
+     * @throws XPathExpressionException If a parsing error occurs.
      */
-    public static boolean exists(Node context, XPathExpression expression) throws ServiceException {
+    public static boolean exists(Node context, XPathExpression expression) throws XPathExpressionException {
         Nodes nodes = get(context, expression);
         return nodes != null;
     }
@@ -100,22 +100,16 @@ public class XPathHelper {
     /**
      * Returns the Nodes selected from the given Document by the given XPathExpression.
      *
-     * @param context           The XML content to select from.
-     * @param expression        The XPath expression used to select from the given Node.
-     * @return                  The Nodes list containing all the nodes selected from the given Node.
-     * @throws ServiceException If a parsing error occurs.
+     * @param context                   The XML content to select from.
+     * @param expression                The XPath expression used to select from the given Node.
+     * @return                          The Nodes list containing all the nodes selected from the given Node.
+     * @throws XPathExpressionException If a parsing error occurs.
      */
-    public static Nodes get(Node context, XPathExpression expression) throws ServiceException {
+    public static Nodes get(Node context, XPathExpression expression) throws XPathExpressionException {
         if (context == null || expression == null) return null;
 
-        Nodes nodes = null;
-
-        try {
-            nodes = Nodes.of((NodeList)expression.evaluate(context, XPathConstants.NODESET));
-            if (nodes != null && nodes.getLength() == 0) nodes = null; // normalize no results to null
-        } catch (XPathExpressionException ex) {
-            ExceptionHelper.raise(ex);
-        }
+        Nodes nodes = Nodes.of((NodeList)expression.evaluate(context, XPathConstants.NODESET));
+        if (nodes != null && nodes.getLength() == 0) nodes = null; // normalize no results to null
 
         return nodes;
     }
@@ -123,33 +117,25 @@ public class XPathHelper {
     /**
      * Returns a compiled XPath expression.
      *
-     * @param expression        The XPath expression as a String.
-     * @return                  The compiled XPathExpression.
-     * @throws ServiceException If a parsing error occurs.
+     * @param expression                The XPath expression as a String.
+     * @return                          The compiled XPathExpression.
+     * @throws XPathExpressionException If a parsing error occurs.
      */
-    public static XPathExpression compile(String expression) throws ServiceException {
+    public static XPathExpression compile(String expression) throws XPathExpressionException {
         return compile(expression, (NamespaceContext)null);
     }
 
     /**
      * Returns a compiled XPath expression.
      *
-     * @param expression        The XPath expression as a String.
-     * @param namespaceContext  The namespace context used by the XPath expression.
-     * @return                  The compiled XPathExpression.
-     * @throws ServiceException If a parsing error occurs.
+     * @param expression                The XPath expression as a String.
+     * @param namespaceContext          The namespace context used by the XPath expression.
+     * @return                          The compiled XPathExpression.
+     * @throws XPathExpressionException If a parsing error occurs.
      */
-    public static XPathExpression compile(String expression, NamespaceContext namespaceContext) throws ServiceException {
-        XPathExpression compiledExpression = null;
-
-        try {
-            XPath compiler = XPathFactory.newInstance().newXPath();
-            if (namespaceContext != null) compiler.setNamespaceContext(namespaceContext);
-            compiledExpression = compiler.compile(expression);
-        } catch (XPathExpressionException ex) {
-            ExceptionHelper.raise(ex);
-        }
-
-        return compiledExpression;
+    public static XPathExpression compile(String expression, NamespaceContext namespaceContext) throws XPathExpressionException {
+        XPath compiler = XPathFactory.newInstance().newXPath();
+        if (namespaceContext != null) compiler.setNamespaceContext(namespaceContext);
+        return compiler.compile(expression);
     }
 }
