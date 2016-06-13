@@ -79,6 +79,7 @@ public final class URIQueryHelper {
         if (input == null) return null;
 
         IData output = IDataFactory.create();
+        IDataCursor outputCursor = output.getCursor();
 
         for (String pair : input.split(QUERY_STRING_KEY_VALUE_PAIR_TOKEN_SEPARATOR)) {
             String[] tokens = pair.split(QUERY_STRING_KEY_VALUE_PAIR_EQUALS_OPERATOR, 2);
@@ -90,10 +91,12 @@ public final class URIQueryHelper {
                 value = URIHelper.decode(value, charset);
             }
 
-            IDataHelper.put(output, name, value, false, true);
+            outputCursor.insertAfter(name, value);
         }
 
-        return output;
+        outputCursor.destroy();
+
+        return IDataHelper.normalize(output);
     }
 
     /**

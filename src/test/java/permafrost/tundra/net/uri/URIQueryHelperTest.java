@@ -38,7 +38,7 @@ public class URIQueryHelperTest {
     @Test
     public void testParse() throws Exception {
         String[] c = { "3", "4", "5" };
-        IData query = URIQueryHelper.parse("a=1&b=2=2&c[0]=3&c[1]=4&c[2]=5&d=6&d=7&e/f[0][0]=8&e/f[0][1]=9", true);
+        IData query = URIQueryHelper.parse("a=1&b=2=2&c[0]=3&c[1]=4&c[2]=5&d=6&d=7&e/f=8", true);
 
         IDataCursor cursor = query.getCursor();
         assertEquals("1", IDataUtil.getString(cursor, "a"));
