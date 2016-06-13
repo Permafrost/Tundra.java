@@ -1408,8 +1408,18 @@ public final class IDataHelper {
         IData output = IDataFactory.create();
 
         for (Map.Entry<String, Object> entry : IDataMap.of(document)) {
-            // normalize fully-qualified keys by using IDataHelper.put() rather than IDataUtil.put()
-            put(output, entry.getKey(), normalize(entry.getValue()));
+            String key = entry.getKey();
+            Object value = normalize(entry.getValue());
+
+            if (IDataKey.isFullyQualified(key)) {
+                // normalize fully-qualified keys by using IDataHelper.put() rather than IDataUtil.put()
+                put(output, entry.getKey(), value);
+            } else {
+                // support multiple occurrences of same key by using IDataCursor.insertAfter()
+                IDataCursor outputCursor = output.getCursor();
+                outputCursor.insertAfter(key, value);
+                outputCursor.destroy();
+            }
         }
 
         return output;
