@@ -2543,6 +2543,125 @@ public final class IDataHelper {
     }
 
     /**
+     * Returns a new IData document containing all denormalized items from the given input IData document.
+     *
+     * Array items are denormalized to individual items in the output IData document with their keys suffixed
+     * with "[n]" where n is the item's array index.
+     *
+     * Items in nested IData documents are denormalized to items included directly in the output IData document
+     * with their keys prefixed with the associated fully-qualified nested path.
+     *
+     * @param input An IData document to be denormalized.
+     * @return      The denormalized IData document.
+     */
+    public static IData denormalize(IData input) {
+        if (input == null) return null;
+
+        IData output = IDataFactory.create();
+
+        IDataCursor inputCursor = input.getCursor();
+        IDataCursor outputCursor = output.getCursor();
+
+        denormalize(inputCursor, outputCursor, null);
+
+        inputCursor.destroy();
+        outputCursor.destroy();
+
+        return output;
+    }
+
+    /**
+     * Inserts each item of the given input IDataCursor to the end of the given output IDataCursor with the keys
+     * denormalized to a fully-qualified key.
+     *
+     * @param inputCursor   The cursor to source items to be denormalized from.
+     * @param outputCursor  The cursor to insert the denormalized items into.
+     * @param path          The original path to the IData document being denormalized from the inputCursor, or null.
+     */
+    private static void denormalize(IDataCursor inputCursor, IDataCursor outputCursor, String path) {
+        if (inputCursor == null || outputCursor == null) return;
+
+        while(inputCursor.next()) {
+            String key = inputCursor.getKey();
+            Object value = inputCursor.getValue();
+
+            if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
+                denormalize(toIDataArray(value), outputCursor, path == null ? key : path + "/" + key);
+            } else if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
+                IData child = toIData(value);
+                IDataCursor childCursor = child.getCursor();
+                denormalize(childCursor, outputCursor, path == null ? key : path + "/" + key);
+                childCursor.destroy();
+            } else if (value instanceof Object[][]) {
+                denormalize((Object[][])value, outputCursor, path == null ? key : path + "/" + key);
+            } else if (value instanceof Object[]) {
+                denormalize((Object[])value, outputCursor, path == null ? key : path + "/" + key);
+            } else {
+                outputCursor.insertAfter(path == null ? key : path + "/" + key, value);
+            }
+        }
+
+        inputCursor.destroy();
+        outputCursor.destroy();
+    }
+
+    /**
+     * Inserts each item of the given array to the end of the given IDataCursor with the given
+     * key suffixed with "[n]" where n is the item's array index.
+     *
+     * @param array         An array to be denormalized into the given IDataCursor.
+     * @param outputCursor  The cursor to insert the denormalized array items into.
+     * @param key           The original key associated with this array in the IData document being denormalized.
+     */
+    private static void denormalize(IData[] array, IDataCursor outputCursor, String key) {
+        if (array == null || array.length == 0 || outputCursor == null || key == null) return;
+
+        for (int i = 0; i < array.length; i++) {
+            IData child = array[i];
+            if (child != null) {
+                IDataCursor inputCursor = child.getCursor();
+                denormalize(inputCursor, outputCursor, key + "[" + i + "]");
+                inputCursor.destroy();
+            }
+
+        }
+    }
+
+    /**
+     * Inserts each item of the given two dimensional array to the end of the given IDataCursor with the given
+     * key suffixed with "[n][m]" where n and m are the item's array indexes.
+     *
+     * @param array         An array to be denormalized into the given IDataCursor.
+     * @param outputCursor  The cursor to insert the denormalized array items into.
+     * @param key           The original key associated with this array in the IData document being denormalized.
+     */
+    private static void denormalize(Object[][] array, IDataCursor outputCursor, String key) {
+        if (array == null || array.length == 0 || outputCursor == null || key == null) return;
+
+        for (int i = 0; i < array.length; i++) {
+            denormalize(array[i], outputCursor, key + "[" + i + "]");
+        }
+    }
+
+    /**
+     * Inserts each item of the given array to the end of the given IDataCursor with the given
+     * key suffixed with "[n]" where n is the item's array index.
+     *
+     * @param array         An array to be denormalized into the given IDataCursor.
+     * @param outputCursor  The cursor to insert the denormalized array items into.
+     * @param key           The original key associated with this array in the IData document being denormalized.
+     */
+    private static void denormalize(Object[] array, IDataCursor outputCursor, String key) {
+        if (array == null || array.length == 0 || outputCursor == null || key == null) return;
+
+        for (int i = 0; i < array.length; i++) {
+            outputCursor.insertAfter(key + "[" + i + "]", array[i]);
+        }
+
+        outputCursor.destroy();
+    }
+
+    /**
      * Sorts the given IData document by its keys in natural ascending order.
      *
      * @param document  An IData document to be sorted by its keys.
