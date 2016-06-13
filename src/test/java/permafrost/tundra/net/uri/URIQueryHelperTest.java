@@ -31,12 +31,15 @@ import com.wm.data.IDataUtil;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
+import permafrost.tundra.data.IDataHelper;
+import permafrost.tundra.data.IDataMap;
 
 public class URIQueryHelperTest {
     @Test
     public void testParse() throws Exception {
         String[] c = { "3", "4", "5" };
-        IData query = URIQueryHelper.parse("a=1&b=2=2&c=3&c=4&c=5", true);
+        IData query = URIQueryHelper.parse("a=1&b=2=2&c[0]=3&c[1]=4&c[2]=5&d=6&d=7&e/f[0][0]=8&e/f[0][1]=9", true);
+
         IDataCursor cursor = query.getCursor();
         assertEquals("1", IDataUtil.getString(cursor, "a"));
         assertEquals("2=2", IDataUtil.getString(cursor, "b"));
@@ -47,13 +50,20 @@ public class URIQueryHelperTest {
     @Test
     public void testEmit() throws Exception {
         String[] c = { "3", "4", "5" };
+
+        IDataMap e = new IDataMap();
+        e.put("f", "8");
+
         IData query = IDataFactory.create();
         IDataCursor cursor = query.getCursor();
-        IDataUtil.put(cursor, "a", "1");
-        IDataUtil.put(cursor, "b", "2");
-        IDataUtil.put(cursor, "c", c);
+        cursor.insertAfter("a", "1");
+        cursor.insertAfter("b", "2");
+        cursor.insertAfter("c", c);
+        cursor.insertAfter("d", "6");
+        cursor.insertAfter("d", "7");
+        cursor.insertAfter("e", e);
         cursor.destroy();
 
-        assertEquals("a=1&b=2&c=3&c=4&c=5", URIQueryHelper.emit(query, true));
+        assertEquals("a=1&b=2&c%5B0%5D=3&c%5B1%5D=4&c%5B2%5D=5&d=6&d=7&e%2Ff=8", URIQueryHelper.emit(query, true));
     }
 }

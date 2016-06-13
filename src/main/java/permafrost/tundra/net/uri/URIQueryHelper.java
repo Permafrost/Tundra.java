@@ -28,14 +28,22 @@ import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
 import com.wm.data.IDataUtil;
+import permafrost.tundra.data.IDataHelper;
 import permafrost.tundra.lang.ArrayHelper;
 import permafrost.tundra.lang.CharsetHelper;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A collection of convenience methods for working with URI query strings.
  */
 public final class URIQueryHelper {
+
+    public static final String QUERY_STRING_KEY_ARRAY_SUFFIX = "[]";
+    public static final String QUERY_STRING_KEY_VALUE_PAIR_EQUALS_OPERATOR = "=";
+    public static final String QUERY_STRING_KEY_VALUE_PAIR_TOKEN_SEPARATOR = "&";
+
     /**
      * Parses a query string.
      *
@@ -62,19 +70,18 @@ public final class URIQueryHelper {
     /**
      * Parses a query string.
      *
-     * @param input   The query string to be parsed.
-     * @param charset The character set to use when decoding URI encoded values.
-     * @param decode  Whether to URI decode the values in the query string.
-     * @return An IData representation of the parsed query string.
+     * @param input     The query string to be parsed.
+     * @param charset   The character set to use when decoding URI encoded values.
+     * @param decode    Whether to URI decode the values in the query string.
+     * @return          An IData representation of the parsed query string.
      */
     public static IData parse(String input, Charset charset, boolean decode) {
         if (input == null) return null;
 
         IData output = IDataFactory.create();
-        IDataCursor cursor = output.getCursor();
 
-        for (String pair : input.split("&")) {
-            String[] tokens = pair.split("=", 2);
+        for (String pair : input.split(QUERY_STRING_KEY_VALUE_PAIR_TOKEN_SEPARATOR)) {
+            String[] tokens = pair.split(QUERY_STRING_KEY_VALUE_PAIR_EQUALS_OPERATOR, 2);
             String name = tokens.length > 0 ? tokens[0] : "";
             String value = tokens.length > 1 ? tokens[1] : "";
 
@@ -83,24 +90,8 @@ public final class URIQueryHelper {
                 value = URIHelper.decode(value, charset);
             }
 
-            Object existing = IDataUtil.get(cursor, name);
-            if (existing == null) {
-                IDataUtil.put(cursor, name, value);
-            } else {
-                // support lists in query strings: a=1&a=2&a=3 should be parsed to a[] = { 1, 2, 3 }
-                String[] array = null;
-                if (existing instanceof String) {
-                    array = new String[2];
-                    array[0] = (String)existing;
-                    array[1] = value;
-                } else if (existing instanceof String[]) {
-                    array = ArrayHelper.append((String[])existing, value, String.class);
-                }
-                IDataUtil.put(cursor, name, array);
-            }
+            IDataHelper.put(output, name, value, false, true);
         }
-
-        cursor.destroy();
 
         return output;
     }
@@ -119,7 +110,7 @@ public final class URIQueryHelper {
             name = URIHelper.encode(name, charset);
             value = URIHelper.encode(value.toString(), charset);
         }
-        return name + "=" + value;
+        return name + QUERY_STRING_KEY_VALUE_PAIR_EQUALS_OPERATOR + value;
     }
 
     /**
@@ -134,7 +125,7 @@ public final class URIQueryHelper {
     private static String emit(String name, Object[] values, Charset charset, boolean encode) {
         StringBuilder output = new StringBuilder();
         for (Object value : values) {
-            if (output.length() > 0) output.append("&");
+            if (output.length() > 0) output.append(QUERY_STRING_KEY_VALUE_PAIR_TOKEN_SEPARATOR);
             output.append(emit(name, value, charset, encode));
         }
         return output.toString();
@@ -176,13 +167,15 @@ public final class URIQueryHelper {
 
         StringBuilder output = new StringBuilder();
 
+        input = IDataHelper.denormalize(input);
+
         IDataCursor cursor = input.getCursor();
         while (cursor.next()) {
             String key = cursor.getKey();
             Object value = cursor.getValue();
 
             if (value != null) {
-                if (output.length() > 0) output.append("&");
+                if (output.length() > 0) output.append(QUERY_STRING_KEY_VALUE_PAIR_TOKEN_SEPARATOR);
                 if (value instanceof Object[]) {
                     output.append(emit(key, (Object[])value, charset, encode));
                 } else {
