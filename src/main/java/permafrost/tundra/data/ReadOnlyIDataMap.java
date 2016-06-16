@@ -39,6 +39,9 @@ import com.wm.util.coder.IDataCodable;
 import com.wm.util.coder.ValuesCodable;
 import java.util.Map;
 
+/**
+ * Wraps an IData in a read-only IData and Map compatible object.
+ */
 public class ReadOnlyIDataMap extends IDataMap {
     /**
      * Construct a new ReadOnlyIDataMap object.
@@ -143,16 +146,16 @@ public class ReadOnlyIDataMap extends IDataMap {
      * @param map        The map to see this new object with.
      * @param comparator The IDataComparator to be used to compare IData objects.
      */
-    public ReadOnlyIDataMap(Map<?, ?> map, IDataComparator comparator) {
+    public ReadOnlyIDataMap(Map<? extends String, ?> map, IDataComparator comparator) {
         this(map);
         setComparator(comparator);
     }
 
     /**
-     * Returns a new IDataMap wrapping the given IData document.
+     * Returns a new ReadOnlyIDataMap wrapping the given IData document.
      *
-     * @param document The document to be wrapped.
-     * @return A new IDataMap wrapping the given IData document.
+     * @param document  The document to be wrapped.
+     * @return          A new ReadOnlyIDataMap wrapping the given IData document.
      */
     public static ReadOnlyIDataMap of(IData document) {
         if (document instanceof ReadOnlyIDataMap) {
@@ -163,10 +166,10 @@ public class ReadOnlyIDataMap extends IDataMap {
     }
 
     /**
-     * Returns a new IDataMap[] representation of the given IData[] document list.
+     * Returns a new ReadOnlyIDataMap[] representation of the given IData[] document list.
      *
-     * @param array An IData[] document list.
-     * @return A new IDataMap[] representation of the given IData[] document list.
+     * @param array     An IData[] document list.
+     * @return          A new ReadOnlyIDataMap[] representation of the given IData[] document list.
      */
     public static ReadOnlyIDataMap[] of(IData[] array) {
         ReadOnlyIDataMap[] output = null;
@@ -176,7 +179,9 @@ public class ReadOnlyIDataMap extends IDataMap {
         } else if (array != null) {
             output = new ReadOnlyIDataMap[array.length];
             for (int i = 0; i < array.length; i++) {
-                output[i] = new ReadOnlyIDataMap(array[i]);
+                if (array[i] != null) {
+                    output[i] = ReadOnlyIDataMap.of(array[i]);
+                }
             }
         }
 
