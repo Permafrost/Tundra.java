@@ -28,23 +28,69 @@ import com.wm.data.IData;
 import com.wm.data.IDataFactory;
 import com.wm.lang.flow.ExpressionEvaluator;
 import com.wm.lang.flow.MalformedExpressionException;
+import org.w3c.dom.Node;
+import permafrost.tundra.data.IDataHelper;
+import permafrost.tundra.xml.dom.NodeHelper;
+import permafrost.tundra.xml.dom.Nodes;
+import permafrost.tundra.xml.xpath.XPathHelper;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import javax.xml.namespace.NamespaceContext;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
 
 /**
  * Performs webMethods Integration Server flow language conditional statement evaluation against a specified scope.
  */
 public class ConditionEvaluator {
+
     /**
      * The conditional statement to be evaluated by this object.
      */
     protected String condition;
 
     /**
+     * Regular expression matcher for node XPath expressions which has been matched against the condition.
+     */
+    protected Matcher nodeXPathMatcher;
+
+    /**
+     * Compiled node XPath expression.
+     */
+    protected List<XPathExpression> nodeXPathExpressions = new ArrayList<XPathExpression>();
+
+    /**
      * Constructs a new flow condition.
      *
-     * @param condition The conditional statement to be evaluated.
+     * @param condition         The conditional statement to be evaluated.
      */
     public ConditionEvaluator(String condition) {
+        this(condition, null);
+    }
+
+    /**
+     * Constructs a new flow condition.
+     *
+     * @param condition         The conditional statement to be evaluated.
+     * @param namespaceContext  An optional namespace context used when resolving XPath expressions.
+     */
+    public ConditionEvaluator(String condition, NamespaceContext namespaceContext) {
         this.condition = condition;
+
+        if (condition != null) {
+            nodeXPathMatcher = NodeHelper.NODE_XPATH_REGULAR_EXPRESSION_PATTERN.matcher(condition);
+            while (nodeXPathMatcher.find()) {
+                XPathExpression expression = null;
+                try {
+                    expression = XPathHelper.compile(nodeXPathMatcher.group(2), namespaceContext);
+                } catch(XPathExpressionException ex) {
+                    // do nothing, assume a normal IData fully-qualified key was specified rather than an XPath expression
+                } finally {
+                    nodeXPathExpressions.add(expression);
+                }
+            }
+        }
     }
 
     /**
@@ -57,8 +103,43 @@ public class ConditionEvaluator {
         boolean result = true;
 
         if (condition != null) {
+            if (scope == null) {
+                scope = IDataFactory.create();
+            } else {
+                // support resolving XPath expressions against nodes
+                if (nodeXPathExpressions != null) {
+                    // reset the matcher for use when evaluating
+                    nodeXPathMatcher.reset();
+
+                    int i = 0;
+                    while (nodeXPathMatcher.find()) {
+                        String key = nodeXPathMatcher.group(1);
+                        XPathExpression expression = nodeXPathExpressions.get(i);
+
+                        if (expression != null) {
+                            Object node = IDataHelper.get(scope, key);
+                            if (node instanceof Node) {
+                                StringBuffer buffer = new StringBuffer();
+                                try {
+                                    Nodes nodes = XPathHelper.get((Node)node, expression);
+                                    if (nodes != null && nodes.size() > 0) {
+                                        nodeXPathMatcher.appendReplacement(buffer, "\"" + NodeHelper.getValue(nodes.get(0)) + "\"");
+                                    }
+                                } catch (XPathExpressionException ex) {
+                                    throw new RuntimeException(ex);
+                                }
+                                nodeXPathMatcher.appendTail(buffer);
+                                condition = buffer.toString();
+                            }
+                        }
+
+                        i++;
+                    }
+                }
+            }
+
             try {
-                result = ExpressionEvaluator.evalToBoolean(condition, scope == null ? IDataFactory.create() : scope);
+                result = ExpressionEvaluator.evalToBoolean(condition, scope);
             } catch (MalformedExpressionException ex) {
                 throw new IllegalArgumentException(ex);
             }
