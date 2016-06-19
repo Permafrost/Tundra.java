@@ -33,12 +33,16 @@ import com.wm.data.IDataUtil;
 import com.wm.util.Table;
 import com.wm.util.coder.IDataCodable;
 import com.wm.util.coder.ValuesCodable;
+import org.w3c.dom.Node;
 import permafrost.tundra.flow.ConditionEvaluator;
 import permafrost.tundra.flow.variable.SubstitutionHelper;
 import permafrost.tundra.lang.ArrayHelper;
 import permafrost.tundra.lang.ObjectHelper;
 import permafrost.tundra.lang.StringHelper;
 import permafrost.tundra.time.DateTimeHelper;
+import permafrost.tundra.xml.dom.NodeHelper;
+import permafrost.tundra.xml.dom.Nodes;
+import permafrost.tundra.xml.xpath.XPathHelper;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,11 +54,19 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.xml.namespace.NamespaceContext;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
 
 /**
  * A collection of convenience methods for working with IData objects.
  */
 public final class IDataHelper {
+    /**
+     * Regular expression pattern for matching an IData node XPath expression.
+     */
+    public static final Pattern KEY_NODE_XPATH_REGULAR_EXPRESSION_PATTERN = Pattern.compile("(?i)(.*?node)(\\/.+)");
+
     /**
      * Disallow instantiation of this class.
      */
@@ -1726,35 +1738,74 @@ public final class IDataHelper {
     /**
      * Returns the value associated with the given key from the given scope (if relative) or pipeline (if absolute).
      *
-     * @param pipeline The pipeline, required if the key is an absolute path.
-     * @param scope    An IData document used to scope the key if it is relative.
-     * @param key      A simple or fully-qualified key identifying the value in the given IData document to be
-     *                 returned.
-     * @param literal  If true, the key will be treated as a literal key, rather than potentially as a fully-qualified
-     *                 key.
-     * @return         The value associated with the given key in the given IData document.
+     * @param pipeline          The pipeline, required if the key is an absolute path.
+     * @param scope             An IData document used to scope the key if it is relative.
+     * @param key               A simple or fully-qualified key identifying the value in the given IData document to be
+     *                          returned.
+     * @param literal           If true, the key will be treated as a literal key, rather than potentially as a fully-
+     *                          qualified key.
+     * @return                  The value associated with the given key in the given IData document.
      */
     public static Object get(IData pipeline, IData scope, String key, boolean literal) {
+        return get(pipeline, scope, key, literal, null);
+    }
+
+    /**
+     * Returns the value associated with the given key from the given scope (if relative) or pipeline (if absolute).
+     *
+     * @param pipeline          The pipeline, required if the key is an absolute path.
+     * @param scope             An IData document used to scope the key if it is relative.
+     * @param key               A simple or fully-qualified key identifying the value in the given IData document to be
+     *                          returned.
+     * @param literal           If true, the key will be treated as a literal key, rather than potentially as a fully-
+     *                          qualified key.
+     * @param namespaceContext  The namespace context used when resolving XPath expressions against nodes.
+     * @return                  The value associated with the given key in the given IData document.
+     */
+    public static Object get(IData pipeline, IData scope, String key, boolean literal, NamespaceContext namespaceContext) {
         if (key == null) return null;
 
         Object value = null;
+        IDataCursor cursor = null;
 
-        if (scope != null) {
+        try {
+            if (scope != null) cursor = scope.getCursor();
+
             // try finding a value that matches the literal key, and if not found try finding a value
             // associated with the leaf key if the key is considered fully-qualified
-            IDataCursor cursor = scope.getCursor();
-
-            if (cursor.first(key)) {
+            if (scope != null && cursor != null && cursor.first(key)) {
                 value = cursor.getValue();
             } else if (pipeline != null && IDataKey.isAbsolute(key, literal)) {
-                value = get(null, pipeline, key.substring(1), literal);
+                value = get(null, pipeline, key.substring(1), literal, namespaceContext);
             } else if (scope != null && IDataKey.isFullyQualified(key, literal)) {
-                value = get(scope, IDataKey.of(key, literal));
-            }
+                // support resolving XPath expressions against nodes
+                Matcher matcher = KEY_NODE_XPATH_REGULAR_EXPRESSION_PATTERN.matcher(key);
+                if (matcher.matches()) {
+                    String variable = matcher.group(1);
+                    String expression = matcher.group(2);
 
-            cursor.destroy();
-        } else if (pipeline != null && IDataKey.isAbsolute(key, literal)) {
-            value = get(null, pipeline, key.substring(1), literal);
+                    Object node = get(pipeline, scope, variable, literal);
+
+                    if (node instanceof Node) {
+                        try {
+                            XPathExpression compiledExpression = XPathHelper.compile(expression, namespaceContext);
+                            Nodes nodes = XPathHelper.get((Node)node, compiledExpression);
+
+                            if (nodes.size() > 0) {
+                                value = NodeHelper.getValue(nodes.get(0));
+                            }
+                        } catch (XPathExpressionException ex) {
+                            // do nothing, assume a normal IData fully-qualified key was specified rather than an XPath expression
+                        }
+                    } else {
+                        value = get(scope, IDataKey.of(key, literal));
+                    }
+                } else {
+                    value = get(scope, IDataKey.of(key, literal));
+                }
+            }
+        } finally {
+            if (cursor != null) cursor.destroy();
         }
 
         return value;

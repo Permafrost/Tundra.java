@@ -35,7 +35,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import permafrost.tundra.data.IDataMap;
 import permafrost.tundra.io.InputStreamHelper;
-import permafrost.tundra.lang.BooleanHelper;
 import permafrost.tundra.lang.CharsetHelper;
 import permafrost.tundra.lang.ExceptionHelper;
 import java.io.ByteArrayOutputStream;
@@ -43,7 +42,6 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.transform.OutputKeys;
@@ -57,10 +55,6 @@ import javax.xml.transform.stream.StreamResult;
  * A collection of convenience methods for working with org.w3c.dom.Node objects.
  */
 public class NodeHelper {
-    /**
-     * Regular expression pattern for matching an IData node XPath expression.
-     */
-    public static final Pattern NODE_XPATH_REGULAR_EXPRESSION_PATTERN = Pattern.compile("%([^%]*node)(\\/[^%]+)%");
 
     /**
      * Disallow instantiation of this class.

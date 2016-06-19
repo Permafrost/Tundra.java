@@ -36,6 +36,7 @@ import permafrost.tundra.xml.xpath.XPathHelper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
@@ -44,6 +45,10 @@ import javax.xml.xpath.XPathExpressionException;
  * Performs webMethods Integration Server flow language conditional statement evaluation against a specified scope.
  */
 public class ConditionEvaluator {
+    /**
+     * Regular expression pattern for matching an IData node XPath expression.
+     */
+    public static final Pattern CONDITION_NODE_XPATH_REGULAR_EXPRESSION_PATTERN = Pattern.compile("(?i)%([^%]*?node)(\\/[^%]+)%");
 
     /**
      * The conditional statement to be evaluated by this object.
@@ -79,7 +84,7 @@ public class ConditionEvaluator {
         this.condition = condition;
 
         if (condition != null) {
-            nodeXPathMatcher = NodeHelper.NODE_XPATH_REGULAR_EXPRESSION_PATTERN.matcher(condition);
+            nodeXPathMatcher = CONDITION_NODE_XPATH_REGULAR_EXPRESSION_PATTERN.matcher(condition);
             while (nodeXPathMatcher.find()) {
                 XPathExpression expression = null;
                 try {

@@ -12,6 +12,8 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 import permafrost.tundra.io.InputStreamHelper;
+import permafrost.tundra.xml.dom.DocumentHelper;
+import permafrost.tundra.xml.sax.InputSourceHelper;
 import java.util.regex.Pattern;
 
 public class IDataHelperTest {
@@ -24,6 +26,30 @@ public class IDataHelperTest {
         IDataUtil.put(cursor, "b", "2");
         IDataUtil.put(cursor, "c", "3");
         cursor.destroy();
+    }
+
+    @Test
+    public void testGetAbsoluteXPath() throws Exception {
+        String xmldata = "<test><a>1</a><b>2</b></test>";
+        IDataMap pipeline = new IDataMap();
+
+        pipeline.put("node", DocumentHelper.parse(InputSourceHelper.normalize(InputStreamHelper.normalize(xmldata))));
+
+        Object value = IDataHelper.get(pipeline, new IDataMap(), "/node/test/a");
+
+        assertEquals("1", value);
+    }
+
+    @Test
+    public void testGetRelativeXPath() throws Exception {
+        String xmldata = "<test><a>1</a><b>2</b></test>";
+        IDataMap scope = new IDataMap();
+
+        scope.put("node", DocumentHelper.parse(InputSourceHelper.normalize(InputStreamHelper.normalize(xmldata))));
+
+        Object value = IDataHelper.get(null, scope, "node/test/a");
+
+        assertEquals("1", value);
     }
 
     @Test
