@@ -24,6 +24,7 @@
 
 package permafrost.tundra.data;
 
+import permafrost.tundra.lang.ArrayHelper;
 import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.regex.Matcher;
@@ -157,12 +158,19 @@ class IDataKey extends ArrayDeque<IDataKey.Part> {
     }
 
     /**
+     * Returns a string representation of this key.
+     *
+     * @return A string representation of this key.
+     */
+    @Override
+    public String toString() {
+        return ArrayHelper.join(this.toArray(new Part[this.size()]), "/");
+    }
+
+    /**
      * Represents an individual key part of a fully-qualified key.
      */
     public static class Part {
-        /**
-         *
-         */
         protected boolean hasArrayIndex = false, hasKeyIndex = false;
         protected int index = 0;
         protected String key = null;
@@ -252,6 +260,7 @@ class IDataKey extends ArrayDeque<IDataKey.Part> {
          *
          * @return A string representation of this key.
          */
+        @Override
         public String toString() {
             String output;
             if (hasKeyIndex()) {
