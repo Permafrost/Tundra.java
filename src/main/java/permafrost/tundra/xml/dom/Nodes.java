@@ -103,6 +103,19 @@ public class Nodes extends AbstractList<Node> implements NodeList {
     }
 
     /**
+     * Returns the values for each node in the list.
+     *
+     * @return  The list of node values returned by node.getValue().
+     */
+    public List<String> getValues() {
+        List<String> values = new ArrayList<String>(size());
+        for (Node node : this) {
+            values.add(NodeHelper.getValue(node));
+        }
+        return values;
+    }
+
+    /**
      * Returns an IData[] representation of this object.
      *
      * @param namespaceContext  The namespace context to use for prefixing qualified names.
