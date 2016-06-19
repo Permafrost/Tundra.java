@@ -43,6 +43,7 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.transform.OutputKeys;
@@ -56,6 +57,11 @@ import javax.xml.transform.stream.StreamResult;
  * A collection of convenience methods for working with org.w3c.dom.Node objects.
  */
 public class NodeHelper {
+    /**
+     * Regular expression pattern for matching an IData node XPath expression.
+     */
+    public static final Pattern NODE_XPATH_REGULAR_EXPRESSION_PATTERN = Pattern.compile("%([^%]*node)(\\/[^%]+)%");
+
     /**
      * Disallow instantiation of this class.
      */
@@ -289,12 +295,7 @@ public class NodeHelper {
 
         map.put("type", nodeTypeToString(node.getNodeType()));
 
-        String value = null;
-        if (node instanceof Element) {
-            value = ElementHelper.getTextContent((Element) node);
-        } else {
-            value = node.getNodeValue();
-        }
+        String value = getValue(node);
         if (value != null) map.put("value", value);
 
         if (recurse && node.hasAttributes()) map.put("attributes", reflect(node.getAttributes(), namespaceContext, recurse));
@@ -316,6 +317,24 @@ public class NodeHelper {
         }
 
         return map;
+    }
+
+    /**
+     * Returns the value of the given node. If the node is an element, the value returned is the
+     * concatenated text from its text and CDATA child nodes.
+     *
+     * @param node  A node to return the value of.
+     * @return      The value of the given node.
+     */
+    public static String getValue(Node node) {
+        String value;
+        if (node instanceof Element) {
+            value = ElementHelper.getTextContent((Element) node);
+        } else {
+            value = node.getNodeValue();
+        }
+
+        return value;
     }
 
     /**
