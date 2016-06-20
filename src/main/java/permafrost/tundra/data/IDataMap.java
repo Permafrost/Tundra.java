@@ -30,6 +30,7 @@ import com.wm.data.IDataPortable;
 import com.wm.data.IDataUtil;
 import com.wm.util.coder.IDataCodable;
 import com.wm.util.coder.ValuesCodable;
+import java.io.Serializable;
 import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.Collection;
@@ -41,7 +42,9 @@ import java.util.Set;
 /**
  * Wraps an IData document in an implementation of the Iterable, Comparable, and Map interfaces.
  */
-public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String, Object>>, Comparable<IData>, Map<String, Object> {
+public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String, Object>>, Comparable<IData>, Map<String, Object>, Cloneable, Serializable {
+    private static final long serialVersionUID = 1;
+
     /**
      * The default comparator used when no other comparator or comparison criteria is specified.
      */
@@ -453,6 +456,25 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
     public void setComparator(IDataComparator comparator) {
         if (comparator == null) throw new IllegalArgumentException("comparator must not be null");
         this.comparator = comparator;
+    }
+
+    /**
+     * Returns a newly created IData object.
+     *
+     * @return A newly created IData object.
+     */
+    public static IData create() {
+        return new IDataMap();
+    }
+
+    /**
+     * Returns a clone of this IData object.
+     *
+     * @return A clone of this IData object.
+     */
+    @Override
+    public IDataMap clone() {
+        return new IDataMap(IDataHelper.duplicate(document));
     }
 
     /**

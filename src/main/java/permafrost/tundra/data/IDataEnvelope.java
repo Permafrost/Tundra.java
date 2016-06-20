@@ -32,15 +32,19 @@ import com.wm.data.IDataIndexCursor;
 import com.wm.data.IDataPortable;
 import com.wm.data.IDataSharedCursor;
 import com.wm.data.IDataTreeCursor;
+import com.wm.data.ISMemDataImpl;
 import com.wm.util.Values;
 import com.wm.util.coder.IDataCodable;
 import com.wm.util.coder.ValuesCodable;
+import java.io.Serializable;
 
 /**
  * A convenience wrapper for an IData object, that implements the IData, IDataCodable, IDataPortable, and ValuesCodable
  * interfaces for maximum API compatibility.
  */
-public class IDataEnvelope implements IData, IDataCodable, IDataPortable, ValuesCodable {
+public class IDataEnvelope extends ISMemDataImpl implements IData, IDataCodable, IDataPortable, ValuesCodable, Cloneable, Serializable {
+    private static final long serialVersionUID = 1;
+
     /**
      * The wrapped IData document.
      */
@@ -220,5 +224,34 @@ public class IDataEnvelope implements IData, IDataCodable, IDataPortable, Values
     @Override
     public String toString() {
         return document.toString();
+    }
+
+    /**
+     * Returns a copy of this IData object.
+     *
+     * @return A copy of this IData object.
+     */
+    @Override
+    public IData copy() {
+        return clone();
+    }
+
+    /**
+     * Returns a newly created IData object.
+     *
+     * @return A newly created IData object.
+     */
+    public static IData create() {
+        return new IDataEnvelope();
+    }
+
+    /**
+     * Returns a clone of this IData object.
+     *
+     * @return A clone of this IData object.
+     */
+    @Override
+    public IDataEnvelope clone() {
+        return new IDataEnvelope(IDataHelper.duplicate(document, false));
     }
 }

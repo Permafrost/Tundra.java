@@ -37,12 +37,15 @@ import com.wm.txn.TransactionException;
 import com.wm.util.Table;
 import com.wm.util.coder.IDataCodable;
 import com.wm.util.coder.ValuesCodable;
+import java.io.Serializable;
 import java.util.Map;
 
 /**
  * Wraps an IData in a read-only IData and Map compatible object.
  */
-public class ReadOnlyIDataMap extends IDataMap {
+public class ReadOnlyIDataMap extends IDataMap implements Cloneable, Serializable {
+    private static final long serialVersionUID = 1;
+    
     /**
      * Construct a new ReadOnlyIDataMap object.
      *
@@ -333,6 +336,25 @@ public class ReadOnlyIDataMap extends IDataMap {
     @Override
     public void clear() {
         // do nothing as cursor is read only
+    }
+
+    /**
+     * Returns a newly created IData object.
+     *
+     * @return A newly created IData object.
+     */
+    public static IData create() {
+        return new ReadOnlyIDataMap((IData)null);
+    }
+
+    /**
+     * Returns a clone of this IData object.
+     *
+     * @return A clone of this IData object.
+     */
+    @Override
+    public ReadOnlyIDataMap clone() {
+        return new ReadOnlyIDataMap(IDataHelper.duplicate(document, false));
     }
 
     /**

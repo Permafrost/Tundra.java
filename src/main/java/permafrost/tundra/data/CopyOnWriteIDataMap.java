@@ -37,6 +37,7 @@ import com.wm.txn.TransactionException;
 import com.wm.util.Table;
 import com.wm.util.coder.IDataCodable;
 import com.wm.util.coder.ValuesCodable;
+import java.io.Serializable;
 import java.util.ArrayDeque;
 import java.util.Map;
 import java.util.Queue;
@@ -45,7 +46,12 @@ import java.util.Queue;
  * Wraps an IData in an IData and Map compatible wrapper that makes copies of the wrapped IData and its
  * nested IData children when they are written to.
  */
-public class CopyOnWriteIDataMap extends IDataMap {
+public class CopyOnWriteIDataMap extends IDataMap implements Cloneable, Serializable {
+    private static final long serialVersionUID = 1;
+
+    /**
+     * Whether the wrapped IData has been copied already.
+     */
     protected volatile boolean copied = false;
 
     /**
@@ -198,7 +204,7 @@ public class CopyOnWriteIDataMap extends IDataMap {
      *
      * @return True if a copy was made, false otherwise.
      */
-    private boolean copy() {
+    private boolean copyOnWrite() {
         if (copied) return false;
 
         document = IDataHelper.duplicate(document, false);
@@ -283,6 +289,25 @@ public class CopyOnWriteIDataMap extends IDataMap {
     }
 
     /**
+     * Returns a newly created IData object.
+     *
+     * @return A newly created IData object.
+     */
+    public static IData create() {
+        return new CopyOnWriteIDataMap((IData)null);
+    }
+
+    /**
+     * Returns a clone of this IData object.
+     *
+     * @return A clone of this IData object.
+     */
+    @Override
+    public IDataMap clone() {
+        return new CopyOnWriteIDataMap(IDataHelper.duplicate(document, false));
+    }
+
+    /**
      * Copy on write wrapper for an IDataCursor.
      */
     private static class CopyOnWriteIDataCursor implements IDataCursor {
@@ -339,7 +364,7 @@ public class CopyOnWriteIDataMap extends IDataMap {
         }
 
         private void prepareWrite() {
-            if (document.copy()) reposition();
+            if (document.copyOnWrite()) reposition();
         }
 
         public void setErrorMode(int mode) {
@@ -532,7 +557,7 @@ public class CopyOnWriteIDataMap extends IDataMap {
         }
 
         private void prepareWrite() throws DataException {
-            if (document.copy()) reposition();
+            if (document.copyOnWrite()) reposition();
         }
 
         public void home() throws DataException {
