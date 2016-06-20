@@ -45,7 +45,7 @@ import java.util.Map;
  */
 public class ReadOnlyIDataMap extends IDataMap implements Cloneable, Serializable {
     private static final long serialVersionUID = 1;
-    
+
     /**
      * Construct a new ReadOnlyIDataMap object.
      *
@@ -354,7 +354,7 @@ public class ReadOnlyIDataMap extends IDataMap implements Cloneable, Serializabl
      */
     @Override
     public ReadOnlyIDataMap clone() {
-        return new ReadOnlyIDataMap(IDataHelper.duplicate(document, false));
+        return new ReadOnlyIDataMap(document);
     }
 
     /**

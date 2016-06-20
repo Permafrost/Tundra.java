@@ -304,7 +304,7 @@ public class CopyOnWriteIDataMap extends IDataMap implements Cloneable, Serializ
      */
     @Override
     public IDataMap clone() {
-        return new CopyOnWriteIDataMap(IDataHelper.duplicate(document, false));
+        return new CopyOnWriteIDataMap(document);
     }
 
     /**
