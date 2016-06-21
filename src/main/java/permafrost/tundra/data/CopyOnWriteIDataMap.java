@@ -50,9 +50,9 @@ public class CopyOnWriteIDataMap extends IDataMap implements Cloneable, Serializ
     private static final long serialVersionUID = 1;
 
     /**
-     * Whether the wrapped IData has been copied already.
+     * Whether this object has been written to.
      */
-    protected volatile boolean copied = false;
+    protected volatile boolean hasWrites = false;
 
     /**
      * Construct a new CopyOnWriteIDataMap object.
@@ -169,8 +169,8 @@ public class CopyOnWriteIDataMap extends IDataMap implements Cloneable, Serializ
      * @return          A new CopyOnWriteIDataMap wrapping the given IData document.
      */
     public static CopyOnWriteIDataMap of(IData document) {
-        if (document instanceof CopyOnWriteIDataMap) {
-            return (CopyOnWriteIDataMap)document;
+        if (document instanceof IDataEnvelope) {
+            return new CopyOnWriteIDataMap(((IDataEnvelope)document).document);
         } else {
             return new CopyOnWriteIDataMap(document);
         }
@@ -201,11 +201,11 @@ public class CopyOnWriteIDataMap extends IDataMap implements Cloneable, Serializ
      * @return True if a copy was made, false otherwise.
      */
     private boolean copyOnWrite() {
-        if (copied) return false;
+        if (hasWrites) return false;
 
         document = IDataHelper.duplicate(document, false);
-        copied = true;
-        return copied;
+        hasWrites = true;
+        return hasWrites;
     }
 
     /**

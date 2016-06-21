@@ -340,8 +340,8 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
      * @return          A new IDataMap wrapping the given IData document.
      */
     public static IDataMap of(IData document) {
-        if (document instanceof IDataMap) {
-            return (IDataMap)document;
+        if (document instanceof IDataEnvelope) {
+            return new IDataMap(((IDataEnvelope)document).document);
         } else {
             return new IDataMap(document);
         }
@@ -351,14 +351,12 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
      * Returns a new IDataMap[] representation of the given IData[] document list.
      *
      * @param array An IData[] document list.
-     * @return A new IDataMap[] representation of the given IData[] document list.
+     * @return      A new IDataMap[] representation of the given IData[] document list.
      */
     public static IDataMap[] of(IData[] array) {
         IDataMap[] output = null;
 
-        if (array instanceof IDataMap[]) {
-            output = (IDataMap[])array;
-        } else if (array != null) {
+        if (array != null) {
             output = new IDataMap[array.length];
             for (int i = 0; i < array.length; i++) {
                 output[i] = new IDataMap(array[i]);
@@ -371,22 +369,18 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
     /**
      * Returns a new IDataMap that includes all the key value pairs from the given Map.
      *
-     * @param map The Map to seed the new IDataMap with.
-     * @return A new IDataMap that includes all the key value pairs from the given Map.
+     * @param map   The Map to seed the new IDataMap with.
+     * @return      A new IDataMap that includes all the key value pairs from the given Map.
      */
     public static IDataMap of(Map<? extends String, ?> map) {
-        if (map instanceof IDataMap) {
-            return (IDataMap)map;
-        } else {
-            return new IDataMap(map);
-        }
+        return new IDataMap(map);
     }
 
     /**
      * Returns the value to which the specified key is mapped, or null if this map contains no mapping for the key.
      *
-     * @param key The key whose associated value is to be returned.
-     * @return The value to which the specified key is mapped, or null if this map contains no mapping for the key
+     * @param key   The key whose associated value is to be returned.
+     * @return      The value to which the specified key is mapped, or null if this map contains no mapping for the key
      */
     @Override
     public Object get(Object key) {
@@ -419,8 +413,8 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
      * Compares this object with the specified object for order.
      *
      * @param other The object to be compared with this object.
-     * @return A negative integer, zero, or a positive integer as this object is less than, equal to, or greater than
-     * the specified object.
+     * @return      A negative integer, zero, or a positive integer as this object is less than, equal to, or greater
+     *              than the specified object.
      */
     @Override
     public int compareTo(IData other) {
@@ -431,7 +425,7 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
      * Returns true if this object is equal to the given object.
      *
      * @param other The object to compare to.
-     * @return True if this object is equal to the given object.
+     * @return      True if this object is equal to the given object.
      */
     @Override
     public boolean equals(Object other) {

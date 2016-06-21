@@ -161,8 +161,8 @@ public class ReadOnlyIDataMap extends IDataMap implements Cloneable, Serializabl
      * @return          A new ReadOnlyIDataMap wrapping the given IData document.
      */
     public static ReadOnlyIDataMap of(IData document) {
-        if (document instanceof ReadOnlyIDataMap) {
-            return (ReadOnlyIDataMap)document;
+        if (document instanceof IDataEnvelope) {
+            return new ReadOnlyIDataMap(((IDataEnvelope)document).document);
         } else {
             return new ReadOnlyIDataMap(document);
         }
@@ -177,9 +177,7 @@ public class ReadOnlyIDataMap extends IDataMap implements Cloneable, Serializabl
     public static ReadOnlyIDataMap[] of(IData[] array) {
         ReadOnlyIDataMap[] output = null;
 
-        if (array instanceof ReadOnlyIDataMap[]) {
-            output = (ReadOnlyIDataMap[])array;
-        } else if (array != null) {
+        if (array != null) {
             output = new ReadOnlyIDataMap[array.length];
             for (int i = 0; i < array.length; i++) {
                 if (array[i] != null) {
