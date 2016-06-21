@@ -183,16 +183,12 @@ public class CopyOnWriteIDataMap extends IDataMap implements Cloneable, Serializ
      * @return          A new CopyOnWriteIDataMap[] representation of the given IData[] document list.
      */
     public static CopyOnWriteIDataMap[] of(IData[] array) {
-        CopyOnWriteIDataMap[] output = null;
+        if (array == null) return null;
 
-        if (array instanceof CopyOnWriteIDataMap[]) {
-            output = (CopyOnWriteIDataMap[])array;
-        } else if (array != null) {
-            output = new CopyOnWriteIDataMap[array.length];
-            for (int i = 0; i < array.length; i++) {
-                if (array[i] != null) {
-                    output[i] = CopyOnWriteIDataMap.of(array[i]);
-                }
+        CopyOnWriteIDataMap[] output = new CopyOnWriteIDataMap[array.length];
+        for (int i = 0; i < array.length; i++) {
+            if (array[i] != null) {
+                output[i] = CopyOnWriteIDataMap.of(array[i]);
             }
         }
 
