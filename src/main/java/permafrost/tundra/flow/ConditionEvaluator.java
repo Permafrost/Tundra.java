@@ -99,10 +99,19 @@ public class ConditionEvaluator {
     }
 
     /**
+     * Returns the condition that is evaluated by this object.
+     *
+     * @return The condition that is evaluated by this object.
+     */
+    public String getCondition() {
+        return condition;
+    }
+
+    /**
      * Evaluates the conditional statement against the given scope.
      *
      * @param scope The scope against which the conditional statement is evaluated.
-     * @return True if the conditional statement evaluates to true, otherwise false.
+     * @return      True if the conditional statement evaluates to true, otherwise false.
      */
     public boolean evaluate(IData scope) {
         boolean result = true;
@@ -159,7 +168,7 @@ public class ConditionEvaluator {
      *
      * @param condition The conditional statement to be evaluated.
      * @param scope     The scope against which the conditional statement is evaluated.
-     * @return True if the conditional statement evaluates to true, otherwise false.
+     * @return          True if the conditional statement evaluates to true, otherwise false.
      */
     public static boolean evaluate(String condition, IData scope) {
         ConditionEvaluator evaluator = new ConditionEvaluator(condition);
