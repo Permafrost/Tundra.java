@@ -25,8 +25,8 @@
 package permafrost.tundra.lang;
 
 import com.wm.data.IData;
-import permafrost.tundra.data.Content;
-import permafrost.tundra.data.ContentAttached;
+import permafrost.tundra.content.Content;
+import permafrost.tundra.content.ContentAttached;
 import permafrost.tundra.data.IDataMap;
 
 /**

@@ -22,10 +22,11 @@
  * SOFTWARE.
  */
 
-package permafrost.tundra.data;
+package permafrost.tundra.content;
 
 import com.wm.data.IData;
 import com.wm.util.coder.IDataCodable;
+import permafrost.tundra.data.IDataMap;
 import permafrost.tundra.lang.BytesHelper;
 import permafrost.tundra.lang.CharsetHelper;
 import permafrost.tundra.mime.MIMETypeHelper;

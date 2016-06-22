@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package permafrost.tundra.data;
+package permafrost.tundra.content;
 
 /**
  * Interface for attaching arbitrary content to an object.
