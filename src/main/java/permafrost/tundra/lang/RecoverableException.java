@@ -24,14 +24,16 @@
 
 package permafrost.tundra.lang;
 
+import com.wm.app.b2b.server.ISRuntimeException;
 import com.wm.data.IData;
+import com.wm.util.coder.IDataCodable;
 import permafrost.tundra.data.IDataMap;
 import java.util.Collection;
 
 /**
  * An exception indicating that a recoverable error has occurred.
  */
-public class RecoverableException extends BaseException {
+public class RecoverableException extends ISRuntimeException implements IDataCodable {
     /**
      * Constructs a new RecoverableException.
      */
@@ -73,7 +75,7 @@ public class RecoverableException extends BaseException {
      * @param exceptions A collection of exceptions this exception will wrap.
      */
     public RecoverableException(Collection<? extends Throwable> exceptions) {
-        super(exceptions);
+        super(ExceptionHelper.getMessage(exceptions));
     }
 
     /**
@@ -82,7 +84,7 @@ public class RecoverableException extends BaseException {
      * @param exceptions A collection of exceptions this exception will wrap.
      */
     public RecoverableException(Throwable... exceptions) {
-        super(exceptions);
+        super(ExceptionHelper.getMessage(exceptions));
     }
 
     /**
@@ -90,10 +92,23 @@ public class RecoverableException extends BaseException {
      *
      * @return An IData representation of this object.
      */
-    @Override
     public IData getIData() {
-        IDataMap map = IDataMap.of(super.getIData());
+        IDataMap map = new IDataMap();
+        map.put("$exception", this);
+        map.put("$exception?", "true");
+        map.put("$exception.class", getClass().getName());
+        map.put("$exception.message", getMessage());
         map.put("$exception.recoverable?", "true");
         return map;
+    }
+
+    /**
+     * This method has not been implemented.
+     *
+     * @param  document                         An IData document.
+     * @throws UnsupportedOperationException    This method has not been implemented.
+     */
+    public void setIData(IData document) {
+        throw new UnsupportedOperationException("setIData(IData) not implemented");
     }
 }
