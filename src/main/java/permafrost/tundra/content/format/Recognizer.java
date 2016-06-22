@@ -25,7 +25,9 @@
 package permafrost.tundra.content.format;
 
 import com.wm.data.IData;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
@@ -75,10 +77,10 @@ public class Recognizer {
     /**
      * Replaces all registered formats with the given collection of formats.
      *
-     * @param formats A collection of formats to initialize the recognition registry with.
+     * @param collection A collection of formats to initialize the recognition registry with.
      */
-    public static synchronized void initialize(Collection<Format> formats) {
-        formats = new ConcurrentSkipListSet<Format>(formats);
+    public static synchronized void initialize(Collection<Format> collection) {
+        formats = new ConcurrentSkipListSet<Format>(collection);
     }
 
     /**
@@ -111,7 +113,7 @@ public class Recognizer {
      *
      * @return A list of all registered content format definitions.
      */
-    public static Format[] list() {
-        return formats.toArray(new Format[formats.size()]);
+    public static List<Format> list() {
+        return new ArrayList<Format>(formats);
     }
 }
