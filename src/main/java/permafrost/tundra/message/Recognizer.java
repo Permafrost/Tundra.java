@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package permafrost.tundra.content.format;
+package permafrost.tundra.message;
 
 import com.wm.data.IData;
 import java.util.ArrayList;
@@ -38,12 +38,23 @@ public class Recognizer {
     /**
      * List of all registered content format definitions.
      */
-    private static volatile Set<Format> formats = new ConcurrentSkipListSet<Format>();
+    private volatile Set<Format> formats;
 
     /**
-     * Disallow instantiation of this class.
+     * Create a new Recognizer with no registered formats.
      */
-    private Recognizer() {}
+    public Recognizer() {
+        formats = new ConcurrentSkipListSet<Format>();
+    }
+
+    /**
+     * Create a new Recognizer initialized with the given formats.
+     *
+     * @param collection    A collection of formats to be registered with the new Recognizer.
+     */
+    public Recognizer(Collection<Format> collection) {
+        initialize(collection);
+    }
 
     /**
      * Returns the first recognized ContentDefinition for the content in the given pipeline.
@@ -51,7 +62,7 @@ public class Recognizer {
      * @param pipeline  The pipeline containing content to be recognized.
      * @return          Either the recognized ContentDefinition, or null if the content was unrecognized.
      */
-    public static Format recognize(IData pipeline) {
+    public Format recognize(IData pipeline) {
         for (Format format : formats) {
             if (format.recognize(pipeline)) {
                 return format;
@@ -67,7 +78,7 @@ public class Recognizer {
      * @param formatName    The name of the format.
      * @return              The format with the given name, if it was registered.
      */
-    public static Format get(String formatName) {
+    public Format get(String formatName) {
         for (Format format : formats) {
             if (format.getName().equals(formatName)) return format;
         }
@@ -79,7 +90,7 @@ public class Recognizer {
      *
      * @param collection A collection of formats to initialize the recognition registry with.
      */
-    public static synchronized void initialize(Collection<Format> collection) {
+    public synchronized void initialize(Collection<Format> collection) {
         formats = new ConcurrentSkipListSet<Format>(collection);
     }
 
@@ -88,7 +99,7 @@ public class Recognizer {
      *
      * @param format The format to be registered.
      */
-    public static void register(Format format) {
+    public void register(Format format) {
         formats.add(format);
     }
 
@@ -97,14 +108,14 @@ public class Recognizer {
      *
      * @param format The format to be unregistered.
      */
-    public static void unregister(Format format) {
+    public void unregister(Format format) {
         formats.remove(format);
     }
 
     /**
      * Removes all registered formats from the registry.
      */
-    public static void clear() {
+    public void clear() {
         formats.clear();
     }
 
@@ -113,7 +124,7 @@ public class Recognizer {
      *
      * @return A list of all registered content format definitions.
      */
-    public static List<Format> list() {
+    public List<Format> list() {
         return new ArrayList<Format>(formats);
     }
 }

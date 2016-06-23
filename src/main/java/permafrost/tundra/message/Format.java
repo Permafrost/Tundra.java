@@ -22,13 +22,12 @@
  * SOFTWARE.
  */
 
-package permafrost.tundra.content.format;
+package permafrost.tundra.message;
 
 import com.wm.data.IData;
-import com.wm.data.IDataCursor;
-import com.wm.data.IDataUtil;
 import com.wm.util.coder.IDataCodable;
 import permafrost.tundra.data.CopyOnWriteIDataMap;
+import permafrost.tundra.data.IDataHelper;
 import permafrost.tundra.flow.ConditionEvaluator;
 import permafrost.tundra.lang.BooleanHelper;
 import permafrost.tundra.xml.namespace.IDataNamespaceContext;
@@ -38,7 +37,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * A content format definition object which can be used to recognize arbitrary content.
+ * A message format definition object which can be used to recognize arbitrary content.
  */
 public class Format implements Comparable<Format>, IDataCodable {
     /**
@@ -68,17 +67,15 @@ public class Format implements Comparable<Format>, IDataCodable {
 
         this.document = document;
 
-        IDataCursor cursor = document.getCursor();
-
-        String name = IDataUtil.getString(cursor, "name");
+        String name = (String)IDataHelper.get(document, "name");
         if (name == null) throw new NullPointerException("name must not be null");
         this.name = name;
 
-        String recognitionCondition = IDataUtil.getString(cursor, "recognize");
+        String recognitionCondition = (String)IDataHelper.get(document, "recognize/ref");
         if (recognitionCondition == null) throw new NullPointerException("recognize must not be null");
-        this.recognitionCondition = new ConditionEvaluator(recognitionCondition, IDataNamespaceContext.of(IDataUtil.getIData(cursor, "namespace")));
+        this.recognitionCondition = new ConditionEvaluator(recognitionCondition, IDataNamespaceContext.of((IData)IDataHelper.get(document, "namespace")));
 
-        this.enabled = BooleanHelper.parse(IDataUtil.getString(cursor, "enabled?"));
+        this.enabled = BooleanHelper.parse(IDataHelper.get(document, "enabled"));
     }
 
     /**
