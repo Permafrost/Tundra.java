@@ -27,8 +27,10 @@ package permafrost.tundra.server;
 import com.wm.app.b2b.server.Build;
 import com.wm.app.b2b.server.Resources;
 import com.wm.app.b2b.server.Server;
+import com.wm.app.b2b.server.ServiceException;
 import com.wm.data.IData;
 import permafrost.tundra.data.IDataMap;
+import permafrost.tundra.flow.variable.GlobalVariableHelper;
 import permafrost.tundra.io.FileHelper;
 import java.util.Hashtable;
 import java.util.Properties;
@@ -49,12 +51,13 @@ public final class SystemHelper {
      *
      * @return Integration Server properties.
      */
-    public static IData getIntegrationServerProperties() {
+    public static IData reflect() throws ServiceException {
         IDataMap output = new IDataMap();
         output.put("version", Build.getVersion());
         output.put("environment", getSystemEnvironment());
-        output.put("properties", getSystemProperties());
-        output.put("directories", getSystemDirectories());
+        output.put("property", getSystemProperties());
+        output.put("global", GlobalVariableHelper.list());
+        output.put("directory", getSystemDirectories());
         output.put("memory", getMemoryUsage());
 
         return output;
