@@ -61,10 +61,21 @@ public final class BooleanHelper {
      * @return       The parsed boolean value.
      */
     public static boolean parse(Object object) {
+        return parse(object, false);
+    }
+
+    /**
+     * Parses the given object to a boolean value.
+     *
+     * @param object        An object which is either a Boolean or a String representation of a boolean.
+     * @param defaultValue  The default boolean value returned when the given object is null.
+     * @return              The parsed boolean value.
+     */
+    public static boolean parse(Object object, boolean defaultValue) {
         if (object instanceof Boolean) {
             return (Boolean)object;
         } else {
-            return parse(object == null ? (String)null : object.toString());
+            return parse(object == null ? (String)null : object.toString(), defaultValue);
         }
     }
 

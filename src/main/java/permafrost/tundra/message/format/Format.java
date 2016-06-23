@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package permafrost.tundra.message;
+package permafrost.tundra.message.format;
 
 import com.wm.data.IData;
 import com.wm.util.coder.IDataCodable;
@@ -75,7 +75,8 @@ public class Format implements Comparable<Format>, IDataCodable {
         if (recognitionCondition == null) throw new NullPointerException("recognize must not be null");
         this.recognitionCondition = new ConditionEvaluator(recognitionCondition, IDataNamespaceContext.of((IData)IDataHelper.get(document, "namespace")));
 
-        this.enabled = BooleanHelper.parse(IDataHelper.get(document, "enabled"));
+        this.enabled = BooleanHelper.parse(IDataHelper.get(document, "enabled"), true);
+        IDataHelper.put(document, "enabled", BooleanHelper.emit(this.enabled));
     }
 
     /**

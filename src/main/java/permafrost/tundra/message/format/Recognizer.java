@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package permafrost.tundra.message;
+package permafrost.tundra.message.format;
 
 import com.wm.data.IData;
 import java.util.ArrayList;
@@ -39,6 +39,11 @@ public class Recognizer {
      * List of all registered content format definitions.
      */
     private volatile Set<Format> formats;
+
+    /**
+     * If content cannot be recognized then this
+     */
+    private volatile Format defaultFormat;
 
     /**
      * Create a new Recognizer with no registered formats.
