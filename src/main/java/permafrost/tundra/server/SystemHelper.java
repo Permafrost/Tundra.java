@@ -56,7 +56,7 @@ public final class SystemHelper {
         output.put("version", Build.getVersion());
         output.put("environment", getSystemEnvironment());
         output.put("property", getSystemProperties());
-        output.put("global", GlobalVariableHelper.list());
+        if (GlobalVariableHelper.isSupported()) output.put("global", GlobalVariableHelper.list());
         output.put("directory", getSystemDirectories());
         output.put("memory", getMemoryUsage());
 
