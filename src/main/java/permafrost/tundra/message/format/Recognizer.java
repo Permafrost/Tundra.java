@@ -25,6 +25,7 @@
 package permafrost.tundra.message.format;
 
 import com.wm.data.IData;
+import permafrost.tundra.data.IDataHelper;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -68,10 +69,17 @@ public class Recognizer {
      * @return          Either the recognized ContentDefinition, or null if the content was unrecognized.
      */
     public Format recognize(IData pipeline) {
-        for (Format format : formats) {
-            if (format.recognize(pipeline)) {
-                return format;
+        Object formatName = IDataHelper.get(pipeline, "$message.format.name");
+
+        if (formatName == null) {
+            for (Format format : formats) {
+                if (format.recognize(pipeline)) {
+                    return format;
+                }
             }
+        } else {
+            Format format = get(formatName.toString());
+            if (format != null && format.isEnabled()) return format;
         }
 
         return null;

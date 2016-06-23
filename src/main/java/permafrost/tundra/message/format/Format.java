@@ -112,6 +112,15 @@ public class Format implements Comparable<Format>, IDataCodable {
     }
 
     /**
+     * Returns whether this format is enabled for recognition.
+     *
+     * @return True if this format is enabled for recognition.
+     */
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    /**
      * Returns a hash code for this object.
      *
      * @return A hash code for this object.
