@@ -46,19 +46,9 @@ public class ACLHelper {
      * @param deny  The groups denied access to this ACL.
      * @param force If false an existing ACL with the given name will not be replace or updated.
      */
-    public static void create(String name, Collection<Group> allow, Collection<Group> deny, boolean force) {
-        create(name, allow == null ? null : allow.toArray(new Group[allow.size()]), deny == null ? null : deny.toArray(new Group[deny.size()]), force);
-    }
-
-    /**
-     * Creates an ACL with the given name.
-     *
-     * @param name  The ACL name.
-     * @param allow The groups allowed access to this ACL.
-     * @param deny  The groups denied access to this ACL.
-     * @param force If false an existing ACL with the given name will not be replace or updated.
-     */
     public static synchronized void create(String name, Group[] allow, Group[] deny, boolean force) {
+        if (name == null) return;
+        
         if (force || !exists(name)) {
             ACLManager.addGroup(name, allow, deny);
         }
