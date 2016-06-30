@@ -65,7 +65,7 @@ public final class IDataHelper {
     /**
      * Regular expression pattern for matching an IData node XPath expression.
      */
-    public static final Pattern KEY_NODE_XPATH_REGULAR_EXPRESSION_PATTERN = Pattern.compile("(?i)(.*?node)(\\/.+)");
+    public static final Pattern KEY_NODE_XPATH_REGULAR_EXPRESSION_PATTERN = Pattern.compile("(?i)([^\\/]+)(\\/.+)");
 
     /**
      * Disallow instantiation of this class.
@@ -1784,7 +1784,7 @@ public final class IDataHelper {
                     String variable = matcher.group(1);
                     String expression = matcher.group(2);
 
-                    Object node = get(pipeline, scope, variable, literal);
+                    Object node = get(pipeline, scope, variable, true);
 
                     if (node instanceof Node) {
                         try {
