@@ -113,7 +113,8 @@ public class ConditionEvaluator {
      * @param scope The scope against which the conditional statement is evaluated.
      * @return      True if the conditional statement evaluates to true, otherwise false.
      */
-    public boolean evaluate(IData scope) {
+    public synchronized boolean evaluate(IData scope) {
+        String condition = this.condition;
         boolean result = true;
 
         if (condition != null) {
