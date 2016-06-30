@@ -56,11 +56,6 @@ public class ConditionEvaluator {
     protected String condition;
 
     /**
-     * Regular expression matcher for node XPath expressions which has been matched against the condition.
-     */
-    protected Matcher nodeXPathMatcher;
-
-    /**
      * Compiled node XPath expression.
      */
     protected List<XPathExpression> nodeXPathExpressions = new ArrayList<XPathExpression>();
@@ -84,7 +79,7 @@ public class ConditionEvaluator {
         this.condition = condition;
 
         if (condition != null) {
-            nodeXPathMatcher = CONDITION_NODE_XPATH_REGULAR_EXPRESSION_PATTERN.matcher(condition);
+            Matcher nodeXPathMatcher = CONDITION_NODE_XPATH_REGULAR_EXPRESSION_PATTERN.matcher(condition);
             while (nodeXPathMatcher.find()) {
                 XPathExpression expression = null;
                 try {
@@ -121,11 +116,9 @@ public class ConditionEvaluator {
             if (scope == null) {
                 scope = IDataFactory.create();
             } else {
-                // reset the matcher for use when evaluating
-                nodeXPathMatcher.reset();
-
-                int i = 0;
+                Matcher nodeXPathMatcher = CONDITION_NODE_XPATH_REGULAR_EXPRESSION_PATTERN.matcher(condition);
                 StringBuffer buffer = new StringBuffer();
+                int i = 0;
 
                 while (nodeXPathMatcher.find()) {
                     String key = nodeXPathMatcher.group(1);
@@ -148,6 +141,7 @@ public class ConditionEvaluator {
                     }
                     i++;
                 }
+                
                 nodeXPathMatcher.appendTail(buffer);
                 condition = buffer.toString();
             }
