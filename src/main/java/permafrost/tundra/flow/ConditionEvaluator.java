@@ -33,8 +33,9 @@ import permafrost.tundra.data.IDataHelper;
 import permafrost.tundra.xml.dom.NodeHelper;
 import permafrost.tundra.xml.dom.Nodes;
 import permafrost.tundra.xml.xpath.XPathHelper;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.xml.namespace.NamespaceContext;
@@ -58,7 +59,7 @@ public class ConditionEvaluator {
     /**
      * Compiled node XPath expression.
      */
-    protected List<XPathExpression> nodeXPathExpressions = new ArrayList<XPathExpression>();
+    protected Map<Integer, XPathExpression> expressions;
 
     /**
      * Constructs a new flow condition.
@@ -79,17 +80,20 @@ public class ConditionEvaluator {
         this.condition = condition;
 
         if (condition != null) {
-            Matcher nodeXPathMatcher = CONDITION_NODE_XPATH_REGULAR_EXPRESSION_PATTERN.matcher(condition);
-            while (nodeXPathMatcher.find()) {
-                XPathExpression expression = null;
+            Matcher matcher = CONDITION_NODE_XPATH_REGULAR_EXPRESSION_PATTERN.matcher(condition);
+            Map<Integer, XPathExpression> expressions = new TreeMap<Integer, XPathExpression>();
+            int i = 0;
+            while (matcher.find()) {
                 try {
-                    expression = XPathHelper.compile(nodeXPathMatcher.group(2), namespaceContext);
+                    expressions.put(i, XPathHelper.compile(matcher.group(2), namespaceContext));
                 } catch(XPathExpressionException ex) {
                     // do nothing, assume a normal IData fully-qualified key was specified rather than an XPath expression
                 } finally {
-                    nodeXPathExpressions.add(expression);
+                    i++;
                 }
             }
+
+            if (expressions.size() > 0) this.expressions = Collections.unmodifiableMap(expressions);
         }
     }
 
@@ -115,14 +119,14 @@ public class ConditionEvaluator {
         if (condition != null) {
             if (scope == null) {
                 scope = IDataFactory.create();
-            } else {
-                Matcher nodeXPathMatcher = CONDITION_NODE_XPATH_REGULAR_EXPRESSION_PATTERN.matcher(condition);
+            } else if (expressions != null) {
+                Matcher matcher = CONDITION_NODE_XPATH_REGULAR_EXPRESSION_PATTERN.matcher(condition);
                 StringBuffer buffer = new StringBuffer();
                 int i = 0;
 
-                while (nodeXPathMatcher.find()) {
-                    String key = nodeXPathMatcher.group(1);
-                    XPathExpression expression = nodeXPathExpressions.get(i);
+                while (matcher.find()) {
+                    String key = matcher.group(1);
+                    XPathExpression expression = expressions.get(i);
 
                     if (expression != null) {
                         Object node = IDataHelper.get(scope, key);
@@ -130,9 +134,9 @@ public class ConditionEvaluator {
                             try {
                                 Nodes nodes = XPathHelper.get((Node)node, expression);
                                 if (nodes != null && nodes.size() > 0) {
-                                    nodeXPathMatcher.appendReplacement(buffer, Matcher.quoteReplacement("\"" + NodeHelper.getValue(nodes.get(0)) + "\""));
+                                    matcher.appendReplacement(buffer, Matcher.quoteReplacement("\"" + NodeHelper.getValue(nodes.get(0)) + "\""));
                                 } else {
-                                    nodeXPathMatcher.appendReplacement(buffer, Matcher.quoteReplacement("$null"));
+                                    matcher.appendReplacement(buffer, Matcher.quoteReplacement("$null"));
                                 }
                             } catch (XPathExpressionException ex) {
                                 throw new RuntimeException(ex);
@@ -141,8 +145,8 @@ public class ConditionEvaluator {
                     }
                     i++;
                 }
-                
-                nodeXPathMatcher.appendTail(buffer);
+
+                matcher.appendTail(buffer);
                 condition = buffer.toString();
             }
 
