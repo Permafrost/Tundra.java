@@ -48,7 +48,7 @@ public class ConditionEvaluator {
     /**
      * Regular expression pattern for matching an IData node XPath expression.
      */
-    public static final Pattern CONDITION_NODE_XPATH_REGULAR_EXPRESSION_PATTERN = Pattern.compile("(?i)%([^%]*?node)(\\/[^%]+)%");
+    public static final Pattern CONDITION_NODE_XPATH_REGULAR_EXPRESSION_PATTERN = Pattern.compile("(?i)%([^%\\/]+)(\\/[^%]+)%");
 
     /**
      * The conditional statement to be evaluated by this object.
@@ -120,36 +120,35 @@ public class ConditionEvaluator {
             if (scope == null) {
                 scope = IDataFactory.create();
             } else {
-                // support resolving XPath expressions against nodes
-                if (nodeXPathExpressions != null) {
-                    // reset the matcher for use when evaluating
-                    nodeXPathMatcher.reset();
+                // reset the matcher for use when evaluating
+                nodeXPathMatcher.reset();
 
-                    int i = 0;
-                    while (nodeXPathMatcher.find()) {
-                        String key = nodeXPathMatcher.group(1);
-                        XPathExpression expression = nodeXPathExpressions.get(i);
+                int i = 0;
+                StringBuffer buffer = new StringBuffer();
 
-                        if (expression != null) {
-                            Object node = IDataHelper.get(scope, key);
-                            if (node instanceof Node) {
-                                StringBuffer buffer = new StringBuffer();
-                                try {
-                                    Nodes nodes = XPathHelper.get((Node)node, expression);
-                                    if (nodes != null && nodes.size() > 0) {
-                                        nodeXPathMatcher.appendReplacement(buffer, "\"" + NodeHelper.getValue(nodes.get(0)) + "\"");
-                                    }
-                                } catch (XPathExpressionException ex) {
-                                    throw new RuntimeException(ex);
+                while (nodeXPathMatcher.find()) {
+                    String key = nodeXPathMatcher.group(1);
+                    XPathExpression expression = nodeXPathExpressions.get(i);
+
+                    if (expression != null) {
+                        Object node = IDataHelper.get(scope, key);
+                        if (node instanceof Node) {
+                            try {
+                                Nodes nodes = XPathHelper.get((Node)node, expression);
+                                if (nodes != null && nodes.size() > 0) {
+                                    nodeXPathMatcher.appendReplacement(buffer, Matcher.quoteReplacement("\"" + NodeHelper.getValue(nodes.get(0)) + "\""));
+                                } else {
+                                    nodeXPathMatcher.appendReplacement(buffer, Matcher.quoteReplacement("$null"));
                                 }
-                                nodeXPathMatcher.appendTail(buffer);
-                                condition = buffer.toString();
+                            } catch (XPathExpressionException ex) {
+                                throw new RuntimeException(ex);
                             }
                         }
-
-                        i++;
                     }
+                    i++;
                 }
+                nodeXPathMatcher.appendTail(buffer);
+                condition = buffer.toString();
             }
 
             try {

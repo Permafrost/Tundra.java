@@ -48,7 +48,7 @@ public class ACLHelper {
      */
     public static synchronized void create(String name, Group[] allow, Group[] deny, boolean force) {
         if (name == null) return;
-        
+
         if (force || !exists(name)) {
             ACLManager.addGroup(name, allow, deny);
         }

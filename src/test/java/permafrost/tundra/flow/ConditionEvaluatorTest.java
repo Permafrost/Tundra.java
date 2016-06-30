@@ -27,9 +27,40 @@ package permafrost.tundra.flow;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
+import org.w3c.dom.Document;
 import permafrost.tundra.data.IDataMap;
+import permafrost.tundra.io.InputStreamHelper;
+import permafrost.tundra.xml.dom.DocumentHelper;
+import permafrost.tundra.xml.sax.InputSourceHelper;
 
 public class ConditionEvaluatorTest {
+
+    @Test
+    public void testEvaluateXPathCondition() throws Exception {
+        String content = "<a><z>1</z><z>2</z><z>3</z><b><c>Example</c></b><b><c><d>Example 2</d></c></b><b></b></a>";
+        Document document = DocumentHelper.parse(InputSourceHelper.normalize(InputStreamHelper.normalize(content)));
+
+        IDataMap scope = new IDataMap();
+        scope.put("document", document);
+
+        assertTrue(ConditionEvaluator.evaluate("%document/a/z[1]% == 1", scope));
+        assertTrue(ConditionEvaluator.evaluate("%document/a/z[1]% == 1 and %document/a/z[2]% == 2", scope));
+        assertTrue(ConditionEvaluator.evaluate("%document/a/y% == $null", scope));
+        assertFalse(ConditionEvaluator.evaluate("%document/a/y% != $null", scope));
+        assertTrue(ConditionEvaluator.evaluate("%document/a% != $null", scope));
+    }
+
+    @Test
+    public void testEvaluateXPathAndBranchCondition() throws Exception {
+        String content = "<a><z>1</z><z>2</z><z>3</z><b><c>Example</c></b><b><c><d>Example 2</d></c></b><b></b></a>";
+        Document document = DocumentHelper.parse(InputSourceHelper.normalize(InputStreamHelper.normalize(content)));
+
+        IDataMap scope = new IDataMap();
+        scope.put("document", document);
+        scope.put("domain", "example.com");
+
+        assertTrue(ConditionEvaluator.evaluate("%document/a/z% == 1 and %domain% == \"example.com\"", scope));
+    }
 
     @Test
     public void testEvaluateNullCondition() throws Exception {
