@@ -63,7 +63,7 @@ public class IDataEnvelope extends ISMemDataImpl implements IData, IDataCodable,
      * @param document The IData document to be wrapped.
      */
     public IDataEnvelope(IData document) {
-        setIData(document instanceof IDataEnvelope ? ((IDataEnvelope)document).getIData() : document);
+        setIData(document instanceof IDataEnvelope ? ((IDataEnvelope)document).document : document);
     }
 
     /**
@@ -253,5 +253,34 @@ public class IDataEnvelope extends ISMemDataImpl implements IData, IDataCodable,
     @Override
     public IDataEnvelope clone() {
         return new IDataEnvelope(IDataHelper.duplicate(document, false));
+    }
+
+    /**
+     * Returns a new IDataEnvelope wrapping the given IData document.
+     *
+     * @param document  The document to be wrapped.
+     * @return          A new IDataEnvelope wrapping the given IData document.
+     */
+    public static IDataEnvelope of(IData document) {
+        return new IDataEnvelope(document);
+    }
+
+    /**
+     * Returns a new IDataEnvelope[] representation of the given IData[] document list.
+     *
+     * @param array An IData[] document list.
+     * @return      A new IDataEnvelope[] representation of the given IData[] document list.
+     */
+    public static IDataEnvelope[] of(IData[] array) {
+        IDataEnvelope[] output = null;
+
+        if (array != null) {
+            output = new IDataEnvelope[array.length];
+            for (int i = 0; i < array.length; i++) {
+                output[i] = new IDataEnvelope(array[i]);
+            }
+        }
+
+        return output;
     }
 }
