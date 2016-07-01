@@ -340,11 +340,7 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
      * @return          A new IDataMap wrapping the given IData document.
      */
     public static IDataMap of(IData document) {
-        if (document instanceof IDataEnvelope) {
-            return new IDataMap(((IDataEnvelope)document).document);
-        } else {
-            return new IDataMap(document);
-        }
+        return new IDataMap(document);
     }
 
     /**
