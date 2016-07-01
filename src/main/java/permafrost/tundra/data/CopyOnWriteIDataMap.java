@@ -161,11 +161,7 @@ public class CopyOnWriteIDataMap extends IDataMap implements Cloneable, Serializ
      * @return          A new CopyOnWriteIDataMap wrapping the given IData document.
      */
     public static CopyOnWriteIDataMap of(IData document) {
-        if (document instanceof IDataEnvelope) {
-            return new CopyOnWriteIDataMap(((IDataEnvelope)document).document);
-        } else {
-            return new CopyOnWriteIDataMap(document);
-        }
+        return new CopyOnWriteIDataMap(document);
     }
 
     /**
@@ -185,6 +181,24 @@ public class CopyOnWriteIDataMap extends IDataMap implements Cloneable, Serializ
         }
 
         return output;
+    }
+
+    /**
+     * Converts the given value if it is an IData or IData[] compatible object to a CopyOnWriteIDataMap or
+     * CopyOnWriteIDataMap[] respectively.
+     *
+     * @param value The value to be normalized.
+     * @return      If the value is an IData or IData[] compatible object, a new CopyOnWriteIDataMap or
+     *              CopyOnWriteIDataMap[] respectively is returned which wraps the given value, otherwise
+     *              the value itself is returned unmodified.
+     */
+    private static Object normalize(Object value) {
+        if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
+            value = CopyOnWriteIDataMap.of(IDataHelper.toIDataArray(value));
+        } else if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
+            value = CopyOnWriteIDataMap.of(IDataHelper.toIData(value));
+        }
+        return value;
     }
 
     /**
@@ -364,15 +378,7 @@ public class CopyOnWriteIDataMap extends IDataMap implements Cloneable, Serializ
         }
 
         public Object getValue() {
-            Object value = cursor.getValue();
-
-            if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
-                value = CopyOnWriteIDataMap.of(IDataHelper.toIDataArray(value));
-            } else if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
-                value = CopyOnWriteIDataMap.of(IDataHelper.toIData(value));
-            }
-
-            return value;
+            return normalize(cursor.getValue());
         }
 
         public void setValue(Object value) {
@@ -553,15 +559,7 @@ public class CopyOnWriteIDataMap extends IDataMap implements Cloneable, Serializ
         }
 
         public Object getValue() throws DataException {
-            Object value = cursor.getValue();
-
-            if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
-                value = CopyOnWriteIDataMap.of(IDataHelper.toIDataArray(value));
-            } else if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
-                value = CopyOnWriteIDataMap.of(IDataHelper.toIData(value));
-            }
-
-            return value;
+            return normalize(cursor.getValue());
         }
 
         public void setValue(Object value) throws DataException {
@@ -570,15 +568,7 @@ public class CopyOnWriteIDataMap extends IDataMap implements Cloneable, Serializ
         }
 
         public Object getValueReference() throws DataException {
-            Object value = cursor.getValueReference();
-
-            if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
-                value = CopyOnWriteIDataMap.of(IDataHelper.toIDataArray(value));
-            } else if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
-                value = CopyOnWriteIDataMap.of(IDataHelper.toIData(value));
-            }
-
-            return value;
+            return normalize(cursor.getValueReference());
         }
 
         public boolean delete() throws DataException {
