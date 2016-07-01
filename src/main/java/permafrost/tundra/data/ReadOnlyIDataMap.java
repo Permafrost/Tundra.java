@@ -53,8 +53,6 @@ public class ReadOnlyIDataMap extends IDataMap implements Cloneable, Serializabl
      */
     public ReadOnlyIDataMap(IData document) {
         super(IDataHelper.duplicate(document, true));
-        // recursively freeze all child IData and IData[] elements as read-only
-        freeze();
     }
 
     /**
@@ -75,8 +73,6 @@ public class ReadOnlyIDataMap extends IDataMap implements Cloneable, Serializabl
      */
     public ReadOnlyIDataMap(IDataCodable codable) {
         super(codable);
-        // recursively freeze all child IData and IData[] elements as read-only
-        freeze();
     }
 
     /**
@@ -97,8 +93,6 @@ public class ReadOnlyIDataMap extends IDataMap implements Cloneable, Serializabl
      */
     public ReadOnlyIDataMap(IDataPortable portable) {
         super(portable);
-        // recursively freeze all child IData and IData[] elements as read-only
-        freeze();
     }
 
     /**
@@ -119,8 +113,6 @@ public class ReadOnlyIDataMap extends IDataMap implements Cloneable, Serializabl
      */
     public ReadOnlyIDataMap(ValuesCodable codable) {
         super(codable);
-        // recursively freeze all child IData and IData[] elements as read-only
-        freeze();
     }
 
     /**
@@ -161,11 +153,7 @@ public class ReadOnlyIDataMap extends IDataMap implements Cloneable, Serializabl
      * @return          A new ReadOnlyIDataMap wrapping the given IData document.
      */
     public static ReadOnlyIDataMap of(IData document) {
-        if (document instanceof IDataEnvelope) {
-            return new ReadOnlyIDataMap(((IDataEnvelope)document).document);
-        } else {
-            return new ReadOnlyIDataMap(document);
-        }
+        return new ReadOnlyIDataMap(document);
     }
 
     /**
@@ -190,21 +178,21 @@ public class ReadOnlyIDataMap extends IDataMap implements Cloneable, Serializabl
     }
 
     /**
-     * Converts all IData and IData[] compatible elements to read-only representations.
+     * Converts the given value if it is an IData or IData[] compatible object to a ReadOnlyIDataMap or
+     * ReadOnlyIDataMap[] respectively.
+     *
+     * @param value The value to be normalized.
+     * @return      If the value is an IData or IData[] compatible object, a new ReadOnlyIDataMap or
+     *              ReadOnlyIDataMap[] respectively is returned which wraps the given value, otherwise
+     *              the value itself is returned unmodified.
      */
-    private void freeze() {
-        IDataCursor cursor = document.getCursor();
-
-        while (cursor.next()) {
-            Object value = cursor.getValue();
-            if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
-                cursor.setValue(ReadOnlyIDataMap.of(IDataHelper.toIDataArray(value)));
-            } else if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
-                cursor.setValue(ReadOnlyIDataMap.of(IDataHelper.toIData(value)));
-            }
+    private static Object normalize(Object value) {
+        if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
+            value = ReadOnlyIDataMap.of(IDataHelper.toIDataArray(value));
+        } else if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
+            value = ReadOnlyIDataMap.of(IDataHelper.toIData(value));
         }
-
-        cursor.destroy();
+        return value;
     }
 
     /**
@@ -403,7 +391,7 @@ public class ReadOnlyIDataMap extends IDataMap implements Cloneable, Serializabl
         }
 
         public Object getValue() {
-            return cursor.getValue();
+            return normalize(cursor.getValue());
         }
 
         public void setValue(Object value) {
@@ -511,7 +499,7 @@ public class ReadOnlyIDataMap extends IDataMap implements Cloneable, Serializabl
         }
 
         public Object getValue() throws DataException {
-            return cursor.getValue();
+            return normalize(cursor.getValue());
         }
 
         public void setValue(Object value) throws DataException {
@@ -519,7 +507,7 @@ public class ReadOnlyIDataMap extends IDataMap implements Cloneable, Serializabl
         }
 
         public Object getValueReference() throws DataException {
-            return cursor.getValueReference();
+            return normalize(cursor.getValueReference());
         }
 
         public boolean delete() throws DataException {
