@@ -61,8 +61,6 @@ public class CopyOnWriteIDataMap extends IDataMap implements Cloneable, Serializ
      */
     public CopyOnWriteIDataMap(IData document) {
         super(document);
-        // recursively wrap all child IData and IData[] elements as CopyOnWriteIDataMaps
-        wrap();
     }
 
     /**
@@ -83,8 +81,6 @@ public class CopyOnWriteIDataMap extends IDataMap implements Cloneable, Serializ
      */
     public CopyOnWriteIDataMap(IDataCodable codable) {
         super(codable);
-        // recursively wrap all child IData and IData[] elements as CopyOnWriteIDataMaps
-        wrap();
     }
 
     /**
@@ -105,8 +101,6 @@ public class CopyOnWriteIDataMap extends IDataMap implements Cloneable, Serializ
      */
     public CopyOnWriteIDataMap(IDataPortable portable) {
         super(portable);
-        // recursively freeze all child IData and IData[] elements as CopyOnWriteIDataMap
-        wrap();
     }
 
     /**
@@ -127,8 +121,6 @@ public class CopyOnWriteIDataMap extends IDataMap implements Cloneable, Serializ
      */
     public CopyOnWriteIDataMap(ValuesCodable codable) {
         super(codable);
-        // recursively freeze all child IData and IData[] elements as CopyOnWriteIDataMap
-        wrap();
     }
 
     /**
@@ -206,24 +198,6 @@ public class CopyOnWriteIDataMap extends IDataMap implements Cloneable, Serializ
         document = IDataHelper.duplicate(document, false);
         hasWrites = true;
         return hasWrites;
-    }
-
-    /**
-     * Converts all IData and IData[] compatible elements to CopyOnWriteIDataMap representations.
-     */
-    private void wrap() {
-        IDataCursor cursor = document.getCursor();
-
-        while (cursor.next()) {
-            Object value = cursor.getValue();
-            if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
-                cursor.setValue(CopyOnWriteIDataMap.of(IDataHelper.toIDataArray(value)));
-            } else if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
-                cursor.setValue(CopyOnWriteIDataMap.of(IDataHelper.toIData(value)));
-            }
-        }
-
-        cursor.destroy();
     }
 
     /**
@@ -390,7 +364,15 @@ public class CopyOnWriteIDataMap extends IDataMap implements Cloneable, Serializ
         }
 
         public Object getValue() {
-            return cursor.getValue();
+            Object value = cursor.getValue();
+
+            if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
+                value = CopyOnWriteIDataMap.of(IDataHelper.toIDataArray(value));
+            } else if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
+                value = CopyOnWriteIDataMap.of(IDataHelper.toIData(value));
+            }
+
+            return value;
         }
 
         public void setValue(Object value) {
@@ -571,7 +553,15 @@ public class CopyOnWriteIDataMap extends IDataMap implements Cloneable, Serializ
         }
 
         public Object getValue() throws DataException {
-            return cursor.getValue();
+            Object value = cursor.getValue();
+
+            if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
+                value = CopyOnWriteIDataMap.of(IDataHelper.toIDataArray(value));
+            } else if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
+                value = CopyOnWriteIDataMap.of(IDataHelper.toIData(value));
+            }
+
+            return value;
         }
 
         public void setValue(Object value) throws DataException {
@@ -580,7 +570,15 @@ public class CopyOnWriteIDataMap extends IDataMap implements Cloneable, Serializ
         }
 
         public Object getValueReference() throws DataException {
-            return cursor.getValueReference();
+            Object value = cursor.getValueReference();
+
+            if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
+                value = CopyOnWriteIDataMap.of(IDataHelper.toIDataArray(value));
+            } else if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
+                value = CopyOnWriteIDataMap.of(IDataHelper.toIData(value));
+            }
+
+            return value;
         }
 
         public boolean delete() throws DataException {

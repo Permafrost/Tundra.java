@@ -41,8 +41,14 @@ public class CopyOnWriteIDataMapTest {
         child.put("c", "3");
         document.put("child", child);
 
-        IData copyOnWrite = CopyOnWriteIDataMap.of((IData)document);
+        CopyOnWriteIDataMap copyOnWrite = CopyOnWriteIDataMap.of((IData)document);
         IDataCursor cursor = copyOnWrite.getCursor();
+
+        assertEquals("Wrapped document children not mutated", IDataMap.class, document.get("child").getClass());
+        assertTrue(child == document.get("child"));
+
+        assertEquals("Document children mutated when returned by wrapper", CopyOnWriteIDataMap.class, copyOnWrite.get("child").getClass());
+        assertTrue(child != copyOnWrite.get("child"));
 
         int i = 1;
         while(cursor.next()) {
