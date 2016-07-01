@@ -48,7 +48,7 @@ public class IDataEnvelope extends ISMemDataImpl implements IData, IDataCodable,
     /**
      * The wrapped IData document.
      */
-    protected IData document;
+    protected volatile IData document;
 
     /**
      * Constructs a new empty IDataEnvelope document.
