@@ -32,6 +32,7 @@ import com.wm.data.IData;
 import permafrost.tundra.data.IDataMap;
 import permafrost.tundra.flow.variable.GlobalVariableHelper;
 import permafrost.tundra.io.FileHelper;
+import permafrost.tundra.math.LongHelper;
 import java.util.Hashtable;
 import java.util.Properties;
 import java.util.TreeMap;
@@ -55,9 +56,17 @@ public final class SystemHelper {
         IDataMap output = new IDataMap();
         output.put("version", Build.getVersion());
         output.put("environment", getSystemEnvironment());
-        output.put("property", getSystemProperties());
+
+        IData systemProperties = getSystemProperties();
+        output.put("property", systemProperties);
+        output.put("properties", systemProperties);
+
         if (GlobalVariableHelper.isSupported()) output.put("global", GlobalVariableHelper.list());
-        output.put("directory", getSystemDirectories());
+
+        IData systemDirectories = getSystemDirectories();
+        output.put("directory", systemDirectories);
+        output.put("directories", systemDirectories);
+
         output.put("memory", getMemoryUsage());
 
         return output;
@@ -130,9 +139,9 @@ public final class SystemHelper {
         long usedMemory = totalMemory - freeMemory;
 
         IDataMap output = new IDataMap();
-        output.put("used", "" + usedMemory);
-        output.put("free", "" + freeMemory);
-        output.put("total", "" + totalMemory);
+        output.put("used", LongHelper.emit(usedMemory));
+        output.put("free", LongHelper.emit(freeMemory));
+        output.put("total", LongHelper.emit(totalMemory));
 
         return output;
     }
