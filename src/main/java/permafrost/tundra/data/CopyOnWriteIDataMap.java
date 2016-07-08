@@ -27,6 +27,7 @@ package permafrost.tundra.data;
 import com.wm.data.DataException;
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;
+import com.wm.data.IDataFactory;
 import com.wm.data.IDataHashCursor;
 import com.wm.data.IDataIndexCursor;
 import com.wm.data.IDataPortable;
@@ -52,7 +53,7 @@ public class CopyOnWriteIDataMap extends IDataMap implements Cloneable, Serializ
     /**
      * Whether this object has been written to.
      */
-    protected volatile boolean hasWrites = false;
+    protected volatile boolean copied = false;
 
     /**
      * Construct a new CopyOnWriteIDataMap object.
@@ -206,12 +207,24 @@ public class CopyOnWriteIDataMap extends IDataMap implements Cloneable, Serializ
      *
      * @return True if a copy was made, false otherwise.
      */
-    private boolean copyOnWrite() {
-        if (hasWrites) return false;
+    private synchronized boolean copyOnWrite() {
+        if (this.copied) return false;
 
-        document = IDataHelper.duplicate(document, false);
-        hasWrites = true;
-        return hasWrites;
+        IData clone = IDataFactory.create();
+        IDataCursor documentCursor = this.document.getCursor();
+        IDataCursor cloneCursor = clone.getCursor();
+
+        while(documentCursor.next()) {
+            cloneCursor.insertAfter(documentCursor.getKey(), normalize(documentCursor.getValue()));
+        }
+
+        documentCursor.destroy();
+        cloneCursor.destroy();
+
+        this.document = clone;
+        this.copied = true;
+
+        return this.copied;
     }
 
     /**
@@ -297,7 +310,8 @@ public class CopyOnWriteIDataMap extends IDataMap implements Cloneable, Serializ
     private static class CopyOnWriteIDataCursor implements IDataCursor {
         protected CopyOnWriteIDataMap document;
         protected IDataCursor cursor;
-        protected Queue<PositionCommand> positioning;
+        private Queue<PositionCommand> positioning;
+        protected volatile boolean copied;
 
         CopyOnWriteIDataCursor(CopyOnWriteIDataMap document) {
             this(document, null);
@@ -311,10 +325,11 @@ public class CopyOnWriteIDataMap extends IDataMap implements Cloneable, Serializ
             } else {
                 this.positioning = new ArrayDeque<PositionCommand>();
             }
-            reposition();
+            initialize();
         }
 
-        private void reposition() {
+        private void initialize() {
+            if (cursor != null) cursor.destroy();
             cursor = document.document.getCursor();
 
             for (PositionCommand command : positioning) {
@@ -345,10 +360,25 @@ public class CopyOnWriteIDataMap extends IDataMap implements Cloneable, Serializ
                         break;
                 }
             }
+
+            positioning.clear();
+            copied = document.copied;
         }
 
-        private void prepareWrite() {
-            if (document.copyOnWrite()) reposition();
+        private boolean copy() {
+            boolean wasCopied = document.copyOnWrite();
+            boolean stateChanged = (wasCopied || (this.copied != document.copied));
+            if (stateChanged) initialize();
+            return stateChanged;
+        }
+
+        private Object normalize(Object value) {
+            if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[] || value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
+                if (copy()) {
+                    value = cursor.getValue();
+                }
+            }
+            return value;
         }
 
         public void setErrorMode(int mode) {
@@ -373,7 +403,7 @@ public class CopyOnWriteIDataMap extends IDataMap implements Cloneable, Serializ
         }
 
         public void setKey(String key) {
-            prepareWrite();
+            copy();
             cursor.setKey(key);
         }
 
@@ -382,32 +412,32 @@ public class CopyOnWriteIDataMap extends IDataMap implements Cloneable, Serializ
         }
 
         public void setValue(Object value) {
-            prepareWrite();
+            copy();
             cursor.setValue(value);
         }
 
         public boolean delete() {
-            prepareWrite();
+            copy();
             return cursor.delete();
         }
 
         public void insertBefore(String key, Object value) {
-            prepareWrite();
+            copy();
             cursor.insertBefore(key, value);
         }
 
         public void insertAfter(String key, Object value) {
-            prepareWrite();
+            copy();
             cursor.insertAfter(key, value);
         }
 
         public IData insertDataBefore(String key) {
-            prepareWrite();
+            copy();
             return cursor.insertDataBefore(key);
         }
 
         public IData insertDataAfter(String key) {
-            prepareWrite();
+            copy();
             return cursor.insertDataAfter(key);
         }
 
@@ -501,13 +531,13 @@ public class CopyOnWriteIDataMap extends IDataMap implements Cloneable, Serializ
                 this.positioning = new ArrayDeque<PositionCommand>();
             }
             try {
-                reposition();
+                initialize();
             } catch(DataException ex) {
                 cursor = document.document.getSharedCursor();
             }
         }
 
-        private void reposition() throws DataException {
+        private void initialize() throws DataException {
             cursor = document.document.getSharedCursor();
 
             for (PositionCommand command : positioning) {
@@ -538,10 +568,23 @@ public class CopyOnWriteIDataMap extends IDataMap implements Cloneable, Serializ
                         break;
                 }
             }
+
+            positioning.clear();
         }
 
-        private void prepareWrite() throws DataException {
-            if (document.copyOnWrite()) reposition();
+        private boolean copy() throws DataException {
+            boolean copied = document.copyOnWrite();
+            if (copied) initialize();
+            return copied;
+        }
+
+        private Object normalize(Object value) throws DataException {
+            if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[] || value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
+                if (copy()) {
+                    value = cursor.getValue();
+                }
+            }
+            return value;
         }
 
         public void home() throws DataException {
@@ -554,7 +597,7 @@ public class CopyOnWriteIDataMap extends IDataMap implements Cloneable, Serializ
         }
 
         public void setKey(String key) throws DataException {
-            prepareWrite();
+            copy();
             cursor.setKey(key);
         }
 
@@ -563,7 +606,7 @@ public class CopyOnWriteIDataMap extends IDataMap implements Cloneable, Serializ
         }
 
         public void setValue(Object value) throws DataException {
-            prepareWrite();
+            copy();
             cursor.setValue(value);
         }
 
@@ -572,27 +615,27 @@ public class CopyOnWriteIDataMap extends IDataMap implements Cloneable, Serializ
         }
 
         public boolean delete() throws DataException {
-            prepareWrite();
+            copy();
             return cursor.delete();
         }
 
         public void insertBefore(String key, Object value) throws DataException {
-            prepareWrite();
+            copy();
             cursor.insertBefore(key, value);
         }
 
         public void insertAfter(String key, Object value) throws DataException {
-            prepareWrite();
+            copy();
             cursor.insertAfter(key, value);
         }
 
         public IData insertDataBefore(String key) throws DataException {
-            prepareWrite();
+            copy();
             return cursor.insertDataBefore(key);
         }
 
         public IData insertDataAfter(String key) throws DataException {
-            prepareWrite();
+            copy();
             return cursor.insertDataAfter(key);
         }
 

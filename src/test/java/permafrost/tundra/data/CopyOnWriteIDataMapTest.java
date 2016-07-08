@@ -26,6 +26,7 @@ package permafrost.tundra.data;
 
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;
+import com.wm.data.IDataUtil;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,15 +59,18 @@ public class CopyOnWriteIDataMapTest {
                 IDataCursor childCursor = ((IData)value).getCursor();
                 childCursor.insertAfter("z", "9");
 
-                assertEquals(1, IDataHelper.size(child));
+                assertTrue("child should not equal value", child != value);
                 assertEquals(2, IDataHelper.size((IData)value));
+                assertEquals(1, IDataHelper.size(child));
             }
 
             cursor.insertAfter("d" + i, "" + i);
             i++;
         }
 
+        assertEquals(2, IDataHelper.size(IDataUtil.getIData(cursor, "child")));
         assertEquals(3, IDataHelper.size(document));
+        assertEquals(1, IDataHelper.size(child));
         assertEquals(6, IDataHelper.size(copyOnWrite));
     }
 }

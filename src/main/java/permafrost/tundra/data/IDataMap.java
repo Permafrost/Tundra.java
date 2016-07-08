@@ -380,7 +380,7 @@ public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String
      */
     @Override
     public Object get(Object key) {
-        IDataCursor cursor = this.getCursor();
+        IDataCursor cursor = getCursor();
         Object value = IDataUtil.get(cursor, (String)key);
         cursor.destroy();
 
