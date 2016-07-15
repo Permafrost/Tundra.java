@@ -195,10 +195,11 @@ public final class DirectoryHelper {
      * @throws FileNotFoundException    If the directory does not exist.
      */
     public static String[] list(File directory) throws FileNotFoundException {
-        if (!exists(directory)) {
-            throw new FileNotFoundException("Unable to list directory as it does not exist: " + FileHelper.normalize(directory));
+        String[] listing;
+        if (!exists(directory) || (listing = directory.list()) == null) {
+            throw new FileNotFoundException("Unable to list directory as it either does not exist, access is denied, or an IO error occurred: " + FileHelper.normalize(directory));
         }
-        return directory.list();
+        return listing;
     }
 
     /**

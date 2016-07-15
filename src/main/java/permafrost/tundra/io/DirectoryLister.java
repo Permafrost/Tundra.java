@@ -141,11 +141,7 @@ public class DirectoryLister {
      * @throws FileNotFoundException    If the directory does not exist.
      */
     protected DirectoryListing list(File directory, boolean recurse) throws FileNotFoundException {
-        String[] listing;
-
-        if (!DirectoryHelper.exists(directory) || (listing = directory.list()) == null) {
-            throw new FileNotFoundException("Unable to list directory as it either does not exist or an IO error occurred: " + FileHelper.normalize(directory));
-        }
+        String[] listing = DirectoryHelper.list(directory);
 
         // if listing is a reasonable size, just use that for the initial capacity for our list
         // of files and directories; otherwise set capacity to 1000 and let it grow as needed
