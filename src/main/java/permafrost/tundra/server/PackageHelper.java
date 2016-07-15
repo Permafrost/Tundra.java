@@ -78,14 +78,10 @@ public final class PackageHelper {
      */
     public static Package self() {
         NSService service = ServiceHelper.self();
-
-        Package pkg = null;
-
         if (service != null) {
-            pkg = getPackage(service.getPackage().getName());
+            return getPackage(service.getPackage().getName());
         }
-
-        return pkg;
+        return null;
     }
 
     /**
