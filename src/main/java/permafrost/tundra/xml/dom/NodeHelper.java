@@ -124,7 +124,7 @@ public class NodeHelper {
      * @return                  An IData[] representation of this object.
      */
     public static IData parse(Node node, NamespaceContext namespaceContext) {
-        return parse(node, namespaceContext, false);
+        return parse(node, namespaceContext, true);
     }
 
     /**

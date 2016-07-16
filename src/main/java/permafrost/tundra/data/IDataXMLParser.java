@@ -24,9 +24,18 @@
 
 package permafrost.tundra.data;
 
+import com.wm.app.b2b.server.ServiceException;
 import com.wm.data.IData;
 import com.wm.util.coder.IDataXMLCoder;
+import com.wm.util.coder.XMLCoder;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import permafrost.tundra.io.CloseableHelper;
+import permafrost.tundra.io.InputStreamHelper;
+import permafrost.tundra.lang.BytesHelper;
 import permafrost.tundra.lang.CharsetHelper;
+import permafrost.tundra.xml.dom.DocumentHelper;
+import permafrost.tundra.xml.dom.NodeHelper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -36,6 +45,16 @@ import java.nio.charset.Charset;
  * Deserializes and serializes IData objects from and to XML.
  */
 public class IDataXMLParser extends IDataTextParser {
+    /**
+     * The root node name that identifies a Values-encoded XML file.
+     */
+    private static final String VALUES_XML_ROOT_NODE_NAME = "Values";
+
+    /**
+     * The root node name that identifies an IData-encoded XML file.
+     */
+    private static final String IDATA_XML_ROOT_NODE_NAME = "IDataXMLCoder";
+
     /**
      * Initialization on demand holder idiom.
      */
@@ -72,14 +91,45 @@ public class IDataXMLParser extends IDataTextParser {
     /**
      * Returns an IData representation of the XML data read from the given input stream.
      *
-     * @param inputStream The input stream to be decoded.
-     * @param charset     The character set to use.
-     * @return An IData representation of the given input stream data.
-     * @throws IOException If there is a problem reading from the stream.
+     * @param inputStream   The input stream to be decoded.
+     * @param charset       The character set to use.
+     * @return              An IData representation of the given input stream data.
+     * @throws IOException  If there is a problem reading from the stream.
      */
     public IData decode(InputStream inputStream, Charset charset) throws IOException {
-        IDataXMLCoder parser = new IDataXMLCoder(CharsetHelper.normalize(charset).displayName());
-        return parser.decode(inputStream);
+        // convert inputStream to resettable ByteArrayInputStream
+        inputStream = InputStreamHelper.normalize(BytesHelper.normalize(inputStream));
+        IData output = null;
+
+        try {
+            Document document = DocumentHelper.parse(inputStream, charset, false);
+            String rootNodeName = null;
+
+            if (document != null) {
+                Element rootNode = document.getDocumentElement();
+                if (rootNode != null) {
+                    rootNodeName = rootNode.getNodeName();
+                }
+            }
+
+            if (rootNodeName != null && rootNodeName.equals(IDATA_XML_ROOT_NODE_NAME)) {
+                IDataXMLCoder parser = new IDataXMLCoder(CharsetHelper.normalize(charset).displayName());
+                inputStream.reset();
+                output = parser.decode(inputStream);
+            } else if (rootNodeName != null && rootNodeName.equals(VALUES_XML_ROOT_NODE_NAME)) {
+                XMLCoder parser = new XMLCoder(true);
+                inputStream.reset();
+                output = parser.decode(inputStream);
+            } else if (document != null) {
+               output = NodeHelper.parse(document);
+            }
+        } catch(ServiceException ex) {
+            throw new IOException(ex);
+        } finally {
+            CloseableHelper.close(inputStream);
+        }
+
+        return output;
     }
 
     /**

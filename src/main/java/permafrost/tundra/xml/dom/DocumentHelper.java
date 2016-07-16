@@ -52,6 +52,29 @@ public class DocumentHelper {
      * Parses the given content to an XML document.
      *
      * @param content           The XML content to parse.
+     * @return                  The parsed XML document.
+     * @throws ServiceException If a parsing or I/O error occurs.
+     */
+    public static Document parse(InputStream content) throws ServiceException {
+        return parse(content, true);
+    }
+
+    /**
+     * Parses the given content to an XML document.
+     *
+     * @param content           The XML content to parse.
+     * @param close             If true, the given input stream will be closed after the parse is complete.
+     * @return                  The parsed XML document.
+     * @throws ServiceException If a parsing or I/O error occurs.
+     */
+    public static Document parse(InputStream content, boolean close) throws ServiceException {
+        return parse(content, null, close);
+    }
+
+    /**
+     * Parses the given content to an XML document.
+     *
+     * @param content           The XML content to parse.
      * @param charset           The character set that was used to encode the text data in the given stream.
      * @param close             If true, the given input stream will be closed after the parse is complete.
      * @return                  The parsed XML document.
