@@ -52,7 +52,7 @@ public class ReadOnlyIDataMap extends IDataMap implements Cloneable, Serializabl
      * @param document The IData document to wrap in a read-only representation.
      */
     public ReadOnlyIDataMap(IData document) {
-        super(IDataHelper.duplicate(document, true));
+        super(document);
     }
 
     /**
