@@ -30,6 +30,15 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 public class StringHelperTest {
+    @Test
+    public void reverseNull() throws Exception {
+        assertEquals(null, StringHelper.reverse(null));
+    }
+
+    @Test
+    public void reverseString() throws Exception {
+        assertEquals("edcba", StringHelper.reverse("abcde"));
+    }
 
     @Test
     public void testSqueezeWithNull() throws Exception {

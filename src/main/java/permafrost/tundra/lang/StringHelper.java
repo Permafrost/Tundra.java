@@ -1211,4 +1211,14 @@ public final class StringHelper {
 
         return builder.toString();
     }
+
+    /**
+     * Reverses the given string.
+     *
+     * @param input A string to be reversed.
+     * @return      The reverse of the given string.
+     */
+    public static String reverse(String input) {
+        return input == null ? null : new StringBuilder(input).reverse().toString();
+    }
 }
