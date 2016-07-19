@@ -33,8 +33,6 @@ import com.wm.data.IDataIndexCursor;
 import com.wm.data.IDataPortable;
 import com.wm.data.IDataSharedCursor;
 import com.wm.data.IDataTreeCursor;
-import com.wm.txn.ITransaction;
-import com.wm.txn.TransactionException;
 import com.wm.util.Table;
 import com.wm.util.coder.IDataCodable;
 import com.wm.util.coder.ValuesCodable;
@@ -235,7 +233,7 @@ public class CopyOnWriteIDataMap extends IDataMap implements Cloneable, Serializ
      */
     @Override
     public IDataCursor getCursor() {
-        return new CopyOnWriteIDataCursor(this);
+        return new CopyOnWriteIDataCursor();
     }
 
     /**
@@ -246,7 +244,7 @@ public class CopyOnWriteIDataMap extends IDataMap implements Cloneable, Serializ
      */
     @Override
     public IDataSharedCursor getSharedCursor() {
-        return new CopyOnWriteIDataSharedCursor(this);
+        return new CopyOnWriteIDataSharedCursor();
     }
 
     /**
@@ -307,32 +305,46 @@ public class CopyOnWriteIDataMap extends IDataMap implements Cloneable, Serializ
     /**
      * Copy on write wrapper for an IDataCursor.
      */
-    private static class CopyOnWriteIDataCursor implements IDataCursor {
-        protected CopyOnWriteIDataMap document;
-        protected IDataCursor cursor;
-        private Queue<PositionCommand> positioning;
+    private class CopyOnWriteIDataCursor extends IDataCursorEnvelope {
+        /**
+         * The current position of the cursor.
+         */
+        private Queue<PositionCommand> position;
+        /**
+         * Whether a copy of the owning IData document has been initiated or not yet.
+         */
         protected volatile boolean copied;
 
-        CopyOnWriteIDataCursor(CopyOnWriteIDataMap document) {
-            this(document, null);
+        /**
+         * Constructs a new cursor.
+         */
+        CopyOnWriteIDataCursor() {
+            this(null);
         }
 
-        CopyOnWriteIDataCursor(CopyOnWriteIDataMap document, Queue<PositionCommand> positioning) {
-            if (document == null) throw new NullPointerException("document must not be null");
-            this.document = document;
-            if (positioning != null && positioning.size() > 0) {
-                this.positioning = new ArrayDeque<PositionCommand>(positioning);
+        /**
+         * Constructs a new cursor with the given position.
+         *
+         * @param position The initial position of the cursor.
+         */
+        CopyOnWriteIDataCursor(Queue<PositionCommand> position) {
+            super(CopyOnWriteIDataMap.this.document.getCursor());
+            if (position != null && position.size() > 0) {
+                this.position = new ArrayDeque<PositionCommand>(position);
             } else {
-                this.positioning = new ArrayDeque<PositionCommand>();
+                this.position = new ArrayDeque<PositionCommand>();
             }
             initialize();
         }
 
-        private void initialize() {
+        /**
+         * Initializes this cursor.
+         */
+        protected void initialize() {
             if (cursor != null) cursor.destroy();
-            cursor = document.document.getCursor();
+            cursor = CopyOnWriteIDataMap.this.document.getCursor();
 
-            for (PositionCommand command : positioning) {
+            for (PositionCommand command : position) {
                 switch(command.getType()) {
                     case FIRST:
                         cursor.first();
@@ -361,17 +373,28 @@ public class CopyOnWriteIDataMap extends IDataMap implements Cloneable, Serializ
                 }
             }
 
-            positioning.clear();
-            copied = document.copied;
+            position.clear();
+            copied = CopyOnWriteIDataMap.this.copied;
         }
 
+        /**
+         * Makes a copy of the owning IData document, if required.
+         *
+         * @return True if a copy was made or the state of the owning IData document changed in the interim.
+         */
         private boolean copy() {
-            boolean wasCopied = document.copyOnWrite();
-            boolean stateChanged = (wasCopied || (this.copied != document.copied));
+            boolean wasCopied = copyOnWrite();
+            boolean stateChanged = (wasCopied || (this.copied != CopyOnWriteIDataMap.this.copied));
             if (stateChanged) initialize();
             return stateChanged;
         }
 
+        /**
+         * Returns the given value, optionally copied if required.
+         *
+         * @param value The value to be normalized.
+         * @return      The normalized value.
+         */
         private Object normalize(Object value) {
             if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[] || value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
                 if (copy()) {
@@ -381,166 +404,275 @@ public class CopyOnWriteIDataMap extends IDataMap implements Cloneable, Serializ
             return value;
         }
 
-        public void setErrorMode(int mode) {
-            cursor.setErrorMode(mode);
-        }
-
-        public DataException getLastError() {
-            return cursor.getLastError();
-        }
-
-        public boolean hasMoreErrors() {
-            return cursor.hasMoreErrors();
-        }
-
+        /**
+         * Resets this cursor to be unpositioned.
+         */
+        @Override
         public void home() {
-            positioning.clear();
+            position.clear();
             cursor.home();
         }
 
-        public String getKey() {
-            return cursor.getKey();
-        }
-
+        /**
+         * Sets the key at the cursor's current position.
+         *
+         * @param key The key to be set.
+         */
+        @Override
         public void setKey(String key) {
             copy();
             cursor.setKey(key);
         }
 
+        /**
+         * Returns the value at the cursor's current position.
+         *
+         * @return The value at the cursor's current position.
+         */
+        @Override
         public Object getValue() {
             return normalize(cursor.getValue());
         }
 
+        /**
+         * Sets the value at the cursor's current position.
+         *
+         * @param value The value to be set.
+         */
+        @Override
         public void setValue(Object value) {
             copy();
             cursor.setValue(value);
         }
 
+        /**
+         * Deletes the element at the cursor's current position.
+         *
+         * @return True if the element was deleted.
+         */
+        @Override
         public boolean delete() {
             copy();
             return cursor.delete();
         }
 
+        /**
+         * Inserts the given element before the cursor's current position.
+         *
+         * @param key   The key to be inserted.
+         * @param value The value to be inserted.
+         */
+        @Override
         public void insertBefore(String key, Object value) {
             copy();
             cursor.insertBefore(key, value);
         }
 
+        /**
+         * Inserts the given element after the cursor's current position.
+         *
+         * @param key   The key to be inserted.
+         * @param value The value to be inserted.
+         */
+        @Override
         public void insertAfter(String key, Object value) {
             copy();
             cursor.insertAfter(key, value);
         }
 
+        /**
+         * Inserts a new IData document with the given key before the cursor's current position.
+         *
+         * @param key   The key to be inserted.
+         * @return      The newly inserted IData document.
+         */
+        @Override
         public IData insertDataBefore(String key) {
             copy();
             return cursor.insertDataBefore(key);
         }
 
+        /**
+         * Inserts a new IData document with the given key after the cursor's current position.
+         *
+         * @param key   The key to be inserted.
+         * @return      The newly inserted IData document.
+         */
+        @Override
         public IData insertDataAfter(String key) {
             copy();
             return cursor.insertDataAfter(key);
         }
 
+        /**
+         * Moves the cursor's position to the next element.
+         *
+         * @return True if the cursor was repositioned.
+         */
+        @Override
         public boolean next() {
             boolean success = cursor.next();
-            if (success) positioning.add(new PositionCommand(PositionCommandType.NEXT));
+            if (success) position.add(new PositionCommand(PositionCommandType.NEXT));
             return success;
         }
 
+        /**
+         * Moves the cursor's position to the next element with the given key.
+         *
+         * @param key   The key to reposition to.
+         * @return      True if the cursor was repositioned.
+         */
+        @Override
         public boolean next(String key) {
             boolean success = cursor.next(key);
-            if (success) positioning.add(new PositionCommand(PositionCommandType.NEXT_KEY, key));
+            if (success) position.add(new PositionCommand(PositionCommandType.NEXT_KEY, key));
             return success;
         }
 
+        /**
+         * Moves the cursor's position to the previous element.
+         *
+         * @return True if the cursor was repositioned.
+         */
+        @Override
         public boolean previous() {
             boolean success = cursor.previous();
-            if (success) positioning.add(new PositionCommand(PositionCommandType.PREVIOUS));
+            if (success) position.add(new PositionCommand(PositionCommandType.PREVIOUS));
             return success;
         }
 
+        /**
+         * Moves the cursor's position to the previous element with the given key.
+         *
+         * @param key   The key to reposition to.
+         * @return      True if the cursor was repositioned.
+         */
+        @Override
         public boolean previous(String key) {
             boolean success = cursor.previous(key);
-            if (success) positioning.add(new PositionCommand(PositionCommandType.PREVIOUS_KEY, key));
+            if (success) position.add(new PositionCommand(PositionCommandType.PREVIOUS_KEY, key));
             return success;
         }
 
+        /**
+         * Moves the cursor's position to the first element.
+         *
+         * @return True if the cursor was repositioned.
+         */
+        @Override
         public boolean first() {
             boolean success = cursor.first();
             if (success) {
-                // clear previous positioning commands, as this is an absolute position
-                positioning.clear();
-                positioning.add(new PositionCommand(PositionCommandType.FIRST));
+                // clear previous position commands, as this is an absolute position
+                position.clear();
+                position.add(new PositionCommand(PositionCommandType.FIRST));
             }
             return success;
         }
 
+        /**
+         * Moves the cursor's position to the first element with the given key.
+         *
+         * @param key   The key to reposition to.
+         * @return      True if the cursor was repositioned.
+         */
+        @Override
         public boolean first(String key) {
             boolean success = cursor.first(key);
-            if (success) positioning.add(new PositionCommand(PositionCommandType.FIRST_KEY, key));
+            if (success) position.add(new PositionCommand(PositionCommandType.FIRST_KEY, key));
             return success;
         }
 
+        /**
+         * Moves the cursor's position to the last element.
+         *
+         * @return True if the cursor was repositioned.
+         */
+        @Override
         public boolean last() {
             boolean success = cursor.last();
             if (success) {
-                // clear previous positioning commands, as this is an absolute position
-                positioning.clear();
-                positioning.add(new PositionCommand(PositionCommandType.LAST));
+                // clear previous position commands, as this is an absolute position
+                position.clear();
+                position.add(new PositionCommand(PositionCommandType.LAST));
             }
             return success;
         }
 
+        /**
+         * Moves the cursor's position to the last element with the given key.
+         *
+         * @param key   The key to reposition to.
+         * @return      True if the cursor was repositioned.
+         */
+        @Override
         public boolean last(String key) {
             boolean success = cursor.last(key);
-            if (success) positioning.add(new PositionCommand(PositionCommandType.LAST_KEY, key));
+            if (success) position.add(new PositionCommand(PositionCommandType.LAST_KEY, key));
             return success;
         }
 
-        public boolean hasMoreData() {
-            return cursor.hasMoreData();
-        }
-
-        public void destroy() {
-            cursor.destroy();
-        }
-
+        /**
+         * Returns a clone of this cursor.
+         *
+         * @return A clone of this cursor.
+         */
+        @Override
         public IDataCursor getCursorClone() {
-            return new CopyOnWriteIDataCursor(document, positioning);
+            return new CopyOnWriteIDataCursor(position);
         }
     }
 
     /**
      * Copy on write wrapper for an IDataSharedCursor.
      */
-    private static class CopyOnWriteIDataSharedCursor implements IDataSharedCursor {
-        protected CopyOnWriteIDataMap document;
-        protected IDataSharedCursor cursor;
-        protected Queue<PositionCommand> positioning;
+    private class CopyOnWriteIDataSharedCursor extends IDataSharedCursorEnvelope {
+        /**
+         * The current position of the cursor.
+         */
+        private Queue<PositionCommand> position;
+        /**
+         * Whether a copy of the owning IData document has been initiated or not yet.
+         */
+        protected volatile boolean copied;
 
-        public CopyOnWriteIDataSharedCursor(CopyOnWriteIDataMap document) {
-            this(document, null);
+        /**
+         * Constructs a new cursor.
+         */
+        public CopyOnWriteIDataSharedCursor() {
+            this(null);
         }
 
-        public CopyOnWriteIDataSharedCursor(CopyOnWriteIDataMap document, Queue<PositionCommand> positioning) {
-            if (document == null) throw new NullPointerException("document must not be null");
-            this.document = document;
-            if (positioning != null && positioning.size() > 0) {
-                this.positioning = new ArrayDeque<PositionCommand>(positioning);
+        /**
+         * Constructs a new cursor with the given position.
+         *
+         * @param position The initial position for the cursor.
+         */
+        public CopyOnWriteIDataSharedCursor(Queue<PositionCommand> position) {
+            super(CopyOnWriteIDataMap.this.document.getSharedCursor());
+            if (position != null && position.size() > 0) {
+                this.position = new ArrayDeque<PositionCommand>(position);
             } else {
-                this.positioning = new ArrayDeque<PositionCommand>();
+                this.position = new ArrayDeque<PositionCommand>();
             }
+
             try {
                 initialize();
             } catch(DataException ex) {
-                cursor = document.document.getSharedCursor();
+                throw new RuntimeException(ex);
             }
         }
 
+        /**
+         * Initializes the cursor.
+         *
+         * @throws DataException If an error occurs.
+         */
         private void initialize() throws DataException {
-            cursor = document.document.getSharedCursor();
+            if (cursor != null) cursor.destroy();
+            cursor = CopyOnWriteIDataMap.this.document.getSharedCursor();
 
-            for (PositionCommand command : positioning) {
+            for (PositionCommand command : position) {
                 switch(command.getType()) {
                     case FIRST:
                         cursor.first();
@@ -569,15 +701,30 @@ public class CopyOnWriteIDataMap extends IDataMap implements Cloneable, Serializ
                 }
             }
 
-            positioning.clear();
+            position.clear();
+            copied = CopyOnWriteIDataMap.this.copied;
         }
 
+        /**
+         * Makes a copy of the owning IData document, if required.
+         *
+         * @return True if a copy was made or the state of the owning IData document changed in the interim.
+         * @throws DataException If an error occurs.
+         */
         private boolean copy() throws DataException {
-            boolean copied = document.copyOnWrite();
-            if (copied) initialize();
-            return copied;
+            boolean wasCopied = copyOnWrite();
+            boolean stateChanged = (wasCopied || (this.copied != CopyOnWriteIDataMap.this.copied));
+            if (stateChanged) initialize();
+            return stateChanged;
         }
 
+        /**
+         * Returns the given value, optionally copied if required.
+         *
+         * @param value The value to be normalized.
+         * @return      The normalized value.
+         * @throws DataException If an error occurs.
+         */
         private Object normalize(Object value) throws DataException {
             if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[] || value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
                 if (copy()) {
@@ -587,168 +734,309 @@ public class CopyOnWriteIDataMap extends IDataMap implements Cloneable, Serializ
             return value;
         }
 
+        /**
+         * Resets the cursor to be unpositioned.
+         *
+         * @throws DataException If an error occurs.
+         */
+        @Override
         public void home() throws DataException {
-            positioning.clear();
+            position.clear();
             cursor.home();
         }
 
-        public String getKey() throws DataException {
-            return cursor.getKey();
-        }
-
+        /**
+         * Sets the key at the cursor's current position.
+         *
+         * @param key The key to be set.
+         * @throws DataException If an error occurs.
+         */
+        @Override
         public void setKey(String key) throws DataException {
             copy();
             cursor.setKey(key);
         }
 
+        /**
+         * Returns the value at the cursor's current position.
+         *
+         * @return The value at the cursor's current position.
+         * @throws DataException If an error occurs.
+         */
+        @Override
         public Object getValue() throws DataException {
             return normalize(cursor.getValue());
         }
 
+        /**
+         * Sets the value at the cursor's current position.
+         *
+         * @param value The value to be set.
+         * @throws DataException If an error occurs.
+         */
+        @Override
         public void setValue(Object value) throws DataException {
             copy();
             cursor.setValue(value);
         }
 
+        /**
+         * Returns the value at the cursor's current position.
+         *
+         * @return The value at the cursor's current position.
+         * @throws DataException If an error occurs.
+         */
+        @Override
         public Object getValueReference() throws DataException {
             return normalize(cursor.getValueReference());
         }
 
+        /**
+         * Deletes the element at the cursor's current position.
+         *
+         * @return Returns true if the element was deleted.
+         * @throws DataException If an error occurs.
+         */
+        @Override
         public boolean delete() throws DataException {
             copy();
             return cursor.delete();
         }
 
+        /**
+         * Inserts a new element before the cursor's current position.
+         *
+         * @param key   The key to be inserted.
+         * @param value The value to be inserted.
+         * @throws DataException If an error occurred.
+         */
+        @Override
         public void insertBefore(String key, Object value) throws DataException {
             copy();
             cursor.insertBefore(key, value);
         }
 
+        /**
+         * Inserts a new element after the cursor's current position.
+         *
+         * @param key   The key to be inserted.
+         * @param value The value to be inserted.
+         * @throws DataException If an error occurs.
+         */
+        @Override
         public void insertAfter(String key, Object value) throws DataException {
             copy();
             cursor.insertAfter(key, value);
         }
 
+        /**
+         * Inserts a new IData document with the given key before the cursor's current position.
+         *
+         * @param key   The key to be inserted.
+         * @return      The new IData document that was inserted.
+         * @throws DataException If an error occurs.
+         */
+        @Override
         public IData insertDataBefore(String key) throws DataException {
             copy();
             return cursor.insertDataBefore(key);
         }
 
+        /**
+         * Inserts a new IData document with the given key after the cursor's current position.
+         *
+         * @param key   The key to be inserted.
+         * @return      The new IData document that was inserted.
+         * @throws DataException If an error occurs.
+         */
+        @Override
         public IData insertDataAfter(String key) throws DataException {
             copy();
             return cursor.insertDataAfter(key);
         }
 
+        /**
+         * Moves the cursor's position to the next element.
+         *
+         * @return True if the cursor was repositioned.
+         * @throws DataException If an error occurs.
+         */
+        @Override
         public boolean next() throws DataException {
             boolean success = cursor.next();
-            if (success) positioning.add(new PositionCommand(PositionCommandType.NEXT));
+            if (success) position.add(new PositionCommand(PositionCommandType.NEXT));
             return success;
         }
 
+        /**
+         * Moves the cursor's position to the next element with the given key.
+         *
+         * @param key   The key to reposition to.
+         * @return      True if the cursor was repositioned.
+         * @throws DataException If an error occurs.
+         */
+        @Override
         public boolean next(String key) throws DataException {
             boolean success = cursor.next(key);
-            if (success) positioning.add(new PositionCommand(PositionCommandType.NEXT_KEY, key));
+            if (success) position.add(new PositionCommand(PositionCommandType.NEXT_KEY, key));
             return success;
         }
 
+        /**
+         * Moves the cursor's position to the previous element.
+         *
+         * @return True if the cursor was repositioned.
+         * @throws DataException If an error occurs.
+         */
+        @Override
         public boolean previous() throws DataException {
             boolean success = cursor.previous();
-            if (success) positioning.add(new PositionCommand(PositionCommandType.PREVIOUS));
+            if (success) position.add(new PositionCommand(PositionCommandType.PREVIOUS));
             return success;
         }
 
+        /**
+         * Moves the cursor's position to the previous element with the given key.
+         *
+         * @param key   The key to reposition to.
+         * @return      True if the cursor was repositioned.
+         * @throws DataException If an error occurs.
+         */
+        @Override
         public boolean previous(String key) throws DataException {
             boolean success = cursor.previous(key);
-            if (success) positioning.add(new PositionCommand(PositionCommandType.PREVIOUS_KEY, key));
+            if (success) position.add(new PositionCommand(PositionCommandType.PREVIOUS_KEY, key));
             return success;
         }
 
+        /**
+         * Moves the cursor's position to the first element.
+         *
+         * @return True if the cursor was repositioned.
+         * @throws DataException If an error occurs.
+         */
+        @Override
         public boolean first() throws DataException {
             boolean success = cursor.first();
             if (success) {
-                // clear previous positioning commands, as this is an absolute position
-                positioning.clear();
-                positioning.add(new PositionCommand(PositionCommandType.FIRST));
+                // clear previous position commands, as this is an absolute position
+                position.clear();
+                position.add(new PositionCommand(PositionCommandType.FIRST));
             }
             return success;
         }
 
+        /**
+         * Moves the cursor's position to the first element with the given key.
+         *
+         * @param key   The key to reposition to.
+         * @return      True if the cursor was repositioned.
+         * @throws DataException If an error occurs.
+         */
+        @Override
         public boolean first(String key) throws DataException {
             boolean success = cursor.first(key);
-            if (success) positioning.add(new PositionCommand(PositionCommandType.FIRST_KEY, key));
+            if (success) position.add(new PositionCommand(PositionCommandType.FIRST_KEY, key));
             return success;
         }
 
+        /**
+         * Moves the cursor's position to the last element.
+         *
+         * @return True if the cursor was repositioned.
+         * @throws DataException If an error occurs.
+         */
+        @Override
         public boolean last() throws DataException {
             boolean success = cursor.last();
             if (success) {
-                // clear previous positioning commands, as this is an absolute position
-                positioning.clear();
-                positioning.add(new PositionCommand(PositionCommandType.LAST));
+                // clear previous position commands, as this is an absolute position
+                position.clear();
+                position.add(new PositionCommand(PositionCommandType.LAST));
             }
             return success;
         }
 
+        /**
+         * Moves the cursor's position to the last element with the given key.
+         *
+         * @param key   The key to reposition to.
+         * @return      True if the cursor was repositioned.
+         * @throws DataException If an error occurs.
+         */
+        @Override
         public boolean last(String key) throws DataException {
             boolean success = cursor.last(key);
-            if (success) positioning.add(new PositionCommand(PositionCommandType.LAST_KEY, key));
+            if (success) position.add(new PositionCommand(PositionCommandType.LAST_KEY, key));
             return success;
         }
 
-        public boolean hasMoreData() throws DataException {
-            return cursor.hasMoreData();
-        }
-
-        public void destroy() {
-            cursor.destroy();
-        }
-
+        /**
+         * Returns a clone of this cursor.
+         *
+         * @return A clone of this cursor.
+         * @throws DataException If an error occurs.
+         */
+        @Override
         public IDataSharedCursor getCursorClone() throws DataException {
-            return new CopyOnWriteIDataSharedCursor(document, positioning);
-        }
-
-        public boolean isTXNSupported() {
-            return cursor.isTXNSupported();
-        }
-
-        public ITransaction startTXN() throws TransactionException {
-            return cursor.startTXN();
-        }
-
-        public void txnJoin(ITransaction transaction) throws TransactionException {
-            cursor.txnJoin(transaction);
-        }
-
-        public void txnAborted() throws TransactionException {
-            cursor.txnAborted();
-        }
-
-        public void txnCommitted() throws TransactionException {
-            cursor.txnCommitted();
+            return new CopyOnWriteIDataSharedCursor(position);
         }
     }
 
+    /**
+     * The different types of position commands possible with an IDataCursor.
+     */
     private static enum PositionCommandType {
         FIRST, FIRST_KEY, NEXT, NEXT_KEY, PREVIOUS, PREVIOUS_KEY, LAST, LAST_KEY;
     }
 
+    /**
+     * Represents a single position command for an IDataCursor.
+     */
     private static class PositionCommand {
-        PositionCommandType type;
-        String key;
+        /**
+         * The type of position command.
+         */
+        protected PositionCommandType type;
+        /**
+         * The optional key used for positioning.
+         */
+        protected String key;
 
+        /**
+         * Constructs a new position command object with the given type.
+         *
+         * @param type The type of position command.
+         */
         public PositionCommand(PositionCommandType type) {
             this(type, null);
         }
 
+        /**
+         * Constructs a new position command with the given type and key.
+         *
+         * @param type  The type of position command.
+         * @param key   The key used for applying the command.
+         */
         public PositionCommand(PositionCommandType type, String key) {
             this.type = type;
             this.key = key;
         }
 
+        /**
+         * Returns the type of position command.
+         *
+         * @return The type of position command.
+         */
         public PositionCommandType getType() {
             return type;
         }
 
+        /**
+         * Returns the key used for applying the command.
+         *
+         * @return The key used for applying the command, or null if not required.
+         */
         public String getKey() {
             return key;
         }

@@ -37,7 +37,7 @@ public class IDataSharedCursorEnvelope implements IDataSharedCursor {
     /**
      * The wrapped cursor.
      */
-    IDataSharedCursor cursor;
+    protected IDataSharedCursor cursor;
 
     /**
      * Constructs a new wrapped cursor.
