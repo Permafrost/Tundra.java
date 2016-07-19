@@ -32,8 +32,6 @@ import com.wm.data.IDataIndexCursor;
 import com.wm.data.IDataPortable;
 import com.wm.data.IDataSharedCursor;
 import com.wm.data.IDataTreeCursor;
-import com.wm.txn.ITransaction;
-import com.wm.txn.TransactionException;
 import com.wm.util.Table;
 import com.wm.util.coder.IDataCodable;
 import com.wm.util.coder.ValuesCodable;
@@ -44,6 +42,9 @@ import java.util.Map;
  * Wraps an IData in a read-only IData and Map compatible object.
  */
 public class ReadOnlyIDataMap extends IDataMap implements Cloneable, Serializable {
+    /**
+     * The serialization identity for this class and version.
+     */
     private static final long serialVersionUID = 1;
 
     /**
@@ -203,7 +204,7 @@ public class ReadOnlyIDataMap extends IDataMap implements Cloneable, Serializabl
      */
     @Override
     public IDataCursor getCursor() {
-        return ReadOnlyIDataCursor.of(document.getCursor());
+        return new ReadOnlyIDataCursor(document.getCursor());
     }
 
     /**
@@ -214,7 +215,7 @@ public class ReadOnlyIDataMap extends IDataMap implements Cloneable, Serializabl
      */
     @Override
     public IDataSharedCursor getSharedCursor() {
-        return ReadOnlyIDataSharedCursor.of(document.getSharedCursor());
+        return new ReadOnlyIDataSharedCursor(document.getSharedCursor());
     }
 
     /**
@@ -346,252 +347,236 @@ public class ReadOnlyIDataMap extends IDataMap implements Cloneable, Serializabl
     /**
      * Read-only wrapper for an IDataCursor.
      */
-    private static class ReadOnlyIDataCursor implements IDataCursor {
-        protected IDataCursor cursor;
-
+    private static class ReadOnlyIDataCursor extends IDataCursorEnvelope {
+        /**
+         * Constructs a new read-only cursor.
+         *
+         * @param cursor The cursor to be wrapped.
+         */
         public ReadOnlyIDataCursor(IDataCursor cursor) {
-            if (cursor == null) throw new NullPointerException("cursor must not be null");
-            this.cursor = cursor;
+            super(cursor);
         }
 
-        public static ReadOnlyIDataCursor of(IDataCursor cursor) {
-            ReadOnlyIDataCursor readOnlyIDataCursor = null;
-
-            if (cursor instanceof ReadOnlyIDataCursor) {
-                readOnlyIDataCursor = (ReadOnlyIDataCursor)cursor;
-            } else if (cursor != null) {
-                readOnlyIDataCursor = new ReadOnlyIDataCursor(cursor);
-            }
-
-            return readOnlyIDataCursor;
-        }
-
-        public void setErrorMode(int mode) {
-            cursor.setErrorMode(mode);
-        }
-
-        public DataException getLastError() {
-            return cursor.getLastError();
-        }
-
-        public boolean hasMoreErrors() {
-            return cursor.hasMoreErrors();
-        }
-
-        public void home() {
-            cursor.home();
-        }
-
-        public String getKey() {
-            return cursor.getKey();
-        }
-
+        /**
+         * Does nothing, as the cursor is read-only.
+         *
+         * @param key Not used.
+         */
+        @Override
         public void setKey(String key) {
             // do nothing as cursor is read only
         }
 
+        /**
+         * Returns the value at the cursor's current position.
+         *
+         * @return The value at the cursor's current position.
+         */
+        @Override
         public Object getValue() {
             return normalize(cursor.getValue());
         }
 
+        /**
+         * Does nothing, as the cursor is read-only.
+         *
+         * @param value Not used.
+         */
+        @Override
         public void setValue(Object value) {
             // do nothing as cursor is read only
         }
 
+        /**
+         * Does nothing, as the cursor is read-only.
+         *
+         * @return False.
+         */
+        @Override
         public boolean delete() {
             return false;
         }
 
+        /**
+         * Does nothing, as the cursor is read-only.
+         *
+         * @param key   Not used.
+         * @param value Not used.
+         */
+        @Override
         public void insertBefore(String key, Object value) {
             // do nothing as cursor is read only
         }
 
+        /**
+         * Does nothing, as the cursor is read-only.
+         *
+         * @param key   Not used.
+         * @param value Not used.
+         */
+        @Override
         public void insertAfter(String key, Object value) {
             // do nothing as cursor is read only
         }
 
+        /**
+         * Does nothing, as the cursor is read-only.
+         *
+         * @param key   Not used.
+         * @return      Null.
+         */
+        @Override
         public IData insertDataBefore(String key) {
             return null;
         }
 
+        /**
+         * Does nothing, as the cursor is read-only.
+         *
+         * @param key   Not used.
+         * @return      Null.
+         */
+        @Override
         public IData insertDataAfter(String key) {
             return null;
         }
 
-        public boolean next() {
-            return cursor.next();
-        }
-
-        public boolean next(String key) {
-            return cursor.next(key);
-        }
-
-        public boolean previous() {
-            return cursor.previous();
-        }
-
-        public boolean previous(String key) {
-            return cursor.previous(key);
-        }
-
-        public boolean first() {
-            return cursor.first();
-        }
-
-        public boolean first(String key) {
-            return cursor.first(key);
-        }
-
-        public boolean last() {
-            return cursor.last();
-        }
-
-        public boolean last(String key) {
-            return cursor.last(key);
-        }
-
-        public boolean hasMoreData() {
-            return cursor.hasMoreData();
-        }
-
-        public void destroy() {
-            cursor.destroy();
-        }
-
+        /**
+         * Returns a clone of this cursor.
+         *
+         * @return A clone of this cursor.
+         */
+        @Override
         public IDataCursor getCursorClone() {
-            return of(cursor.getCursorClone());
+            return new ReadOnlyIDataCursor(cursor.getCursorClone());
         }
     }
 
     /**
      * Read-only wrapper for an IDataSharedCursor.
      */
-    private static class ReadOnlyIDataSharedCursor implements IDataSharedCursor {
-        IDataSharedCursor cursor;
-
+    private static class ReadOnlyIDataSharedCursor extends IDataSharedCursorEnvelope {
+        /**
+         * Constructs a new read-only cursor.
+         *
+         * @param cursor The cursor to be wrapped.
+         */
         public ReadOnlyIDataSharedCursor(IDataSharedCursor cursor) {
-            if (cursor == null) throw new NullPointerException("cursor must not be null");
-            this.cursor = cursor;
+            super(cursor);
         }
 
-        public static ReadOnlyIDataSharedCursor of(IDataSharedCursor cursor) {
-            ReadOnlyIDataSharedCursor readOnlyIDataSharedCursor = null;
-
-            if (cursor instanceof ReadOnlyIDataCursor) {
-                readOnlyIDataSharedCursor = (ReadOnlyIDataSharedCursor)cursor;
-            } else if (cursor != null) {
-                readOnlyIDataSharedCursor = new ReadOnlyIDataSharedCursor(cursor);
-            }
-
-            return readOnlyIDataSharedCursor;
-        }
-
-        public void home() throws DataException {
-            cursor.home();
-        }
-
-        public String getKey() throws DataException {
-            return cursor.getKey();
-        }
-
+        /**
+         * Does nothing, as this cursor is read-only.
+         *
+         * @param key Not used.
+         * @throws DataException Never thrown.
+         */
+        @Override
         public void setKey(String key) throws DataException {
             // do nothing as cursor is read only
         }
 
+        /**
+         * Returns the value at the cursor's current position.
+         *
+         * @return The value at the cursor's current position.
+         * @throws DataException If an error occurs.
+         */
+        @Override
         public Object getValue() throws DataException {
             return normalize(cursor.getValue());
         }
 
+        /**
+         * Does nothing, as this cursor is read-only.
+         *
+         * @param value Not used.
+         * @throws DataException Never thrown.
+         */
+        @Override
         public void setValue(Object value) throws DataException {
             // do nothing as cursor is read only
         }
 
+        /**
+         * Returns the value at the cursor's current position.
+         *
+         * @return The value at the cursor's current position.
+         * @throws DataException If an error occurs.
+         */
+        @Override
         public Object getValueReference() throws DataException {
             return normalize(cursor.getValueReference());
         }
 
+        /**
+         * Does nothing, as this is a read only cursor.
+         *
+         * @return False.
+         * @throws DataException Never thrown.
+         */
+        @Override
         public boolean delete() throws DataException {
             return false;
         }
 
+        /**
+         * Does nothing, as this is a read only cursor.
+         *
+         * @param key   Not used.
+         * @param value Not used.
+         * @throws DataException Never thrown.
+         */
+        @Override
         public void insertBefore(String key, Object value) throws DataException {
             // do nothing as cursor is read only
         }
 
+        /**
+         * Does nothing, as this is a read only cursor.
+         *
+         * @param key   Not used.
+         * @param value Not used.
+         * @throws DataException Never thrown.
+         */
+        @Override
         public void insertAfter(String key, Object value) throws DataException {
             // do nothing as cursor is read only
         }
 
+        /**
+         * Does nothing, as this is a read only cursor.
+         *
+         * @param key   Not used.
+         * @return      Null.
+         * @throws DataException Never thrown.
+         */
+        @Override
         public IData insertDataBefore(String key) throws DataException {
             return null;
         }
 
+        /**
+         * Does nothing, as this is a read only cursor.
+         *
+         * @param key   Not used.
+         * @return      Null.
+         * @throws DataException Never thrown.
+         */
+        @Override
         public IData insertDataAfter(String key) throws DataException {
             return null;
         }
 
-        public boolean next() throws DataException {
-            return cursor.next();
-        }
-
-        public boolean next(String key) throws DataException {
-            return cursor.next(key);
-        }
-
-        public boolean previous() throws DataException {
-            return cursor.previous();
-        }
-
-        public boolean previous(String key) throws DataException {
-            return cursor.previous(key);
-        }
-
-        public boolean first() throws DataException {
-            return cursor.first();
-        }
-
-        public boolean first(String key) throws DataException {
-            return cursor.first(key);
-        }
-
-        public boolean last() throws DataException {
-            return cursor.last();
-        }
-
-        public boolean last(String key) throws DataException {
-            return cursor.last(key);
-        }
-
-        public boolean hasMoreData() throws DataException {
-            return cursor.hasMoreData();
-        }
-
-        public void destroy() {
-            cursor.destroy();
-        }
-
+        /**
+         * Returns a clone of this cursor.
+         *
+         * @return A clone of this cursor.
+         * @throws DataException If an error occurs.
+         */
+        @Override
         public IDataSharedCursor getCursorClone() throws DataException {
-            return of(cursor.getCursorClone());
-        }
-
-        public boolean isTXNSupported() {
-            return cursor.isTXNSupported();
-        }
-
-        public ITransaction startTXN() throws TransactionException {
-            return cursor.startTXN();
-        }
-
-        public void txnJoin(ITransaction transaction) throws TransactionException {
-            cursor.txnJoin(transaction);
-        }
-
-        public void txnAborted() throws TransactionException {
-            cursor.txnAborted();
-        }
-
-        public void txnCommitted() throws TransactionException {
-            cursor.txnCommitted();
+            return new ReadOnlyIDataSharedCursor(cursor.getCursorClone());
         }
     }
 }
