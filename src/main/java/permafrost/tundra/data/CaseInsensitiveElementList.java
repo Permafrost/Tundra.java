@@ -28,7 +28,6 @@ import com.wm.data.DataException;
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import permafrost.tundra.lang.LocaleHelper;
-import permafrost.tundra.lang.ObjectHelper;
 import java.io.Serializable;
 import java.util.ListIterator;
 import java.util.Locale;
@@ -76,27 +75,6 @@ public class CaseInsensitiveElementList<V> extends ElementList<String, V> implem
     }
 
     /**
-     * Returns the element at the given index.
-     *
-     * @param i The index whose element is to be returned.
-     * @return  The element at the given index in the list.
-     */
-    @Override
-    public Element<String, V> get(int i) {
-        return elements.get(i);
-    }
-
-    /**
-     * Returns the number of elements in the list.
-     *
-     * @return The number of elements in the list.
-     */
-    @Override
-    public int size() {
-        return elements.size();
-    }
-
-    /**
      * Sets the element at the given index.
      *
      * @param i The index whose element is to be set.
@@ -117,17 +95,6 @@ public class CaseInsensitiveElementList<V> extends ElementList<String, V> implem
     @Override
     public void add(int i, Element<String, V> e) {
         elements.add(i, new CaseInsensitiveKeyedElement<V>(e, locale));
-    }
-
-    /**
-     * Removes the element at the given index.
-     *
-     * @param i The index whose element is to be removed.
-     * @return  The element previously positioned at the given index, now removed from the list.
-     */
-    @Override
-    public Element<String, V> remove(int i) {
-        return elements.remove(i);
     }
 
     /**
