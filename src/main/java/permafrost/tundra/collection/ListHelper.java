@@ -108,6 +108,7 @@ public class ListHelper {
      * Returns the minimum capacity required of a list to hold the given items.
      *
      * @param list  The list whose minimum capacity is to be calculated.
+     * @param index The index at which the items will be inserted.
      * @param items The items to be added to the list.
      * @param <E>   The component type of the list.
      * @return      The minimum capacity required of the given list to hold the given items.

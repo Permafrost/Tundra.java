@@ -50,6 +50,7 @@ public class XPathHelper {
      *
      * @param context                   The XML content to select from.
      * @param expression                The XPath expression used to select from the given Node.
+     * @param expectedContent           The expected contents of the selected nodes.
      * @return                          True if the XPath expression resolved against the given Node has the expected
      *                                  content.
      * @throws XPathExpressionException If a parsing error occurs.
@@ -63,6 +64,7 @@ public class XPathHelper {
      *
      * @param context                   The XML content to select from.
      * @param expression                The XPath expression used to select from the given Node.
+     * @param expectedContent           The expected contents of the selected nodes.
      * @return                          True if the XPath expression resolved against the given Node has the expected
      *                                  content.
      * @throws XPathExpressionException If a parsing error occurs.

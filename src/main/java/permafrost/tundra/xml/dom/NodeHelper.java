@@ -250,6 +250,7 @@ public class NodeHelper {
      * @param node              A Node object.
      * @param namespaceContext  The namespace context to use for prefixing qualified names.
      * @return                  An IData representation of the given Node object.
+     * @throws ServiceException If an error occurs.
      */
     public static IData reflect(Node node, NamespaceContext namespaceContext) throws ServiceException {
         return reflect(node, namespaceContext, false);
@@ -262,6 +263,7 @@ public class NodeHelper {
      * @param namespaceContext  The namespace context to use for prefixing qualified names.
      * @param recurse           If true, child nodes will be recursed and returned also.
      * @return                  An IData representation of the given Node object.
+     * @throws ServiceException If an error occurs.
      */
     public static IData reflect(Node node, NamespaceContext namespaceContext, boolean recurse) throws ServiceException {
         if (node == null) return null;
@@ -391,6 +393,7 @@ public class NodeHelper {
      * @param namespaceContext  The namespace context to use for prefixing qualified names.
      * @param recurse           If true, child nodes will be recursed and returned also.
      * @return                  An IData[] representation of the given NamedNodeMap object.
+     * @throws ServiceException If an error occurs.
      */
     public static IData[] reflect(NamedNodeMap namedNodeMap, NamespaceContext namespaceContext, boolean recurse) throws ServiceException {
         if (namedNodeMap == null) return null;
@@ -411,6 +414,7 @@ public class NodeHelper {
      * @param namespaceContext  The namespace context to use for prefixing qualified names.
      * @param recurse           If true, child nodes will be recursed and returned also.
      * @return                  An IData[] representation of the given NodeList object.
+     * @throws ServiceException If an error occurs.
      */
     public static IData[] reflect(NodeList nodeList, NamespaceContext namespaceContext, boolean recurse) throws ServiceException {
         if (nodeList == null) return null;

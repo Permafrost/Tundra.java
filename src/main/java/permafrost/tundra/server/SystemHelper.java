@@ -50,7 +50,8 @@ public final class SystemHelper {
      * Returns information about Integration Server such as the software version, environment settings, Java properties,
      * well-known directory locations, and memory usage.
      *
-     * @return Integration Server properties.
+     * @return                  Integration Server properties.
+     * @throws ServiceException If an error occurs.
      */
     public static IData reflect() throws ServiceException {
         IDataMap output = new IDataMap();

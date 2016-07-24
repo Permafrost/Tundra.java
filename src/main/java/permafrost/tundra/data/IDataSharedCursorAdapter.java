@@ -53,7 +53,6 @@ class IDataSharedCursorAdapter implements IDataSharedCursor {
     /**
      * Resets this cursor's position.
      *
-     * @return                  True if the cursor was repositioned.
      * @throws DataException    Never thrown.
      */
     public void home() throws DataException {
@@ -287,7 +286,7 @@ class IDataSharedCursorAdapter implements IDataSharedCursor {
     /**
      * Not implemented, throws UnsupportedOperationException.
      *
-     * @return
+     * @return                               Not applicable.
      * @throws TransactionException          Never thrown.
      * @throws UnsupportedOperationException Always thrown.
      */

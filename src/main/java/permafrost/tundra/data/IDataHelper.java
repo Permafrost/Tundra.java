@@ -854,10 +854,11 @@ public final class IDataHelper {
     /**
      * Amends the given IData document with the key value pairs specified in the amendments IData document.
      *
-     * @param document      The IData document to be amended.
-     * @param amendments    The list of key value pairs to amend the document with.
-     * @param scope         The scope against which to resolve variable substitution statements.
-     * @return              The amended IData document.
+     * @param document          The IData document to be amended.
+     * @param amendments        The list of key value pairs to amend the document with.
+     * @param scope             The scope against which to resolve variable substitution statements.
+     * @return                  The amended IData document.
+     * @throws ServiceException If an error occurs.
      */
     public static IData amend(IData document, IData[] amendments, IData scope) throws ServiceException {
         if (amendments == null) return document;

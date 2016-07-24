@@ -77,6 +77,7 @@ public final class MessageDigestHelper {
      *
      * @param algorithm                 The algorithm to use when calculating the message digest.
      * @param data                      The data to calculate the digest for.
+     * @param charset                   The character set used to encode the text when data is provided as a string.
      * @return                          The message digest calculated for the given data using the given algorithm.
      * @throws IOException              If an I/O exception occurs reading from the stream.
      * @throws NoSuchAlgorithmException If there is no provider for the default algorithm.
@@ -161,10 +162,11 @@ public final class MessageDigestHelper {
     /**
      * Calculates a message digest for the given data using the given algorithm.
      *
-     * @param algorithm     The algorithm to use when calculating the message digest.
-     * @param data          The data to calculate the digest for.
-     * @param charset       The charset to use.
-     * @return The message digest calculated for the given data using the given algorithm.
+     * @param algorithm                 The algorithm to use when calculating the message digest.
+     * @param data                      The data to calculate the digest for.
+     * @param charset                   The character set to use when encoding the text in data.
+     * @return                          The message digest calculated for the given data using the given algorithm.
+     * @throws NoSuchAlgorithmException If there is no provider for the default algorithm.
      */
     public static byte[] digest(MessageDigest algorithm, String data, Charset charset) throws NoSuchAlgorithmException {
         return digest(algorithm, BytesHelper.normalize(data, charset));

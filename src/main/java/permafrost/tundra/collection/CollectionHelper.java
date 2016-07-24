@@ -39,8 +39,9 @@ public class CollectionHelper {
     /**
      * Returns the number of items in the given collection.
      *
-     * @param collection The collection to return the length of.
-     * @return           The number of items in the given collection.
+     * @param collection    The collection to return the length of.
+     * @param <E>           The component type of the items stored in the collection.
+     * @return              The number of items in the given collection.
      */
     public static <E> int length(Collection<E> collection) {
         if (collection == null) return 0;

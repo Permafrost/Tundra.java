@@ -241,6 +241,7 @@ public class Content implements IDataCodable {
      * @param  data                     Arbitrary binary data.
      * @param  type                     The MIME media type of the data.
      * @return                          The new Content object.
+     * @throws IOException              If an IO error occurs.
      */
     public static Content of(InputStream data, String type) throws IOException {
         return new Content(data, type);
@@ -252,6 +253,7 @@ public class Content implements IDataCodable {
      * @param  data                     Arbitrary binary data.
      * @param  type                     The MIME media type of the data.
      * @return                          The new Content object.
+     * @throws IOException              If an IO error occurs.
      */
     public static Content of(InputStream data, MimeType type) throws IOException {
         return new Content(data, type);

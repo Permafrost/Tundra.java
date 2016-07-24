@@ -51,7 +51,7 @@ import javax.xml.validation.SchemaFactory;
 /**
  * A collection of convenience methods for working with XML.
  */
-public class XMLHelper {
+public class    XMLHelper {
     /**
      * Disallow instantiation of this class.
      */
@@ -62,12 +62,14 @@ public class XMLHelper {
      * content is malformed and raise is true, otherwise returns a list of errors if there were any, or null if the XML
      * is considered well-formed and valid.
      *
-     * @param content The XML content to be validated.
-     * @param schema  Optional XML schema to validate against. If null, the XML will be checked for well-formedness
-     *                only.
-     * @param raise   If true, and the XML is invalid, an exception will be thrown. If false, no exception is thrown
-     *                when the XML is invalid.
-     * @return The list of validation errors if the XMl is invalid, or null if the XML is valid.
+     * @param content           The XML content to be validated.
+     * @param contentCharset    The character set used to encode the XML content.
+     * @param schema            Optional XML schema to validate against. If null, the XML will be checked for
+     *                          well-formedness only.
+     * @param schemaCharset     The character set used to encode the XML schema.
+     * @param raise             If true, and the XML is invalid, an exception will be thrown. If false, no exception is
+     *                          thrown when the XML is invalid.
+     * @return                  The list of validation errors if the XMl is invalid, or null if the XML is valid.
      * @throws ServiceException If an I/O error occurs.
      */
     public static String[] validate(InputStream content, Charset contentCharset, InputStream schema, Charset schemaCharset, boolean raise) throws ServiceException {

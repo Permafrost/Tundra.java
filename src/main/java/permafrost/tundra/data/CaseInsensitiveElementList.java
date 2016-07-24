@@ -145,8 +145,8 @@ public class CaseInsensitiveElementList<V> extends ElementList<String, V> implem
         /**
          * Constructs a new element using the given key and value.
          *
-         * @param key   The key for the element.
-         * @param value The value for the element.
+         * @param key       The key for the element.
+         * @param value     The value for the element.
          */
         public CaseInsensitiveKeyedElement(String key, V value) {
             this(key, value, null);
@@ -155,8 +155,9 @@ public class CaseInsensitiveElementList<V> extends ElementList<String, V> implem
         /**
          * Constructs a new element using the given key and value.
          *
-         * @param key   The key for the element.
-         * @param value The value for the element.
+         * @param key       The key for the element.
+         * @param value     The value for the element.
+         * @param locale    The locale used for case comparison.
          */
         public CaseInsensitiveKeyedElement(String key, V value, Locale locale) {
             this.locale = LocaleHelper.normalize(locale);

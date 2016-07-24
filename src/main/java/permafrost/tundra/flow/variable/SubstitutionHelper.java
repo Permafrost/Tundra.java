@@ -275,8 +275,9 @@ public class SubstitutionHelper {
     /**
      * Performs variable substitution on all elements of the given IData input document.
      *
-     * @param document  The IData document to perform variable substitution on.
-     * @return          The variable substituted IData.
+     * @param document          The IData document to perform variable substitution on.
+     * @return                  The variable substituted IData.
+     * @throws ServiceException If an error occurs.
      */
     public static IData substitute(IData document) throws ServiceException {
         return substitute(document, null, null, true);
@@ -285,10 +286,11 @@ public class SubstitutionHelper {
     /**
      * Performs variable substitution on all elements of the given IData input document.
      *
-     * @param document  The IData document to perform variable substitution on.
-     * @param recurse   Whether embedded IData and IData[] should have variable substitution recursively performed on
-     *                  them.
-     * @return          The variable substituted IData.
+     * @param document          The IData document to perform variable substitution on.
+     * @param recurse           Whether embedded IData and IData[] should have variable substitution recursively
+     *                          performed on them.
+     * @return                  The variable substituted IData.
+     * @throws ServiceException If an error occurs.
      */
     public static IData substitute(IData document, boolean recurse) throws ServiceException {
         return substitute(document, null, null, recurse);
@@ -297,11 +299,12 @@ public class SubstitutionHelper {
     /**
      * Performs variable substitution on all elements of the given IData input document.
      *
-     * @param document  The IData document to perform variable substitution on.
-     * @param scope     The scope against which variables are are resolved.
-     * @param recurse   Whether embedded IData and IData[] should have variable substitution recursively performed on
-     *                  them.
-     * @return          The variable substituted IData.
+     * @param document          The IData document to perform variable substitution on.
+     * @param scope             The scope against which variables are are resolved.
+     * @param recurse           Whether embedded IData and IData[] should have variable substitution recursively
+     *                          performed on them.
+     * @return                  The variable substituted IData.
+     * @throws ServiceException If an error occurs.
      */
     public static IData substitute(IData document, IData scope, boolean recurse) throws ServiceException {
         return substitute(document, null, scope, recurse);
@@ -310,12 +313,13 @@ public class SubstitutionHelper {
     /**
      * Performs variable substitution on all elements of the given IData input document.
      *
-     * @param document      The IData document to perform variable substitution on.
-     * @param defaultValue  The value to substitute if a variable cannot be resolved.
-     * @param scope         The scope against which variables are are resolved.
-     * @param recurse       Whether embedded IData and IData[] should have variable substitution recursively performed on
-     *                      them.
-     * @return              The variable substituted IData.
+     * @param document          The IData document to perform variable substitution on.
+     * @param defaultValue      The value to substitute if a variable cannot be resolved.
+     * @param scope             The scope against which variables are are resolved.
+     * @param recurse           Whether embedded IData and IData[] should have variable substitution recursively
+     *                          performed on them.
+     * @return                  The variable substituted IData.
+     * @throws ServiceException If an error occurs.
      */
     public static IData substitute(IData document, String defaultValue, IData scope, boolean recurse) throws ServiceException {
         return substitute(document, defaultValue, scope, recurse, SubstitutionType.DEFAULT_SUBSTITUTION_SET);
@@ -386,12 +390,13 @@ public class SubstitutionHelper {
     /**
      * Performs variable substitution on all elements of the given IData[].
      *
-     * @param array         The IData[] to perform variable substitution on.
-     * @param defaultValue  The value to substitute if a variable cannot be resolved.
-     * @param scope         The scope against which variables are are resolved.
-     * @param recurse       Whether embedded IData and IData[] should have variable substitution recursively performed on
-     *                      them.
-     * @return              The variable substituted IData[].
+     * @param array             The IData[] to perform variable substitution on.
+     * @param defaultValue      The value to substitute if a variable cannot be resolved.
+     * @param scope             The scope against which variables are are resolved.
+     * @param recurse           Whether embedded IData and IData[] should have variable substitution recursively
+     *                          performed on them.
+     * @return                  The variable substituted IData[].
+     * @throws ServiceException If an error occurs.
      */
     public static IData[] substitute(IData[] array, String defaultValue, IData scope, boolean recurse) throws ServiceException {
         return substitute(array, defaultValue, scope, recurse, SubstitutionType.DEFAULT_SUBSTITUTION_SET);
