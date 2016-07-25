@@ -27,6 +27,10 @@ package permafrost.tundra.data;
 import com.wm.data.DataException;
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;
+import com.wm.data.IDataPortable;
+import com.wm.util.Table;
+import com.wm.util.coder.IDataCodable;
+import com.wm.util.coder.ValuesCodable;
 import permafrost.tundra.lang.LocaleHelper;
 import java.io.Serializable;
 import java.util.ListIterator;
@@ -83,7 +87,7 @@ public class CaseInsensitiveElementList<V> extends ElementList<String, V> implem
      */
     @Override
     public Element<String, V> set(int i, Element<String, V> e) {
-        return elements.set(i, new CaseInsensitiveKeyedElement<V>(e, locale));
+        return elements.set(i, CaseInsensitiveElement.normalize(e, locale));
     }
 
     /**
@@ -94,7 +98,7 @@ public class CaseInsensitiveElementList<V> extends ElementList<String, V> implem
      */
     @Override
     public void add(int i, Element<String, V> e) {
-        elements.add(i, new CaseInsensitiveKeyedElement<V>(e, locale));
+        elements.add(i, CaseInsensitiveElement.normalize(e, locale));
     }
 
     /**
@@ -109,11 +113,92 @@ public class CaseInsensitiveElementList<V> extends ElementList<String, V> implem
     }
 
     /**
+     * Recursively builds a clone of the given IData document as a new CaseInsensitiveElementList.
+     *
+     * @param document  The document to clone.
+     * @return          A new CaseInsensitiveElementList which is a recursive clone of the given IData document.
+     */
+    public static IData of(IData document) {
+        return of(document, null);
+    }
+
+    /**
+     * Recursively builds a clone of the given IData document as a new CaseInsensitiveElementList.
+     *
+     * @param document  The document to clone.
+     * @param locale    The locale used for case comparison.
+     * @return          A new CaseInsensitiveElementList which is a recursive clone of the given IData document.
+     */
+    public static IData of(IData document, Locale locale) {
+        CaseInsensitiveElementList<Object> output = new CaseInsensitiveElementList<Object>();
+
+        if (document != null) {
+            IDataCursor cursor = document.getCursor();
+            while (cursor.next()) {
+                output.add(new CaseInsensitiveElement<Object>(cursor.getKey(), normalize(cursor.getValue(), locale), locale));
+            }
+            cursor.destroy();
+        }
+
+        return output;
+    }
+
+    /**
+     * Recursively builds a clone of the given IData[] document list as a new CaseInsensitiveElementList[].
+     *
+     * @param documents The documents to clone.
+     * @return          A new CaseInsensitiveElementList[] which is a recursive clone of the given IData[] documents.
+     */
+    public static IData[] of(IData[] documents) {
+        return of(documents, null);
+    }
+
+    /**
+     * Recursively builds a clone of the given IData[] document list as a new CaseInsensitiveElementList[].
+     *
+     * @param documents The documents to clone.
+     * @param locale    The locale used for case comparison.
+     * @return          A new CaseInsensitiveElementList[] which is a recursive clone of the given IData[] documents.
+     */
+    public static IData[] of(IData[] documents, Locale locale) {
+        IData[] output;
+
+        if (documents == null) {
+            output = new IData[0];
+        } else {
+            output = new IData[documents.length];
+            for (int i = 0; i < documents.length; i++) {
+                output[i] = of(documents[i], locale);
+            }
+        }
+
+        return output;
+    }
+
+    /**
+     * Converts the given value if it is an IData or IData[] compatible object to a CopyOnWriteIDataMap or
+     * CopyOnWriteIDataMap[] respectively.
+     *
+     * @param value The value to be normalized.
+     * @return      If the value is an IData or IData[] compatible object, a new CopyOnWriteIDataMap or
+     *              CopyOnWriteIDataMap[] respectively is returned which wraps the given value, otherwise
+     *              the value itself is returned unmodified.
+     */
+    private static Object normalize(Object value, Locale locale) {
+        if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
+            value = (IData[])of(IDataHelper.toIDataArray(value), locale);
+        } else if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
+            value = (IData)of(IDataHelper.toIData(value), locale);
+        }
+        return value;
+    }
+
+    /**
      * An element whose keys are case-insensitive for comparison and case-preserving for reference.
      *
      * @param <V> The value's class.
      */
-    protected static class CaseInsensitiveKeyedElement<V> extends Element<String, V> {
+    protected static class CaseInsensitiveElement<V> extends Element<String, V> {
         /**
          * Case insensitive version of the key.
          */
@@ -128,7 +213,7 @@ public class CaseInsensitiveElementList<V> extends ElementList<String, V> implem
          *
          * @param element   The element to use when constructing this new element.
          */
-        public CaseInsensitiveKeyedElement(Element<String, V> element) {
+        public CaseInsensitiveElement(Element<String, V> element) {
             this(element, null);
         }
 
@@ -138,7 +223,7 @@ public class CaseInsensitiveElementList<V> extends ElementList<String, V> implem
          * @param element   The element to use when constructing this new element.
          * @param locale    The locale to use for case comparisons.
          */
-        public CaseInsensitiveKeyedElement(Element<String, V> element, Locale locale) {
+        public CaseInsensitiveElement(Element<String, V> element, Locale locale) {
             this(element.getKey(), element.getValue(), locale);
         }
 
@@ -148,7 +233,7 @@ public class CaseInsensitiveElementList<V> extends ElementList<String, V> implem
          * @param key       The key for the element.
          * @param value     The value for the element.
          */
-        public CaseInsensitiveKeyedElement(String key, V value) {
+        public CaseInsensitiveElement(String key, V value) {
             this(key, value, null);
         }
 
@@ -159,8 +244,8 @@ public class CaseInsensitiveElementList<V> extends ElementList<String, V> implem
          * @param value     The value for the element.
          * @param locale    The locale used for case comparison.
          */
-        public CaseInsensitiveKeyedElement(String key, V value, Locale locale) {
-            this.locale = LocaleHelper.normalize(locale);
+        public CaseInsensitiveElement(String key, V value, Locale locale) {
+            setLocale(locale);
             setKey(key);
             setValue(value);
         }
@@ -177,15 +262,33 @@ public class CaseInsensitiveElementList<V> extends ElementList<String, V> implem
         /**
          * Sets the key of the element.
          *
-         * @param key The key to be set.
-         * @return    The previous key of the element.
+         * @param newKey    The key to be set.
+         * @return          The previous key of the element.
          */
-        public String setKey(String key) {
-            if (key == null) throw new NullPointerException("key must not be null");
-            String oldKey = this.key;
-            this.key = key;
-            this.caseInsensitiveKey = new CaseInsensitiveString(this.key, this.locale);
+        public String setKey(String newKey) {
+            if (newKey == null) throw new NullPointerException("key must not be null");
+            String oldKey = key;
+            key = newKey;
+            caseInsensitiveKey = new CaseInsensitiveString(key, locale);
             return oldKey;
+        }
+
+        /**
+         * Returns the locale associated with this element.
+         *
+         * @return The locale associated with this element.
+         */
+        public Locale getLocale() {
+            return locale;
+        }
+
+        /**
+         * Sets the locale to use for case comparison.
+         *
+         * @param locale The locale to use for case comparison.
+         */
+        private void setLocale(Locale locale) {
+            this.locale = LocaleHelper.normalize(locale);
         }
 
         /**
@@ -235,8 +338,63 @@ public class CaseInsensitiveElementList<V> extends ElementList<String, V> implem
          * @return The hash code for this element.
          */
         @Override
+        @SuppressWarnings("unchecked")
         public int hashCode() {
             return getKey().hashCode();
+        }
+
+        /**
+         * Returns a new CaseInsensitiveElement using the given element's key and value.
+         *
+         * @param element               An element to be represented as a CaseInsensitiveElement.
+         * @param locale                The locale to use for case comparison.
+         * @param <V>                   The class of values held by the element.
+         * @return                      A new CaseInsensitiveElement with the given element's key and value.
+         * @throws NullPointerException If the given element is null.
+         */
+        public static <V> CaseInsensitiveElement<V> of(Element<String, V> element, Locale locale) {
+            return new CaseInsensitiveElement<V>(element, locale);
+        }
+
+        /**
+         * Returns the given element if it is already a CaseInsensitiveElement that uses the specified
+         * locale, otherwise returns a new CaseInsensitiveElement with the given element's key and value.
+         *
+         * @param element               The element to be normalized.
+         * @param <V>                   The class of values held by the element.
+         * @return                      The normalized element.
+         * @throws NullPointerException If the given element is null.
+         */
+        public static <V> CaseInsensitiveElement<V> normalize(Element<String, V> element) {
+            return normalize(element, null);
+        }
+
+        /**
+         * Returns the given element if it is already a CaseInsensitiveElement that uses the specified
+         * locale, otherwise returns a new CaseInsensitiveElement with the given element's key and value.
+         *
+         * @param element               The element to be normalized.
+         * @param locale                The locale to use for case comparison.
+         * @param <V>                   The class of values held by the element.
+         * @return                      The normalized element.
+         * @throws NullPointerException If the given element is null.
+         */
+        @SuppressWarnings("unchecked")
+        public static <V> CaseInsensitiveElement<V> normalize(Element<String, V> element, Locale locale) {
+            CaseInsensitiveElement<V> output = null;
+
+            if (element instanceof CaseInsensitiveElement) {
+                locale = LocaleHelper.normalize(locale);
+                if (!locale.equals(((CaseInsensitiveElement)element).getLocale())) {
+                    output = new CaseInsensitiveElement<V>((CaseInsensitiveElement)element, locale);
+                } else {
+                    output = (CaseInsensitiveElement)element;
+                }
+            } else {
+                output = of(element, locale);
+            }
+
+            return output;
         }
     }
 
@@ -501,7 +659,7 @@ public class CaseInsensitiveElementList<V> extends ElementList<String, V> implem
         @SuppressWarnings("unchecked")
         public void insertBefore(String key, Object value) {
             previous();
-            iterator.add(new CaseInsensitiveKeyedElement<V>(key, (V)value));
+            iterator.add(new CaseInsensitiveElement<V>(key, (V)value));
             next();
         }
 
@@ -513,7 +671,7 @@ public class CaseInsensitiveElementList<V> extends ElementList<String, V> implem
          */
         @SuppressWarnings("unchecked")
         public void insertAfter(String key, Object value) {
-            iterator.add(new CaseInsensitiveKeyedElement<V>(key, (V)value));
+            iterator.add(new CaseInsensitiveElement<V>(key, (V)value));
         }
 
         /**
@@ -563,7 +721,7 @@ public class CaseInsensitiveElementList<V> extends ElementList<String, V> implem
          */
         public boolean next(String key) {
             while(next()) {
-                if (element.keyEquals(new CaseInsensitiveKeyedElement<V>(key, null))) return true;
+                if (element.keyEquals(new CaseInsensitiveElement<V>(key, null))) return true;
             }
             return false;
         }
@@ -591,7 +749,7 @@ public class CaseInsensitiveElementList<V> extends ElementList<String, V> implem
          */
         public boolean previous(String key) {
             while(previous()) {
-                if (element.equals(new CaseInsensitiveKeyedElement<V>(key, null))) return true;
+                if (element.equals(new CaseInsensitiveElement<V>(key, null))) return true;
             }
             return false;
         }
