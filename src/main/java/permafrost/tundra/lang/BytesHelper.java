@@ -25,6 +25,7 @@
 package permafrost.tundra.lang;
 
 import permafrost.tundra.io.InputStreamHelper;
+import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -41,8 +42,8 @@ public final class BytesHelper {
     /**
      * Converts the given String to an byte[].
      *
-     * @param string A String to be converted to a byte[].
-     * @return A byte[] representation of the given String.
+     * @param string        A String to be converted to a byte[].
+     * @return              A byte[] representation of the given String.
      */
     public static byte[] normalize(String string) {
         return normalize(string, CharsetHelper.DEFAULT_CHARSET);
@@ -51,9 +52,9 @@ public final class BytesHelper {
     /**
      * Converts the given String to an byte[] using the given character encoding set.
      *
-     * @param string      A string to be converted to a byte[].
-     * @param charsetName The character encoding set to use.
-     * @return A byte[] representation of the given String.
+     * @param string        A string to be converted to a byte[].
+     * @param charsetName   The character encoding set to use.
+     * @return              A byte[] representation of the given String.
      */
     public static byte[] normalize(String string, String charsetName) {
         return normalize(string, CharsetHelper.normalize(charsetName));
@@ -62,9 +63,9 @@ public final class BytesHelper {
     /**
      * Converts the given String to an byte[] using the given character encoding set.
      *
-     * @param string  A string to be converted to a byte[].
-     * @param charset The character encoding set to use.
-     * @return A byte[] representation of the given String.
+     * @param string        A string to be converted to a byte[].
+     * @param charset       The character encoding set to use.
+     * @return              A byte[] representation of the given String.
      */
     public static byte[] normalize(String string, Charset charset) {
         if (string == null) return null;
@@ -75,9 +76,9 @@ public final class BytesHelper {
      * Converts the given java.io.InputStream to a byte[] by reading all data from the stream and then closing the
      * stream.
      *
-     * @param inputStream A java.io.InputStream to be converted to a byte[]
-     * @return A byte[] representation of the given java.io.InputStream.
-     * @throws IOException If there is a problem reading from the java.io.InputStream.
+     * @param inputStream   A java.io.InputStream to be converted to a byte[]
+     * @return              A byte[] representation of the given java.io.InputStream.
+     * @throws IOException  If there is a problem reading from the java.io.InputStream.
      */
     public static byte[] normalize(InputStream inputStream) throws IOException {
         return InputStreamHelper.read(inputStream);
@@ -86,9 +87,9 @@ public final class BytesHelper {
     /**
      * Normalizes the given String, byte[], or java.io.InputStream object to a byte[].
      *
-     * @param object The object to be normalized to a byte[].
-     * @return A byte[] representation of the given object.
-     * @throws IOException If there is a problem reading from the java.io.InputStream.
+     * @param object        The object to be normalized to a byte[].
+     * @return              A byte[] representation of the given object.
+     * @throws IOException  If there is a problem reading from the java.io.InputStream.
      */
     public static byte[] normalize(Object object) throws IOException {
         return normalize(object, CharsetHelper.DEFAULT_CHARSET);
@@ -97,10 +98,10 @@ public final class BytesHelper {
     /**
      * Normalizes the given String, byte[], or java.io.InputStream object to a byte[].
      *
-     * @param object      The object to be normalized to a string.
-     * @param charsetName The character set to use.
-     * @return A byte[] representation of the given object.
-     * @throws IOException If there is a problem reading from the java.io.InputStream.
+     * @param object        The object to be normalized to a string.
+     * @param charsetName   The character set to use.
+     * @return              A byte[] representation of the given object.
+     * @throws IOException  If there is a problem reading from the java.io.InputStream.
      */
     public static byte[] normalize(Object object, String charsetName) throws IOException {
         return normalize(object, CharsetHelper.normalize(charsetName));
@@ -109,10 +110,10 @@ public final class BytesHelper {
     /**
      * Normalizes the given String, byte[], or java.io.InputStream object to a byte[].
      *
-     * @param object  The object to be normalized to a string.
-     * @param charset The character set to use.
-     * @return A byte[] representation of the given object.
-     * @throws IOException If there is a problem reading from the java.io.InputStream.
+     * @param object        The object to be normalized to a string.
+     * @param charset       The character set to use.
+     * @return              A byte[] representation of the given object.
+     * @throws IOException  If there is a problem reading from the java.io.InputStream.
      */
     public static byte[] normalize(Object object, Charset charset) throws IOException {
         if (object == null) return null;
@@ -137,44 +138,44 @@ public final class BytesHelper {
     /**
      * Encodes binary data as a base64-encoded string.
      *
-     * @param bytes Binary data to be base64-encoded.
-     * @return The given data as a base64-encoded string.
+     * @param bytes         Binary data to be base64-encoded.
+     * @return              The given data as a base64-encoded string.
      */
     public static String base64Encode(byte[] bytes) {
         if (bytes == null) return null;
-        return javax.xml.bind.DatatypeConverter.printBase64Binary(bytes);
+        return DatatypeConverter.printBase64Binary(bytes);
     }
 
     /**
      * Decodes a base64-encoded string to binary data.
      *
-     * @param string A base64-encoded string.
-     * @return The base64-encoded string decoded to binary data.
+     * @param string        A base64-encoded string.
+     * @return              The base64-encoded string decoded to binary data.
      */
     public static byte[] base64Decode(String string) {
         if (string == null) return null;
-        return javax.xml.bind.DatatypeConverter.parseBase64Binary(string);
+        return DatatypeConverter.parseBase64Binary(string);
     }
 
     /**
      * Encodes binary data as a hex-encoded string.
      *
-     * @param bytes Binary data to be hex-encoded.
-     * @return The given data as a hex-encoded string.
+     * @param bytes         Binary data to be hex-encoded.
+     * @return              The given data as a hex-encoded string.
      */
     public static String hexEncode(byte[] bytes) {
         if (bytes == null) return null;
-        return javax.xml.bind.DatatypeConverter.printHexBinary(bytes);
+        return DatatypeConverter.printHexBinary(bytes);
     }
 
     /**
      * Decodes a hex-encoded string to binary data.
      *
-     * @param string A hex-encoded string.
-     * @return The hex-encoded string decoded to binary data.
+     * @param string        A hex-encoded string.
+     * @return              The hex-encoded string decoded to binary data.
      */
     public static byte[] hexDecode(String string) {
         if (string == null) return null;
-        return javax.xml.bind.DatatypeConverter.parseHexBinary(string);
+        return DatatypeConverter.parseHexBinary(string);
     }
 }
