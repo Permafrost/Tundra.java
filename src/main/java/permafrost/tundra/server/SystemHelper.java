@@ -29,7 +29,11 @@ import com.wm.app.b2b.server.Resources;
 import com.wm.app.b2b.server.Server;
 import com.wm.app.b2b.server.ServiceException;
 import com.wm.data.IData;
+import permafrost.tundra.data.CaseInsensitiveElementList;
+import permafrost.tundra.data.Element;
+import permafrost.tundra.data.ElementList;
 import permafrost.tundra.data.IDataMap;
+import permafrost.tundra.data.KeyAliasElement;
 import permafrost.tundra.flow.variable.GlobalVariableHelper;
 import permafrost.tundra.io.FileHelper;
 import permafrost.tundra.math.LongHelper;
@@ -41,6 +45,23 @@ import java.util.TreeMap;
  * A collection of convenience methods for working with the webMethods Integration Server system.
  */
 public final class SystemHelper {
+    /**
+     * The cached structure for system environment variables.
+     */
+    private static volatile IData environment;
+    /**
+     *  The cached structure for system properties.
+     */
+    private static volatile IData properties;
+    /**
+     * The cached structure for Integration Server directories.
+     */
+    private static volatile IData directories;
+    /**
+     * Whether the operating system is Microsoft Windows based.
+     */
+    private static volatile boolean IS_OPERATING_SYSTEM_WINDOWS = isWindows();
+
     /**
      * Disallow instantiation of this class.
      */
@@ -54,77 +75,113 @@ public final class SystemHelper {
      * @throws ServiceException If an error occurs.
      */
     public static IData reflect() throws ServiceException {
-        IDataMap output = new IDataMap();
-        output.put("version", Build.getVersion());
-        output.put("environment", getSystemEnvironment());
+        return reflect(false);
+    }
 
-        IData systemProperties = getSystemProperties();
-        output.put("property", systemProperties);
-        output.put("properties", systemProperties);
+    /**
+     * Returns information about Integration Server such as the software version, environment settings, Java properties,
+     * well-known directory locations, and memory usage.
+     *
+     * @param refresh           If true, the returned IData will be rebuilt from the system environment and properties
+     *                          to reflect any changes that have occurred.
+     * @return                  Integration Server properties.
+     * @throws ServiceException If an error occurs.
+     */
+    public static IData reflect(boolean refresh) throws ServiceException {
+        ElementList<String, Object> output = new ElementList<String, Object>();
 
-        if (GlobalVariableHelper.isSupported()) output.put("global", GlobalVariableHelper.list());
-
-        IData systemDirectories = getSystemDirectories();
-        output.put("directory", systemDirectories);
-        output.put("directories", systemDirectories);
-
-        output.put("memory", getMemoryUsage());
+        output.add(new Element<String, Object>("version", Build.getVersion()));
+        output.add(new Element<String, Object>("environment", getEnvironment(refresh)));
+        output.add(new KeyAliasElement<String, Object>("property", getProperties(refresh), "properties"));
+        if (GlobalVariableHelper.isSupported()) output.add(new Element<String, Object>("global", GlobalVariableHelper.list()));
+        output.add(new KeyAliasElement<String, Object>("directory", getDirectories(refresh), "directories"));
+        output.add(new Element<String, Object>("memory", getMemoryUsage()));
 
         return output;
+    }
+
+    /**
+     * Returns true if the operating system is Microsoft Windows based.
+     *
+     * @return True if the operating system is Microsoft Windows based.
+     */
+    private static boolean isWindows() {
+        boolean result = false;
+        String operatingSystemName = System.getProperty("os.name");
+        if (operatingSystemName != null) {
+            result = operatingSystemName.toLowerCase().contains("windows");
+        }
+        return result;
     }
 
     /**
      * Returns the current system environment variables.
      *
-     * @return The current system environment variables.
+     * @param refresh   If true, will refresh system environment from the JVM.
+     * @return          The current system environment variables.
      */
-    public static IData getSystemEnvironment() {
-        return new IDataMap(new TreeMap(System.getenv()));
+    private static IData getEnvironment(boolean refresh) {
+        if (refresh || environment == null) {
+            if (IS_OPERATING_SYSTEM_WINDOWS) {
+                environment = CaseInsensitiveElementList.of(new TreeMap<String, String>(System.getenv()), null);
+            } else {
+                environment = new IDataMap(new TreeMap<String, String>(System.getenv()));
+            }
+        }
+        return environment;
     }
 
     /**
      * Returns the current system properties.
      *
-     * @return The current system properties.
+     * @param refresh   If true, will refresh system properties from the JVM.
+     * @return          The current system properties.
      */
     @SuppressWarnings("unchecked")
-    public static IData getSystemProperties() {
-        Properties properties = System.getProperties();
-        if (properties == null) properties = new Properties();
+    private static IData getProperties(boolean refresh) {
+        if (refresh || properties == null) {
+            Properties systemProperties = System.getProperties();
+            if (systemProperties == null) systemProperties = new Properties();
 
-        String mailFrom = properties.getProperty("mail.from");
-        if (mailFrom == null || mailFrom.equals("")) {
-            properties.setProperty("mail.from", getDefaultFromEmailAddress());
+            String mailFrom = systemProperties.getProperty("mail.from");
+            if (mailFrom == null || mailFrom.equals("")) {
+                systemProperties.setProperty("mail.from", getDefaultFromEmailAddress());
+            }
+
+            // protect against concurrent modification exceptions by cloning the hashtable
+            // and sort keys in natural ascending order via a TreeMap
+            properties = new IDataMap(new TreeMap((Hashtable)systemProperties.clone()));
         }
-
-        // protect against concurrent modification exceptions by cloning the hashtable
-        // and sort keys in natural ascending order via a TreeMap
-        return new IDataMap(new TreeMap((Hashtable)properties.clone()));
+        return properties;
     }
 
     /**
      * Returns the locations of well-known Integration Server directories.
      *
-     * @return The locations of well-known Integration Server directories.
+     * @param refresh   If true, will refresh directories from Integration Server API.
+     * @return          The locations of well-known Integration Server directories.
      */
-    public static IData getSystemDirectories() {
-        Resources resources = Server.getResources();
+    private static IData getDirectories(boolean refresh) {
+        if (refresh || directories == null) {
+            Resources resources = Server.getResources();
 
-        IDataMap output = new IDataMap();
-        output.put("root", FileHelper.normalize(resources.getRootDir()));
-        output.put("config", FileHelper.normalize(resources.getConfigDir()));
-        output.put("datastore", FileHelper.normalize(resources.getDatastoreDir()));
-        output.put("jobs", FileHelper.normalize(resources.getJobsDir()));
-        output.put("lib", FileHelper.normalize(resources.getLibDir()));
-        output.put("logs", FileHelper.normalize(resources.getLogDir()));
-        output.put("packages", FileHelper.normalize(resources.getPackagesDir()));
-        output.put("recycle", FileHelper.normalize(resources.getRecycleDir()));
-        output.put("replicate", FileHelper.normalize(resources.getReplicateDir()));
-        output.put("replicate.inbound", FileHelper.normalize(resources.getReplicateInDir()));
-        output.put("replicate.outbound", FileHelper.normalize(resources.getReplicateOutDir()));
-        output.put("replicate.salvage", FileHelper.normalize(resources.getReplicateSaveDir()));
+            IDataMap output = new IDataMap();
+            output.put("root", FileHelper.normalize(resources.getRootDir()));
+            output.put("config", FileHelper.normalize(resources.getConfigDir()));
+            output.put("datastore", FileHelper.normalize(resources.getDatastoreDir()));
+            output.put("jobs", FileHelper.normalize(resources.getJobsDir()));
+            output.put("lib", FileHelper.normalize(resources.getLibDir()));
+            output.put("logs", FileHelper.normalize(resources.getLogDir()));
+            output.put("packages", FileHelper.normalize(resources.getPackagesDir()));
+            output.put("recycle", FileHelper.normalize(resources.getRecycleDir()));
+            output.put("replicate", FileHelper.normalize(resources.getReplicateDir()));
+            output.put("replicate.inbound", FileHelper.normalize(resources.getReplicateInDir()));
+            output.put("replicate.outbound", FileHelper.normalize(resources.getReplicateOutDir()));
+            output.put("replicate.salvage", FileHelper.normalize(resources.getReplicateSaveDir()));
 
-        return output;
+            directories = output;
+        }
+        return directories;
     }
 
     /**
@@ -132,7 +189,7 @@ public final class SystemHelper {
      *
      * @return The Java heap memory usage for the currently executing JVM process.
      */
-    public static IData getMemoryUsage() {
+    private static IData getMemoryUsage() {
         Runtime runtime = Runtime.getRuntime();
 
         long freeMemory = runtime.freeMemory();
