@@ -34,7 +34,7 @@ import java.util.Map;
  * @param <K>   The key's class.
  * @param <V>   The value's class.
  */
-class Element<K, V> implements Map.Entry<K, V>, Comparable<Map.Entry<? extends K, ? extends V>>, Serializable {
+public class Element<K, V> implements Map.Entry<K, V>, Comparable<Map.Entry<? extends K, ? extends V>>, Serializable {
     /**
      * The serialization class version identity.
      */
@@ -48,11 +48,6 @@ class Element<K, V> implements Map.Entry<K, V>, Comparable<Map.Entry<? extends K
      * The value of the element.
      */
     protected V value;
-
-    /**
-     * Private default constructor, to support inheritance.
-     */
-    protected Element() {}
 
     /**
      * Constructs a new element using the given key and value.
@@ -115,13 +110,13 @@ class Element<K, V> implements Map.Entry<K, V>, Comparable<Map.Entry<? extends K
      * @return      True if this element is equivalent to the give other element.
      */
     @Override
+    @SuppressWarnings("unchecked")
     public boolean equals(Object other) {
         if (this == other) return true;
 
         boolean result = false;
         if (other instanceof Map.Entry) {
-            Map.Entry entry = (Map.Entry)other;
-            result = ObjectHelper.equal(getKey(), entry.getKey());
+            result = keyEquals((Map.Entry)other);
         }
 
         return result;
