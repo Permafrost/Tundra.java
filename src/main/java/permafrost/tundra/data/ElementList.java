@@ -406,9 +406,10 @@ public class ElementList<K, V> extends AbstractList<Element<K, V>> implements ID
          * @param key The key to reposition the cursor to.
          * @return    True if the key existed and the cursor was repositioned.
          */
+        @SuppressWarnings("unchecked")
         public boolean next(String key) {
             while(next()) {
-                if (element.getKey().equals(key)) return true;
+                if (element.keyEquals((K)key)) return true;
             }
             return false;
         }
@@ -434,9 +435,10 @@ public class ElementList<K, V> extends AbstractList<Element<K, V>> implements ID
          * @param key The key to reposition the cursor to.
          * @return    True if the key existed and the cursor was repositioned.
          */
+        @SuppressWarnings("unchecked")
         public boolean previous(String key) {
             while(previous()) {
-                if (element.getKey().equals(key)) return true;
+                if (element.keyEquals((K)key)) return true;
             }
             return false;
         }
