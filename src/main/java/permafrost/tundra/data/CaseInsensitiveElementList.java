@@ -27,12 +27,9 @@ package permafrost.tundra.data;
 import com.wm.data.DataException;
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;
-import com.wm.data.IDataPortable;
-import com.wm.util.Table;
-import com.wm.util.coder.IDataCodable;
-import com.wm.util.coder.ValuesCodable;
 import permafrost.tundra.lang.LocaleHelper;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.ListIterator;
 import java.util.Locale;
 import java.util.Map;
@@ -57,16 +54,77 @@ public class CaseInsensitiveElementList<V> extends ElementList<String, V> implem
      * Constructs a new CaseInsensitiveElementList.
      */
     public CaseInsensitiveElementList() {
-        this(null);
+        this((Locale)null);
     }
 
     /**
      * Constructs a new CaseInsensitiveElementList.
      *
-     * @param locale The locale to use for case comparison.
+     * @param locale    The locale to use for case comparison.
      */
     public CaseInsensitiveElementList(Locale locale) {
         setLocale(locale);
+    }
+
+    /**
+     * Constructs a new CaseInsensitiveElementList seeded with the elements in the given IData document.
+     *
+     * @param document  The IData document to seed the CaseInsensitiveElementList with.
+     */
+    public CaseInsensitiveElementList(IData document) {
+        this(document, null);
+    }
+
+    /**
+     * Constructs a new CaseInsensitiveElementList seeded with the elements in the given IData document.
+     *
+     * @param document  The IData document to seed the CaseInsensitiveElementList with.
+     * @param locale    The locale to use for case comparison.
+     */
+    public CaseInsensitiveElementList(IData document, Locale locale) {
+        this(locale);
+        addAll(document);
+    }
+
+    /**
+     * Constructs a new CaseInsensitiveElementList seeded with the elements in the given Map.
+     *
+     * @param map       The Map to seed the CaseInsensitiveElementList with.
+     */
+    public CaseInsensitiveElementList(Map<String, ? extends V> map) {
+        this(map, null);
+    }
+
+    /**
+     * Constructs a new CaseInsensitiveElementList seeded with the elements in the given Map.
+     *
+     * @param map       The Map to seed the CaseInsensitiveElementList with.
+     * @param locale    The locale to use for case comparison.
+     *
+     */
+    public CaseInsensitiveElementList(Map<String, ? extends V> map, Locale locale) {
+        this(locale);
+        addAll(map);
+    }
+
+    /**
+     * Constructs a new CaseInsensitiveElementList seeded with the elements in the given Collection.
+     *
+     * @param collection    The Collection to seed the CaseInsensitiveElementList with.
+     */
+    public CaseInsensitiveElementList(Collection<Element<String, V>> collection) {
+        this(collection, null);
+    }
+
+    /**
+     * Constructs a new CaseInsensitiveElementList seeded with the elements in the given Collection.
+     *
+     * @param collection    The Collection to seed the CaseInsensitiveElementList with.
+     * @param locale        The locale to use for case comparison.
+     */
+    public CaseInsensitiveElementList(Collection<Element<String, V>> collection, Locale locale) {
+        this(locale);
+        addAll(collection);
     }
 
     /**
@@ -74,31 +132,41 @@ public class CaseInsensitiveElementList<V> extends ElementList<String, V> implem
      *
      * @param locale The locale to use for case comparison.
      */
-    private void setLocale(Locale locale) {
+    protected void setLocale(Locale locale) {
         this.locale = LocaleHelper.normalize(locale);
     }
 
     /**
-     * Sets the element at the given index.
+     * Normalizes the given Element; this default implementation returns the given element unmodified. Subclasses
+     * can override this method to return a more appropriate Element subclass if required.
      *
-     * @param i The index whose element is to be set.
-     * @param e The element to be set.
-     * @return  The previous element at the given index.
+     * @param element   The Element to be normalized.
+     * @return          The normalized Element.
      */
     @Override
-    public Element<String, V> set(int i, Element<String, V> e) {
-        return elements.set(i, CaseInsensitiveElement.normalize(e, locale));
+    protected Element<String, V> normalize(Element<String, V> element) {
+        return new CaseInsensitiveElement<V>(element, locale);
     }
 
     /**
-     * Inserts the given element at the given index.
+     * Normalizes the given IData; this implementation converts the IData to an ElementList. Subclasses should
+     * override this method and return an instance of their self.
      *
-     * @param i The index to insert an element into.
-     * @param e The element to be inserted.
+     * @param document  The IData to be normalized.
+     * @return          The normalized IData.
      */
     @Override
-    public void add(int i, Element<String, V> e) {
-        elements.add(i, CaseInsensitiveElement.normalize(e, locale));
+    protected IData normalize(IData document) {
+        return new CaseInsensitiveElementList<Object>(document);
+    }
+
+    /**
+     * Returns a newly created IData object.
+     *
+     * @return A newly created IData object.
+     */
+    public static IData create() {
+        return new CaseInsensitiveElementList<Object>();
     }
 
     /**
@@ -113,25 +181,6 @@ public class CaseInsensitiveElementList<V> extends ElementList<String, V> implem
     }
 
     /**
-     * Builds a clone of the given Map as a new CaseInsensitiveElementList.
-     *
-     * @param map       The map to clone.
-     * @param locale    The locale used for case comparison.
-     * @return          A new CaseInsensitiveElementList which is a recursive clone of the given IData document.
-     */
-    public static IData of(Map map, Locale locale) {
-        CaseInsensitiveElementList<Object> output = new CaseInsensitiveElementList<Object>();
-
-        if (map != null) {
-            for (Object key : map.keySet()) {
-                output.add(new CaseInsensitiveElement<Object>(key.toString(), map.get(key), locale));
-            }
-        }
-
-        return output;
-    }
-
-    /**
      * Recursively builds a clone of the given IData document as a new CaseInsensitiveElementList.
      *
      * @param document  The document to clone.
@@ -139,17 +188,7 @@ public class CaseInsensitiveElementList<V> extends ElementList<String, V> implem
      * @return          A new CaseInsensitiveElementList which is a recursive clone of the given IData document.
      */
     public static IData of(IData document, Locale locale) {
-        CaseInsensitiveElementList<Object> output = new CaseInsensitiveElementList<Object>();
-
-        if (document != null) {
-            IDataCursor cursor = document.getCursor();
-            while (cursor.next()) {
-                output.add(new CaseInsensitiveElement<Object>(cursor.getKey(), normalize(cursor.getValue(), locale), locale));
-            }
-            cursor.destroy();
-        }
-
-        return output;
+        return new CaseInsensitiveElementList<Object>(document, locale);
     }
 
     /**
@@ -160,36 +199,15 @@ public class CaseInsensitiveElementList<V> extends ElementList<String, V> implem
      * @return          A new CaseInsensitiveElementList[] which is a recursive clone of the given IData[] documents.
      */
     public static IData[] of(IData[] documents, Locale locale) {
-        IData[] output;
+        IData[] output = new IData[documents == null ? 0 : documents.length];
 
-        if (documents == null) {
-            output = new IData[0];
-        } else {
-            output = new IData[documents.length];
+        if (documents != null) {
             for (int i = 0; i < documents.length; i++) {
                 output[i] = of(documents[i], locale);
             }
         }
 
         return output;
-    }
-
-    /**
-     * Converts the given value if it is an IData or IData[] compatible object to a CopyOnWriteIDataMap or
-     * CopyOnWriteIDataMap[] respectively.
-     *
-     * @param value The value to be normalized.
-     * @return      If the value is an IData or IData[] compatible object, a new CopyOnWriteIDataMap or
-     *              CopyOnWriteIDataMap[] respectively is returned which wraps the given value, otherwise
-     *              the value itself is returned unmodified.
-     */
-    private static Object normalize(Object value, Locale locale) {
-        if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
-            value = (IData[])of(IDataHelper.toIDataArray(value), locale);
-        } else if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
-            value = (IData)of(IDataHelper.toIData(value), locale);
-        }
-        return value;
     }
 
     /**

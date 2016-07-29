@@ -39,7 +39,6 @@ public class Element<K, V> implements Map.Entry<K, V>, Comparable<Map.Entry<? ex
      * The serialization class version identity.
      */
     private static final long serialVersionUID = 1;
-
     /**
      * The key of the element.
      */

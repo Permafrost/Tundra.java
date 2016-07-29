@@ -29,13 +29,19 @@ import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataHashCursor;
 import com.wm.data.IDataIndexCursor;
+import com.wm.data.IDataPortable;
 import com.wm.data.IDataSharedCursor;
 import com.wm.data.IDataTreeCursor;
+import com.wm.util.Table;
+import com.wm.util.coder.IDataCodable;
+import com.wm.util.coder.ValuesCodable;
 import java.io.Serializable;
 import java.util.AbstractList;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 /**
@@ -49,7 +55,6 @@ public class ElementList<K, V> extends AbstractList<Element<K, V>> implements ID
      * The serialization identity of this class version.
      */
     private static final long serialVersionUID = 1;
-
     /**
      * The internal list of elements.
      */
@@ -63,10 +68,40 @@ public class ElementList<K, V> extends AbstractList<Element<K, V>> implements ID
     }
 
     /**
-     * Returns the element at the given index.
+     * Constructs a new ElementList seeded with the elements in the given IData document.
      *
-     * @param i The index whose element is to be returned.
-     * @return  The element at the given index in the list.
+     * @param document The IData document to seed the ElementList with.
+     */
+    public ElementList(IData document) {
+        this();
+        addAll(document);
+    }
+
+    /**
+     * Constructs a new ElementList seeded with the elements in the given Map.
+     *
+     * @param map   The Map to seed the ElementList with.
+     */
+    public ElementList(Map<? extends K, ? extends V> map) {
+        this();
+        addAll(map);
+    }
+
+    /**
+     * Constructs a new ElementList seeded with the elements in the given Collection.
+     *
+     * @param collection The Collection to seed the ElementList with.
+     */
+    public ElementList(Collection<? extends Element<K, V>> collection) {
+        this();
+        addAll(collection);
+    }
+
+    /**
+     * Returns the Element at the given index.
+     *
+     * @param i The index whose Element is to be returned.
+     * @return  The Element at the given index in the list.
      */
     public Element<K, V> get(int i) {
         return elements.get(i);
@@ -82,31 +117,149 @@ public class ElementList<K, V> extends AbstractList<Element<K, V>> implements ID
     }
 
     /**
-     * Sets the element at the given index.
+     * Sets the Element at the given index.
      *
-     * @param i The index whose element is to be set.
-     * @param e The element to be set.
-     * @return  The previous element at the given index.
+     * @param i The index whose Element is to be set.
+     * @param e The Element to be set.
+     * @return  The previous Element at the given index.
      */
-    public Element<K, V> set(int i, Element<K, V> e) {
-        return elements.set(i, e);
+    public final Element<K, V> set(int i, Element<K, V> e) {
+        return elements.set(i, normalize(e));
     }
 
     /**
-     * Inserts the given element at the given index.
+     * Inserts the given Element at the given index.
      *
-     * @param i The index to insert an element into.
-     * @param e The element to be inserted.
+     * @param i The index to insert an Element into.
+     * @param e The Element to be inserted.
      */
-    public void add(int i, Element<K, V> e) {
-        elements.add(i, e);
+    public final void add(int i, Element<K, V> e) {
+        elements.add(i, normalize(e));
     }
 
     /**
-     * Removes the element at the given index.
+     * Recursively adds all the elements in the given IData document to this ElementList.
      *
-     * @param i The index whose element is to be removed.
-     * @return  The element previously positioned at the given index, now removed from the list.
+     * @param document The document whose elements are to be added.
+     */
+    @SuppressWarnings("unchecked")
+    public final void addAll(IData document) {
+        if (document != null) {
+            IDataCursor cursor = document.getCursor();
+            while (cursor.next()) {
+                add(normalize((K)cursor.getKey(), (V)normalize(cursor.getValue())));
+            }
+            cursor.destroy();
+        }
+    }
+
+    /**
+     * Adds all the elements in the given Map to this ElementList.
+     *
+     * @param map The map whose elements are to be added.
+     */
+    public final void addAll(Map<? extends K, ? extends V> map) {
+        if (map != null) {
+            for (Map.Entry<? extends K, ? extends V> entry : map.entrySet()) {
+                add(normalize(entry));
+            }
+        }
+    }
+
+    /**
+     * Normalizes the given Element; this default implementation returns the given element unmodified. Subclasses
+     * can override this method to return a more appropriate Element subclass if required.
+     *
+     * @param element   The Element to be normalized.
+     * @return          The normalized Element.
+     */
+    protected Element<K, V> normalize(Element<K, V> element) {
+        return element;
+    }
+
+    /**
+     * Converts the given Map.Entry to an Element object.
+     *
+     * @param entry     The Map.Entry to be converted.
+     * @return          An Element representation of the given Map.Entry object.
+     */
+    protected final Element<K, V> normalize(Map.Entry<? extends K, ? extends V> entry) {
+        return normalize(entry.getKey(), entry.getValue());
+    }
+
+    /**
+     * Converts the given key value pair to an Element object.
+     *
+     * @param key   The key to be converted.
+     * @param value The value to be converted.
+     * @return      An Element representation of the given key value pair.
+     */
+    protected final Element<K, V> normalize(K key, V value) {
+        return normalize(new Element<K, V>(key, value));
+    }
+
+    /**
+     * Converts the given value if it is an IData or IData[] compatible object to an ElementList or
+     * ElementList[] respectively.
+     *
+     * @param value The value to be normalized.
+     * @return      If the value is an IData or IData[] compatible object, a new ElementList or
+     *              ElementList[] respectively is returned which wraps the given value, otherwise
+     *              the value itself is returned unmodified.
+     */
+    @SuppressWarnings("unchecked")
+    protected Object normalize(Object value) {
+        if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
+            value = normalize(IDataHelper.toIDataArray(value));
+        } else if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
+            value = normalize(IDataHelper.toIData(value));
+        }
+        return value;
+    }
+
+    /**
+     * Normalizes the given IData; this implementation converts the IData to an ElementList. Subclasses should
+     * override this method and return an instance of their self.
+     *
+     * @param document  The IData to be normalized.
+     * @return          The normalized IData.
+     */
+    protected IData normalize(IData document) {
+        return new ElementList<String, Object>(document);
+    }
+
+    /**
+     * Normalizes the given IData[]; this implementation converts the IData[] to an ElementList[].
+     *
+     * @param documents The IData[] to be normalized.
+     * @return          The normalized IData[].
+     */
+    protected final IData[] normalize(IData[] documents) {
+        IData[] output = new IData[documents == null ? 0 : documents.length];
+
+        if (documents != null) {
+            for(int i = 0; i < documents.length; i++) {
+                output[i] = normalize(documents[i]);
+            }
+        }
+
+        return output;
+    }
+
+    /**
+     * Returns a newly created IData object.
+     *
+     * @return A newly created IData object.
+     */
+    public static IData create() {
+        return new ElementList<String, Object>();
+    }
+
+    /**
+     * Removes the Element at the given index.
+     *
+     * @param i The index whose Element is to be removed.
+     * @return  The Element previously positioned at the given index, now removed from the list.
      */
     public Element<K, V> remove(int i) {
         return elements.remove(i);
@@ -206,7 +359,7 @@ public class ElementList<K, V> extends AbstractList<Element<K, V>> implements ID
          */
         protected ListIterator<Element<K, V>> iterator;
         /**
-         * The element at the cursor's current position.
+         * The Element at the cursor's current position.
          */
         protected Element<K, V> element = null;
 
@@ -323,9 +476,9 @@ public class ElementList<K, V> extends AbstractList<Element<K, V>> implements ID
         }
 
         /**
-         * Deletes the element at the cursor's current position.
+         * Deletes the Element at the cursor's current position.
          *
-         * @return True if the element was deleted.
+         * @return True if the Element was deleted.
          */
         public boolean delete() {
             boolean result = true;
@@ -386,7 +539,7 @@ public class ElementList<K, V> extends AbstractList<Element<K, V>> implements ID
         }
 
         /**
-         * Repositions this cursor's on the next element.
+         * Repositions this cursor's on the next Element.
          *
          * @return    True if the cursor was repositioned.
          */
@@ -415,7 +568,7 @@ public class ElementList<K, V> extends AbstractList<Element<K, V>> implements ID
         }
 
         /**
-         * Repositions this cursor's on the previous element.
+         * Repositions this cursor's on the previous Element.
          *
          * @return    True if the cursor was repositioned.
          */
@@ -444,7 +597,7 @@ public class ElementList<K, V> extends AbstractList<Element<K, V>> implements ID
         }
 
         /**
-         * Repositions this cursor's on the first element.
+         * Repositions this cursor's on the first Element.
          *
          * @return    True if the cursor was repositioned.
          */
@@ -465,7 +618,7 @@ public class ElementList<K, V> extends AbstractList<Element<K, V>> implements ID
         }
 
         /**
-         * Repositions this cursor's on the last element.
+         * Repositions this cursor's on the last Element.
          *
          * @return    True if the cursor was repositioned.
          */

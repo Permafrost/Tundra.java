@@ -60,7 +60,7 @@ public final class SystemHelper {
     /**
      * Whether the operating system is Microsoft Windows based.
      */
-    private static volatile boolean IS_OPERATING_SYSTEM_WINDOWS = isWindows();
+    private static volatile boolean OPERATING_SYSTEM_IS_WINDOWS = isWindows();
 
     /**
      * Disallow instantiation of this class.
@@ -122,8 +122,8 @@ public final class SystemHelper {
      */
     private static IData getEnvironment(boolean refresh) {
         if (refresh || environment == null) {
-            if (IS_OPERATING_SYSTEM_WINDOWS) {
-                environment = CaseInsensitiveElementList.of(new TreeMap<String, String>(System.getenv()), null);
+            if (OPERATING_SYSTEM_IS_WINDOWS) {
+                environment = new CaseInsensitiveElementList<String>(new TreeMap<String, String>(System.getenv()), null);
             } else {
                 environment = new IDataMap(new TreeMap<String, String>(System.getenv()));
             }
