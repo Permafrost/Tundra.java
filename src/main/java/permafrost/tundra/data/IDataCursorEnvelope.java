@@ -31,7 +31,7 @@ import com.wm.data.IDataCursor;
 /**
  * Wraps an IDataCursor in an envelope object and provides a skeletal implementation for subclasses.
  */
-public class IDataCursorEnvelope implements IDataCursor {
+public abstract class IDataCursorEnvelope implements IDataCursor {
     /**
      * The wrapped cursor.
      */
@@ -268,7 +268,5 @@ public class IDataCursorEnvelope implements IDataCursor {
      *
      * @return A clone of this cursor.
      */
-    public IDataCursor getCursorClone() {
-        return new IDataCursorEnvelope(cursor.getCursorClone());
-    }
+    public abstract IDataCursor getCursorClone();
 }
