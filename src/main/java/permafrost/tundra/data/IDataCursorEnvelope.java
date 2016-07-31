@@ -44,12 +44,7 @@ public abstract class IDataCursorEnvelope implements IDataCursor {
      */
     public IDataCursorEnvelope(IDataCursor cursor) {
         if (cursor == null) throw new NullPointerException("cursor must not be null");
-
-        if (cursor instanceof IDataCursorEnvelope) {
-            this.cursor = ((IDataCursorEnvelope)cursor).cursor.getCursorClone();
-        } else {
-            this.cursor = cursor;
-        }
+        this.cursor = cursor;
     }
 
     /**

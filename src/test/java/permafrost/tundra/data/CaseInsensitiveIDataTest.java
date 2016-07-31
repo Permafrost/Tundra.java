@@ -27,31 +27,27 @@ package permafrost.tundra.data;
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
+import com.wm.data.IDataUtil;
+import static org.junit.Assert.*;
+import org.junit.Test;
 
-public abstract class IDataEnvelope extends AbstractIData {
-    /**
-     * The wrapped IData document.
-     */
-    protected IData document;
+public class CaseInsensitiveIDataTest {
+    @Test
+    public void test() throws Exception {
+        IData document = IDataFactory.create();
+        IDataCursor cursor = document.getCursor();
+        IDataUtil.put(cursor, "AAA", "1");
+        IDataUtil.put(cursor, "bbB", "2");
+        cursor.destroy();
 
-    /**
-     * Wraps an IData in an envelope.
-     *
-     * @param document  The IData document to be wrapped.
-     */
-    public IDataEnvelope(IData document) {
-        if (document == null) document = IDataFactory.create();
-        this.document = document;
+        IData caseInsensitiveDocument = new CaseInsensitiveIData(document);
+        cursor = caseInsensitiveDocument.getCursor();
+        assertEquals("1", IDataUtil.getString(cursor, "aaa"));
+        assertEquals("1", IDataUtil.getString(cursor, "aAa"));
+        assertEquals("2", IDataUtil.getString(cursor, "BBB"));
+        assertEquals("2", IDataUtil.getString(cursor, "bbb"));
+        assertEquals("2", IDataUtil.getString(cursor, "Bbb"));
+        cursor.destroy();
     }
 
-    /**
-     * Returns an IDataCursor for this IData object. An IDataCursor contains the basic methods you use to traverse an
-     * IData object and get or set elements within it.
-     *
-     * @return An IDataCursor for this object.
-     */
-    @Override
-    public IDataCursor getCursor() {
-        return document.getCursor();
-    }
 }

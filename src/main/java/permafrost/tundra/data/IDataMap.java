@@ -42,7 +42,7 @@ import java.util.Set;
 /**
  * Wraps an IData document in an implementation of the Iterable, Comparable, and Map interfaces.
  */
-public class IDataMap extends IDataEnvelope implements Iterable<Map.Entry<String, Object>>, Comparable<IData>, Map<String, Object>, Cloneable, Serializable {
+public class IDataMap extends IDataAdapter implements Iterable<Map.Entry<String, Object>>, Comparable<IData>, Map<String, Object>, Cloneable, Serializable {
     private static final long serialVersionUID = 1;
 
     /**

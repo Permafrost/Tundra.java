@@ -24,12 +24,6 @@
 
 package permafrost.tundra.data;
 
-import com.wm.data.IData;
-import com.wm.data.IDataCursor;
-import com.wm.data.IDataHashCursor;
-import com.wm.data.IDataIndexCursor;
-import com.wm.data.IDataSharedCursor;
-import com.wm.data.IDataTreeCursor;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
@@ -40,7 +34,7 @@ import java.util.Set;
  * @param <K>   The class of keys held by this Map.
  * @param <V>   The class of values held by this Map.
  */
-public abstract class MapEnvelope<K, V> implements IData, Map<K, V> {
+public abstract class MapEnvelope<K, V> extends AbstractIData implements Map<K, V> {
     /**
      * The wrapped map object.
      */
@@ -200,60 +194,5 @@ public abstract class MapEnvelope<K, V> implements IData, Map<K, V> {
      */
     public Collection<V> values() {
         return map.values();
-    }
-
-    /**
-     * Returns an IDataCursor for this IData object. An IDataCursor contains the basic methods you use to traverse an
-     * IData object and get or set elements within it.
-     *
-     * @return An IDataCursor for this object.
-     */
-    public abstract IDataCursor getCursor();
-
-    /**
-     * Returns an IDataSharedCursor for this IData object. An IDataSharedCursor contains the basic methods you use to
-     * traverse an IData object and get or set elements within it.
-     *
-     * @return An IDataSharedCursor for this object.
-     */
-    @Override
-    public IDataSharedCursor getSharedCursor() {
-        return new IDataSharedCursorAdapter(getCursor());
-    }
-
-    /**
-     * Returns an IDataIndexCursor for traversing this IData.
-     *
-     * @return An IDataIndexCursor for traversing this IData.
-     * @throws UnsupportedOperationException As this method is not implemented.
-     * @deprecated
-     */
-    @Override
-    public IDataIndexCursor getIndexCursor() {
-        throw new UnsupportedOperationException("getIndexCursor not implemented");
-    }
-
-    /**
-     * Returns an IDataTreeCursor for traversing this IData.
-     *
-     * @return An IDataTreeCursor for traversing this IData.
-     * @throws UnsupportedOperationException As this method is not implemented.
-     * @deprecated
-     */
-    @Override
-    public IDataTreeCursor getTreeCursor() {
-        throw new UnsupportedOperationException("getTreeCursor not implemented");
-    }
-
-    /**
-     * Returns an IDataHashCursor for traversing this IData.
-     *
-     * @return An IDataHashCursor for traversing this IData.
-     * @throws UnsupportedOperationException As this method is not implemented.
-     * @deprecated
-     */
-    @Override
-    public IDataHashCursor getHashCursor() {
-        throw new UnsupportedOperationException("getHashCursor not implemented");
     }
 }
