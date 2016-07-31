@@ -30,14 +30,18 @@ import com.wm.app.b2b.server.Server;
 import com.wm.app.b2b.server.ServiceException;
 import com.wm.data.IData;
 import permafrost.tundra.data.CaseInsensitiveElementList;
+import permafrost.tundra.data.CaseInsensitiveIData;
 import permafrost.tundra.data.Element;
 import permafrost.tundra.data.ElementList;
 import permafrost.tundra.data.IDataMap;
+import permafrost.tundra.data.ImmutableIData;
 import permafrost.tundra.data.KeyAliasElement;
+import permafrost.tundra.data.MapIData;
 import permafrost.tundra.flow.variable.GlobalVariableHelper;
 import permafrost.tundra.io.FileHelper;
 import permafrost.tundra.math.LongHelper;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
 
@@ -48,15 +52,7 @@ public final class SystemHelper {
     /**
      * The cached structure for system environment variables.
      */
-    private static volatile IData environment;
-    /**
-     *  The cached structure for system properties.
-     */
-    private static volatile IData properties;
-    /**
-     * The cached structure for Integration Server directories.
-     */
-    private static volatile IData directories;
+    private static volatile IData system;
     /**
      * Whether the operating system is Microsoft Windows based.
      */
@@ -88,16 +84,20 @@ public final class SystemHelper {
      * @throws ServiceException If an error occurs.
      */
     public static IData reflect(boolean refresh) throws ServiceException {
-        ElementList<String, Object> output = new ElementList<String, Object>();
+        if (refresh || system == null) {
+            ElementList<String, Object> output = new ElementList<String, Object>();
 
-        output.add(new Element<String, Object>("version", Build.getVersion()));
-        output.add(new Element<String, Object>("environment", getEnvironment(refresh)));
-        output.add(new KeyAliasElement<String, Object>("property", getProperties(refresh), "properties"));
-        if (GlobalVariableHelper.isSupported()) output.add(new Element<String, Object>("global", GlobalVariableHelper.list()));
-        output.add(new KeyAliasElement<String, Object>("directory", getDirectories(refresh), "directories"));
-        output.add(new Element<String, Object>("memory", getMemoryUsage()));
+            output.add(new Element<String, Object>("version", Build.getVersion()));
+            output.add(new Element<String, Object>("environment", getEnvironment()));
+            output.add(new KeyAliasElement<String, Object>("property", getProperties(), "properties"));
+            if (GlobalVariableHelper.isSupported()) output.add(new Element<String, Object>("global", GlobalVariableHelper.list()));
+            output.add(new KeyAliasElement<String, Object>("directory", getDirectories(), "directories"));
+            output.add(new Element<String, Object>("memory", getMemoryUsage()));
 
-        return output;
+            system = new ImmutableIData(output);
+        }
+
+        return system;
     }
 
     /**
@@ -117,71 +117,57 @@ public final class SystemHelper {
     /**
      * Returns the current system environment variables.
      *
-     * @param refresh   If true, will refresh system environment from the JVM.
      * @return          The current system environment variables.
      */
-    private static IData getEnvironment(boolean refresh) {
-        if (refresh || environment == null) {
-            if (OPERATING_SYSTEM_IS_WINDOWS) {
-                environment = new CaseInsensitiveElementList<String>(new TreeMap<String, String>(System.getenv()), null);
-            } else {
-                environment = new IDataMap(new TreeMap<String, String>(System.getenv()));
-            }
-        }
+    private static IData getEnvironment() {
+        IData environment = new MapIData<String, String>(new TreeMap<String, String>(System.getenv()));
+        if (OPERATING_SYSTEM_IS_WINDOWS) environment = new CaseInsensitiveIData(environment);
         return environment;
     }
 
     /**
      * Returns the current system properties.
      *
-     * @param refresh   If true, will refresh system properties from the JVM.
      * @return          The current system properties.
      */
     @SuppressWarnings("unchecked")
-    private static IData getProperties(boolean refresh) {
-        if (refresh || properties == null) {
-            Properties systemProperties = System.getProperties();
-            if (systemProperties == null) systemProperties = new Properties();
+    private static IData getProperties() {
+        Properties systemProperties = System.getProperties();
+        if (systemProperties == null) systemProperties = new Properties();
 
-            String mailFrom = systemProperties.getProperty("mail.from");
-            if (mailFrom == null || mailFrom.equals("")) {
-                systemProperties.setProperty("mail.from", getDefaultFromEmailAddress());
-            }
-
-            // protect against concurrent modification exceptions by cloning the hashtable
-            // and sort keys in natural ascending order via a TreeMap
-            properties = new IDataMap(new TreeMap((Hashtable)systemProperties.clone()));
+        String mailFrom = systemProperties.getProperty("mail.from");
+        if (mailFrom == null || mailFrom.equals("")) {
+            systemProperties.setProperty("mail.from", getDefaultFromEmailAddress());
         }
-        return properties;
+
+        // protect against concurrent modification exceptions by cloning the hashtable
+        // and sort keys in natural ascending order via a TreeMap
+        return new MapIData<String, String>(new TreeMap<String, String>((Hashtable)systemProperties.clone()));
     }
 
     /**
      * Returns the locations of well-known Integration Server directories.
      *
-     * @param refresh   If true, will refresh directories from Integration Server API.
      * @return          The locations of well-known Integration Server directories.
      */
-    private static IData getDirectories(boolean refresh) {
-        if (refresh || directories == null) {
-            Resources resources = Server.getResources();
+    private static IData getDirectories() {
+        Resources resources = Server.getResources();
 
-            IDataMap output = new IDataMap();
-            output.put("root", FileHelper.normalize(resources.getRootDir()));
-            output.put("config", FileHelper.normalize(resources.getConfigDir()));
-            output.put("datastore", FileHelper.normalize(resources.getDatastoreDir()));
-            output.put("jobs", FileHelper.normalize(resources.getJobsDir()));
-            output.put("lib", FileHelper.normalize(resources.getLibDir()));
-            output.put("logs", FileHelper.normalize(resources.getLogDir()));
-            output.put("packages", FileHelper.normalize(resources.getPackagesDir()));
-            output.put("recycle", FileHelper.normalize(resources.getRecycleDir()));
-            output.put("replicate", FileHelper.normalize(resources.getReplicateDir()));
-            output.put("replicate.inbound", FileHelper.normalize(resources.getReplicateInDir()));
-            output.put("replicate.outbound", FileHelper.normalize(resources.getReplicateOutDir()));
-            output.put("replicate.salvage", FileHelper.normalize(resources.getReplicateSaveDir()));
+        IDataMap output = new IDataMap();
+        output.put("root", FileHelper.normalize(resources.getRootDir()));
+        output.put("config", FileHelper.normalize(resources.getConfigDir()));
+        output.put("datastore", FileHelper.normalize(resources.getDatastoreDir()));
+        output.put("jobs", FileHelper.normalize(resources.getJobsDir()));
+        output.put("lib", FileHelper.normalize(resources.getLibDir()));
+        output.put("logs", FileHelper.normalize(resources.getLogDir()));
+        output.put("packages", FileHelper.normalize(resources.getPackagesDir()));
+        output.put("recycle", FileHelper.normalize(resources.getRecycleDir()));
+        output.put("replicate", FileHelper.normalize(resources.getReplicateDir()));
+        output.put("replicate.inbound", FileHelper.normalize(resources.getReplicateInDir()));
+        output.put("replicate.outbound", FileHelper.normalize(resources.getReplicateOutDir()));
+        output.put("replicate.salvage", FileHelper.normalize(resources.getReplicateSaveDir()));
 
-            directories = output;
-        }
-        return directories;
+        return output;
     }
 
     /**
