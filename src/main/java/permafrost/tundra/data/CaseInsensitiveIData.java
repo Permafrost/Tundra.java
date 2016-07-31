@@ -31,13 +31,10 @@ import permafrost.tundra.lang.LocaleHelper;
 import java.io.Serializable;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Wraps an IData in an immutable envelope.
+ * Wraps an IData in a case-insensitive envelope.
  */
 public class CaseInsensitiveIData extends IDataEnvelope implements Serializable {
     /**
@@ -112,19 +109,41 @@ public class CaseInsensitiveIData extends IDataEnvelope implements Serializable 
         }
     }
 
+    /**
+     * Converts the given case-insensitive key to the actual case-preserved key.
+     *
+     * @param key   A case-insensitive key.
+     * @return      Null if the key doesn't exist, or the case-preserved key used in the wrapped IData document.
+     */
     protected String normalizeKey(String key) {
         if (key == null) return null;
         return keys.get(key.toLowerCase(locale));
     }
 
+    /**
+     * Adds a key to the key set used for the case-insensitive feature.
+     *
+     * @param key   The key to be added.
+     */
     protected void addKey(String key) {
         if (key != null) keys.put(key.toLowerCase(locale), key);
     }
 
+    /**
+     * Removes a key from the key set used for the case-insensitive feature.
+     *
+     * @param key   The key to be removed.
+     */
     protected void removeKey(String key) {
         if (key != null) keys.remove(key.toLowerCase(locale));
     }
 
+    /**
+     * Replaces an existing key with a new key.
+     *
+     * @param oldKey    The old key to be replaced by the new key.
+     * @param newKey    The new key replacing the old key.
+     */
     protected void replaceKey(String oldKey, String newKey) {
         removeKey(oldKey);
         addKey(newKey);
@@ -170,7 +189,7 @@ public class CaseInsensitiveIData extends IDataEnvelope implements Serializable 
     }
 
     /**
-     * Wraps an IDataCursor in an immutable envelope.
+     * Implementation of the case-insensitive IDataCursor.
      */
     private class CaseInsensitiveIDataCursor extends IDataCursorEnvelope {
         /**
