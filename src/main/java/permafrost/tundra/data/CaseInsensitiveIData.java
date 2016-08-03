@@ -193,7 +193,7 @@ public class CaseInsensitiveIData extends IDataEnvelope implements Serializable 
      */
     private class CaseInsensitiveIDataCursor extends IDataCursorEnvelope {
         /**
-         * Constructs a new immutable cursor.
+         * Constructs a new case-insensitive cursor.
          *
          * @param cursor The cursor to be wrapped.
          */
