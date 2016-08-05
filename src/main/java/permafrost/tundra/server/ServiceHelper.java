@@ -25,6 +25,7 @@
 package permafrost.tundra.server;
 
 import com.wm.app.b2b.server.BaseService;
+import com.wm.app.b2b.server.InvokeState;
 import com.wm.app.b2b.server.ServerAPI;
 import com.wm.app.b2b.server.Service;
 import com.wm.app.b2b.server.ServiceException;
@@ -48,6 +49,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import javax.activation.MimeType;
 import javax.activation.MimeTypeParseException;
@@ -60,6 +63,19 @@ public final class ServiceHelper {
      * Disallow instantiation of this class.
      */
     private ServiceHelper() {}
+
+    /**
+     * Returns the current call stack.
+     *
+     * @return The current call stack.
+     */
+    @SuppressWarnings("unchecked")
+    public static List<NSService> getCallStack() {
+        List<NSService> stack = (List<NSService>)InvokeState.getCurrentState().getCallStack();
+        if (stack == null) stack = Collections.emptyList();
+
+        return stack;
+    }
 
     /**
      * Creates a new service in the given package with the given name.
