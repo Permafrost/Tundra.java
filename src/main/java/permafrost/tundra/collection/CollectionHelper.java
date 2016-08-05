@@ -25,7 +25,9 @@
 package permafrost.tundra.collection;
 
 import permafrost.tundra.lang.ArrayHelper;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * A collection of convenience methods for working with java.util.Collection objects.
@@ -115,7 +117,41 @@ public class CollectionHelper {
      * @return              True if the given collection contains the given item.
      */
     public static <E> boolean includes(Collection<E> collection, E item) {
-        if (collection == null) return false;
-        return collection.contains(item);
+        return collection != null && collection.contains(item);
+    }
+
+    /**
+     * Converts the given collection to a collection of strings by calling toString() on each
+     * item.
+     *
+     * @param collection    The collection to convert.
+     * @param <E>           The type of item held by the given collection.
+     * @return              A collection of the given items converted to strings.
+     */
+    public static <E> Collection<String> stringify(Collection<E> collection) {
+        return stringify(collection, true);
+    }
+
+    /**
+     * Converts the given collection to a collection of strings by calling toString() on each
+     * item.
+     *
+     * @param collection    The collection to convert.
+     * @param includeNulls  Whether null items should be included in the returned collection.
+     * @param <E>           The type of item held by the given collection.
+     * @return              A collection of the given items converted to strings.
+     */
+    public static <E> Collection<String> stringify(Collection<E> collection, boolean includeNulls) {
+        if (collection == null) return null;
+
+        List<String> output = new ArrayList<String>(collection.size());
+
+        for (E item : collection) {
+            if (includeNulls || item != null) {
+                output.add(item == null ? null : item.toString());
+            }
+        }
+
+        return output;
     }
 }
