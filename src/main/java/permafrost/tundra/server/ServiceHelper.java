@@ -24,11 +24,16 @@
 
 package permafrost.tundra.server;
 
+import com.wm.app.b2b.server.BaseService;
 import com.wm.app.b2b.server.ServerAPI;
 import com.wm.app.b2b.server.Service;
 import com.wm.app.b2b.server.ServiceException;
 import com.wm.app.b2b.server.ServiceSetupException;
+import com.wm.app.b2b.server.ns.Namespace;
 import com.wm.data.IData;
+import com.wm.data.IDataCursor;
+import com.wm.data.IDataFactory;
+import com.wm.data.IDataUtil;
 import com.wm.lang.ns.NSName;
 import com.wm.lang.ns.NSService;
 import com.wm.lang.ns.NSServiceType;
@@ -93,6 +98,33 @@ public final class ServiceHelper {
      */
     public static void create(String packageName, String serviceName) throws ServiceException {
         create(packageName, serviceName, null, null);
+    }
+
+    /**
+     * Returns information about the service with the given name.
+     *
+     * @param serviceName   The name of the service to be reflected on.
+     * @return              An IData document containing information about the service.
+     */
+    public static IData reflect(String serviceName) {
+        if (serviceName == null) return null;
+
+        BaseService service = Namespace.getService(NSName.create(serviceName));
+        if (service == null) return null;
+
+        IData output = IDataFactory.create();
+        IDataCursor cursor = output.getCursor();
+
+        IDataUtil.put(cursor, "name", serviceName);
+        IDataUtil.put(cursor, "type", service.getServiceType().getType());
+        IDataUtil.put(cursor, "package", service.getPackageName());
+
+        String description = service.getComment();
+        if (description != null) IDataUtil.put(cursor, "description", description);
+
+        cursor.destroy();
+
+        return output;
     }
 
     /**
