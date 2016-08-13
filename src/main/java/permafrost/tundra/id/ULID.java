@@ -45,6 +45,10 @@ public class ULID {
      * The number of characters in the ULID devoted ot the random component.
      */
     private static final int RANDOM_LENGTH = 16;
+    /**
+     * The multiplication factor used for 40-bits of randomness.
+     */
+    private static final double RANDOM_MULTIPLIER = Math.pow(2, 40);
 
     /**
      * Returns a newly generated ULID.
@@ -59,25 +63,36 @@ public class ULID {
     }
 
     /**
-     * Encode the current time into this ULID's string buffer.
+     * Base-32 encodes the given value for the given length into the given buffer.
+     *
+     * @param buffer    The buffer to encode the value into.
+     * @param value     The value to be encoded.
+     * @param length    The number of base-32 characters the value is to be represented by.
      */
-    private static void encodeTime(StringBuilder buffer) {
-        long currentTime = System.currentTimeMillis();
-
-        for (int i = 0; i < TIME_LENGTH; i++) {
-            int mod = (int)(currentTime % ENCODE_TABLE.length);
-            currentTime = (currentTime - mod) / ENCODE_TABLE.length;
-            buffer.append(ENCODE_TABLE[mod]);
+    private static void encode(StringBuilder buffer, long value, int length) {
+        for (int i = 0; i < length; i++) {
+            int remainder = (int)(value % ENCODE_TABLE.length);
+            value = (value - remainder) / ENCODE_TABLE.length;
+            buffer.append(ENCODE_TABLE[remainder]);
         }
     }
 
     /**
+     * Encode the current time into this ULID's string buffer.
+     *
+     * @param buffer    The buffer into which the time is encoded.
+     */
+    private static void encodeTime(StringBuilder buffer) {
+        encode(buffer, System.currentTimeMillis(), TIME_LENGTH);
+    }
+
+    /**
      * Encodes a randomness component into this ULID's string buffer.
+     *
+     * @param buffer    The buffer into which the random number is encoded.
      */
     private static void encodeRandom(StringBuilder buffer) {
-        for (int i = 0; i < RANDOM_LENGTH; i++) {
-            int randomNumber = (int)(Math.floor(ENCODE_TABLE.length * Math.random()));
-            buffer.append(ENCODE_TABLE[randomNumber]);
-        }
+        encode(buffer, (long)(Math.random() * RANDOM_MULTIPLIER), RANDOM_LENGTH/2);
+        encode(buffer, (long)(Math.random() * RANDOM_MULTIPLIER), RANDOM_LENGTH/2);
     }
 }
