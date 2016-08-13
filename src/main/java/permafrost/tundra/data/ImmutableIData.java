@@ -208,7 +208,7 @@ public class ImmutableIData extends IDataEnvelope implements Serializable {
          */
         @Override
         public IDataCursor getCursorClone() {
-            return new ImmutableIDataCursor(cursor);
+            return new ImmutableIDataCursor(cursor.getCursorClone());
         }
     }
 }
