@@ -45,51 +45,6 @@ public class ULID {
      * The number of characters in the ULID devoted ot the random component.
      */
     private static final int RANDOM_LENGTH = 16;
-    /**
-     * The buffer into which the ULID is generated.
-     */
-    private StringBuilder buffer = new StringBuilder();
-
-    /**
-     * Constructs a new ULID.
-     */
-    private ULID() {
-        encodeRandom();
-        encodeTime();
-    }
-
-    /**
-     * Encode the current time into this ULID's string buffer.
-     */
-    private void encodeTime() {
-        long time = System.currentTimeMillis();
-
-        for (int i = 0; i < TIME_LENGTH; i++) {
-            int mod = (int)(time % ENCODE_TABLE.length);
-            time = (time - mod) / ENCODE_TABLE.length;
-            buffer.append(ENCODE_TABLE[mod]);
-        }
-    }
-
-    /**
-     * Encodes a randomness component into this ULID's string buffer.
-     */
-    private void encodeRandom() {
-        for (int i = 0; i < RANDOM_LENGTH; i++) {
-            int rand = (int)(Math.floor(ENCODE_TABLE.length * Math.random()));
-            buffer.append(ENCODE_TABLE[rand]);
-        }
-    }
-
-    /**
-     * Returns the string representation of this ULID.
-     *
-     * @return The string representation of this ULID.
-     */
-    @Override
-    public String toString() {
-        return buffer.reverse().toString();
-    }
 
     /**
      * Returns a newly generated ULID.
@@ -97,6 +52,32 @@ public class ULID {
      * @return A newly generated ULID.
      */
     public static String generate() {
-        return new ULID().toString();
+        StringBuilder buffer = new StringBuilder();
+        encodeRandom(buffer);
+        encodeTime(buffer);
+        return buffer.reverse().toString();
+    }
+
+    /**
+     * Encode the current time into this ULID's string buffer.
+     */
+    private static void encodeTime(StringBuilder buffer) {
+        long currentTime = System.currentTimeMillis();
+
+        for (int i = 0; i < TIME_LENGTH; i++) {
+            int mod = (int)(currentTime % ENCODE_TABLE.length);
+            currentTime = (currentTime - mod) / ENCODE_TABLE.length;
+            buffer.append(ENCODE_TABLE[mod]);
+        }
+    }
+
+    /**
+     * Encodes a randomness component into this ULID's string buffer.
+     */
+    private static void encodeRandom(StringBuilder buffer) {
+        for (int i = 0; i < RANDOM_LENGTH; i++) {
+            int randomNumber = (int)(Math.floor(ENCODE_TABLE.length * Math.random()));
+            buffer.append(ENCODE_TABLE[randomNumber]);
+        }
     }
 }
