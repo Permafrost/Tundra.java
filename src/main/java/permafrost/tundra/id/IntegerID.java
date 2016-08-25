@@ -91,27 +91,26 @@ public class IntegerID {
     }
 
     /**
-     * Constructs a new ID generator using the given number of bits for the time component, the remaining
-     * number of bits from 31 for the partition component, with time measured from the Unix epoch in seconds.
+     * Constructs a new ID generator using the given number of bits for the partition component, the remaining number
+     * of bits from 31 for the time component with time measured from Unix epoch in seconds.
      *
-     * @param timeBitLength     The number of bits used for the time component when generating IDs.
-     * @param partition         The value to use to partition the ID space.
+     * @param partitionBitLength    The number of bits used for partitioning the ID space.
+     * @param partition             The value to use to partition the ID space.
      */
-    public IntegerID(int timeBitLength, int partition) {
-        this(DEFAULT_TIME_UNIT, timeBitLength, partition);
+    public IntegerID(int partitionBitLength, int partition) {
+        this(DEFAULT_TIME_UNIT, partitionBitLength, partition);
     }
 
     /**
-     * Constructs a new ID generator using the given number of bits for the time component, the remaining
-     * number of bits from 31 for the partition component, with time measured from the Unix epoch in the
-     * given time unit.
+     * Constructs a new ID generator using the given number of bits for the partition component, the remaining number
+     * of bits from 31 for the time component with time measured from Unix epoch in the given time unit.
      *
-     * @param timeUnit          The time unit used for generating IDs.
-     * @param timeBitLength     The number of bits used for the time component when generating IDs.
-     * @param partition         The value to use to partition the ID space.
+     * @param timeUnit              The time unit used for generating IDs.
+     * @param partitionBitLength    The number of bits used for partitioning the ID space.
+     * @param partition             The value to use to partition the ID space.
      */
-    public IntegerID(TimeUnit timeUnit, int timeBitLength, int partition) {
-        this(0, timeUnit, timeBitLength, partition);
+    public IntegerID(TimeUnit timeUnit, int partitionBitLength, int partition) {
+        this(0, timeUnit, partitionBitLength, partition);
     }
 
     /**
