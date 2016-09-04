@@ -614,16 +614,21 @@ public final class IDataHelper {
             String key = inputCursor.getKey();
             Object value = inputCursor.getValue();
 
-            if (recurse) {
-                if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
-                    value = duplicate(toIDataArray(value), recurse);
-                } else if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
-                    value = duplicate(toIData(value), recurse);
+            if (key != null) {
+                if (recurse) {
+                    if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
+                        value = duplicate(toIDataArray(value), recurse);
+                    } else if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
+                        value = duplicate(toIData(value), recurse);
+                    }
                 }
-            }
 
-            outputCursor.insertAfter(key, value);
+                outputCursor.insertAfter(key, value);
+            }
         }
+
+        inputCursor.destroy();
+        outputCursor.destroy();
 
         return output;
     }
