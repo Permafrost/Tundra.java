@@ -131,10 +131,16 @@ public final class IDataHelper {
      * @return          The list of top-level values present in the given IData document.
      */
     public static Object[] getValues(IData document) {
-        List<Object> values = new ArrayList<Object>(size(document));
+        List<Object> values = new ArrayList<Object>();
 
-        for (Map.Entry<String, Object> entry : IDataMap.of(document)) {
-            values.add(entry.getValue());
+        if (document != null) {
+            IDataCursor cursor = document.getCursor();
+
+            while(cursor.hasMoreData()) {
+                values.add(cursor.getValue());
+            }
+
+            cursor.destroy();
         }
 
         return ArrayHelper.normalize(values);
