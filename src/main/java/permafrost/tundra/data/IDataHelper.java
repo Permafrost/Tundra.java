@@ -43,7 +43,6 @@ import permafrost.tundra.time.DateTimeHelper;
 import permafrost.tundra.xml.dom.NodeHelper;
 import permafrost.tundra.xml.dom.Nodes;
 import permafrost.tundra.xml.xpath.XPathHelper;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -598,26 +597,53 @@ public final class IDataHelper {
     }
 
     /**
-     * Returns a clone of the given IData document.
+     * Returns a new IData document which is a copy of the given IData document.
      *
      * @param document  An IData document to be duplicated.
      * @param recurse   When true, nested IData documents and IData[] document lists will also be duplicated.
      * @return          A new IData document which is a copy of the given IData document.
      */
     public static IData duplicate(IData document, boolean recurse) {
-        IData output = null;
+        if (document == null) return null;
 
-        try {
-            if (document != null) {
-                if (recurse) {
-                    output = IDataUtil.deepClone(document);
-                } else {
-                    output = IDataUtil.clone(document);
+        IData output = IDataFactory.create();
+        IDataCursor inputCursor = document.getCursor();
+        IDataCursor outputCursor = output.getCursor();
+
+        while(inputCursor.hasMoreData()) {
+            String key = inputCursor.getKey();
+            Object value = inputCursor.getValue();
+
+            if (recurse) {
+                if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
+                    value = duplicate(toIDataArray(value), recurse);
+                } else if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
+                    value = duplicate(toIData(value), recurse);
                 }
             }
-        } catch (IOException ex) {
-            throw new RuntimeException(ex);
+
+            outputCursor.insertAfter(key, value);
         }
+
+        return output;
+    }
+
+    /**
+     * Returns a new IData[] document list which is a copy of the given IData[] document list.
+     *
+     * @param array     An IData[] document list to be duplicated.
+     * @param recurse   When true, nested IData documents and IData[] document lists will also be duplicated.
+     * @return          A new IData[] document list which is a copy of the given IData[] document list.
+     */
+    public static IData[] duplicate(IData[] array, boolean recurse) {
+        if (array == null) return null;
+
+        IData[] output = new IData[array.length];
+
+        for (int i = 0; i < array.length; i++) {
+            output[i] = duplicate(array[i], recurse);
+        }
+
         return output;
     }
 
