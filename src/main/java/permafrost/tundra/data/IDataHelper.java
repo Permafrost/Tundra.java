@@ -100,16 +100,25 @@ public final class IDataHelper {
      * @return          The list of keys present in the given IData document that match the given regular expression pattern.
      */
     public static String[] getKeys(IData document, Pattern pattern) {
-        java.util.List<String> keys = new java.util.ArrayList<String>(size(document));
-        for (Map.Entry<String, Object> entry : IDataMap.of(document)) {
-            String key = entry.getKey();
+        List<String> keys = new ArrayList<String>();
 
-            if (pattern == null) {
-                keys.add(key);
-            } else {
-                Matcher matcher = pattern.matcher(key);
-                if (matcher.matches()) keys.add(key);
+        if (document != null) {
+            IDataCursor cursor = document.getCursor();
+
+            while(cursor.hasMoreData()) {
+                String key = cursor.getKey();
+
+                if (key != null) {
+                    if (pattern == null) {
+                        keys.add(key);
+                    } else {
+                        Matcher matcher = pattern.matcher(key);
+                        if (matcher.matches()) keys.add(key);
+                    }
+                }
             }
+
+            cursor.destroy();
         }
 
         return keys.toArray(new String[keys.size()]);
