@@ -26,10 +26,8 @@ package permafrost.tundra.server;
 
 import com.wm.app.b2b.server.InvokeState;
 import com.wm.app.b2b.server.ServerThread;
-import com.wm.lang.ns.NSService;
 import permafrost.tundra.id.ULID;
 import permafrost.tundra.lang.ThreadHelper;
-import java.util.Stack;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -135,31 +133,20 @@ public class ServerThreadFactory implements ThreadFactory {
     @Override
     public Thread newThread(Runnable runnable) {
         ServerThread thread = new ServerThread(runnable);
-        thread.setInvokeState(cloneInvokeStateWithStack());
         String threadContext = ULID.generate();
+        long threadCount = count.getAndIncrement();
+
         if (threadNameSuffix != null) {
-            thread.setName(String.format("%s #%03d ThreadContext=%s %s", threadNamePrefix, count.getAndIncrement(), threadContext, threadNameSuffix));
+            thread.setName(String.format("%s #%03d ThreadContext=%s %s", threadNamePrefix, threadCount, threadContext, threadNameSuffix));
         } else {
-            thread.setName(String.format("%s #%03d ThreadContext=%s", threadNamePrefix, count.getAndIncrement(), threadContext));
+            thread.setName(String.format("%s #%03d ThreadContext=%s", threadNamePrefix, threadCount, threadContext));
         }
+
+        thread.setInvokeState(InvokeStateHelper.clone(invokeState));
         thread.setUncaughtExceptionHandler(UncaughtExceptionLogger.getInstance());
         thread.setPriority(threadPriority);
         thread.setDaemon(daemon);
-        return thread;
-    }
 
-    /**
-     * Clones the invoke invokeState with its call stack intact.
-     *
-     * @return A clone of the invoke invokeState used for new threads.
-     */
-    protected InvokeState cloneInvokeStateWithStack() {
-        InvokeState outputState = (InvokeState)invokeState.clone();
-        Stack stack = (Stack)invokeState.getCallStack().clone();
-        while (!stack.empty()) {
-            NSService service = (NSService)stack.remove(0);
-            outputState.pushService(service);
-        }
-        return outputState;
+        return thread;
     }
 }
