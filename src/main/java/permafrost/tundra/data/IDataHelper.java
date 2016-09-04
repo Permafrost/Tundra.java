@@ -1465,21 +1465,39 @@ public final class IDataHelper {
         if (document == null) return null;
 
         IData output = IDataFactory.create();
+        IDataCursor inputCursor = document.getCursor();
+        IDataCursor outputCursor = output.getCursor();
+        boolean outputCursorDirty = false;
 
-        for (Map.Entry<String, Object> entry : IDataMap.of(document)) {
-            String key = entry.getKey();
-            Object value = normalize(entry.getValue());
+        while(inputCursor.hasMoreData()) {
+            String key = inputCursor.getKey();
 
-            if (IDataKey.isFullyQualified(key)) {
-                // normalize fully-qualified keys by using IDataHelper.put() rather than IDataUtil.put()
-                put(output, entry.getKey(), value);
-            } else {
-                // support multiple occurrences of same key by using IDataCursor.insertAfter()
-                IDataCursor outputCursor = output.getCursor();
-                outputCursor.insertAfter(key, value);
-                outputCursor.destroy();
+            if (key != null) {
+                Object value = normalize(inputCursor.getValue());
+
+                if (IDataKey.isFullyQualified(key)) {
+                    // normalize fully-qualified keys by using IDataHelper.put() rather than IDataUtil.put()
+                    put(output, key, value);
+
+                    outputCursorDirty = true;
+                } else {
+                    // reuse cursor unless it has been marked dirty by a fully-qualified put
+                    if (outputCursorDirty) {
+                        outputCursor.destroy();
+                        outputCursor = output.getCursor();
+                        outputCursor.last();
+
+                        outputCursorDirty = false;
+                    }
+
+                    // support multiple occurrences of same key by using IDataCursor.insertAfter()
+                    outputCursor.insertAfter(key, value);
+                }
             }
         }
+
+        inputCursor.destroy();
+        outputCursor.destroy();
 
         return output;
     }
