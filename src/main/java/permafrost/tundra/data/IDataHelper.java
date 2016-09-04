@@ -2300,9 +2300,7 @@ public final class IDataHelper {
 
         IData output = null;
 
-        if (object instanceof IData) {
-            output = (IData)object;
-        } else if (object instanceof IDataCodable) {
+        if (object instanceof IDataCodable) {
             output = toIData((IDataCodable)object);
         } else if (object instanceof IDataPortable) {
             output = toIData((IDataPortable)object);
@@ -2310,6 +2308,8 @@ public final class IDataHelper {
             output = toIData((ValuesCodable)object);
         } else if (object instanceof Map) {
             output = toIData((Map)object);
+        } else if (object instanceof IData) {
+            output = (IData)object;
         }
 
         return output;
@@ -2381,9 +2381,7 @@ public final class IDataHelper {
 
         IData[] output = null;
 
-        if (object instanceof IData[]) {
-            output = (IData[])object;
-        } else if (object instanceof Table) {
+        if (object instanceof Table) {
             output = toIDataArray((Table)object);
         } else if (object instanceof IDataCodable[]) {
             output = toIDataArray((IDataCodable[])object);
@@ -2393,6 +2391,8 @@ public final class IDataHelper {
             output = toIDataArray((ValuesCodable[])object);
         } else if (object instanceof Map[]) {
             output = toIDataArray((Map[])object);
+        } else if (object instanceof IData[]) {
+            output = (IData[])object;
         }
 
         return output;
