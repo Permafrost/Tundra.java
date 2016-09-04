@@ -1395,9 +1395,7 @@ public final class IDataHelper {
      * @return      A new normalized version of the given Object.
      */
     private static Object normalize(Object value) {
-        if (value instanceof IData[]) {
-            value = normalize((IData[])value);
-        } else if (value instanceof Table) {
+        if (value instanceof Table) {
             value = normalize((Table)value);
         } else if (value instanceof IDataCodable[]) {
             value = normalize((IDataCodable[])value);
@@ -1409,8 +1407,8 @@ public final class IDataHelper {
             value = normalize((Collection)value);
         } else if (value instanceof Map[]) {
             value = normalize((Map[]) value);
-        } else if (value instanceof IData) {
-            value = normalize((IData)value);
+        } else if (value instanceof IData[]) {
+            value = normalize((IData[])value);
         } else if (value instanceof IDataCodable) {
             value = normalize((IDataCodable)value);
         } else if (value instanceof IDataPortable) {
@@ -1419,6 +1417,8 @@ public final class IDataHelper {
             value = normalize((ValuesCodable)value);
         } else if (value instanceof Map) {
             value = normalize((Map)value);
+        } else if (value instanceof IData) {
+            value = normalize((IData) value);
         }
 
         return value;
