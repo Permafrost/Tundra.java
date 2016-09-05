@@ -105,16 +105,13 @@ public final class IDataHelper {
         if (document != null) {
             IDataCursor cursor = document.getCursor();
 
-            while(cursor.hasMoreData()) {
+            while(cursor.next()) {
                 String key = cursor.getKey();
-
-                if (key != null) {
-                    if (pattern == null) {
-                        keys.add(key);
-                    } else {
-                        Matcher matcher = pattern.matcher(key);
-                        if (matcher.matches()) keys.add(key);
-                    }
+                if (pattern == null) {
+                    keys.add(key);
+                } else {
+                    Matcher matcher = pattern.matcher(key);
+                    if (matcher.matches()) keys.add(key);
                 }
             }
 
@@ -136,7 +133,7 @@ public final class IDataHelper {
         if (document != null) {
             IDataCursor cursor = document.getCursor();
 
-            while(cursor.hasMoreData()) {
+            while(cursor.next()) {
                 values.add(cursor.getValue());
             }
 
@@ -625,21 +622,19 @@ public final class IDataHelper {
         IDataCursor inputCursor = document.getCursor();
         IDataCursor outputCursor = output.getCursor();
 
-        while(inputCursor.hasMoreData()) {
+        while(inputCursor.next()) {
             String key = inputCursor.getKey();
             Object value = inputCursor.getValue();
 
-            if (key != null) {
-                if (recurse) {
-                    if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
-                        value = duplicate(toIDataArray(value), recurse);
-                    } else if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
-                        value = duplicate(toIData(value), recurse);
-                    }
+            if (recurse) {
+                if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
+                    value = duplicate(toIDataArray(value), recurse);
+                } else if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
+                    value = duplicate(toIData(value), recurse);
                 }
-
-                outputCursor.insertAfter(key, value);
             }
+
+            outputCursor.insertAfter(key, value);
         }
 
         inputCursor.destroy();
@@ -1469,30 +1464,25 @@ public final class IDataHelper {
         IDataCursor outputCursor = output.getCursor();
         boolean outputCursorDirty = false;
 
-        while(inputCursor.hasMoreData()) {
+        while(inputCursor.next()) {
             String key = inputCursor.getKey();
+            Object value = normalize(inputCursor.getValue());
 
-            if (key != null) {
-                Object value = normalize(inputCursor.getValue());
-
-                if (IDataKey.isFullyQualified(key)) {
-                    // normalize fully-qualified keys by using IDataHelper.put() rather than IDataUtil.put()
-                    put(output, key, value);
-
-                    outputCursorDirty = true;
-                } else {
-                    // reuse cursor unless it has been marked dirty by a fully-qualified put
-                    if (outputCursorDirty) {
-                        outputCursor.destroy();
-                        outputCursor = output.getCursor();
-                        outputCursor.last();
-
-                        outputCursorDirty = false;
-                    }
-
-                    // support multiple occurrences of same key by using IDataCursor.insertAfter()
-                    outputCursor.insertAfter(key, value);
+            if (IDataKey.isFullyQualified(key)) {
+                // normalize fully-qualified keys by using IDataHelper.put() rather than IDataUtil.put()
+                put(output, key, value);
+                outputCursorDirty = true;
+            } else {
+                // reuse cursor unless it has been marked dirty by a fully-qualified put
+                if (outputCursorDirty) {
+                    outputCursor.destroy();
+                    outputCursor = output.getCursor();
+                    outputCursor.last();
+                    outputCursorDirty = false;
                 }
+
+                // support multiple occurrences of same key by using IDataCursor.insertAfter()
+                outputCursor.insertAfter(key, value);
             }
         }
 
