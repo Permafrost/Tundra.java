@@ -22,20 +22,19 @@
  * SOFTWARE.
  */
 
-package permafrost.tundra.server.invoke.exception;
+package permafrost.tundra.server.invoke;
 
 import com.wm.app.b2b.server.BaseService;
 import com.wm.app.b2b.server.ServerAPI;
 import com.wm.app.b2b.server.invoke.ServiceStatus;
 import com.wm.data.IData;
 import com.wm.util.ServerException;
-import permafrost.tundra.server.invoke.BasicInvokeChainProcessor;
 import java.util.Iterator;
 
 /**
  * A service invocation processor that logs service exceptions to the server error log.
  */
-public class LoggingExceptionHandler extends BasicInvokeChainProcessor {
+public class ExceptionLoggingProcessor extends BasicInvokeChainProcessor {
     /**
      * Whether only top level service exceptions should be logged.
      */
@@ -44,14 +43,14 @@ public class LoggingExceptionHandler extends BasicInvokeChainProcessor {
     /**
      * Creates a new logging exception handler.
      */
-    public LoggingExceptionHandler() {}
+    public ExceptionLoggingProcessor() {}
 
     /**
      * Creates a new pipeline capture processor.
      *
      * @param topServiceOnly    Whether only top level service exceptions should be logged.
      */
-    public LoggingExceptionHandler(boolean topServiceOnly) {
+    public ExceptionLoggingProcessor(boolean topServiceOnly) {
         this.topServiceOnly = topServiceOnly;
     }
 

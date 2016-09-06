@@ -54,6 +54,19 @@ public abstract class BasicInvokeChainProcessor implements InvokeChainProcessor 
     protected void processBefore(Iterator iterator, BaseService baseService, IData pipeline, ServiceStatus serviceStatus) throws ServerException {}
 
     /**
+     * Called to process the remaining invoke chain processors.
+     *
+     * @param iterator          Invocation chain.
+     * @param baseService       The invoked service.
+     * @param pipeline          The input pipeline for the service.
+     * @param serviceStatus     The status of the service invocation.
+     * @throws ServerException  If the service invocation fails.
+     */
+    protected final void processChain(Iterator iterator, BaseService baseService, IData pipeline, ServiceStatus serviceStatus) throws ServerException {
+        if (iterator.hasNext()) ((InvokeChainProcessor)iterator.next()).process(iterator, baseService, pipeline, serviceStatus);
+    }
+
+    /**
      * Called after the service invocation. Subclasses should override this method to perform work after an invocation
      * which did not throw an exception.
      *
@@ -105,17 +118,30 @@ public abstract class BasicInvokeChainProcessor implements InvokeChainProcessor 
      * @param serviceStatus     The status of the service invocation.
      * @throws ServerException  If the service invocation fails.
      */
-    @Override
-    public void process(Iterator iterator, BaseService baseService, IData pipeline, ServiceStatus serviceStatus) throws ServerException {
+    public void processMain(Iterator iterator, BaseService baseService, IData pipeline, ServiceStatus serviceStatus) throws ServerException {
         try {
             processBefore(iterator, baseService, pipeline, serviceStatus);
-            if (iterator.hasNext()) ((InvokeChainProcessor)iterator.next()).process(iterator, baseService, pipeline, serviceStatus);
+            processChain(iterator, baseService, pipeline, serviceStatus);
             processAfter(iterator, baseService, pipeline, serviceStatus);
         } catch(Throwable ex) {
             processCatch(iterator, baseService, pipeline, serviceStatus, ex);
         } finally {
             processFinal(iterator, baseService, pipeline, serviceStatus);
         }
+    }
+
+    /**
+     * Processes a service invocation.
+     *
+     * @param iterator          Invocation chain.
+     * @param baseService       The invoked service.
+     * @param pipeline          The input pipeline for the service.
+     * @param serviceStatus     The status of the service invocation.
+     * @throws ServerException  If the service invocation fails.
+     */
+    @Override
+    public void process(Iterator iterator, BaseService baseService, IData pipeline, ServiceStatus serviceStatus) throws ServerException {
+        processMain(iterator, baseService, pipeline, serviceStatus);
     }
 
     /**
