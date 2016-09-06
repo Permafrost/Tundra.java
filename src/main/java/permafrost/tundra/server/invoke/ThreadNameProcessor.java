@@ -25,12 +25,9 @@
 package permafrost.tundra.server.invoke;
 
 import com.wm.app.b2b.server.BaseService;
-import com.wm.app.b2b.server.invoke.InvokeChainProcessor;
-import com.wm.app.b2b.server.invoke.InvokeManager;
 import com.wm.app.b2b.server.invoke.ServiceStatus;
 import com.wm.data.IData;
 import com.wm.util.ServerException;
-import permafrost.tundra.lang.IdentityHelper;
 import permafrost.tundra.time.DateTimeHelper;
 import java.text.MessageFormat;
 import java.util.Iterator;
@@ -38,12 +35,7 @@ import java.util.Iterator;
 /**
  * A service invocation processor that sets more descriptive thread names on invocation threads.
  */
-public class ThreadNameProcessor implements InvokeChainProcessor {
-    /**
-     * Whether the processor is started or not.
-     */
-    protected volatile boolean started = false;
-
+public class ThreadNameProcessor extends BasicInvokeChainProcessor {
     /**
      * Initialization on demand holder idiom.
      */
@@ -69,26 +61,6 @@ public class ThreadNameProcessor implements InvokeChainProcessor {
     }
 
     /**
-     * Registers this class as an invocation handler and starts saving pipelines.
-     */
-    public synchronized void start() {
-        if (!started) {
-            started = true;
-            InvokeManager.getDefault().registerProcessor(this);
-        }
-    }
-
-    /**
-     * Unregisters this class as an invocation handler and stops saving pipelines.
-     */
-    public synchronized void stop() {
-        if (started) {
-            started = false;
-            InvokeManager.getDefault().unregisterProcessor(this);
-        }
-    }
-
-    /**
      * Processes a service invocation by saving the input and output pipeline to disk.
      *
      * @param iterator          The invocation chain.
@@ -99,16 +71,13 @@ public class ThreadNameProcessor implements InvokeChainProcessor {
      */
     @Override
     public void process(Iterator iterator, BaseService baseService, IData pipeline, ServiceStatus serviceStatus) throws ServerException {
-        if (started) {
-            String originalThreadName = Thread.currentThread().getName();
+        String originalThreadName = Thread.currentThread().getName();
+
+        try {
             Thread.currentThread().setName(MessageFormat.format("{0} ({1} @ {2})", originalThreadName, baseService.getNSName().getFullName(), DateTimeHelper.format(serviceStatus.getStartTime())));
-            try {
-                if (iterator.hasNext()) {
-                    ((InvokeChainProcessor)iterator.next()).process(iterator, baseService, pipeline, serviceStatus);
-                }
-            } finally {
-                Thread.currentThread().setName(originalThreadName);
-            }
+            processMain(iterator, baseService, pipeline, serviceStatus);
+        } finally {
+            Thread.currentThread().setName(originalThreadName);
         }
     }
 }
