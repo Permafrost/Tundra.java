@@ -25,8 +25,6 @@
 package permafrost.tundra.server.invoke;
 
 import com.wm.app.b2b.server.BaseService;
-import com.wm.app.b2b.server.invoke.InvokeChainProcessor;
-import com.wm.app.b2b.server.invoke.InvokeManager;
 import com.wm.app.b2b.server.invoke.ServiceStatus;
 import com.wm.data.IData;
 import com.wm.data.IDataUtil;
@@ -55,45 +53,39 @@ import java.util.regex.Pattern;
 /**
  * A service invocation processor that saves input and output pipelines to disk.
  */
-public class PipelineCaptureProcessor implements InvokeChainProcessor, IDataCodable {
+public class PipelineCaptureProcessor extends BasicInvokeChainProcessor implements IDataCodable {
+    /**
+     * The default service pattern: matches all services.
+     */
     public static Pattern DEFAULT_SERVICE_PATTERN = Pattern.compile(".*");
+    /**
+     * The default pipeline directory.
+     */
     public static File DEFAULT_DIRECTORY = new File("./pipeline");
-
     /**
      * A thread-pool for asynchronously saving pipelines to disk, so that invocation performance is minimally affected.
      */
     protected ExecutorService executor;
-
     /**
      * A regular expression which if matching the invoked service will save the pipeline to disk.
      */
     protected volatile Pattern servicePattern;
-
     /**
      * The directory in which the pipelines are saved.
      */
     protected volatile File directory;
-
-    /**
-     * Whether the processor is started or not.
-     */
-    protected volatile boolean started = false;
-
     /**
      * When the capture was started.
      */
     protected volatile long startTime;
-
     /**
      * The local host name, used when naming pipeline files.
      */
     protected volatile String localhost;
-
     /**
      * Atomic counter incremented for each saved pipeline.
      */
     protected AtomicLong count = new AtomicLong(0);
-
     /**
      * The datetime format used in the saved pipeline file names.
      */
@@ -152,20 +144,6 @@ public class PipelineCaptureProcessor implements InvokeChainProcessor, IDataCoda
     }
 
     /**
-     * Registers this class as an invocation handler and starts saving pipelines.
-     */
-    public synchronized void start() {
-        if (!started) {
-            resolveLocalHost();
-            executor = Executors.newSingleThreadExecutor(new NamedThreadFactory());
-            startTime = System.currentTimeMillis();
-            started = true;
-
-            InvokeManager.getDefault().registerProcessor(this);
-        }
-    }
-
-    /**
      * Sets the local host name member variable using a DNS lookup.
      */
     private void resolveLocalHost() {
@@ -177,13 +155,23 @@ public class PipelineCaptureProcessor implements InvokeChainProcessor, IDataCoda
     }
 
     /**
+     * Registers this class as an invocation handler and starts saving pipelines.
+     */
+    public synchronized void start() {
+        if (!started) {
+            resolveLocalHost();
+            executor = Executors.newSingleThreadExecutor(new NamedThreadFactory());
+            startTime = System.currentTimeMillis();
+            super.start();
+        }
+    }
+
+    /**
      * Unregisters this class as an invocation handler and stops saving pipelines.
      */
     public synchronized void stop() {
         if (started) {
-            started = false;
-
-            InvokeManager.getDefault().unregisterProcessor(this);
+            super.stop();
 
             // disable new tasks from being submitted
             executor.shutdown();
@@ -231,7 +219,7 @@ public class PipelineCaptureProcessor implements InvokeChainProcessor, IDataCoda
         }
 
         try {
-            if (started && matches) {
+            if (matches) {
                 try {
                     executor.execute(new SavePipelineToFileRunnable(pipeline, generatePipelineFilename(directory, sanitizedServiceName, startDateTime, id, "input")));
                 } catch(RejectedExecutionException ex) {
@@ -239,11 +227,9 @@ public class PipelineCaptureProcessor implements InvokeChainProcessor, IDataCoda
                 }
             }
 
-            if (iterator.hasNext()) {
-                ((InvokeChainProcessor)iterator.next()).process(iterator, baseService, pipeline, serviceStatus);
-            }
+            processMain(iterator, baseService, pipeline, serviceStatus);
         } finally {
-            if (started && matches) {
+            if (matches) {
                 try {
                     executor.execute(new SavePipelineToFileRunnable(pipeline, generatePipelineFilename(directory, sanitizedServiceName, startDateTime, id, "output")));
                 } catch(RejectedExecutionException ex) {
