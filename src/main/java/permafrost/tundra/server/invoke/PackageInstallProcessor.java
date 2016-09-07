@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
 /**
  * Runs any install services found in a package after it is installed.
  */
-public class PackageInstallProcessor extends BasicInvokeChainProcessor {
+public class PackageInstallProcessor extends AbstractInvokeChainProcessor {
     /**
      * The service used to install packages, which after invocation is when any detected package install services are invoked by this processor.
      */
@@ -35,11 +35,6 @@ public class PackageInstallProcessor extends BasicInvokeChainProcessor {
      * A regular expression pattern used to detect package install services.
      */
     protected Pattern pattern;
-    /**
-     * The name of the package being installed in the current thread.
-     */
-    protected ThreadLocal<String> packageName = new ThreadLocal<String>();
-
     /**
      * Constructs a new PackageInstallProcessor using the default package install service patterns.
      */
@@ -66,7 +61,7 @@ public class PackageInstallProcessor extends BasicInvokeChainProcessor {
     }
 
     /**
-     * Saves the name of the package being installed to the thread local variable for later use.
+     * Process the invocation chain; if invocation is a package install, run package install services afterwards.
      *
      * @param iterator          Invocation chain.
      * @param baseService       The invoked service.
@@ -75,69 +70,46 @@ public class PackageInstallProcessor extends BasicInvokeChainProcessor {
      * @throws ServerException  If the service invocation fails.
      */
     @Override
-    protected void processBefore(Iterator iterator, BaseService baseService, IData pipeline, ServiceStatus serviceStatus) throws ServerException {
-        if (pipeline != null && baseService != null && INTEGRATION_SERVER_PACKAGE_INSTALL_SERVICE.equals(baseService.getNSName().getFullName())) {
+    public void process(Iterator iterator, BaseService baseService, IData pipeline, ServiceStatus serviceStatus) throws ServerException {
+        if (INTEGRATION_SERVER_PACKAGE_INSTALL_SERVICE.equals(baseService.getNSName().getFullName())) {
             IDataCursor cursor = pipeline.getCursor();
             String packageInstallFileName = IDataUtil.getString(cursor, "file");
             cursor.destroy();
 
+            String packageName = null;
+
             if (packageInstallFileName != null) {
                 File packageInstallFile = new File(Server.getPkgInDir(), packageInstallFileName);
-
                 try {
-                    this.packageName.set(PackageReplicator.getTargetPackageName(packageInstallFileName, packageInstallFile));
+                    packageName = PackageReplicator.getTargetPackageName(packageInstallFileName, packageInstallFile);
                 } catch (IOException ex) {
                     // do nothing
                 }
             }
-        }
-    }
 
-    /**
-     * Invokes any install services found in the installed package.
-     *
-     * @param iterator          Invocation chain.
-     * @param baseService       The invoked service.
-     * @param pipeline          The input pipeline for the service.
-     * @param serviceStatus     The status of the service invocation.
-     * @throws ServerException  If the service invocation fails.
-     */
-    @Override
-    protected void processAfter(Iterator iterator, BaseService baseService, IData pipeline, ServiceStatus serviceStatus) throws ServerException {
-        String packageName = this.packageName.get();
+            super.process(iterator, baseService, pipeline, serviceStatus);
 
-        if (packageName != null) {
-            Package pkg = PackageManager.getPackage(packageName);
-            if (pkg != null) {
-                for (Object item : IterableEnumeration.of(pkg.getState().getLoaded())) {
-                    if (item != null) {
-                        String serviceName = item.toString();
-                        if (pattern.matcher(serviceName).matches()) {
-                            // invoke service
-                            try {
-                                Service.doInvoke(NSName.create(serviceName), IDataFactory.create());
-                            } catch (Exception ex) {
-                                // do nothing
+            if (packageName != null) {
+                Package pkg = PackageManager.getPackage(packageName);
+                if (pkg != null) {
+                    for (Object item : IterableEnumeration.of(pkg.getState().getLoaded())) {
+                        if (item != null) {
+                            String serviceName = item.toString();
+                            if (pattern.matcher(serviceName).matches()) {
+                                // invoke service
+                                try {
+                                    Service.doInvoke(NSName.create(serviceName), IDataFactory.create());
+                                } catch (Exception ex) {
+                                    // do nothing
+                                }
                             }
                         }
-                    }
 
+                    }
                 }
             }
+        } else {
+            super.process(iterator, baseService, pipeline, serviceStatus);
         }
-    }
-
-    /**
-     * Cleans up the thread local variable for later reuse.
-     *
-     * @param iterator          Invocation chain.
-     * @param baseService       The invoked service.
-     * @param pipeline          The input pipeline for the service.
-     * @param serviceStatus     The status of the service invocation.
-     * @throws ServerException  If the service invocation fails.
-     */
-    @Override
-    protected void processFinal(Iterator iterator, BaseService baseService, IData pipeline, ServiceStatus serviceStatus) throws ServerException {
-        this.packageName.remove();
     }
 }
