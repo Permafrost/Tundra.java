@@ -25,8 +25,6 @@
 package permafrost.tundra.server.invoke;
 
 import com.wm.app.b2b.server.BaseService;
-import com.wm.app.b2b.server.invoke.InvokeChainProcessor;
-import com.wm.app.b2b.server.invoke.InvokeManager;
 import com.wm.app.b2b.server.invoke.ServiceStatus;
 import com.wm.data.IData;
 import com.wm.util.ServerException;
@@ -35,12 +33,7 @@ import java.util.Iterator;
 /**
  * Provides a basic implementation of a invocation chain processor.
  */
-public abstract class BasicInvokeChainProcessor implements InvokeChainProcessor {
-    /**
-     * Whether the processor is started or not.
-     */
-    protected volatile boolean started = false;
-
+public abstract class BasicInvokeChainProcessor extends AbstractInvokeChainProcessor {
     /**
      * Called prior to the service invocation. Subclasses should override this method to perform work prior to an
      * invocation.
@@ -54,7 +47,7 @@ public abstract class BasicInvokeChainProcessor implements InvokeChainProcessor 
     protected void processBefore(Iterator iterator, BaseService baseService, IData pipeline, ServiceStatus serviceStatus) throws ServerException {}
 
     /**
-     * Called to process the remaining invoke chain processors.
+     * Calls the remaining service invocation chain processors.
      *
      * @param iterator          Invocation chain.
      * @param baseService       The invoked service.
@@ -62,8 +55,8 @@ public abstract class BasicInvokeChainProcessor implements InvokeChainProcessor 
      * @param serviceStatus     The status of the service invocation.
      * @throws ServerException  If the service invocation fails.
      */
-    protected final void processChain(Iterator iterator, BaseService baseService, IData pipeline, ServiceStatus serviceStatus) throws ServerException {
-        if (iterator.hasNext()) ((InvokeChainProcessor)iterator.next()).process(iterator, baseService, pipeline, serviceStatus);
+    protected void processChain(Iterator iterator, BaseService baseService, IData pipeline, ServiceStatus serviceStatus) throws ServerException {
+        super.process(iterator, baseService, pipeline, serviceStatus);
     }
 
     /**
@@ -92,6 +85,8 @@ public abstract class BasicInvokeChainProcessor implements InvokeChainProcessor 
     protected void processCatch(Iterator iterator, BaseService baseService, IData pipeline, ServiceStatus serviceStatus, Throwable exception) throws ServerException {
         if (exception instanceof ServerException) {
             throw (ServerException)exception;
+        } else if (exception instanceof RuntimeException) {
+            throw (RuntimeException)exception;
         } else {
             throw new ServerException(exception);
         }
@@ -142,25 +137,5 @@ public abstract class BasicInvokeChainProcessor implements InvokeChainProcessor 
     @Override
     public void process(Iterator iterator, BaseService baseService, IData pipeline, ServiceStatus serviceStatus) throws ServerException {
         processMain(iterator, baseService, pipeline, serviceStatus);
-    }
-
-    /**
-     * Registers this class as an invocation handler and starts saving pipelines.
-     */
-    public synchronized void start() {
-        if (!started) {
-            started = true;
-            InvokeManager.getDefault().registerProcessor(this);
-        }
-    }
-
-    /**
-     * Unregisters this class as an invocation handler and stops saving pipelines.
-     */
-    public synchronized void stop() {
-        if (started) {
-            started = false;
-            InvokeManager.getDefault().unregisterProcessor(this);
-        }
     }
 }
