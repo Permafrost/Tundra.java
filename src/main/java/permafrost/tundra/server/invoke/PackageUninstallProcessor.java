@@ -54,6 +54,7 @@ public class PackageUninstallProcessor extends AbstractInvokeChainProcessor {
      * @param pattern A regular expression pattern used to find package uninstall services to be invoked on uninstall.
      */
     public PackageUninstallProcessor(Pattern pattern) {
+        if (pattern == null) throw new NullPointerException("pattern must not be null");
         this.pattern = pattern;
     }
 

@@ -35,6 +35,7 @@ public class PackageInstallProcessor extends AbstractInvokeChainProcessor {
      * A regular expression pattern used to detect package install services.
      */
     protected Pattern pattern;
+    
     /**
      * Constructs a new PackageInstallProcessor using the default package install service patterns.
      */
@@ -57,6 +58,7 @@ public class PackageInstallProcessor extends AbstractInvokeChainProcessor {
      * @param pattern A regular expression pattern used to find package install services to be invoked on install.
      */
     public PackageInstallProcessor(Pattern pattern) {
+        if (pattern == null) throw new NullPointerException("pattern must not be null");
         this.pattern = pattern;
     }
 
