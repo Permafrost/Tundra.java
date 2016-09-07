@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 /**
  * Runs any uninstall services found in a package before it is uninstalled.
  */
-public class PackageUninstallProcessor extends BasicInvokeChainProcessor {
+public class PackageUninstallProcessor extends AbstractInvokeChainProcessor {
     /**
      * The service used to uninstall packages, which before invocation is when any detected package uninstall services are invoked by this processor.
      */
@@ -58,8 +58,7 @@ public class PackageUninstallProcessor extends BasicInvokeChainProcessor {
     }
 
     /**
-     * Called prior to the service invocation. Subclasses should override this method to perform work prior to an
-     * invocation.
+     * Process the invocation chain; if invocation is a package uninstall, run package uninstall services prior.
      *
      * @param iterator          Invocation chain.
      * @param baseService       The invoked service.
@@ -68,8 +67,8 @@ public class PackageUninstallProcessor extends BasicInvokeChainProcessor {
      * @throws ServerException  If the service invocation fails.
      */
     @Override
-    protected void processBefore(Iterator iterator, BaseService baseService, IData pipeline, ServiceStatus serviceStatus) throws ServerException {
-        if (pipeline != null && baseService != null && INTEGRATION_SERVER_PACKAGE_UNINSTALL_SERVICE.equals(baseService.getNSName().getFullName())) {
+    public void process(Iterator iterator, BaseService baseService, IData pipeline, ServiceStatus serviceStatus) throws ServerException {
+        if (INTEGRATION_SERVER_PACKAGE_UNINSTALL_SERVICE.equals(baseService.getNSName().getFullName())) {
             IDataCursor cursor = pipeline.getCursor();
             String packageName = IDataUtil.getString(cursor, "package");
             cursor.destroy();
@@ -93,5 +92,7 @@ public class PackageUninstallProcessor extends BasicInvokeChainProcessor {
                 }
             }
         }
+
+        super.process(iterator, baseService, pipeline, serviceStatus);
     }
 }
