@@ -26,7 +26,7 @@ public class PackageUninstallProcessor extends BasicInvokeChainProcessor {
     /**
      * The default package uninstall service regular expression pattern.
      */
-    public static final Pattern DEFAULT_PACKAGE_UNINSTALL_SERVICE_PATTERN = Pattern.compile("^(.*\\.)?support(\\..*)?:uninstall");
+    public static final Pattern DEFAULT_PACKAGE_UNINSTALL_SERVICE_PATTERN = Pattern.compile("^([^\\.]+\\.)*support(\\.[^\\.]+)*:uninstall");
     /**
      * A regular expression pattern used to detect package uninstall services.
      */

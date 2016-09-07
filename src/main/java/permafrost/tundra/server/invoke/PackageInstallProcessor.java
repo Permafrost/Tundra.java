@@ -30,7 +30,7 @@ public class PackageInstallProcessor extends BasicInvokeChainProcessor {
     /**
      * The default package install service regular expression pattern.
      */
-    public static final Pattern DEFAULT_PACKAGE_INSTALL_SERVICE_PATTERN = Pattern.compile("^(.*\\.)?support(\\..*)?:install$");
+    public static final Pattern DEFAULT_PACKAGE_INSTALL_SERVICE_PATTERN = Pattern.compile("^([^\\.]+\\.)*support(\\.[^\\.]+)*:install$");
     /**
      * A regular expression pattern used to detect package install services.
      */
