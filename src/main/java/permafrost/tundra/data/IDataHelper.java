@@ -1433,7 +1433,7 @@ public final class IDataHelper {
         } else if (value instanceof Map) {
             value = normalize((Map)value);
         } else if (value instanceof IData) {
-            value = normalize((IData) value);
+            value = normalize((IData)value);
         }
 
         return value;
@@ -1458,6 +1458,15 @@ public final class IDataHelper {
      */
     public static IData normalize(IData document) {
         if (document == null) return null;
+
+        // support normalizing TN FixedData objects such as document types, which are both IData and IDataCodable
+        if (document instanceof IDataCodable) {
+            document = normalize((IDataCodable)document);
+        } else if (document instanceof ValuesCodable) {
+            document = normalize((ValuesCodable)document);
+        } else if (document instanceof IDataPortable) {
+            document = normalize((IDataPortable)document);
+        }
 
         IData output = IDataFactory.create();
         IDataCursor inputCursor = document.getCursor();
