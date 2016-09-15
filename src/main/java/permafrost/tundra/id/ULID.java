@@ -42,7 +42,7 @@ public class ULID {
      */
     private static final int TIME_LENGTH = 10;
     /**
-     * The number of characters in the ULID devoted ot the random component.
+     * The number of characters in the ULID devoted to the random component.
      */
     private static final int RANDOM_LENGTH = 16;
     /**
