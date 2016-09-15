@@ -116,7 +116,7 @@ public final class PackageHelper {
         SortedSet<Package> packageSet = new TreeSet<Package>(PackageNameComparator.getInstance());
         if (packages != null) {
             for (Package item : packages) {
-                if (item != null && (!enabledOnly || (enabledOnly && item.isEnabled()))) packageSet.add(item);
+                if (item != null && (!enabledOnly || item.isEnabled())) packageSet.add(item);
             }
         }
 
