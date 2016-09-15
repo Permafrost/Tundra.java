@@ -183,6 +183,11 @@ public abstract class MapEnvelope<K, V> extends AbstractIData implements Map<K, 
         return map.size();
     }
 
+    /**
+     * Returns a string representation of this object.
+     *
+     * @return A string representation of this object.
+     */
     public String toString() {
         return map.toString();
     }
