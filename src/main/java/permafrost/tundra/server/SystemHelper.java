@@ -140,11 +140,10 @@ public final class SystemHelper {
 
         // remove empty strings from properties object
         for (Map.Entry<Object ,Object> entry : systemProperties.entrySet()) {
-            Object key = entry.getKey();
             Object value = entry.getValue();
 
             if (value instanceof String && value.equals("")) {
-                systemProperties.remove(key);
+                systemProperties.remove(entry.getKey());
             }
         }
 
