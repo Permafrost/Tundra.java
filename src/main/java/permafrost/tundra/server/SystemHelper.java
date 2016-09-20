@@ -29,7 +29,6 @@ import com.wm.app.b2b.server.Resources;
 import com.wm.app.b2b.server.Server;
 import com.wm.app.b2b.server.ServiceException;
 import com.wm.data.IData;
-import permafrost.tundra.data.CaseInsensitiveElementList;
 import permafrost.tundra.data.CaseInsensitiveIData;
 import permafrost.tundra.data.Element;
 import permafrost.tundra.data.ElementList;
@@ -40,7 +39,6 @@ import permafrost.tundra.data.MapIData;
 import permafrost.tundra.flow.variable.GlobalVariableHelper;
 import permafrost.tundra.io.FileHelper;
 import permafrost.tundra.math.LongHelper;
-import java.util.Hashtable;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
@@ -133,16 +131,31 @@ public final class SystemHelper {
     @SuppressWarnings("unchecked")
     private static IData getProperties() {
         Properties systemProperties = System.getProperties();
-        if (systemProperties == null) systemProperties = new Properties();
+        if (systemProperties == null) {
+            systemProperties = new Properties();
+        } else {
+            // protect against concurrent modification exceptions by cloning
+            systemProperties = (Properties)systemProperties.clone();
+        }
 
+        // remove empty strings from properties object
+        for (Map.Entry<Object ,Object> entry : systemProperties.entrySet()) {
+            Object key = entry.getKey();
+            Object value = entry.getValue();
+
+            if (value instanceof String && value.equals("")) {
+                systemProperties.remove(key);
+            }
+        }
+
+        // default the mail.from property if not set
         String mailFrom = systemProperties.getProperty("mail.from");
         if (mailFrom == null || mailFrom.equals("")) {
             systemProperties.setProperty("mail.from", getDefaultFromEmailAddress());
         }
 
-        // protect against concurrent modification exceptions by cloning the hashtable
-        // and sort keys in natural ascending order via a TreeMap
-        return new MapIData<String, String>(new TreeMap<String, String>((Hashtable)systemProperties.clone()));
+        // sort keys in natural ascending order via a TreeMap
+        return new MapIData<String, String>(new TreeMap<String, String>((Map)systemProperties));
     }
 
     /**
