@@ -64,4 +64,20 @@ public class HTTPCompressionContentHandlerFactory extends ProxyContentHandlerFac
             }
         }
     }
+
+    /**
+     * Unwraps all existing content part handler by replacing HTTPCompressionContentHandlerFactory objects with
+     * the original factories that were registered.
+     */
+    public static void unregister() {
+        for (Map.Entry<String, ContentHandlerFactory> entry : ContentManagerHelper.getRegistrations().entrySet()) {
+            String type = entry.getKey();
+            ContentHandlerFactory factory = entry.getValue();
+
+            if (type != null && factory instanceof HTTPCompressionContentHandlerFactory) {
+                // restore original content handler factory
+                ContentManager.registerHandler(type, ((HTTPCompressionContentHandlerFactory)factory).getFactory());
+            }
+        }
+    }
 }

@@ -26,8 +26,6 @@ package permafrost.tundra.server.content;
 
 import com.wm.app.b2b.server.ContentHandler;
 import com.wm.app.b2b.server.ContentHandlerFactory;
-import com.wm.app.b2b.server.ContentManager;
-import java.util.Map;
 
 /**
  * An Integration Server content handler factory that proxies method calls to another content handler factory.
@@ -61,37 +59,7 @@ public class ProxyContentHandlerFactory extends ContentHandlerFactory {
      * Returns the content handler factory which this factory proxies method calls to.
      * @return The content handler factory which this factory proxies method calls to.
      */
-    public ContentHandlerFactory getContentHandlerFactory() {
+    public ContentHandlerFactory getFactory() {
         return factory;
-    }
-
-    /**
-     * Wraps all existing content part handler registrations with a ProxyContentHandlerFactory.
-     */
-    public static void register() {
-        for (Map.Entry<String, ContentHandlerFactory> entry : ContentManagerHelper.getRegistrations().entrySet()) {
-            String type = entry.getKey();
-            ContentHandlerFactory factory = entry.getValue();
-
-            if (type != null && factory != null) {
-                ContentManager.registerHandler(type, new HTTPCompressionContentHandlerFactory(factory));
-            }
-        }
-    }
-
-    /**
-     * Unwraps all existing content part handler by replacing ProxyContentHandlerFactory objects with
-     * the original factories that were registered.
-     */
-    public static void unregister() {
-        for (Map.Entry<String, ContentHandlerFactory> entry : ContentManagerHelper.getRegistrations().entrySet()) {
-            String type = entry.getKey();
-            ContentHandlerFactory factory = entry.getValue();
-
-            if (type != null && factory instanceof ProxyContentHandlerFactory) {
-                // restore original content handler factory
-                ContentManager.registerHandler(type, ((ProxyContentHandlerFactory)factory).getContentHandlerFactory());
-            }
-        }
     }
 }
