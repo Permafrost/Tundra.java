@@ -196,11 +196,13 @@ public final class SystemHelper {
      * @return the default from email address of this Integration Server.
      */
     private static String getDefaultFromEmailAddress() {
-        String domain = "unknown";
+        String domain;
         try {
-            java.net.InetAddress address = java.net.InetAddress.getLocalHost();
-            domain = address.getCanonicalHostName().toLowerCase();
-        } catch (java.net.UnknownHostException ex) { }
+            domain = java.net.InetAddress.getLocalHost().getCanonicalHostName().toLowerCase();
+        } catch (java.net.UnknownHostException ex) {
+            domain = "unknown";
+        }
+
         return "Integration-Server@" + domain;
     }
 }
