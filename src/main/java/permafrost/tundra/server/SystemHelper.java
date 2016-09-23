@@ -128,33 +128,35 @@ public final class SystemHelper {
      *
      * @return          The current system properties.
      */
-    @SuppressWarnings("unchecked")
     private static IData getProperties() {
+        // sort keys in natural ascending order via a TreeMap
+        Map<String, String> properties = new TreeMap<String, String>();
+
         Properties systemProperties = System.getProperties();
-        if (systemProperties == null) {
-            systemProperties = new Properties();
-        } else {
+        if (systemProperties != null) {
             // protect against concurrent modification exceptions by cloning
             systemProperties = (Properties)systemProperties.clone();
-        }
 
-        // remove empty strings from properties object
-        for (Map.Entry<Object ,Object> entry : systemProperties.entrySet()) {
-            Object value = entry.getValue();
+            // remove empty strings from properties object
+            for (Map.Entry<Object ,Object> entry : systemProperties.entrySet()) {
+                Object key = entry.getKey();
+                Object value = entry.getValue();
 
-            if (value instanceof String && value.equals("")) {
-                systemProperties.remove(entry.getKey());
+                if (key instanceof String) {
+                    if (value instanceof String && !value.equals("")) {
+                        properties.put(key.toString(), value.toString());
+                    }
+                }
             }
         }
 
         // default the mail.from property if not set
-        String mailFrom = systemProperties.getProperty("mail.from");
+        String mailFrom = properties.get("mail.from");
         if (mailFrom == null || mailFrom.equals("")) {
-            systemProperties.setProperty("mail.from", getDefaultFromEmailAddress());
+            properties.put("mail.from", getDefaultFromEmailAddress());
         }
-
-        // sort keys in natural ascending order via a TreeMap
-        return new MapIData<String, String>(new TreeMap<String, String>((Map)systemProperties));
+        
+        return new MapIData<String, String>(properties);
     }
 
     /**
