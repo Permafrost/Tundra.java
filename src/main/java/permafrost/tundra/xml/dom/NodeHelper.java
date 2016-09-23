@@ -39,6 +39,7 @@ import permafrost.tundra.lang.CharsetHelper;
 import permafrost.tundra.lang.ExceptionHelper;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -89,8 +90,13 @@ public class NodeHelper {
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
-            // always defend against denial of service attacks
-            transformerFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+
+            try {
+                // defend against denial of service attacks
+                transformerFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+            } catch(Throwable ex) {
+                // do nothing, method is not supported
+            }
 
             Transformer transformer = transformerFactory.newTransformer();
             transformer.setOutputProperty(OutputKeys.ENCODING, CharsetHelper.normalize(charset).displayName());
