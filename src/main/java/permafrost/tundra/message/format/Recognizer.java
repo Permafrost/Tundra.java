@@ -28,30 +28,28 @@ import com.wm.data.IData;
 import permafrost.tundra.data.IDataHelper;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
-import java.util.Set;
-import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * A content format registry which provides content recognition for arbitrary content.
  */
 public class Recognizer {
     /**
-     * List of all registered content format definitions.
+     * List of all registered content format definitions by name.
      */
-    private volatile Set<Format> formats;
-
+    private volatile Map<String, Format> formats = Collections.emptyMap();
     /**
-     * If content cannot be recognized then this
+     * List of publishable registered content format definitions by publishable document type.
      */
-    private volatile Format defaultFormat;
+    private volatile Map<String, Format> formatsByPublishableDocumentType = Collections.emptyMap();
 
     /**
      * Create a new Recognizer with no registered formats.
      */
-    public Recognizer() {
-        formats = new ConcurrentSkipListSet<Format>();
-    }
+    public Recognizer() {}
 
     /**
      * Create a new Recognizer initialized with the given formats.
@@ -71,15 +69,14 @@ public class Recognizer {
     public Format recognize(IData pipeline) {
         Object formatName = IDataHelper.get(pipeline, "$message.format.name");
 
-        if (formatName == null) {
-            for (Format format : formats) {
+        if (formatName instanceof String) {
+            return get(formatName.toString(), true);
+        } else {
+            for (Format format : formats.values()) {
                 if (format.recognize(pipeline)) {
                     return format;
                 }
             }
-        } else {
-            Format format = get(formatName.toString());
-            if (format != null && format.isEnabled()) return format;
         }
 
         return null;
@@ -92,11 +89,31 @@ public class Recognizer {
      * @return              The format with the given name, if it was registered.
      */
     public Format get(String formatName) {
-        for (Format format : formats) {
-            if (format.getName().equals(formatName)) return format;
-        }
-        return null;
+        return get(formatName, false);
     }
+
+    /**
+     * Returns the format with the given name, if it was registered.
+     *
+     * @param formatName    The name of the format.
+     * @return              The format with the given name, if it was registered.
+     */
+    public Format get(String formatName, boolean enabledOnly) {
+        Format format = formats.get(formatName);
+        return format == null || (enabledOnly && !format.isEnabled()) ? null : format;
+    }
+
+    /**
+     * Returns the format with the publishable document type, if registered.
+     *
+     * @param publishableDocumentType   The publishable document type of the format.
+     * @return                          The format with the given publishable document type, if registered.
+     */
+    public Format getByPublishableDocumentType(String publishableDocumentType) {
+        Format format = formatsByPublishableDocumentType.get(publishableDocumentType);
+        return format == null || !format.isEnabled() ? null : format;
+    }
+
 
     /**
      * Replaces all registered formats with the given collection of formats.
@@ -104,32 +121,28 @@ public class Recognizer {
      * @param collection A collection of formats to initialize the recognition registry with.
      */
     public synchronized void initialize(Collection<Format> collection) {
-        formats = new ConcurrentSkipListSet<Format>(collection);
-    }
+        Map<String, Format> newFormats = new TreeMap<String, Format>();
+        Map<String, Format> newFormatsByPublishableDocumentType = new TreeMap<String, Format>();
 
-    /**
-     * Registers the given format for recognition.
-     *
-     * @param format The format to be registered.
-     */
-    public void register(Format format) {
-        formats.add(format);
-    }
+        for (Format format : collection) {
+            if (format != null) {
+                newFormats.put(format.getName(), format);
+                if ("publish".equals(format.getRouteType()) && format.getRouteRef() != null) {
+                    newFormatsByPublishableDocumentType.put(format.getRouteRef(), format);
+                }
+            }
+        }
 
-    /**
-     * Unregisters the given format from the registry.
-     *
-     * @param format The format to be unregistered.
-     */
-    public void unregister(Format format) {
-        formats.remove(format);
+        formats = newFormats;
+        formatsByPublishableDocumentType = newFormatsByPublishableDocumentType;
     }
 
     /**
      * Removes all registered formats from the registry.
      */
-    public void clear() {
-        formats.clear();
+    public synchronized void clear() {
+        formats = Collections.emptyMap();
+        formatsByPublishableDocumentType = Collections.emptyMap();
     }
 
     /**
@@ -138,6 +151,6 @@ public class Recognizer {
      * @return A list of all registered content format definitions.
      */
     public List<Format> list() {
-        return new ArrayList<Format>(formats);
+        return new ArrayList<Format>(formats.values());
     }
 }

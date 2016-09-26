@@ -49,6 +49,14 @@ public class Format implements Comparable<Format>, IDataCodable {
      */
     protected ConditionEvaluator recognitionCondition;
     /**
+     * The type of route performed for content in this format.
+     */
+    protected String routeType;
+    /**
+     * The logical route destination for content in this format.
+     */
+    protected String routeRef;
+    /**
      * Whether this format is enabled for content recognition.
      */
     protected boolean enabled;
@@ -64,7 +72,6 @@ public class Format implements Comparable<Format>, IDataCodable {
      */
     public Format(IData document) {
         if (document == null) throw new NullPointerException("document must not be null");
-
         this.document = document;
 
         String name = (String)IDataHelper.get(document, "name");
@@ -74,6 +81,9 @@ public class Format implements Comparable<Format>, IDataCodable {
         String recognitionCondition = (String)IDataHelper.get(document, "recognize/ref");
         if (recognitionCondition == null) throw new NullPointerException("recognize must not be null");
         this.recognitionCondition = new ConditionEvaluator(recognitionCondition, IDataNamespaceContext.of((IData)IDataHelper.get(document, "namespace")));
+
+        this.routeType = (String)IDataHelper.get(document, "route/type");
+        this.routeRef = (String)IDataHelper.get(document, "route/ref");
 
         this.enabled = BooleanHelper.parse(IDataHelper.get(document, "enabled"), true);
         IDataHelper.put(document, "enabled", BooleanHelper.emit(this.enabled));
@@ -86,6 +96,24 @@ public class Format implements Comparable<Format>, IDataCodable {
      */
     public String getName() {
         return name;
+    }
+
+    /**
+     * Returns the type of route performed for content in this format.
+     *
+     * @return the type of route performed for content in this format.
+     */
+    public String getRouteType() {
+        return routeType;
+    }
+
+    /**
+     * Returns the logical route destination for content in this format.
+     *
+     * @return the logical route destination for content in this format.
+     */
+    public String getRouteRef() {
+        return routeRef;
     }
 
     /**
