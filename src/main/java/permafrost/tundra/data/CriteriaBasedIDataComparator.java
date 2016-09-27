@@ -37,12 +37,15 @@ import java.util.List;
  * Compares two IData objects using the values associated with the given list of keys in precedence order.
  */
 public class CriteriaBasedIDataComparator implements IDataComparator {
+    /**
+     * The criteria used for a comparison.
+     */
     protected List<IDataComparisonCriterion> criteria;
 
     /**
      * Construct a new IDataComparator with one or more comparison criteria.
      *
-     * @param criteria The comparison criteria to be used when comparing IData objects.
+     * @param criteria      The comparison criteria to be used when comparing IData objects.
      */
     public CriteriaBasedIDataComparator(IDataComparisonCriterion... criteria) {
         this(criteria == null ? new ArrayList<IDataComparisonCriterion>() : Arrays.asList(criteria));
@@ -51,7 +54,7 @@ public class CriteriaBasedIDataComparator implements IDataComparator {
     /**
      * Construct a new IDataComparator with one or more comparison criteria.
      *
-     * @param criteria The comparison criteria to be used when comparing IData objects.
+     * @param criteria      The comparison criteria to be used when comparing IData objects.
      */
     public CriteriaBasedIDataComparator(List<IDataComparisonCriterion> criteria) {
         if (criteria == null || criteria.size() == 0) {
@@ -63,7 +66,7 @@ public class CriteriaBasedIDataComparator implements IDataComparator {
     /**
      * Returns the criteria used for comparisons by this comparator.
      *
-     * @return The criteria used for comparisons by this comparator.
+     * @return              The criteria used for comparisons by this comparator.
      */
     public List<IDataComparisonCriterion> getCriteria() {
         return this.criteria;
@@ -72,10 +75,10 @@ public class CriteriaBasedIDataComparator implements IDataComparator {
     /**
      * Normalizes the given comparison result for when the comparison should be in descending order.
      *
-     * @param result     A comparison result.
-     * @param descending Whether the comparison should be in descending order.
-     * @return If descending is true, returns the given comparison result negated, otherwise returns the result
-     * unchanged.
+     * @param result        A comparison result.
+     * @param descending    Whether the comparison should be in descending order.
+     * @return              If descending is true, returns the given comparison result negated, otherwise returns the
+     *                      result unchanged.
      */
     protected static int normalize(int result, boolean descending) {
         if (descending) {
@@ -91,11 +94,12 @@ public class CriteriaBasedIDataComparator implements IDataComparator {
     /**
      * Compares two IData documents.
      *
-     * @param firstDocument  The first IData document to be compared.
-     * @param secondDocument The second IData document to be compared.
-     * @return A value less than zero if the first document comes before the second document, a value of zero if they
-     * are equal, or a value of greater than zero if the first document comes after the second document according to the
-     * comparison criteria the IDataComparator was constructed with.
+     * @param firstDocument     The first IData document to be compared.
+     * @param secondDocument    The second IData document to be compared.
+     * @return                  A value less than zero if the first document comes before the second document, a value
+     *                          of zero if they are equal, or a value of greater than zero if the first document comes
+     *                          after the second document according to the comparison criteria the IDataComparator was
+     *                          constructed with.
      */
     @SuppressWarnings("unchecked")
     public int compare(IData firstDocument, IData secondDocument) {
@@ -138,10 +142,10 @@ public class CriteriaBasedIDataComparator implements IDataComparator {
                     try {
                         result = normalize(((Comparable)firstValue).compareTo(secondValue), criterion.isDescending());
                     } catch (Exception ex) {
-                        result = normalize(compareObjectIdentity(firstValue, secondDocument), criterion.isDescending());
+                        result = normalize(compareObjectIdentity(firstValue, secondValue), criterion.isDescending());
                     }
                 } else {
-                    result = normalize(compareObjectIdentity(firstValue, secondDocument), criterion.isDescending());
+                    result = normalize(compareObjectIdentity(firstValue, secondValue), criterion.isDescending());
                 }
             }
             if (result != 0) break;
@@ -152,15 +156,11 @@ public class CriteriaBasedIDataComparator implements IDataComparator {
     /**
      * Fallback comparison for incomparable objects using the Java object identity.
      *
-     * @param firstValue  The first object to be compared.
-     * @param secondValue The second object to be compared.
-     * @return            0 if the objects are equal, otherwise -1.
+     * @param firstValue    The first object to be compared.
+     * @param secondValue   The second object to be compared.
+     * @return              The result of the comparison.
      */
     private int compareObjectIdentity(Object firstValue, Object secondValue) {
-        if (firstValue == secondValue) {
-            return 0;
-        } else {
-            return -1;
-        }
+        return firstValue == secondValue ? 0 : Integer.valueOf(System.identityHashCode(firstValue)).compareTo(System.identityHashCode(secondValue));
     }
 }
