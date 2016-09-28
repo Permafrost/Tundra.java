@@ -1702,7 +1702,21 @@ public final class IDataHelper {
      * @return          The value associated with the given key in the given IData document.
      */
     public static Object get(IData document, String key) {
-        return get(null, document, key);
+        return get(null, document, key, Object.class);
+    }
+
+    /**
+     * Returns the value associated with the given key from the given IData document.
+     *
+     * @param document  An IData document.
+     * @param key       A simple or fully-qualified key identifying the value in the given IData document to be
+     *                  returned.
+     * @param klass     The class of the value to be returned.
+     * @param <T>       The type of value to be returned.
+     * @return          The value associated with the given key in the given IData document.
+     */
+    public static <T> T get(IData document, String key, Class<T> klass) {
+        return get(null, document, key, klass);
     }
 
     /**
@@ -1715,7 +1729,22 @@ public final class IDataHelper {
      * @return         The value associated with the given key in the given IData document.
      */
     public static Object get(IData pipeline, IData scope, String key) {
-        return get(pipeline, scope, key, false);
+        return get(pipeline, scope, key, false, Object.class);
+    }
+
+    /**
+     * Returns the value associated with the given key from the given scope (if relative) or pipeline (if absolute).
+     *
+     * @param pipeline The pipeline, required if the key is an absolute path.
+     * @param scope    An IData document used to scope the key if it is relative.
+     * @param key      A simple or fully-qualified key identifying the value in the given IData document to be
+     *                 returned.
+     * @param klass    The class of the value to be returned.
+     * @param <T>      The type of value to be returned.
+     * @return         The value associated with the given key in the given IData document.
+     */
+    public static <T> T get(IData pipeline, IData scope, String key, Class<T> klass) {
+        return get(pipeline, scope, key, false, klass);
     }
 
     /**
@@ -1729,7 +1758,23 @@ public final class IDataHelper {
      * @return         The value associated with the given key in the given IData document.
      */
     public static Object get(IData document, String key, boolean literal) {
-        return get(null, document, key, literal);
+        return get(null, document, key, literal, Object.class);
+    }
+
+    /**
+     * Returns the value associated with the given key from the given IData document.
+     *
+     * @param document An IData document.
+     * @param key      A simple or fully-qualified key identifying the value in the given IData document to be
+     *                 returned.
+     * @param literal  If true, the key will be treated as a literal key, rather than potentially as a fully-qualified
+     *                 key.
+     * @param klass    The class of the value to be returned.
+     * @param <T>      The type of value to be returned.
+     * @return         The value associated with the given key in the given IData document.
+     */
+    public static <T> T get(IData document, String key, boolean literal, Class<T> klass) {
+        return get(null, document, key, literal, klass);
     }
 
     /**
@@ -1744,7 +1789,24 @@ public final class IDataHelper {
      *                      defaultValue if null.
      */
     public static Object get(IData document, String key, Object defaultValue) {
-        return get(document, key, defaultValue, false);
+        return get(document, key, defaultValue, false, Object.class);
+    }
+
+    /**
+     * Returns the value associated with the given key from the given IData document, or if null the specified default
+     * value.
+     *
+     * @param document      An IData document.
+     * @param key           A simple or fully-qualified key identifying the value in the given IData document to be
+     *                      returned.
+     * @param defaultValue  A default value to be returned if the existing value associated with the given key is null.
+     * @param klass         The class of the value to be returned.
+     * @param <T>           The type of value to be returned.
+     * @return              Either the value associated with the given key in the given IData document, or the given
+     *                      defaultValue if null.
+     */
+    public static <T> T get(IData document, String key, T defaultValue, Class<T> klass) {
+        return get(document, key, defaultValue, false, klass);
     }
 
     /**
@@ -1759,7 +1821,24 @@ public final class IDataHelper {
      *                      defaultValue if null.
      */
     public static Object get(IData pipeline, IData scope, String key, Object defaultValue) {
-        return get(pipeline, scope, key, defaultValue, false);
+        return get(pipeline, scope, key, defaultValue, false, Object.class);
+    }
+
+    /**
+     * Returns the value associated with the given key from the given scope (if relative) or pipeline (if absolute).
+     *
+     * @param pipeline      The pipeline, required if the key is an absolute path.
+     * @param scope         An IData document used to scope the key if it is relative.
+     * @param key           A simple or fully-qualified key identifying the value in the given IData document to be
+     *                      returned.
+     * @param defaultValue  A default value to be returned if the existing value associated with the given key is null.
+     * @param klass         The class of the value to be returned.
+     * @param <T>           The type of value to be returned.
+     * @return              Either the value associated with the given key in the given IData document, or the given
+     *                      defaultValue if null.
+     */
+    public static <T> T get(IData pipeline, IData scope, String key, T defaultValue, Class<T> klass) {
+        return get(pipeline, scope, key, defaultValue, false, klass);
     }
 
     /**
@@ -1776,7 +1855,26 @@ public final class IDataHelper {
      *                      defaultValue if null.
      */
     public static Object get(IData document, String key, Object defaultValue, boolean literal) {
-        return get(null, document, key, defaultValue, literal);
+        return get(null, document, key, defaultValue, literal, Object.class);
+    }
+
+    /**
+     * Returns the value associated with the given key from the given IData document, or if null the specified default
+     * value.
+     *
+     * @param document      An IData document.
+     * @param key           A simple or fully-qualified key identifying the value in the given IData document to be
+     *                      returned.
+     * @param defaultValue  A default value to be returned if the existing value associated with the given key is null.
+     * @param literal       If true, the key will be treated as a literal key, rather than potentially as a
+     *                      fully-qualified key.
+     * @param klass         The class of the value to be returned.
+     * @param <T>           The type of value to be returned.
+     * @return              Either the value associated with the given key in the given IData document, or the given
+     *                      defaultValue if null.
+     */
+    public static <T> T get(IData document, String key, T defaultValue, boolean literal, Class<T> klass) {
+        return get(null, document, key, defaultValue, literal, klass);
     }
 
     /**
@@ -1794,7 +1892,27 @@ public final class IDataHelper {
      *                      defaultValue if null.
      */
     public static Object get(IData pipeline, IData scope, String key, Object defaultValue, boolean literal) {
-        Object value = get(pipeline, scope, key, literal);
+        return get(pipeline, scope, key, defaultValue, literal, Object.class);
+    }
+
+    /**
+     * Returns the value associated with the given key from the given IData document, or if null the specified default
+     * value.
+     *
+     * @param pipeline      An IData document against which absolute variables are resolved.
+     * @param scope         An IData document against which relative variables are resolved.
+     * @param key           A simple or fully-qualified key identifying the value in the given IData document to be
+     *                      returned.
+     * @param defaultValue  A default value to be returned if the existing value associated with the given key is null.
+     * @param literal       If true, the key will be treated as a literal key, rather than potentially as a
+     *                      fully-qualified key.
+     * @param klass         The class of the value to be returned.
+     * @param <T>           The type of value to be returned.
+     * @return              Either the value associated with the given key in the given IData document, or the given
+     *                      defaultValue if null.
+     */
+    public static <T> T get(IData pipeline, IData scope, String key, T defaultValue, boolean literal, Class<T> klass) {
+        T value = get(pipeline, scope, key, literal, klass);
         if (value == null) value = defaultValue;
         return value;
     }
@@ -1811,7 +1929,24 @@ public final class IDataHelper {
      * @return                  The value associated with the given key in the given IData document.
      */
     public static Object get(IData pipeline, IData scope, String key, boolean literal) {
-        return get(pipeline, scope, key, literal, null);
+        return get(pipeline, scope, key, literal, null, Object.class);
+    }
+
+    /**
+     * Returns the value associated with the given key from the given scope (if relative) or pipeline (if absolute).
+     *
+     * @param pipeline          The pipeline, required if the key is an absolute path.
+     * @param scope             An IData document used to scope the key if it is relative.
+     * @param key               A simple or fully-qualified key identifying the value in the given IData document to be
+     *                          returned.
+     * @param literal           If true, the key will be treated as a literal key, rather than potentially as a fully-
+     *                          qualified key.
+     * @param klass             The class of the value to be returned.
+     * @param <T>               The type of value to be returned.
+     * @return                  The value associated with the given key in the given IData document.
+     */
+    public static <T> T get(IData pipeline, IData scope, String key, boolean literal, Class<T> klass) {
+        return get(pipeline, scope, key, literal, null, klass);
     }
 
     /**
@@ -1827,6 +1962,26 @@ public final class IDataHelper {
      * @return                  The value associated with the given key in the given IData document.
      */
     public static Object get(IData pipeline, IData scope, String key, boolean literal, NamespaceContext namespaceContext) {
+        return get(pipeline, scope, key, literal, namespaceContext, Object.class);
+    }
+
+    /**
+     * Returns the value associated with the given key from the given scope (if relative) or pipeline (if absolute).
+     *
+     * @param pipeline          The pipeline, required if the key is an absolute path.
+     * @param scope             An IData document used to scope the key if it is relative.
+     * @param key               A simple or fully-qualified key identifying the value in the given IData document to be
+     *                          returned.
+     * @param literal           If true, the key will be treated as a literal key, rather than potentially as a fully-
+     *                          qualified key.
+     * @param namespaceContext  The namespace context used when resolving XPath expressions against nodes.
+     * @param klass             The class of the value to be returned.
+     * @param <T>               The type of value to be returned.
+     * @return                  The value associated with the given key in the given IData document.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T get(IData pipeline, IData scope, String key, boolean literal, NamespaceContext namespaceContext, Class<T> klass) {
+        if (klass == null) throw new NullPointerException("class must not be null");
         if (key == null) return null;
 
         Object value = null;
@@ -1840,7 +1995,7 @@ public final class IDataHelper {
             if (scope != null && cursor != null && cursor.first(key)) {
                 value = cursor.getValue();
             } else if (pipeline != null && IDataKey.isAbsolute(key, literal)) {
-                value = get(null, pipeline, key.substring(1), literal, namespaceContext);
+                value = get(null, pipeline, key.substring(1), literal, namespaceContext, klass);
             } else if (scope != null && IDataKey.isFullyQualified(key, literal)) {
                 // support resolving XPath expressions against nodes
                 Matcher matcher = KEY_NODE_XPATH_REGULAR_EXPRESSION_PATTERN.matcher(key);
@@ -1862,17 +2017,17 @@ public final class IDataHelper {
                             // do nothing, assume a normal IData fully-qualified key was specified rather than an XPath expression
                         }
                     } else {
-                        value = get(scope, IDataKey.of(key, literal));
+                        value = get(scope, IDataKey.of(key, literal), klass);
                     }
                 } else {
-                    value = get(scope, IDataKey.of(key, literal));
+                    value = get(scope, IDataKey.of(key, literal), klass);
                 }
             }
         } finally {
             if (cursor != null) cursor.destroy();
         }
 
-        return value;
+        return klass.isInstance(value) ? (T)value : null;
     }
 
     /**
@@ -1883,6 +2038,22 @@ public final class IDataHelper {
      * @return         The value associated with the given key in the given IData document.
      */
     private static Object get(IData document, IDataKey key) {
+        return get(document, key, Object.class);
+    }
+
+    /**
+     * Returns the value associated with the given fully-qualified key from the given IData document.
+     *
+     * @param document An IData document.
+     * @param key      A fully-qualified key identifying the value in the given IData document to be returned.
+     * @param klass     The class of the value to be returned.
+     * @param <T>       The type of value to be returned.
+     * @return         The value associated with the given key in the given IData document.
+     */
+    @SuppressWarnings("unchecked")
+    private static <T> T get(IData document, IDataKey key, Class<T> klass) {
+        if (klass == null) throw new NullPointerException("class must not be null");
+
         Object value = null;
 
         if (document != null && key != null && key.size() > 0) {
@@ -1891,21 +2062,21 @@ public final class IDataHelper {
 
             if (key.size() > 0) {
                 if (keyPart.hasArrayIndex()) {
-                    value = get(ArrayHelper.get(toIDataArray(IDataUtil.get(cursor, keyPart.getKey())), keyPart.getIndex()), key);
+                    value = get(ArrayHelper.get(toIDataArray(IDataUtil.get(cursor, keyPart.getKey())), keyPart.getIndex()), key, klass);
                 } else if (keyPart.hasKeyIndex()) {
-                    value = get(toIData(get(document, keyPart.getKey(), keyPart.getIndex())), key);
+                    value = get(toIData(get(document, keyPart.getKey(), keyPart.getIndex())), key, klass);
                 } else {
                     Object object = IDataUtil.get(cursor, keyPart.getKey());
                     IData parent = toIData(object);
                     if (parent != null) {
-                        value = get(parent, key);
+                        value = get(parent, key, klass);
                     } else {
                         IData[] array = toIDataArray(object);
                         if (array != null) {
                             List<Object> values = new ArrayList<Object>(array.length);
                             // if we are referencing an IData[], create a new array of values from the individual values in each IData
                             for (IData item : array) {
-                                values.add(get(item, key.clone()));
+                                values.add(get(item, key.clone(), klass));
                             }
                             value = ArrayHelper.normalize(values);
                         }
@@ -1923,7 +2094,7 @@ public final class IDataHelper {
                         }
                     }
                 } else if (keyPart.hasKeyIndex()) {
-                    value = get(document, keyPart.getKey(), keyPart.getIndex());
+                    value = get(document, keyPart.getKey(), keyPart.getIndex(), klass);
                 } else {
                     value = IDataUtil.get(cursor, keyPart.getKey());
                 }
@@ -1932,7 +2103,7 @@ public final class IDataHelper {
             cursor.destroy();
         }
 
-        return value;
+        return klass.isInstance(value) ? (T)value : null;
     }
 
     /**
@@ -1944,6 +2115,21 @@ public final class IDataHelper {
      * @return          The value associated with the nth occurrence of the given key in the given IData document.
      */
     private static Object get(IData document, String key, int n) {
+        return get(document, key, n, Object.class);
+    }
+
+    /**
+     *
+     * @param document  The IData document to return the value from.
+     * @param key       The key whose associated value is to be returned.
+     * @param n         Determines which occurrence of the key to return the value for.
+     * @param klass     The class of the value to be returned.
+     * @param <T>       The type of value to be returned.
+     * @return          The value associated with the nth occurrence of the given key in the given IData document.
+     */
+    @SuppressWarnings("unchecked")
+    private static <T> T get(IData document, String key, int n, Class<T> klass) {
+        if (klass == null) throw new NullPointerException("class must not be null");
         if (document == null || key == null || n < 0) return null;
 
         Object value = null;
@@ -1954,7 +2140,7 @@ public final class IDataHelper {
         if (i > n) value = cursor.getValue();
         cursor.destroy();
 
-        return value;
+        return klass.isInstance(value) ? (T)value : null;
     }
 
 
