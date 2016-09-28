@@ -67,10 +67,10 @@ public class Recognizer {
      * @return          Either the recognized ContentDefinition, or null if the content was unrecognized.
      */
     public Format recognize(IData pipeline) {
-        Object formatName = IDataHelper.get(pipeline, "$message.format.name");
+        String formatName = IDataHelper.get(pipeline, "$message.format.name", String.class);
 
-        if (formatName instanceof String) {
-            return get(formatName.toString(), true);
+        if (formatName != null) {
+            return get(formatName, true);
         } else {
             for (Format format : formats.values()) {
                 if (format.recognize(pipeline)) {
@@ -113,8 +113,7 @@ public class Recognizer {
         Format format = formatsByPublishableDocumentType.get(publishableDocumentType);
         return format == null || !format.isEnabled() ? null : format;
     }
-
-
+    
     /**
      * Replaces all registered formats with the given collection of formats.
      *

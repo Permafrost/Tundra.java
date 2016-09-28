@@ -132,21 +132,21 @@ public class SubstitutionHelper {
 
         while (matcher.find()) {
             String key = matcher.group(1);
-            Object value = null;
+            String value = null;
 
             if (substitutionTypes.contains(SubstitutionType.GLOBAL)) {
-                Object globalValue = GlobalVariableHelper.get(key);
+                String globalValue = GlobalVariableHelper.get(key);
                 if (globalValue != null) value = globalValue;
             }
 
             if (substitutionTypes.contains(SubstitutionType.LOCAL)) {
-                Object localValue = IDataHelper.get(scope, key);
+                String localValue = IDataHelper.get(scope, key, String.class);
                 if (localValue != null) value = localValue;
             }
 
-            if (value != null && value instanceof String) {
+            if (value != null) {
                 matcher.appendReplacement(output, Matcher.quoteReplacement((String)value));
-            } else if (value == null && defaultValue != null) {
+            } else if (defaultValue != null) {
                 matcher.appendReplacement(output, Matcher.quoteReplacement(defaultValue));
             } else {
                 matcher.appendReplacement(output, Matcher.quoteReplacement(matcher.group(0)));

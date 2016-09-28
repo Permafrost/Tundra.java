@@ -74,16 +74,16 @@ public class Format implements Comparable<Format>, IDataCodable {
         if (document == null) throw new NullPointerException("document must not be null");
         this.document = document;
 
-        String name = (String)IDataHelper.get(document, "name");
+        String name = IDataHelper.get(document, "name", String.class);
         if (name == null) throw new NullPointerException("name must not be null");
         this.name = name;
 
-        String recognitionCondition = (String)IDataHelper.get(document, "recognize/ref");
+        String recognitionCondition = IDataHelper.get(document, "recognize/ref", String.class);
         if (recognitionCondition == null) throw new NullPointerException("recognize must not be null");
-        this.recognitionCondition = new ConditionEvaluator(recognitionCondition, IDataNamespaceContext.of((IData)IDataHelper.get(document, "namespace")));
+        this.recognitionCondition = new ConditionEvaluator(recognitionCondition, IDataNamespaceContext.of(IDataHelper.get(document, "namespace", IData.class)));
 
-        this.routeType = (String)IDataHelper.get(document, "route/type");
-        this.routeRef = (String)IDataHelper.get(document, "route/ref");
+        this.routeType = IDataHelper.get(document, "route/type", String.class);
+        this.routeRef = IDataHelper.get(document, "route/ref", String.class);
 
         this.enabled = BooleanHelper.parse(IDataHelper.get(document, "enabled"), true);
         IDataHelper.put(document, "enabled", BooleanHelper.emit(this.enabled));

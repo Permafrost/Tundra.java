@@ -129,10 +129,10 @@ public class ConditionEvaluator {
                     XPathExpression expression = expressions.get(i);
 
                     if (expression != null) {
-                        Object node = IDataHelper.get(scope, key);
-                        if (node instanceof Node) {
+                        Node node = IDataHelper.get(scope, key, Node.class);
+                        if (node != null) {
                             try {
-                                Nodes nodes = XPathHelper.get((Node)node, expression);
+                                Nodes nodes = XPathHelper.get(node, expression);
                                 if (nodes != null && nodes.size() > 0) {
                                     matcher.appendReplacement(buffer, Matcher.quoteReplacement("\"" + NodeHelper.getValue(nodes.get(0)) + "\""));
                                 } else {
