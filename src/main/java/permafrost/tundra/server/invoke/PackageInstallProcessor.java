@@ -50,7 +50,7 @@ public class PackageInstallProcessor extends AbstractInvokeChainProcessor {
     /**
      * A regular expression pattern used to detect package install services.
      */
-    protected Pattern installServicePattern, uninstallServicePattern;
+    protected volatile Pattern installServicePattern, uninstallServicePattern;
     /**
      * Initialization on demand holder idiom.
      */
@@ -75,8 +75,8 @@ public class PackageInstallProcessor extends AbstractInvokeChainProcessor {
      * @param uninstallServicePattern   A regular expression pattern used to find package uninstall services..
      */
     public PackageInstallProcessor(String installServicePattern, String uninstallServicePattern) {
-        this(installServicePattern == null ? null : Pattern.compile(installServicePattern),
-             uninstallServicePattern == null ? null : Pattern.compile(uninstallServicePattern));
+        setInstallServicePattern(installServicePattern);
+        setUninstallServicePattern(uninstallServicePattern);
     }
 
     /**
@@ -87,20 +87,53 @@ public class PackageInstallProcessor extends AbstractInvokeChainProcessor {
      *
      */
     public PackageInstallProcessor(Pattern installServicePattern, Pattern uninstallServicePattern) {
-        if (installServicePattern == null) throw new NullPointerException("installServicePattern must not be null");
-        if (uninstallServicePattern == null) throw new NullPointerException("uninstallServicePattern must not be null");
-
-        this.installServicePattern = installServicePattern;
-        this.uninstallServicePattern = uninstallServicePattern;
+        setInstallServicePattern(installServicePattern);
+        setUninstallServicePattern(uninstallServicePattern);
     }
 
     /**
-     * Returns the default singleton instance of this class.
+     * Returns the singleton instance of this class.
      *
-     * @return The default singleton instance of this class.
+     * @return The singleton instance of this class.
      */
-    public static PackageInstallProcessor getDefaultInstance() {
+    public static PackageInstallProcessor getInstance() {
         return Holder.INSTANCE;
+    }
+
+    /**
+     * Sets the pattern used to find install services in a package.
+     *
+     * @param installServicePattern     The pattern used to find install services in a package.
+     */
+    public void setInstallServicePattern(String installServicePattern) {
+        setInstallServicePattern(installServicePattern == null ? null : Pattern.compile(installServicePattern));
+    }
+
+    /**
+     * Sets the pattern used to find install services in a package.
+     *
+     * @param installServicePattern     The pattern used to find install services in a package.
+     */
+    public void setInstallServicePattern(Pattern installServicePattern) {
+        this.installServicePattern = installServicePattern;
+    }
+
+    /**
+     * Sets the pattern used to find uninstall services in a package.
+     *
+     * @param uninstallServicePattern   The pattern used to find uninstall services in a package.
+     */
+    public void setUninstallServicePattern(String uninstallServicePattern) {
+        setUninstallServicePattern(uninstallServicePattern == null ? null : Pattern.compile(uninstallServicePattern));
+    }
+
+    /**
+     * Sets the pattern used to find uninstall services in a package.
+     *
+     * @param uninstallServicePattern   The pattern used to find uninstall services in a package.
+     */
+    public void setUninstallServicePattern(Pattern uninstallServicePattern) {
+        this.uninstallServicePattern = uninstallServicePattern;
     }
 
     /**
@@ -115,14 +148,15 @@ public class PackageInstallProcessor extends AbstractInvokeChainProcessor {
      */
     @Override
     public void process(Iterator iterator, BaseService baseService, IData pipeline, ServiceStatus serviceStatus) throws ServerException {
+        Pattern installServicePattern = this.installServicePattern, uninstallServicePattern = this.uninstallServicePattern;
         String serviceName = baseService.getNSName().getFullName();
 
         if (serviceName.startsWith(INTEGRATION_SERVER_PACKAGE_NAMESPACE)) {
             String packageName = null;
 
-            boolean isPackageInstall = serviceName.equals(INTEGRATION_SERVER_PACKAGE_INSTALL_SERVICE);
-            boolean isPackageRecover = serviceName.equals(INTEGRATION_SERVER_PACKAGE_RECOVER_SERVICE);
-            boolean isPackageUninstall = serviceName.equals(INTEGRATION_SERVER_PACKAGE_UNINSTALL_SERVICE);
+            boolean isPackageInstall = serviceName.equals(INTEGRATION_SERVER_PACKAGE_INSTALL_SERVICE) && installServicePattern != null;
+            boolean isPackageRecover = serviceName.equals(INTEGRATION_SERVER_PACKAGE_RECOVER_SERVICE) && installServicePattern != null;
+            boolean isPackageUninstall = serviceName.equals(INTEGRATION_SERVER_PACKAGE_UNINSTALL_SERVICE) && uninstallServicePattern != null;
 
             if (isPackageInstall) {
                 String packageInstallFileName = IDataHelper.get(pipeline, "file", String.class);
@@ -148,7 +182,7 @@ public class PackageInstallProcessor extends AbstractInvokeChainProcessor {
                             String service = item.toString();
                             if (uninstallServicePattern.matcher(service).matches()) {
                                 try {
-                                    Service.doInvoke(NSName.create(service), IDataFactory.create());
+                                    Service.doThreadInvoke(NSName.create(service), IDataFactory.create()).getIData();
                                 } catch (Exception ex) {
                                     // do nothing
                                 }
@@ -169,7 +203,7 @@ public class PackageInstallProcessor extends AbstractInvokeChainProcessor {
                             String service = item.toString();
                             if (installServicePattern.matcher(service).matches()) {
                                 try {
-                                    Service.doInvoke(NSName.create(service), IDataFactory.create());
+                                    Service.doThreadInvoke(NSName.create(service), IDataFactory.create()).getIData();
                                 } catch (Exception ex) {
                                     // do nothing
                                 }
