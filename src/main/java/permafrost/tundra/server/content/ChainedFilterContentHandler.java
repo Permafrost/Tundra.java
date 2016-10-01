@@ -47,7 +47,6 @@ public class ChainedFilterContentHandler extends ProxyContentHandler {
      *
      * @param handler   The content handlers which ultimately handles content.
      * @param filters   The chained filters to be wrapped.
-
      */
     ChainedFilterContentHandler(ContentHandler handler, List<FilterContentHandler> filters) {
         super(handler);
