@@ -101,7 +101,13 @@ public class ChainedFilterContentHandlerFactory extends ProxyContentHandlerFacto
     public static void register(List<FilterContentHandlerFactory> filters) {
         if (filters != null && filters.size() > 0) {
             for (Map.Entry<String, ContentHandlerFactory> entry : ContentManagerHelper.getRegistrations().entrySet()) {
-                ContentManager.registerHandler(entry.getKey(), new ChainedFilterContentHandlerFactory(entry.getValue(), filters));
+                ContentHandlerFactory factory = entry.getValue();
+
+                if (factory instanceof ChainedFilterContentHandlerFactory) {
+                    factory = ((ChainedFilterContentHandlerFactory)factory).getFactory();
+                }
+
+                ContentManager.registerHandler(entry.getKey(), new ChainedFilterContentHandlerFactory(factory, filters));
             }
         }
     }
