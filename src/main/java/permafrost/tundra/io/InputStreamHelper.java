@@ -44,6 +44,28 @@ public final class InputStreamHelper {
     private InputStreamHelper() {}
 
     /**
+     * Converts the given InputStream to a ByteArrayInputStream, unless it is already an instance of
+     * ByteArrayInputStream in which case it is returned as is.
+     *
+     * @param inputStream   The stream to be memoized.
+     * @return              The memoized stream.
+     * @throws IOException  If an IO error occurs while reading the stream.
+     */
+    public static ByteArrayInputStream memoize(InputStream inputStream) throws IOException {
+        if (inputStream == null) return null;
+
+        ByteArrayInputStream output;
+
+        if (inputStream instanceof ByteArrayInputStream) {
+            output = (ByteArrayInputStream)inputStream;
+        } else {
+            output = new ByteArrayInputStream(read(inputStream));
+        }
+
+        return output;
+    }
+
+    /**
      * Normalizes the given InputStream, by wrapping it in a BufferedInputStream where appropriate.
      *
      * @param inputStream   An InputStream to be normalized.
