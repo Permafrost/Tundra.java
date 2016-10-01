@@ -24,15 +24,14 @@
 
 package permafrost.tundra.server.content;
 
-import com.wm.app.b2b.server.ContentHandler;
 import com.wm.app.b2b.server.HTTPState;
-import com.wm.app.b2b.server.InvokeState;
 import com.wm.app.b2b.server.ProtocolInfoIf;
 import com.wm.net.HttpHeader;
-import com.wm.util.Values;
 import permafrost.tundra.io.InputOutputHelper;
+import permafrost.tundra.lang.Startable;
 import java.io.IOException;
-import java.io.InputStream;
+import java.util.regex.Pattern;
+import java.util.zip.DeflaterInputStream;
 import java.util.zip.GZIPInputStream;
 
 /**
@@ -41,43 +40,52 @@ import java.util.zip.GZIPInputStream;
  * `Content-Encoding: gzip` header and if so first wraps the input stream with a gzip decompresssion
  * stream before calling the proxied content handler to process the request as normal.
  */
-public class HTTPCompressionContentHandler extends ProxyContentHandler {
+public class HTTPCompressionContentHandler extends FilterContentHandler {
+    /**
+     * Regular expression for MIME media types excluded from this filter.
+     */
+    protected static final Pattern EXCLUDED_CONTENT_TYPES = Pattern.compile("^application\\/(wm-)?soap(\\+xml)?$");
+
     /**
      * Creates a new HTTPCompressionContentHandler object.
      *
-     * @param handler The handler to proxy method calls to.
+     * @param startable Used to start and stop content filtering.
      */
-    public HTTPCompressionContentHandler(ContentHandler handler) {
-        super(handler);
+    public HTTPCompressionContentHandler(Startable startable) {
+        super(startable);
     }
 
     /**
      * Reads input for service invocation. Turns properly formatted input into an instance of Values
      * suitable for service invocation. Called before service invocation to provide input. If the
-     * transport is HTTP, and a Content-Encoding header was specified with the value "gzip", the
-     * stream is first wrapped in a gzip decompression stream before the proxied handler is invoked.
+     * transport is HTTP, and a Content-Encoding header was specified with the value "gzip" or "deflate",
+     * the stream is wrapped in a decompression stream.
      *
-     * @param inputStream  The input stream from which to read.
-     * @param invokeState  The current invocation state (such as the current user).
-     * @return             The prepared service invocation input pipeline.
-     * @throws IOException If an error occurs reading from the input stream.
+     * @param contentHandlerInput   The input arguments for processing by the content handler.
+     * @throws IOException          If an error occurs writing to the output stream.
      */
-    public Values getInputValues(InputStream inputStream, InvokeState invokeState) throws IOException {
-        if (inputStream != null && invokeState != null) {
-            ProtocolInfoIf protocolInfoIf = invokeState.getProtocolInfoIf();
+    public void getInputValues(ContentHandlerInput contentHandlerInput) throws IOException {
+        if (startable.isStarted()) {
+            String contentType = contentHandlerInput.getInvokeState().getContentType();
 
-            if (protocolInfoIf instanceof HTTPState) {
-                HTTPState httpState = (HTTPState)protocolInfoIf;
-                String contentEncoding = HTTPStateHelper.getHeader(httpState, HttpHeader.CONTENT_ENCODING);
-                if (contentEncoding != null) {
-                    if (contentEncoding.equalsIgnoreCase("gzip")) {
-                        inputStream = new GZIPInputStream(inputStream, InputOutputHelper.DEFAULT_BUFFER_SIZE);
-                        HTTPStateHelper.removeHeader(httpState, HttpHeader.CONTENT_ENCODING);
+            if (!(contentType != null && EXCLUDED_CONTENT_TYPES.matcher(contentType).matches())) {
+                ProtocolInfoIf protocolInfoIf = contentHandlerInput.getInvokeState().getProtocolInfoIf();
+
+                if (protocolInfoIf instanceof HTTPState) {
+                    HTTPState httpState = (HTTPState)protocolInfoIf;
+                    String contentEncoding = HTTPStateHelper.getHeader(httpState, HttpHeader.CONTENT_ENCODING);
+
+                    if (contentEncoding != null) {
+                        if (contentEncoding.equalsIgnoreCase("gzip")) {
+                            contentHandlerInput.setInputStream(new GZIPInputStream(contentHandlerInput.getInputStream(), InputOutputHelper.DEFAULT_BUFFER_SIZE));
+                            HTTPStateHelper.removeHeader(httpState, HttpHeader.CONTENT_ENCODING);
+                        } else if (contentEncoding.equalsIgnoreCase("deflate")) {
+                            contentHandlerInput.setInputStream(new DeflaterInputStream(contentHandlerInput.getInputStream()));
+                            HTTPStateHelper.removeHeader(httpState, HttpHeader.CONTENT_ENCODING);
+                        }
                     }
                 }
             }
         }
-
-        return super.getInputValues(inputStream, invokeState);
     }
 }

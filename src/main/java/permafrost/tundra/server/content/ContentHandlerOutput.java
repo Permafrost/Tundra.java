@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2015 Lachlan Dowding
+ * Copyright (c) 2016 Lachlan Dowding
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,40 +24,42 @@
 
 package permafrost.tundra.server.content;
 
-/**
- * An Integration Server content handler factory for HTTPCompressionContentHandler objects.
- */
-public class HTTPCompressionContentHandlerFactory extends FilterContentHandlerFactory {
-    /**
-     * Initialization on demand holder idiom.
-     */
-    private static class Holder {
-        /**
-         * The singleton instance of the class.
-         */
-        private static final HTTPCompressionContentHandlerFactory INSTANCE = new HTTPCompressionContentHandlerFactory();
+import com.wm.app.b2b.server.InvokeState;
+import com.wm.util.Values;
+import java.io.OutputStream;
+
+public class ContentHandlerOutput {
+    protected OutputStream outputStream;
+    protected Values values;
+    protected InvokeState invokeState;
+
+    public ContentHandlerOutput(OutputStream outputStream, Values values, InvokeState invokeState) {
+        this.outputStream = outputStream;
+        this.values = values;
+        this.invokeState = invokeState;
     }
 
-    /**
-     * Disallow instantiation of this class.
-     */
-    private HTTPCompressionContentHandlerFactory() {}
-
-    /**
-     * Returns the singleton instance of this class.
-     *
-     * @return The singleton instance of this class.
-     */
-    public static HTTPCompressionContentHandlerFactory getInstance() {
-        return Holder.INSTANCE;
+    public OutputStream getOutputStream() {
+        return outputStream;
     }
 
-    /**
-     * Returns a new HTTPCompressionContentHandler object.
-     *
-     * @return A new HTTPCompressionContentHandler object.
-     */
-    public FilterContentHandler create() {
-        return new HTTPCompressionContentHandler(this);
+    public Values getValues() {
+        return values;
+    }
+
+    public InvokeState getInvokeState() {
+        return invokeState;
+    }
+
+    public void setOutputStream(OutputStream outputStream) {
+        this.outputStream = outputStream;
+    }
+
+    public void setValues(Values values) {
+        this.values = values;
+    }
+
+    public void setInvokeState(InvokeState invokeState) {
+        this.invokeState = invokeState;
     }
 }

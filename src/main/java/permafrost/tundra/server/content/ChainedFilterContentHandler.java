@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2015 Lachlan Dowding
+ * Copyright (c) 2016 Lachlan Dowding
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,24 +30,28 @@ import com.wm.util.Values;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.List;
 
 /**
- * An Integration Server content handler that proxies method calls to another content handler.
+ * A content handler which wraps a list of chained content handlers where each handler is invoked in sequence
+ * to process content.
  */
-abstract public class ProxyContentHandler implements ContentHandler {
+public class ChainedFilterContentHandler extends ProxyContentHandler {
     /**
-     * The content handler that method calls will be proxied to.
+     * The list of filters chained together.
      */
-    protected ContentHandler handler;
+    protected List<FilterContentHandler> filters;
 
     /**
-     * Creates a new ProxyContentHandler object.
+     * Constructs a new ChainedContentHandler given a list of ContentHandler objects.
      *
-     * @param handler The content handler which method calls will be proxied to by this object.
+     * @param handler   The content handlers which ultimately handles content.
+     * @param filters   The chained filters to be wrapped.
+
      */
-    public ProxyContentHandler(ContentHandler handler) {
-        if (handler == null) throw new NullPointerException("handler must not be null");
-        this.handler = handler;
+    ChainedFilterContentHandler(ContentHandler handler, List<FilterContentHandler> filters) {
+        super(handler);
+        this.filters = filters;
     }
 
     /**
@@ -59,8 +63,20 @@ abstract public class ProxyContentHandler implements ContentHandler {
      * @return             The prepared service invocation input pipeline.
      * @throws IOException If an error occurs reading from the input stream.
      */
+    @Override
     public Values getInputValues(InputStream inputStream, InvokeState invokeState) throws IOException {
-        return handler.getInputValues(inputStream, invokeState);
+        ContentHandlerInput contentHandlerInput = new ContentHandlerInput(inputStream, invokeState, new Values());
+
+        if (filters != null) {
+            for (FilterContentHandler filter : filters) {
+                filter.getInputValues(contentHandlerInput);
+            }
+        }
+
+        Values values = super.getInputValues(contentHandlerInput.getInputStream(), contentHandlerInput.getInvokeState());
+        contentHandlerInput.getValues().copyFrom(values);
+
+        return contentHandlerInput.getValues();
     }
 
     /**
@@ -68,29 +84,20 @@ abstract public class ProxyContentHandler implements ContentHandler {
      * directly to the output stream.
      *
      * @param outputStream The output stream to which to write.
-     * @param output       The output values to encode.
+     * @param values       The output values to encode.
      * @param invokeState  The current invocation state (such as the current user).
      * @throws IOException If an error occurs writing to the output stream.
      */
-    public void putOutputValues(OutputStream outputStream, Values output, InvokeState invokeState) throws IOException {
-        handler.putOutputValues(outputStream, output, invokeState);
-    }
+    @Override
+    public void putOutputValues(OutputStream outputStream, Values values, InvokeState invokeState) throws IOException {
+        ContentHandlerOutput contentHandlerOutput = new ContentHandlerOutput(outputStream, values, invokeState);
 
-    /**
-     * Returns the MIME media type that this content handler handles.
-     *
-     * @return The MIME media type that this content handler handles.
-     */
-    public String getContentType() {
-        return handler.getContentType();
-    }
+        if (filters != null) {
+            for (FilterContentHandler filter : filters) {
+                filter.putOutputValues(contentHandlerOutput);
+            }
+        }
 
-    /**
-     * Returns the content handler which is being proxied.
-     *
-     * @return The content handler which is being proxied.
-     */
-    public ContentHandler getContentHandler() {
-        return handler;
+        super.putOutputValues(contentHandlerOutput.getOutputStream(), contentHandlerOutput.getValues(), contentHandlerOutput.getInvokeState());
     }
 }

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2015 Lachlan Dowding
+ * Copyright (c) 2016 Lachlan Dowding
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,40 +24,43 @@
 
 package permafrost.tundra.server.content;
 
-/**
- * An Integration Server content handler factory for HTTPCompressionContentHandler objects.
- */
-public class HTTPCompressionContentHandlerFactory extends FilterContentHandlerFactory {
-    /**
-     * Initialization on demand holder idiom.
-     */
-    private static class Holder {
-        /**
-         * The singleton instance of the class.
-         */
-        private static final HTTPCompressionContentHandlerFactory INSTANCE = new HTTPCompressionContentHandlerFactory();
-    }
+import com.wm.app.b2b.server.ContentHandlerFactory;
+import permafrost.tundra.lang.Startable;
 
+public abstract class FilterContentHandlerFactory extends ContentHandlerFactory implements Startable {
     /**
-     * Disallow instantiation of this class.
+     * Whether content logging is started.
      */
-    private HTTPCompressionContentHandlerFactory() {}
-
-    /**
-     * Returns the singleton instance of this class.
-     *
-     * @return The singleton instance of this class.
-     */
-    public static HTTPCompressionContentHandlerFactory getInstance() {
-        return Holder.INSTANCE;
-    }
+    protected volatile boolean started = false;
 
     /**
      * Returns a new HTTPCompressionContentHandler object.
      *
      * @return A new HTTPCompressionContentHandler object.
      */
-    public FilterContentHandler create() {
-        return new HTTPCompressionContentHandler(this);
+    @Override
+    public abstract FilterContentHandler create();
+
+    /**
+     * Starts logging content.
+     */
+    public synchronized void start() {
+        started = true;
+    }
+
+    /**
+     * Stops logging content.
+     */
+    public synchronized void stop() {
+        started = false;
+    }
+
+    /**
+     * Returns true if content logging is started.
+     *
+     * @return True if content logging is started.
+     */
+    public boolean isStarted() {
+        return started;
     }
 }

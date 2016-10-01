@@ -26,15 +26,18 @@ package permafrost.tundra.server.content;
 
 import com.wm.app.b2b.server.ContentHandler;
 import com.wm.app.b2b.server.ContentHandlerFactory;
+import com.wm.app.b2b.server.ContentManager;
+import java.util.List;
+import java.util.Map;
 
 /**
  * An Integration Server content handler factory that proxies method calls to another content handler factory.
  */
-public class ProxyContentHandlerFactory extends ContentHandlerFactory {
+abstract public class ProxyContentHandlerFactory extends ContentHandlerFactory {
     /**
      * The content handler returned by the factory.
      */
-    private ContentHandlerFactory factory;
+    protected ContentHandlerFactory factory;
 
     /**
      * Creates a new ProxyContentHandlerFactory object.
@@ -42,7 +45,7 @@ public class ProxyContentHandlerFactory extends ContentHandlerFactory {
      * @param factory The content handler to be returned by the factory.
      */
     public ProxyContentHandlerFactory(ContentHandlerFactory factory) {
-        if (factory == null) throw new NullPointerException("handler must not null");
+        if (factory == null) throw new NullPointerException("factory must not null");
         this.factory = factory;
     }
 
