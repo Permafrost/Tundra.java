@@ -73,17 +73,21 @@ public class LoggingContentHandlerFactory extends FilterContentHandlerFactory im
      * Starts logging content.
      */
     public synchronized void start() {
-        logger = ServerAPI.getLogStream("content.log");
-        super.start();
+        if (!started) {
+            logger = ServerAPI.getLogStream("content.log");
+            super.start();
+        }
     }
 
     /**
      * Stops logging content.
      */
     public synchronized void stop() {
-        super.stop();
-        logger.close();
-        logger = null;
+        if (started) {
+            super.stop();
+            logger.close();
+            logger = null;
+        }
     }
 
     /**
