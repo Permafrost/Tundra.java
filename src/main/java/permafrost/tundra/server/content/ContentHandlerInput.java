@@ -28,37 +28,86 @@ import com.wm.app.b2b.server.InvokeState;
 import com.wm.util.Values;
 import java.io.InputStream;
 
+/**
+ * Wraps the arguments to the ContentHandler getInputValues method, so that they can be mutated.
+ */
 public class ContentHandlerInput {
+    /**
+     * The input stream to be processed by a content handler.
+     */
     protected InputStream inputStream;
+    /**
+     * The current invocation state.
+     */
     protected InvokeState invokeState;
+    /**
+     * The resulting values to be added to the pipeline after processing the input stream.
+     */
     protected Values values;
 
+    /**
+     * Constructs a new ContentHandlerInput object.
+     *
+     * @param inputStream   The input stream.
+     * @param invokeState   The current invocation state.
+     * @param values        The resulting values.
+     */
     public ContentHandlerInput(InputStream inputStream, InvokeState invokeState, Values values) {
         this.inputStream = inputStream;
         this.invokeState = invokeState;
         this.values = values;
     }
 
+    /**
+     * Returns the input stream.
+     *
+     * @return The input stream.
+     */
     public InputStream getInputStream() {
         return inputStream;
     }
 
+    /**
+     * Returns the invocation state.
+     *
+     * @return The invocation state.
+     */
     public InvokeState getInvokeState() {
         return invokeState;
     }
 
+    /**
+     * Returns the values.
+     *
+     * @return The values.
+     */
     public Values getValues() {
         return values;
     }
 
+    /**
+     * Sets the stored input stream to be the given stream.
+     *
+     * @param inputStream   The new input stream.
+     */
     public void setInputStream(InputStream inputStream) {
         this.inputStream = inputStream;
     }
 
+    /**
+     * Sets the stored invocation state to be the given invocation state.
+     *
+     * @param invokeState   The new invocation state.
+     */
     public void setInvokeState(InvokeState invokeState) {
         this.invokeState = invokeState;
     }
 
+    /**
+     * Sets the stored values to be the given values.
+     *
+     * @param values        The new values.
+     */
     public void setValues(Values values) {
         this.values = values;
     }
