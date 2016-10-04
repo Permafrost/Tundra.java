@@ -76,21 +76,25 @@ public class LoggingContentHandler extends FilterContentHandler {
     public void getInputValues(ContentHandlerInput contentHandlerInput) throws IOException {
         if (startable.isStarted()) {
             byte[] bytes = InputStreamHelper.read(contentHandlerInput.getInputStream());
-            contentHandlerInput.setInputStream(new ByteArrayInputStream(bytes));
-
-            if (bytes.length > 0) {
+            if (bytes != null) {
+                contentHandlerInput.setInputStream(new ByteArrayInputStream(bytes));
                 InvokeState invokeState = contentHandlerInput.getInvokeState();
-                String contentType;
+                String contentType = null;
+                Charset charset = null;
 
-                try {
-                    contentType = MIMETypeHelper.normalize(invokeState.getContentType());
-                } catch (MimeTypeParseException ex) {
-                    contentType = MIMETypeHelper.DEFAULT_MIME_TYPE_STRING;
+                if (invokeState != null) {
+                    try {
+                        contentType = MIMETypeHelper.normalize(invokeState.getContentType());
+                    } catch (MimeTypeParseException ex) {
+                        // do nothing
+                    }
+                    charset = CharsetHelper.normalize(invokeState.getContentEncoding());
                 }
 
-                Charset charset = CharsetHelper.normalize(invokeState.getContentEncoding());
-                String content;
+                if (contentType == null) contentType = MIMETypeHelper.DEFAULT_MIME_TYPE_STRING;
+                if (charset == null) charset = CharsetHelper.DEFAULT_CHARSET;
 
+                String content;
                 if (TEXT_CONTENT_PATTERN.matcher(contentType).matches()) {
                     content = JavaEscape.escapeJava(new String(bytes, charset), JavaEscapeLevel.LEVEL_2_ALL_NON_ASCII_PLUS_BASIC_ESCAPE_SET);
                 } else {
