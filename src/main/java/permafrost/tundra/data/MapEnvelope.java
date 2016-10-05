@@ -101,7 +101,6 @@ public abstract class MapEnvelope<K, V> extends AbstractIData implements Map<K, 
      * @param other The object to compare equality with.
      * @return      True if this object is equal to the given other object.
      */
-    @Override
     public boolean equals(Object other) {
         return map.equals(other);
     }
@@ -121,7 +120,6 @@ public abstract class MapEnvelope<K, V> extends AbstractIData implements Map<K, 
      *
      * @return The hash code value for this object.
      */
-    @Override
     public int hashCode() {
         return map.hashCode();
     }
@@ -158,10 +156,10 @@ public abstract class MapEnvelope<K, V> extends AbstractIData implements Map<K, 
     /**
      * Copies all of the elements from the given map to this map.
      *
-     * @param map The map to copy elements from.
+     * @param other The map to copy elements from.
      */
-    public void putAll(Map<? extends K, ? extends V> map) {
-        this.map.putAll(map);
+    public void putAll(Map<? extends K, ? extends V> other) {
+        map.putAll(other);
     }
 
     /**
