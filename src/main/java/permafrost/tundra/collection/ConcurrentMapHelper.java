@@ -29,6 +29,7 @@ import com.wm.data.IDataCursor;
 import permafrost.tundra.data.ConcurrentMapIData;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 
 /**
  * A collection of convenience methods for working with java.util.concurrent.ConcurrentMap objects.
@@ -42,31 +43,90 @@ public class ConcurrentMapHelper {
      * @return                      A newly created Map object.
      */
     public static <K, V> ConcurrentMap<K, V> create() {
-        return new ConcurrentHashMap<K, V>();
+        return create(false);
+    }
+
+    /**
+     * Returns a newly created Map object.
+     *
+     * @param sorted                Whether the Map should maintain keys sorted in natural ascending order.
+     * @param <K>                   The class of Map keys.
+     * @param <V>                   The class of Map values.
+     * @return                      A newly created Map object.
+     */
+    public static <K, V> ConcurrentMap<K, V> create(boolean sorted) {
+        ConcurrentMap<K, V> map;
+
+        if (sorted) {
+            map = new ConcurrentSkipListMap<K, V>();
+        } else {
+            map = new ConcurrentHashMap<K, V>();
+        }
+
+        return map;
     }
 
     /**
      * Converts the given IData document to a Map.
      *
      * @param document              The IData document to be converted.
-     * @param <K>                   The class of Map keys.
+     * @return                      A newly created Map which contains the top-level key value elements from the
+     *                              given document.
+     */
+    @SuppressWarnings("unchecked")
+    public static ConcurrentMap<String, Object> mapify(IData document) {
+        return mapify(document, false);
+    }
+
+    /**
+     * Converts the given IData document to a Map.
+     *
+     * @param document              The IData document to be converted.
+     * @param sorted                Whether the Map should maintain keys sorted in natural ascending order.
+     * @return                      A newly created Map which contains the top-level key value elements from the
+     *                              given document.
+     */
+    @SuppressWarnings("unchecked")
+    public static ConcurrentMap<String, Object> mapify(IData document, boolean sorted) {
+        return mapify(document, sorted, Object.class);
+    }
+
+    /**
+     * Converts the given IData document to a Map.
+     *
+     * @param document              The IData document to be converted.
+     * @param klass                 The class of Map values.
      * @param <V>                   The class of Map values.
      * @return                      A newly created Map which contains the top-level key value elements from the
      *                              given document.
      */
     @SuppressWarnings("unchecked")
-    public static <K, V> ConcurrentMap<K, V> mapify(IData document) {
-        if (document == null) return null;
+    public static <V> ConcurrentMap<String, V> mapify(IData document, Class<V> klass) {
+        return mapify(document, false, klass);
+    }
 
-        ConcurrentMap<K, V> map = create();
+    /**
+     * Converts the given IData document to a Map.
+     *
+     * @param document              The IData document to be converted.
+     * @param sorted                Whether the Map should maintain keys sorted in natural ascending order.
+     * @param klass                 The class of Map values.
+     * @param <V>                   The class of Map values.
+     * @return                      A newly created Map which contains the top-level key value elements from the
+     *                              given document.
+     */
+    @SuppressWarnings("unchecked")
+    public static <V> ConcurrentMap<String, V> mapify(IData document, boolean sorted, Class<V> klass) {
+        ConcurrentMap<String, V> map = create(sorted);
 
-        IDataCursor cursor = document.getCursor();
-        while(cursor.next()) {
-            map.put((K)cursor.getKey(), (V)cursor.getValue());
+        if (document != null) {
+            IDataCursor cursor = document.getCursor();
+            while (cursor.next()) {
+                map.put(cursor.getKey(), (V)cursor.getValue());
+            }
         }
-
         // wrap the map in an IData compatible wrapper for developer convenience
-        return new ConcurrentMapIData<K, V>(map);
+        return new ConcurrentMapIData<String, V>(map);
     }
 
     /**
