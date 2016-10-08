@@ -27,6 +27,7 @@ package permafrost.tundra.collection;
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import permafrost.tundra.data.MapIData;
+import permafrost.tundra.lang.ArrayHelper;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
@@ -196,5 +197,34 @@ public class MapHelper {
 
         // wrap the map in an IData compatible wrapper for developer convenience
         return new MapIData<String, V>(map);
+    }
+
+    /**
+     * Returns the list of keys stored in the given map.
+     *
+     * @param map       The map to be operated on.
+     * @param keyClass  The class of keys stored in the map.
+     * @param <K>       The class of keys stored in the map.
+     * @param <V>       The class of values stored in the map.
+     * @return          The list of keys stored in the map.
+     */
+    public static <K, V> K[] keys(Map<K, V> map, Class<K> keyClass) {
+        if (map == null) return null;
+        return CollectionHelper.arrayify(map.keySet(), keyClass);
+
+    }
+
+    /**
+     * Returns the lisst of values stored in the given map.
+     *
+     * @param map           The map to be operated on.
+     * @param valueClass    The class of values stored in the map.
+     * @param <K>           The class of keys stored in the map.
+     * @param <V>           The class of values stored in the map.
+     * @return              The list of values stored in the map.
+     */
+    public static <K, V> V[] values(Map<K, V> map, Class<V> valueClass) {
+        if (map == null) return null;
+        return CollectionHelper.arrayify(map.values(), valueClass);
     }
 }
