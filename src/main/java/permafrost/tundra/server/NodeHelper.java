@@ -33,6 +33,7 @@ import com.wm.lang.ns.NSInterface;
 import com.wm.lang.ns.NSName;
 import com.wm.lang.ns.NSNode;
 import com.wm.lang.ns.NSType;
+import java.util.Collections;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
@@ -190,6 +191,7 @@ public final class NodeHelper {
      * @return A sorted set of child nodes.
      */
     public static SortedSet<String> list(String parent, String pattern, String type, boolean recurse) {
+        if (parent != null && getInterface(parent) == null) return new TreeSet<String>();
         return list(getInterface(parent), pattern, type, recurse);
     }
 
