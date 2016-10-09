@@ -32,6 +32,15 @@ public abstract class AbstractInvokeChainProcessor implements InvokeChainProcess
     }
 
     /**
+     * Returns true if this processor is started.
+     *
+     * @return True if this processor is started.
+     */
+    public boolean isStarted() {
+        return started;
+    }
+
+    /**
      * Registers this class as an invocation handler and starts processing.
      */
     public synchronized void start() {
