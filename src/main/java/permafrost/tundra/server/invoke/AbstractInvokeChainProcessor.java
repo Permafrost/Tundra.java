@@ -32,7 +32,7 @@ public abstract class AbstractInvokeChainProcessor implements InvokeChainProcess
     }
 
     /**
-     * Registers this class as an invocation handler and starts saving pipelines.
+     * Registers this class as an invocation handler and starts processing.
      */
     public synchronized void start() {
         if (!started) {
@@ -42,7 +42,7 @@ public abstract class AbstractInvokeChainProcessor implements InvokeChainProcess
     }
 
     /**
-     * Unregisters this class as an invocation handler and stops saving pipelines.
+     * Unregisters this class as an invocation handler and stops processing.
      */
     public synchronized void stop() {
         if (started) {
