@@ -38,20 +38,30 @@ public class ExceptionLoggingProcessor extends AbstractInvokeChainProcessor {
     /**
      * Whether only top level service exceptions should be logged.
      */
-    private volatile boolean topServiceOnly = false;
+    private volatile boolean topServiceOnly = true;
 
     /**
-     * Creates a new logging exception handler.
+     * Initialization on demand holder idiom.
      */
-    public ExceptionLoggingProcessor() {}
+    private static class Holder {
+        /**
+         * The singleton instance of the class.
+         */
+        private static final ExceptionLoggingProcessor INSTANCE = new ExceptionLoggingProcessor();
+    }
 
     /**
-     * Creates a new pipeline capture processor.
+     * Disallow instantiation of this class.
+     */
+    private ExceptionLoggingProcessor() {}
+
+    /**
+     * Returns the singleton instance of this class.
      *
-     * @param topServiceOnly    Whether only top level service exceptions should be logged.
+     * @return The singleton instance of this class.
      */
-    public ExceptionLoggingProcessor(boolean topServiceOnly) {
-        this.topServiceOnly = topServiceOnly;
+    public static ExceptionLoggingProcessor getInstance() {
+        return Holder.INSTANCE;
     }
 
     /**
