@@ -204,11 +204,12 @@ public class ServiceUsageProcessor extends AbstractInvokeChainProcessor {
     @Override
     public synchronized void stop() {
         if (started) {
+            super.stop();
+
             startTime = 0;
             totalInvocations.set(0);
             totalErrors.set(0);
-
-            super.stop();
+            invocations.clear();
         }
     }
 
