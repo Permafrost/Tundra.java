@@ -87,6 +87,15 @@ public class ExceptionLoggingProcessor extends AbstractInvokeChainProcessor {
             super.process(iterator, baseService, pipeline, serviceStatus);
         } catch(Throwable exception) {
             if (!topServiceOnly || serviceStatus.isTopService()) ServerAPI.logError(exception);
+
+            // rethrow exception after logging
+            if (exception instanceof RuntimeException) {
+                throw (RuntimeException)exception;
+            } else if (exception instanceof ServerException) {
+                throw (ServerException)exception;
+            } else {
+                throw new ServerException(exception);
+            }
         }
     }
 }
