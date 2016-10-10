@@ -34,11 +34,11 @@ import java.util.Iterator;
 /**
  * A service invocation processor that logs service exceptions to the server error log.
  */
-public class ExceptionLoggingProcessor extends BasicInvokeChainProcessor {
+public class ExceptionLoggingProcessor extends AbstractInvokeChainProcessor {
     /**
      * Whether only top level service exceptions should be logged.
      */
-    private boolean topServiceOnly = false;
+    private volatile boolean topServiceOnly = false;
 
     /**
      * Creates a new logging exception handler.
@@ -55,6 +55,24 @@ public class ExceptionLoggingProcessor extends BasicInvokeChainProcessor {
     }
 
     /**
+     * Returns true if only the top level service exceptions are being logged.
+     *
+     * @return True if only the top level service exceptions are being logged.
+     */
+    public boolean getTopServiceOnly() {
+        return topServiceOnly;
+    }
+
+    /**
+     * Sets whether only top level service exceptions should be logged.
+     *
+     * @param topServiceOnly    Whether only top level service exceptions should be logged.
+     */
+    public void setTopServiceOnly(boolean topServiceOnly) {
+        this.topServiceOnly = topServiceOnly;
+    }
+
+    /**
      * Processes a service invocation by logging any exceptions thrown.
      *
      * @param iterator          Invocation chain.
@@ -64,8 +82,11 @@ public class ExceptionLoggingProcessor extends BasicInvokeChainProcessor {
      * @throws ServerException  If the service invocation fails.
      */
     @Override
-    public void processCatch(Iterator iterator, BaseService baseService, IData pipeline, ServiceStatus serviceStatus, Throwable exception) throws ServerException {
-        if (started && (!topServiceOnly || serviceStatus.isTopService())) ServerAPI.logError(exception);
-        super.processCatch(iterator, baseService, pipeline, serviceStatus, exception);
+    public void process(Iterator iterator, BaseService baseService, IData pipeline, ServiceStatus serviceStatus) throws ServerException {
+        try {
+            super.process(iterator, baseService, pipeline, serviceStatus);
+        } catch(Throwable exception) {
+            if (!topServiceOnly || serviceStatus.isTopService()) ServerAPI.logError(exception);
+        }
     }
 }

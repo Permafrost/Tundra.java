@@ -53,7 +53,7 @@ import java.util.regex.Pattern;
 /**
  * A service invocation processor that saves input and output pipelines to disk.
  */
-public class PipelineCaptureProcessor extends BasicInvokeChainProcessor implements IDataCodable {
+public class PipelineCaptureProcessor extends AbstractInvokeChainProcessor implements IDataCodable {
     /**
      * The default service pattern: matches all services.
      */
@@ -227,7 +227,7 @@ public class PipelineCaptureProcessor extends BasicInvokeChainProcessor implemen
                 }
             }
 
-            processMain(iterator, baseService, pipeline, serviceStatus);
+            super.process(iterator, baseService, pipeline, serviceStatus);
         } finally {
             if (matches) {
                 try {
