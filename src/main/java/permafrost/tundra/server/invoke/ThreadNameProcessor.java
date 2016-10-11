@@ -35,7 +35,7 @@ import java.util.Iterator;
 /**
  * A service invocation processor that sets more descriptive thread names on invocation threads.
  */
-public class ThreadNameProcessor extends BasicInvokeChainProcessor {
+public class ThreadNameProcessor extends AbstractInvokeChainProcessor {
     /**
      * Initialization on demand holder idiom.
      */
@@ -61,7 +61,8 @@ public class ThreadNameProcessor extends BasicInvokeChainProcessor {
     }
 
     /**
-     * Processes a service invocation by saving the input and output pipeline to disk.
+     * Processes a service invocation by updating the current thread name to include the service being executed and
+     * its start time as a suffix.
      *
      * @param iterator          The invocation chain.
      * @param baseService       The invoked service.
@@ -72,10 +73,9 @@ public class ThreadNameProcessor extends BasicInvokeChainProcessor {
     @Override
     public void process(Iterator iterator, BaseService baseService, IData pipeline, ServiceStatus serviceStatus) throws ServerException {
         String originalThreadName = Thread.currentThread().getName();
-
         try {
             Thread.currentThread().setName(MessageFormat.format("{0} ({1} @ {2})", originalThreadName, baseService.getNSName().getFullName(), DateTimeHelper.format(serviceStatus.getStartTime())));
-            processMain(iterator, baseService, pipeline, serviceStatus);
+            super.process(iterator, baseService, pipeline, serviceStatus);
         } finally {
             Thread.currentThread().setName(originalThreadName);
         }

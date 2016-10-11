@@ -34,23 +34,51 @@ import java.util.Iterator;
 /**
  * A service invocation processor that logs service exceptions to the server error log.
  */
-public class ExceptionLoggingProcessor extends BasicInvokeChainProcessor {
+public class ExceptionLoggingProcessor extends AbstractInvokeChainProcessor {
     /**
      * Whether only top level service exceptions should be logged.
      */
-    private boolean topServiceOnly = false;
+    private volatile boolean topServiceOnly = true;
 
     /**
-     * Creates a new logging exception handler.
+     * Initialization on demand holder idiom.
      */
-    public ExceptionLoggingProcessor() {}
+    private static class Holder {
+        /**
+         * The singleton instance of the class.
+         */
+        private static final ExceptionLoggingProcessor INSTANCE = new ExceptionLoggingProcessor();
+    }
 
     /**
-     * Creates a new pipeline capture processor.
+     * Disallow instantiation of this class.
+     */
+    private ExceptionLoggingProcessor() {}
+
+    /**
+     * Returns the singleton instance of this class.
+     *
+     * @return The singleton instance of this class.
+     */
+    public static ExceptionLoggingProcessor getInstance() {
+        return Holder.INSTANCE;
+    }
+
+    /**
+     * Returns true if only the top level service exceptions are being logged.
+     *
+     * @return True if only the top level service exceptions are being logged.
+     */
+    public boolean getTopServiceOnly() {
+        return topServiceOnly;
+    }
+
+    /**
+     * Sets whether only top level service exceptions should be logged.
      *
      * @param topServiceOnly    Whether only top level service exceptions should be logged.
      */
-    public ExceptionLoggingProcessor(boolean topServiceOnly) {
+    public void setTopServiceOnly(boolean topServiceOnly) {
         this.topServiceOnly = topServiceOnly;
     }
 
@@ -64,8 +92,20 @@ public class ExceptionLoggingProcessor extends BasicInvokeChainProcessor {
      * @throws ServerException  If the service invocation fails.
      */
     @Override
-    public void processCatch(Iterator iterator, BaseService baseService, IData pipeline, ServiceStatus serviceStatus, Throwable exception) throws ServerException {
-        if (started && (!topServiceOnly || serviceStatus.isTopService())) ServerAPI.logError(exception);
-        super.processCatch(iterator, baseService, pipeline, serviceStatus, exception);
+    public void process(Iterator iterator, BaseService baseService, IData pipeline, ServiceStatus serviceStatus) throws ServerException {
+        try {
+            super.process(iterator, baseService, pipeline, serviceStatus);
+        } catch(Throwable exception) {
+            if (!topServiceOnly || serviceStatus.isTopService()) ServerAPI.logError(exception);
+
+            // rethrow exception after logging
+            if (exception instanceof RuntimeException) {
+                throw (RuntimeException)exception;
+            } else if (exception instanceof ServerException) {
+                throw (ServerException)exception;
+            } else {
+                throw new ServerException(exception);
+            }
+        }
     }
 }
