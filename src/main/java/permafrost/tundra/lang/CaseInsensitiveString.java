@@ -126,6 +126,16 @@ public class CaseInsensitiveString implements CharSequence, Comparable<CharSeque
     }
 
     /**
+     * Returns a hash code value for the object.
+     *
+     * @return A hash code value for the object.
+     */
+    @Override
+    public int hashCode() {
+        return lowercaseString.hashCode();
+    }
+
+    /**
      * Returns the original string wrapped by this case-insensitive string object.
      *
      * @return The original string wrapped by this case-insensitive string object.
