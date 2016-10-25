@@ -67,7 +67,7 @@ public class Recognizer {
      * @return          Either the recognized ContentDefinition, or null if the content was unrecognized.
      */
     public Format recognize(IData pipeline) {
-        String formatName = formatName = IDataHelper.get(pipeline, "$message.format.name", true, String.class);
+        String formatName = IDataHelper.get(pipeline, "$message.format.name", true, String.class);
         if (formatName == null) IDataHelper.get(pipeline, "$message.format/name", String.class);
 
         if (formatName != null) {
