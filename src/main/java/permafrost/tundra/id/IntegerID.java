@@ -59,10 +59,6 @@ public class IntegerID {
      * The unit of time used for calculating the time component of the ID.
      */
     private TimeUnit timeUnit;
-    /**
-     * The number of milliseconds in the specified time unit.
-     */
-    private long millisecondsInTimeUnit;
 
     /**
      * Constructs a new ID generator using 31 bits of time measured in seconds since the Unix epoch.
@@ -134,7 +130,6 @@ public class IntegerID {
         this.partition = partitionDivisor == 0 ? 0 : partition % partitionDivisor;
         this.timeDivisor = (int)Math.pow(2, ((Integer.SIZE - 1) - partitionBitLength)) - 1;
         this.timeUnit = timeUnit;
-        this.millisecondsInTimeUnit = timeUnit.toMillis(1);
     }
 
     /**
@@ -149,9 +144,9 @@ public class IntegerID {
             next = currentTime();
             next = previous == -1 ? next : Math.min(previous + 1, next);
 
-            if (next == previous && millisecondsInTimeUnit > 0) {
+            if (next == previous) {
                 try {
-                    Thread.sleep(millisecondsInTimeUnit - (System.currentTimeMillis() % millisecondsInTimeUnit));
+                    timeUnit.sleep(1);
                 } catch (InterruptedException ex) {
                     throw new RuntimeException(ex);
                 }
