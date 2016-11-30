@@ -195,8 +195,7 @@ public class MapHelper {
             }
         }
 
-        // wrap the map in an IData compatible wrapper for developer convenience
-        return new MapIData<String, V>(map);
+        return map;
     }
 
     /**
@@ -211,7 +210,17 @@ public class MapHelper {
     public static <K, V> K[] keys(Map<K, V> map, Class<K> keyClass) {
         if (map == null) return null;
         return CollectionHelper.arrayify(map.keySet(), keyClass);
+    }
 
+    /**
+     * Returns the list of keys stored in the given map.
+     *
+     * @param map       The map to be operated on.
+     * @return          The list of keys stored in the map.
+     */
+    public static Object[] keys(Map map) {
+        if (map == null) return null;
+        return CollectionHelper.arrayify(map.keySet());
     }
 
     /**
@@ -226,5 +235,16 @@ public class MapHelper {
     public static <K, V> V[] values(Map<K, V> map, Class<V> valueClass) {
         if (map == null) return null;
         return CollectionHelper.arrayify(map.values(), valueClass);
+    }
+
+    /**
+     * Returns the lisst of values stored in the given map.
+     *
+     * @param map           The map to be operated on.
+     * @return              The list of values stored in the map.
+     */
+    public static Object[] values(Map map) {
+        if (map == null) return null;
+        return CollectionHelper.arrayify(map.values());
     }
 }
