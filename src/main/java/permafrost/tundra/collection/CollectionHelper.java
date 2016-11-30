@@ -109,6 +109,16 @@ public class CollectionHelper {
     }
 
     /**
+     * Converts the given collection to an array.
+     *
+     * @param collection    The collection to be converted.
+     * @return              An array representation of the given collection.
+     */
+    public static Object[] arrayify(Collection collection) {
+        return ArrayHelper.normalize(collection);
+    }
+
+    /**
      * Returns true if the given collection includes the given item.
      *
      * @param collection    The collection to check item existence in.
