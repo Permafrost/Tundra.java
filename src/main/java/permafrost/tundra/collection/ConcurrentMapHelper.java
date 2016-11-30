@@ -122,11 +122,14 @@ public class ConcurrentMapHelper {
         if (document != null) {
             IDataCursor cursor = document.getCursor();
             while (cursor.next()) {
-                map.put(cursor.getKey(), (V)cursor.getValue());
+                String key = cursor.getKey();
+                V value = (V)cursor.getValue();
+                // ignore null values, as they are not supported by either ConcurrentHashMap or ConcurrentSkipListMap
+                if (value != null) map.put(key, value);
             }
         }
-        // wrap the map in an IData compatible wrapper for developer convenience
-        return new ConcurrentMapIData<String, V>(map);
+
+        return map;
     }
 
     /**
