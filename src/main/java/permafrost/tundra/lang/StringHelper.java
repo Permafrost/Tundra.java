@@ -264,6 +264,18 @@ public final class StringHelper {
      *
      * @param input     The string to be truncated.
      * @param length    The length to truncate the string to.
+     * @return          The truncated string.
+     */
+    public static String truncate(String input, int length) {
+        return truncate(input, length, false);
+    }
+
+    /**
+     * Truncates the given string to the given length. If the string length is less than or equal to the desired
+     * length it is returned unmodified, otherwise it is truncated to the desired length.
+     *
+     * @param input     The string to be truncated.
+     * @param length    The length to truncate the string to.
      * @param ellipsis  If true, the returned string is suffixed with an ellipsis character when truncated.
      * @return          The truncated string.
      */
