@@ -2010,7 +2010,7 @@ public final class IDataHelper {
                             XPathExpression compiledExpression = XPathHelper.compile(expression, namespaceContext);
                             Nodes nodes = XPathHelper.get((Node)node, compiledExpression);
 
-                            if (nodes.size() > 0) {
+                            if (nodes != null && nodes.size() > 0) {
                                 value = NodeHelper.getValue(nodes.get(0));
                             }
                         } catch (XPathExpressionException ex) {
