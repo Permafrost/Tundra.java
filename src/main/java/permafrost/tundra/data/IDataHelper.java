@@ -78,7 +78,8 @@ public final class IDataHelper {
      * @return          The list of keys present in the given IData document.
      */
     public static String[] getKeys(IData document) {
-        return getKeys(document, (Pattern)null);
+        List<String> keys = getKeyList(document);
+        return keys.toArray(new String[keys.size()]);
     }
 
     /**
@@ -97,10 +98,24 @@ public final class IDataHelper {
      *
      * @param document  An IData document to retrieve the keys from.
      * @param pattern   A regular expression pattern which the returned set of keys must match.
-     * @return          The list of keys present in the given IData document that match the given regular expression pattern.
+     * @return          The list of keys present in the given IData document that match the given regular expression
+     *                  pattern.
      */
     public static String[] getKeys(IData document, Pattern pattern) {
-        List<String> keys = new ArrayList<String>();
+        List<String> keys = getKeyList(document, pattern);
+        return keys.toArray(new String[keys.size()]);
+    }
+
+    /**
+     * Returns the keys that match the given regular expression pattern in the given IData document.
+     *
+     * @param document  An IData document.
+     * @param pattern   A regular expression pattern which the returned set of keys must match.
+     * @return          The list of keys present in the given IData document that match the given regular expression
+     *                  pattern.
+     */
+    public static List<String> getKeyList(IData document, Pattern pattern) {
+        List<String> keys = new ArrayList<String>(size(document));
 
         if (document != null) {
             IDataCursor cursor = document.getCursor();
@@ -118,7 +133,42 @@ public final class IDataHelper {
             cursor.destroy();
         }
 
-        return keys.toArray(new String[keys.size()]);
+        return keys;
+    }
+
+    /**
+     * Returns the top-level keys in the given IData document.
+     *
+     * @param document  An IData document.
+     * @return          The list of top-level keys in the given IData document.
+     */
+    public static List<String> getKeyList(IData document) {
+        List<String> keys = new ArrayList<String>(size(document));
+
+        if (document != null) {
+            IDataCursor cursor = document.getCursor();
+
+            while(cursor.next()) {
+                keys.add(cursor.getKey());
+            }
+
+            cursor.destroy();
+        }
+
+        return keys;
+    }
+
+    /**
+     * Returns all the top-level values that are instances of the given class from the given document.
+     *
+     * @param document   An IData document.
+     * @param valueClass The class that the returned values are instances of.
+     * @return           The list of top-level values that are instances of the given class from the given IData
+     *                   document.
+     */
+    public static <V> V[] getValues(IData document, Class<V> valueClass) {
+        List<V> values = getValueList(document, valueClass);
+        return values.toArray(ArrayHelper.instantiate(valueClass, values.size()));
     }
 
     /**
@@ -128,19 +178,109 @@ public final class IDataHelper {
      * @return          The list of top-level values present in the given IData document.
      */
     public static Object[] getValues(IData document) {
-        List<Object> values = new ArrayList<Object>();
+        return ArrayHelper.normalize(getValueList(document));
+    }
+
+    /**
+     * Returns all the top-level values that are instances of the given class from the given document.
+     *
+     * @param document   An IData document.
+     * @param valueClass The class that the returned values are instances of.
+     * @return           The list of top-level values that are instances of the given class from the given IData
+     *                   document.
+     */
+    @SuppressWarnings("unchecked")
+    public static <V> List<V> getValueList(IData document, Class<V> valueClass) {
+        if (valueClass == null) throw new NullPointerException("valueClass must not be null");
+
+        List<V> values = new ArrayList<V>(size(document));
 
         if (document != null) {
             IDataCursor cursor = document.getCursor();
 
-            while(cursor.next()) {
-                values.add(cursor.getValue());
+            try {
+                while (cursor.next()) {
+                    Object value = cursor.getValue();
+                    if (valueClass.isInstance(value)) {
+                        values.add((V)value);
+                    }
+                }
+            } finally {
+                cursor.destroy();
             }
-
-            cursor.destroy();
         }
 
-        return ArrayHelper.normalize(values);
+        return values;
+    }
+
+    /**
+     * Returns all the top-level values from the given document.
+     *
+     * @param document   An IData document.
+     * @return           The list of top-level values from given IData document.
+     */
+    @SuppressWarnings("unchecked")
+    public static List getValueList(IData document) {
+        List values = new ArrayList(size(document));
+
+        if (document != null) {
+            IDataCursor cursor = document.getCursor();
+
+            try {
+                while (cursor.next()) {
+                    values.add(cursor.getValue());
+                }
+            } finally {
+                cursor.destroy();
+            }
+        }
+
+        return values;
+    }
+
+    /**
+     * Returns all the top-level values that are IData compatible objects, including elements in IData[] compatible
+     * arrays, from the given IData document.
+     *
+     * @param document   An IData document.
+     * @return           The list of top-level values that are IData compatible objects, including elements in IData[]
+     *                   compatible arrays, from the given IData document
+     */
+    @SuppressWarnings("unchecked")
+    public static List<IData> getIDataValueList(IData document) {
+        List<IData> values = new ArrayList<IData>(size(document));
+
+        if (document != null) {
+            IDataCursor cursor = document.getCursor();
+
+            try {
+                while (cursor.next()) {
+                    Object value = cursor.getValue();
+                    if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
+                        values.addAll(Arrays.asList(toIDataArray(value)));
+                    } else if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
+                        values.add(toIData(value));
+                    }
+                }
+            } finally {
+                cursor.destroy();
+            }
+        }
+
+        return values;
+    }
+
+    /**
+     * Returns all the top-level values that are IData documents or can be converted to IData documents from the given
+     * IData document.
+     *
+     * @param document   An IData document.
+     * @return           The list of top-level values that are IData documents or can be converted to IData documents
+     *                   from the given IData document.
+     */
+    public static IData[] getIDataValues(IData document) {
+        List<IData> values = getIDataValueList(document);
+        return values.toArray(new IData[values.size()]);
     }
 
     /**
@@ -356,6 +496,49 @@ public final class IDataHelper {
      * @return          A new IData document containing the keys and values from all merged input documents.
      */
     public static IData merge(IData... documents) {
+        return merge(documents == null ? null : Arrays.asList(documents));
+    }
+
+    /**
+     * Merges multiple IData documents into a single new IData document.
+     *
+     * @param recurse   If true, a recursive merge is performed.
+     * @param documents One or more IData documents to be merged.
+     * @return          A new IData document containing the keys and values from all merged input documents.
+     */
+    public static IData merge(boolean recurse, IData... documents) {
+        return merge(documents, recurse);
+    }
+
+    /**
+     * Merges multiple IData documents into a single new IData document.
+     *
+     * @param documents One or more IData documents to be merged.
+     * @param recurse   If true, a recursive merge is performed.
+     * @return          A new IData document containing the keys and values from all merged input documents.
+     */
+    public static IData merge(IData[] documents, boolean recurse) {
+        return merge(documents == null ? null : Arrays.asList(documents), recurse);
+    }
+
+    /**
+     * Merges the top-level IData values from the given IData document.
+     *
+     * @param documents An IData document containing IData values to be merged.
+     * @param recurse   If true, a recursive merge is performed.
+     * @return          A new IData document containing the keys and values from all merged IData documents.
+     */
+    public static IData merge(IData documents, boolean recurse) {
+        return merge(getIDataValueList(documents), recurse);
+    }
+
+    /**
+     * Merges multiple IData documents into a single new IData document.
+     *
+     * @param documents One or more IData documents to be merged.
+     * @return          A new IData document containing the keys and values from all merged input documents.
+     */
+    public static IData merge(Iterable<IData> documents) {
         IData output = IDataFactory.create();
         if (documents != null) {
             for (IData document : documents) {
@@ -370,17 +553,19 @@ public final class IDataHelper {
     /**
      * Merges multiple IData documents into a single new IData document.
      *
-     * @param recurse   If true, a recursive merge is performed.
      * @param documents One or more IData documents to be merged.
+     * @param recurse   If true, a recursive merge is performed.
      * @return          A new IData document containing the keys and values from all merged input documents.
      */
-    public static IData merge(boolean recurse, IData... documents) {
+    public static IData merge(Iterable<IData> documents, boolean recurse) {
         IData output = IDataFactory.create();
+
         if (documents != null) {
             for (IData document : documents) {
                 if (document != null) {
                     IDataCursor documentCursor = document.getCursor();
                     IDataCursor outputCursor = output.getCursor();
+
                     try {
                         while(documentCursor.next()) {
                             String key = documentCursor.getKey();
@@ -391,7 +576,7 @@ public final class IDataHelper {
                                 if (recurse &&
                                         (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) &&
                                         (existingValue instanceof IData || existingValue instanceof IDataCodable || existingValue instanceof IDataPortable || existingValue instanceof ValuesCodable)) {
-                                    IDataUtil.put(outputCursor, key, merge(recurse, toIData(existingValue), toIData(value)));
+                                    IDataUtil.put(outputCursor, key, merge(Arrays.asList(toIData(existingValue), toIData(value)), recurse));
                                 } else {
                                     IDataUtil.put(outputCursor, key, value);
                                 }
@@ -404,6 +589,7 @@ public final class IDataHelper {
                 }
             }
         }
+
         return output;
     }
 
