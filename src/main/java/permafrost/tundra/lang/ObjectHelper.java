@@ -27,6 +27,7 @@ package permafrost.tundra.lang;
 import com.wm.data.IData;
 import com.wm.data.IDataPortable;
 import com.wm.data.IDataUtil;
+import com.wm.lang.ns.NSNode;
 import com.wm.util.Table;
 import com.wm.util.coder.IDataCodable;
 import com.wm.util.coder.ValuesCodable;
@@ -130,7 +131,9 @@ public final class ObjectHelper {
 
         String output;
 
-        if (object instanceof IData[] || object instanceof Table || object instanceof IDataCodable[] || object instanceof IDataPortable[] || object instanceof ValuesCodable[]) {
+        if (object instanceof NSNode) {
+            output = ((NSNode)object).getNSName().toString();
+        } else if (object instanceof IData[] || object instanceof Table || object instanceof IDataCodable[] || object instanceof IDataPortable[] || object instanceof ValuesCodable[]) {
             output = ArrayHelper.stringify(IDataHelper.toIDataArray(object));
         } else if (object instanceof IData || object instanceof IDataCodable || object instanceof IDataPortable || object instanceof ValuesCodable) {
             output = IDataHelper.toIData(object).toString();
