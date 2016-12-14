@@ -54,6 +54,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -68,15 +69,15 @@ public final class ServiceHelper {
     private ServiceHelper() {}
 
     /**
-     * Returns the call stack for the current invocation.
+     * Returns a copy of the call stack for the current invocation.
      *
-     * @return The call stack for the current invocation.
+     * @return A copy of the call stack for the current invocation.
      */
     @SuppressWarnings("unchecked")
     public static List<NSService> getCallStack() {
         List<NSService> stack = (List<NSService>)InvokeState.getCurrentState().getCallStack();
         if (stack == null) stack = Collections.emptyList();
-        return stack;
+        return new ArrayList<NSService>(stack);
     }
 
     /**
