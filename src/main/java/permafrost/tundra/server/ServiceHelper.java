@@ -494,17 +494,17 @@ public final class ServiceHelper {
     /**
      * Provides a try/catch/finally pattern for flow services.
      *
-     * @param service           The service to be executed in the try clause of the try/catch/finally pattern.
-     * @param pipeline          The input pipeline used when invoking the services.
+     * @param tryService        The service to be executed in the try clause of the try/catch/finally pattern.
      * @param catchService      The service to be executed in the catch clause of the try/catch/finally pattern.
      * @param finallyService    The service to be executed in the finally clause of the try/catch/finally pattern.
+     * @param pipeline          The input pipeline used when invoking the services.
      * @return                  The output pipeline containing the results of the try/catch/finally pattern.
      * @throws ServiceException If the service throws an exception while being invoked, and either no catch service is
      *                          specified, or the catch service rethrows the exception.
      */
-    public static IData ensure(String service, IData pipeline, String catchService, String finallyService) throws ServiceException {
+    public static IData ensure(String tryService, String catchService, String finallyService, IData pipeline) throws ServiceException {
         try {
-            pipeline = invoke(service, pipeline);
+            pipeline = invoke(tryService, pipeline);
         } catch (Throwable exception) {
             pipeline = rescue(catchService, pipeline, exception);
         } finally {
