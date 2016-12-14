@@ -312,22 +312,32 @@ public final class ServiceHelper {
      * @throws ServiceException If the service throws an exception while being invoked.
      */
     public static IData invoke(String service, IData pipeline) throws ServiceException {
-        if (service == null) return null;
+        return invoke(service, pipeline, true);
+    }
 
-        IData scope;
-        if (pipeline == null) {
-            scope = pipeline = IDataFactory.create();
-        } else {
-            scope = IDataUtil.clone(pipeline);
+    /**
+     * Invokes the given service with the given pipeline synchronously.
+     *
+     * @param service           The service to be invoked.
+     * @param pipeline          The input pipeline used when invoking the service.
+     * @param raise             If true will rethrow exceptions thrown by the invoked service.
+     * @return                  The output pipeline returned by the service invocation.
+     * @throws ServiceException If raise is true and the service throws an exception while being invoked.
+     */
+    public static IData invoke(String service, IData pipeline, boolean raise) throws ServiceException {
+        if (service != null) {
+            if (pipeline == null) pipeline = IDataFactory.create();
+
+            try {
+                IDataUtil.merge(Service.doInvoke(NSName.create(service), clone(pipeline)), pipeline);
+            } catch (Exception exception) {
+                if (raise) {
+                    ExceptionHelper.raise(exception);
+                } else {
+                    pipeline = addExceptionToPipeline(pipeline, exception);
+                }
+            }
         }
-
-        try {
-            scope = Service.doInvoke(NSName.create(service), scope);
-        } catch (Exception ex) {
-            ExceptionHelper.raise(ex);
-        }
-
-        IDataUtil.merge(scope, pipeline);
 
         return pipeline;
     }
@@ -339,17 +349,9 @@ public final class ServiceHelper {
      * @param pipeline          The input pipeline used when invoking the service.
      * @return                  The thread on which the service is being invoked.
      */
-    public static ServiceThread thread(String service, IData pipeline) {
+    public static ServiceThread fork(String service, IData pipeline) {
         if (service == null) return null;
-
-        IData scope;
-        if (pipeline == null) {
-            scope = IDataFactory.create();
-        } else {
-            scope = IDataUtil.clone(pipeline);
-        }
-
-        return Service.doThreadInvoke(NSName.create(service), scope);
+        return Service.doThreadInvoke(NSName.create(service), clone(pipeline));
     }
 
     /**
@@ -360,13 +362,29 @@ public final class ServiceHelper {
      * @throws ServiceException If an error occurs when waiting on the thread to finish.
      */
     public static IData join(ServiceThread serviceThread) throws ServiceException {
+        return join(serviceThread, true);
+    }
+
+    /**
+     * Waits for an asynchronously invoked service to complete.
+     *
+     * @param serviceThread     The service thread to wait on to finish.
+     * @param raise             If true rethrows any exception thrown by the invoked service.
+     * @return                  The output pipeline from the service invocation executed by the given thread.
+     * @throws ServiceException If raise is true and an error occurs when waiting on the thread to finish.
+     */
+    public static IData join(ServiceThread serviceThread, boolean raise) throws ServiceException {
         IData pipeline = null;
 
         if (serviceThread != null) {
             try {
                 pipeline = serviceThread.getIData();
-            } catch (Exception ex) {
-                ExceptionHelper.raise(ex);
+            } catch (Throwable exception) {
+                if (raise) {
+                    ExceptionHelper.raise(exception);
+                } else {
+                    pipeline = addExceptionToPipeline(null, exception);
+                }
             }
         }
 
@@ -439,47 +457,90 @@ public final class ServiceHelper {
         try {
             pipeline = invoke(service, pipeline);
         } catch (Throwable exception) {
-            IDataCursor cursor = pipeline.getCursor();
-            IDataUtil.put(cursor, "$exception", exception);
-            IDataUtil.put(cursor, "$exception?", "true");
-            IDataUtil.put(cursor, "$exception.class", exception.getClass().getName());
-            IDataUtil.put(cursor, "$exception.message", exception.getMessage());
-
-            InvokeState invokeState = InvokeState.getCurrentState();
-            if (invokeState != null) {
-                IData exceptionInfo = IDataHelper.duplicate(invokeState.getErrorInfoFormatted(), true);
-                if (exceptionInfo != null) {
-                    IDataCursor ec = exceptionInfo.getCursor();
-                    String exceptionService = IDataUtil.getString(ec, "service");
-                    if (exceptionService != null) {
-                        IDataUtil.put(cursor, "$exception.service", exceptionService);
-                        BaseService baseService = Namespace.getService(NSName.create(exceptionService));
-                        if (baseService != null) {
-                            String packageName = baseService.getPackageName();
-                            if (packageName != null) {
-                                IDataUtil.put(ec, "package", packageName);
-                                IDataUtil.put(cursor, "$exception.package", packageName);
-                            }
-                        }
-                    }
-                    ec.destroy();
-                    IDataUtil.put(cursor, "$exception.info", exceptionInfo);
-                }
-            }
-
-            IDataUtil.put(cursor, "$exception.stack", ExceptionHelper.getStackTrace(exception));
-
-            cursor.destroy();
-
-            if (catchService == null) {
-                ExceptionHelper.raise(exception);
-            } else {
-                pipeline = invoke(catchService, pipeline);
-            }
+            pipeline = rescue(catchService, pipeline, exception);
         } finally {
-            if (finallyService != null) pipeline = invoke(finallyService, pipeline);
+            pipeline = invoke(finallyService, pipeline);
         }
 
         return pipeline;
+    }
+
+    /**
+     * Handles an exception using the given catch service.
+     *
+     * @param catchService          The service to invoke to handle the given exception.
+     * @param pipeline              The input pipeline for the service.
+     * @param exception             The exception to be handled.
+     * @return                      The output pipeline returned by invoking the given catchService.
+     * @throws ServiceException     If the given catchService encounters an error.
+     */
+    private static IData rescue(String catchService, IData pipeline, Throwable exception) throws ServiceException {
+        if (catchService == null) {
+            ExceptionHelper.raise(exception);
+        } else {
+            pipeline = invoke(catchService, addExceptionToPipeline(pipeline, exception));
+        }
+
+        return pipeline;
+    }
+
+    /**
+     * Adds the given exception and related variables that describe the exception to the given IData pipeline.
+     *
+     * @param pipeline  The pipeline to add the exception to.
+     * @param exception The exception to be added.
+     * @return          The pipeline with the added exception.
+     */
+    private static IData addExceptionToPipeline(IData pipeline, Throwable exception) {
+        if (pipeline == null) pipeline = IDataFactory.create();
+
+        if (exception != null) {
+            IDataCursor cursor = pipeline.getCursor();
+
+            try {
+                IDataUtil.put(cursor, "$exception", exception);
+                IDataUtil.put(cursor, "$exception?", "true");
+                IDataUtil.put(cursor, "$exception.class", exception.getClass().getName());
+                IDataUtil.put(cursor, "$exception.message", exception.getMessage());
+
+                InvokeState invokeState = InvokeState.getCurrentState();
+                if (invokeState != null) {
+                    IData exceptionInfo = IDataHelper.duplicate(invokeState.getErrorInfoFormatted(), true);
+                    if (exceptionInfo != null) {
+                        IDataCursor ec = exceptionInfo.getCursor();
+                        String exceptionService = IDataUtil.getString(ec, "service");
+                        if (exceptionService != null) {
+                            IDataUtil.put(cursor, "$exception.service", exceptionService);
+                            BaseService baseService = Namespace.getService(NSName.create(exceptionService));
+                            if (baseService != null) {
+                                String packageName = baseService.getPackageName();
+                                if (packageName != null) {
+                                    IDataUtil.put(ec, "package", packageName);
+                                    IDataUtil.put(cursor, "$exception.package", packageName);
+                                }
+                            }
+                        }
+                        ec.destroy();
+                        IDataUtil.put(cursor, "$exception.info", exceptionInfo);
+                    }
+                }
+
+                IDataUtil.put(cursor, "$exception.stack", ExceptionHelper.getStackTrace(exception));
+            } finally {
+                cursor.destroy();
+            }
+        }
+
+        return pipeline;
+    }
+
+    /**
+     * Returns a new IData if the given pipeline is null, otherwise returns a clone of the given pipeline.
+     *
+     * @param pipeline  The pipeline to be normalized.
+     * @return          The normalized pipeline.
+     */
+    private static IData clone(IData pipeline) {
+        return pipeline == null ? IDataFactory.create() : IDataUtil.clone(pipeline);
     }
 }
