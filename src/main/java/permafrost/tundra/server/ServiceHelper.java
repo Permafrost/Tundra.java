@@ -55,6 +55,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -358,6 +359,35 @@ public final class ServiceHelper {
     }
 
     /**
+     * Executes a list of services in the order specified.
+     *
+     * @param services          The list of services to be invoked.
+     * @param pipeline          The input pipeline passed to the first service in the chain.
+     * @return                  The output pipeline returned by the final service in the chain.
+     * @throws ServiceException If an exception is thrown by one of the invoked services.
+     */
+    public static IData chain(String[] services, IData pipeline) throws ServiceException {
+        return chain(services == null ? null : Arrays.asList(services), pipeline);
+    }
+
+    /**
+     * Executes a list of services in the order specified.
+     *
+     * @param services          The list of services to be invoked.
+     * @param pipeline          The input pipeline passed to the first service in the chain.
+     * @return                  The output pipeline returned by the final service in the chain.
+     * @throws ServiceException If an exception is thrown by one of the invoked services.
+     */
+    public static IData chain(Iterable<String> services, IData pipeline) throws ServiceException {
+        if (services != null) {
+            for (String service : services) {
+                pipeline = ServiceHelper.invoke(service, pipeline);
+            }
+        }
+        return pipeline;
+    }
+
+    /**
      * Invokes the given service with the given pipeline asynchronously (in another thread).
      *
      * @param service           The service to be invoked.
@@ -493,7 +523,7 @@ public final class ServiceHelper {
      * @return                      The output pipeline returned by invoking the given catchService.
      * @throws ServiceException     If the given catchService encounters an error.
      */
-    private static IData rescue(String catchService, IData pipeline, Throwable exception) throws ServiceException {
+    public static IData rescue(String catchService, IData pipeline, Throwable exception) throws ServiceException {
         if (catchService == null) {
             ExceptionHelper.raise(exception);
         } else {
