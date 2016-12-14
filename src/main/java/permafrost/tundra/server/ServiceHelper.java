@@ -325,11 +325,25 @@ public final class ServiceHelper {
      * @throws ServiceException If raise is true and the service throws an exception while being invoked.
      */
     public static IData invoke(String service, IData pipeline, boolean raise) throws ServiceException {
+        return invoke(service, pipeline, raise, true);
+    }
+
+    /**
+     * Invokes the given service with the given pipeline synchronously.
+     *
+     * @param service           The service to be invoked.
+     * @param pipeline          The input pipeline used when invoking the service.
+     * @param raise             If true will rethrow exceptions thrown by the invoked service.
+     * @param clone             If true the pipeline will first be cloned before being used by the invocation.
+     * @return                  The output pipeline returned by the service invocation.
+     * @throws ServiceException If raise is true and the service throws an exception while being invoked.
+     */
+    public static IData invoke(String service, IData pipeline, boolean raise, boolean clone) throws ServiceException {
         if (service != null) {
             if (pipeline == null) pipeline = IDataFactory.create();
 
             try {
-                IDataUtil.merge(Service.doInvoke(NSName.create(service), clone(pipeline)), pipeline);
+                IDataUtil.merge(Service.doInvoke(NSName.create(service), normalize(pipeline, clone)), pipeline);
             } catch (Exception exception) {
                 if (raise) {
                     ExceptionHelper.raise(exception);
@@ -351,7 +365,7 @@ public final class ServiceHelper {
      */
     public static ServiceThread fork(String service, IData pipeline) {
         if (service == null) return null;
-        return Service.doThreadInvoke(NSName.create(service), clone(pipeline));
+        return Service.doThreadInvoke(NSName.create(service), normalize(pipeline));
     }
 
     /**
@@ -423,16 +437,20 @@ public final class ServiceHelper {
      * @throws ServiceException If the invoked service throws an exception and raise is true.
      */
     public static NormalDistributionEstimator benchmark(String service, IData pipeline, int count, boolean raise) throws ServiceException {
+        if (service == null) throw new NullPointerException("service must not be null");
+        if (count <= 0) throw new IllegalArgumentException("count must be greater than zero");
+        if (pipeline == null) pipeline = IDataFactory.create();
+
         NormalDistributionEstimator estimator = new NormalDistributionEstimator("ms");
 
-        ServiceHelper.exists(service, true);
+        exists(service, true);
 
         for (int i = 0; i < count; i++) {
+            IData scope = IDataUtil.clone(pipeline);
+
             long start = System.currentTimeMillis();
             try {
-                invoke(service, pipeline);
-            } catch (ServiceException ex) {
-                if (raise) ExceptionHelper.raise(ex);
+                invoke(service, scope, raise, false);
             } finally {
                 long end = System.currentTimeMillis();
                 estimator.add(end - start);
@@ -540,7 +558,23 @@ public final class ServiceHelper {
      * @param pipeline  The pipeline to be normalized.
      * @return          The normalized pipeline.
      */
-    private static IData clone(IData pipeline) {
-        return pipeline == null ? IDataFactory.create() : IDataUtil.clone(pipeline);
+    private static IData normalize(IData pipeline) {
+        return normalize(pipeline, true);
+    }
+
+    /**
+     * Returns a new IData if the given pipeline is null, otherwise returns a clone of the given pipeline.
+     *
+     * @param pipeline  The pipeline to be normalized.
+     * @param clone     If true the pipeline will be cloned, otherwise it will be returned as is.
+     * @return          The normalized pipeline.
+     */
+    private static IData normalize(IData pipeline, boolean clone) {
+        if (pipeline == null) {
+            pipeline = IDataFactory.create();
+        } else if (clone) {
+            pipeline = IDataUtil.clone(pipeline);
+        }
+        return pipeline;
     }
 }
