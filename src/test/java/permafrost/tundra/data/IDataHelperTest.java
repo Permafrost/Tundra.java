@@ -577,7 +577,7 @@ public class IDataHelperTest {
 
     @Test
     public void testPutWithNullIData() throws Exception {
-        IData document = IDataHelper.put(null, "a", "1");
+        IData document = IDataHelper.put((IData)null, "a", "1");
         assertEquals(1, IDataHelper.size(document));
         assertEquals("1", IDataHelper.get(document, "a"));
     }
