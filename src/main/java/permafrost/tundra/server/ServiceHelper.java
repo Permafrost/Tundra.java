@@ -608,4 +608,36 @@ public final class ServiceHelper {
         }
         return pipeline;
     }
+
+    /**
+     * Returns a BaseService object given a service name.
+     *
+     * @param serviceName The name of the service to be returned.
+     * @return            The BaseService object representing the service with the given name.
+     */
+    public static BaseService getService(String serviceName) {
+        if (serviceName == null) return null;
+        return Namespace.getService(NodeHelper.getName(serviceName));
+    }
+
+    /**
+     * Returns the name of the package the given service resides in.
+     *
+     * @param serviceName The name of the service whose package is to be returned.
+     * @return            The name of the package the given service resides in.
+     */
+    public static String getPackageName(String serviceName) {
+        return getPackageName(getService(serviceName));
+    }
+
+    /**
+     * Returns the name of the package the given service resides in.
+     *
+     * @param service   The service whose package is to be returned.
+     * @return          The name of the package the given service resides in.
+     */
+    public static String getPackageName(BaseService service) {
+        if (service == null) return null;
+        return service.getPackageName();
+    }
 }
