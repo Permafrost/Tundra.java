@@ -98,6 +98,19 @@ public final class ObjectHelper {
     }
 
     /**
+     * Returns true if the given object is considered empty.
+     *
+     * @param object    The object to check the emptiness of.
+     * @return          True if the object is considered empty.
+     */
+    public static boolean isEmpty(Object object) {
+        return object == null ||
+               (object instanceof String && object.equals("")) ||
+               (object instanceof Object[] && ((Object[])object).length == 0) ||
+               (object instanceof Collection && ((Collection)object).size() == 0);
+    }
+
+    /**
      * Returns true if the given object is an instance of the given class.
      *
      * @param object    The object to be checked against the given class.
