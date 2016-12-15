@@ -685,7 +685,7 @@ public final class ArrayHelper {
      * each item in order, optionally separated by the given separator string.
      */
     public static <T> String join(T[] array, String separator, boolean includeNulls) {
-        if (array == null) return includeNulls ? null : "";
+        if (array == null) return null;
 
         StringBuilder builder = new StringBuilder();
         boolean separatorRequired = false;
@@ -730,7 +730,7 @@ public final class ArrayHelper {
      * each item in order, optionally separated by the given separator string.
      */
     public static <T> String join(T[][] table, String separator, boolean includeNulls) {
-        if (table == null) return includeNulls ? null : "";
+        if (table == null) return null;
 
         StringBuilder builder = new StringBuilder();
         boolean separatorRequired = false;
