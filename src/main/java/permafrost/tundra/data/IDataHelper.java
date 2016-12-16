@@ -39,6 +39,7 @@ import permafrost.tundra.flow.variable.SubstitutionHelper;
 import permafrost.tundra.lang.ArrayHelper;
 import permafrost.tundra.lang.ObjectHelper;
 import permafrost.tundra.lang.StringHelper;
+import permafrost.tundra.lang.TableHelper;
 import permafrost.tundra.time.DateTimeHelper;
 import permafrost.tundra.xml.dom.NodeHelper;
 import permafrost.tundra.xml.dom.Nodes;
@@ -1319,9 +1320,9 @@ public final class IDataHelper {
                 } else if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
                     value = "{" + join(toIData(value), itemSeparator, listSeparator, valueSeparator, includeNulls) + "}";
                 } else if (value instanceof Object[][]) {
-                    value = "[" + ArrayHelper.join(ArrayHelper.toStringTable((Object[][])value), listSeparator, includeNulls) + "]";
+                    value = TableHelper.stringify(TableHelper.toStringTable((Object[][])value), listSeparator, includeNulls);
                 } else if (value instanceof Object[]) {
-                    value = "[" + ArrayHelper.join(ArrayHelper.toStringArray((Object[])value), listSeparator, includeNulls) + "]";
+                    value = ArrayHelper.stringify(ArrayHelper.toStringArray((Object[])value), listSeparator, includeNulls);
                 }
 
                 builder.append(key);
@@ -1422,7 +1423,7 @@ public final class IDataHelper {
             } else if (recurse && (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable)) {
                 value = stringify(toIData(value), recurse);
             } else if (value instanceof Object[][]) {
-                value = ArrayHelper.toStringTable((Object[][]) value);
+                value = TableHelper.toStringTable((Object[][]) value);
             } else if (value instanceof Object[]) {
                 value = ArrayHelper.toStringArray((Object[])value);
             } else if (value instanceof Calendar) {
@@ -1555,7 +1556,7 @@ public final class IDataHelper {
                     } else if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
                         value = compact(toIData(value), recurse);
                     } else if (value instanceof Object[][]) {
-                        value = ArrayHelper.compact((Object[][])value);
+                        value = TableHelper.compact((Object[][])value);
                     } else if (value instanceof Object[]) {
                         value = ArrayHelper.compact((Object[])value);
                     }

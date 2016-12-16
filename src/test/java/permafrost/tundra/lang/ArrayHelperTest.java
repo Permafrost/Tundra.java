@@ -99,7 +99,7 @@ public class ArrayHelperTest {
 
     @Test
     public void testToStringTableWithNull() throws Exception {
-        assertArrayEquals(null, ArrayHelper.toStringTable(null));
+        assertArrayEquals(null, TableHelper.toStringTable(null));
     }
 
     @Test
@@ -114,12 +114,12 @@ public class ArrayHelperTest {
         table[1][0] = new Integer("3");
         table[1][1] = new Integer("4");
 
-        assertArrayEquals(new String[][] { { "1", "2" }, { "3", "4" } }, ArrayHelper.toStringTable(table));
+        assertArrayEquals(new String[][] { { "1", "2" }, { "3", "4" } }, TableHelper.toStringTable(table));
     }
 
     @Test
     public void testStringifyWithNull() throws Exception {
-        assertEquals(null, ArrayHelper.stringify(null));
+        assertEquals(null, TableHelper.stringify(null));
     }
 
     @Test
@@ -129,21 +129,6 @@ public class ArrayHelperTest {
         array[1] = new Integer(2);
 
         assertEquals("[1, 2]", ArrayHelper.stringify(array));
-    }
-
-    @Test
-    public void testStringifyWithIntegerTable() throws Exception {
-        Integer[][] table = new Integer[2][];
-
-        table[0] = new Integer[2];
-        table[1] = new Integer[2];
-
-        table[0][0] = new Integer("1");
-        table[0][1] = new Integer("2");
-        table[1][0] = new Integer("3");
-        table[1][1] = new Integer("4");
-
-        assertEquals("[[1, 2], [3, 4]]", ArrayHelper.stringify(table));
     }
 
     @Test

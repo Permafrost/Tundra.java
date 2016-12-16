@@ -40,6 +40,11 @@ import java.util.Map;
  */
 public final class ArrayHelper {
     /**
+     * The default separator string used between items of an array when converting it to a string.
+     */
+    public final static String DEFAULT_ITEM_SEPARATOR = ", ";
+
+    /**
      * Disallow instantiation of this class.
      */
     private ArrayHelper() {
@@ -124,24 +129,6 @@ public final class ArrayHelper {
         }
 
         return list.toArray(Arrays.copyOf(array, list.size()));
-    }
-
-    /**
-     * Returns a new table with all null elements removed.
-     *
-     * @param table The two dimensional array to be compacted.
-     * @param <T>   The class of the items in the array.
-     * @return A copy of the given array with all null items removed.
-     */
-    public static <T> T[][] compact(T[][] table) {
-        if (table == null) return null;
-        List<T[]> list = new ArrayList<T[]>(table.length);
-
-        for (T[] row : table) {
-            if (row != null) list.add(compact(row));
-        }
-
-        return list.toArray(Arrays.copyOf(table, list.size()));
     }
 
     /**
@@ -663,134 +650,113 @@ public final class ArrayHelper {
      * Returns a string created by concatenating each element of the given array, separated by the given separator
      * string.
      *
-     * @param array     The array whose contents are to be joined.
-     * @param separator An optional separator string to be used between items of the array.
-     * @param <T>       The class of items stored in the array.
-     * @return A string representation of the given array created by concatenating together the string representation of
-     * each item in order, optionally separated by the given separator string.
+     * @param array         The array whose contents are to be joined.
+     * @param itemSeparator An optional separator string to be used between items of the array.
+     * @param <T>           The class of items stored in the array.
+     * @return              A string representation of the given array created by concatenating together the string
+     *                      representation of each item in order, optionally separated by the given separator string.
      */
-    public static <T> String join(T[] array, String separator) {
-        return join(array, separator, true);
+    public static <T> String join(T[] array, String itemSeparator) {
+        return join(array, itemSeparator, true);
     }
 
     /**
      * Returns a string created by concatenating each element of the given array, separated by the given separator
      * string.
      *
-     * @param array     The array whose contents are to be joined.
-     * @param separator An optional separator string to be used between items of the array.
-     * @param includeNulls If true, null values will be included in the output string, otherwise they are ignored.
-     * @param <T>       The class of items stored in the array.
-     * @return A string representation of the given array created by concatenating together the string representation of
-     * each item in order, optionally separated by the given separator string.
+     * @param array         The array whose contents are to be joined.
+     * @param itemSeparator An optional separator string to be used between items of the array.
+     * @param includeNulls  If true, null values will be included in the output string, otherwise they are ignored.
+     * @param <T>           The class of items stored in the array.
+     * @return              A string representation of the given array created by concatenating together the string
+     *                      representation of each item in order, optionally separated by the given separator string.
      */
-    public static <T> String join(T[] array, String separator, boolean includeNulls) {
-        if (array == null) return null;
+    public static <T> String join(T[] array, String itemSeparator, boolean includeNulls) {
+        return join(array, itemSeparator, null, includeNulls);
+    }
+
+    /**
+     * Returns a string created by concatenating each element of the given array, separated by the given separator
+     * string.
+     *
+     * @param array         The array whose contents are to be joined.
+     * @param itemSeparator An optional separator string to be used between items of the array.
+     * @param defaultValue  An optional value returned if the given array is null or empty.
+     * @param includeNulls  If true, null values will be included in the output string, otherwise they are ignored.
+     * @param <T>           The class of items stored in the array.
+     * @return              A string representation of the given array created by concatenating together the string
+     *                      representation of each item in order, optionally separated by the given separator string.
+     */
+    public static <T> String join(T[] array, String itemSeparator, String defaultValue, boolean includeNulls) {
+        if (!includeNulls) array = compact(array);
+        if (array == null || array.length == 0) return defaultValue;
 
         StringBuilder builder = new StringBuilder();
-        boolean separatorRequired = false;
-
-        for (T item : array) {
-            boolean includeItem = includeNulls || item != null;
-
-            if (separator != null && separatorRequired && includeItem) builder.append(separator);
-
-            if (includeItem) {
-                builder.append(ObjectHelper.stringify(item));
-                separatorRequired = true;
-            }
-        }
-
+        join(array, itemSeparator, builder);
         return builder.toString();
     }
 
     /**
-     * Returns a string created by concatenating each element of the given table, separated by the given separator
+     * Returns a string created by concatenating each element of the given array, separated by the given separator
      * string.
      *
-     * @param table     The table whose contents are to be joined.
-     * @param separator An optional separator string to be used between items of the table.
-     * @param <T>       The class of items stored in the table.
-     * @return A string representation of the given table created by concatenating together the string representation of
-     * each item in order, optionally separated by the given separator string.
+     * @param array         The array whose contents are to be joined.
+     * @param itemSeparator An optional separator string to be used between items of the array.
+     * @param builder       The string builder to use when building the joined string.
+     * @param <T>           The class of items stored in the array.
      */
-    public static <T> String join(T[][] table, String separator) {
-        return join(table, separator, true);
+    static <T> void join(T[] array, String itemSeparator, StringBuilder builder) {
+        if (array != null && builder != null) {
+            for (int i = 0; i < array.length; i++) {
+                if (itemSeparator != null && i > 0) builder.append(itemSeparator);
+                builder.append(ObjectHelper.stringify(array[i]));
+            }
+        }
     }
 
     /**
-     * Returns a string created by concatenating each element of the given table, separated by the given separator
-     * string.
+     * Returns a string representation of the given array.
      *
-     * @param table     The table whose contents are to be joined.
-     * @param separator An optional separator string to be used between items of the table.
-     * @param includeNulls If true, null values will be included in the output string, otherwise they are ignored.
-     * @param <T>       The class of items stored in the table.
-     * @return A string representation of the given table created by concatenating together the string representation of
-     * each item in order, optionally separated by the given separator string.
+     * @param array         The array to be stringified.
+     * @param <T>           The class of items stored in the array.
+     * @return              A string representation of the given array.
      */
-    public static <T> String join(T[][] table, String separator, boolean includeNulls) {
-        if (table == null) return null;
+    public static <T> String stringify(T[] array) {
+        return stringify(array, null, true);
+    }
+
+    /**
+     * Returns a string representation of the given array.
+     *
+     * @param array         The array to be stringified.
+     * @param itemSeparator The separator string used between items of the array.
+     * @param includeNulls  Whether to include null values in the output.
+     * @param <T>           The class of items stored in the array.
+     * @return              A string representation of the given array.
+     */
+    public static <T> String stringify(T[] array, String itemSeparator, boolean includeNulls) {
+        if (!includeNulls) array = compact(array);
+        if (array == null) return null;
 
         StringBuilder builder = new StringBuilder();
-        boolean separatorRequired = false;
-
-        for (T[] row : table) {
-            boolean includeItem = includeNulls || row != null;
-
-            if (separator != null && separatorRequired && includeItem) builder.append(separator);
-
-            if (includeItem) {
-                String value = join(row, separator, includeNulls);
-
-                if (value != null) builder.append("[");
-                builder.append(value);
-                if (value != null) builder.append("]");
-
-                separatorRequired = true;
-            }
-        }
-
+        stringify(array, itemSeparator, builder);
         return builder.toString();
     }
 
     /**
      * Returns a string representation of the given array.
      *
-     * @param array The array to be stringified.
-     * @param <T>   The class of items stored in the array.
-     * @return A string representation of the given array.
+     * @param array         The array to be stringified.
+     * @param itemSeparator The separator string used between items of the array.
+     * @param builder       The string builder used to build the string.
+     * @param <T>           The class of items stored in the array.
      */
-    public static <T> String stringify(T[] array) {
-        return array == null ? null : "[" + join(array, ", ") + "]";
-    }
+    static <T> void stringify(T[] array, String itemSeparator, StringBuilder builder) {
+        if (itemSeparator == null) itemSeparator = DEFAULT_ITEM_SEPARATOR;
 
-    /**
-     * Returns a string representation of the given table.
-     *
-     * @param table The table to be stringified.
-     * @param <T>   The class of items stored in the array.
-     * @return A string representation of the given array.
-     */
-    public static <T> String stringify(T[][] table) {
-        if (table == null) return null;
-
-        String[] rows = new String[table.length];
-
-        for (int i = 0; i < table.length; i++) {
-            StringBuilder builder = new StringBuilder();
-            builder.append("[");
-            builder.append(join(table[i], ", "));
-            builder.append("]");
-            rows[i] = builder.toString();
-        }
-
-        StringBuilder builder = new StringBuilder();
         builder.append("[");
-        builder.append(join(rows, ", "));
+        join(array, itemSeparator, builder);
         builder.append("]");
-
-        return builder.toString();
     }
 
     /**
@@ -1089,46 +1055,6 @@ public final class ArrayHelper {
         array = list.toArray(Arrays.copyOf(array, list.size()));
 
         return array.length == 0 ? null : array;
-    }
-
-    /**
-     * Returns a new table with all empty or null elements removed.
-     *
-     * @param table A table to be squeezed.
-     * @param <T>   The type of item in the table.
-     * @return A new table that is the given table squeezed.
-     */
-    private static <T> T[][] squeeze(T[][] table) {
-        if (table == null || table.length == 0) return null;
-
-        List<T[]> list = new ArrayList<T[]>(table.length);
-
-        for (T[] row : table) {
-            row = squeeze(row);
-            if (row != null) list.add(row);
-        }
-
-        table = list.toArray(Arrays.copyOf(table, list.size()));
-
-        return table.length == 0 ? null : table;
-    }
-
-    /**
-     * Converts the given two dimensional array of objects to a string table.
-     *
-     * @param table The two dimensional array to be converted.
-     * @param <T>   The type of item in the given array.
-     * @return The converted string table.
-     */
-    public static <T> String[][] toStringTable(T[][] table) {
-        if (table == null) return null;
-
-        String[][] stringTable = new String[table.length][];
-        for (int i = 0; i < table.length; i++) {
-            stringTable[i] = toStringArray(table[i]);
-        }
-
-        return stringTable;
     }
 
     /**

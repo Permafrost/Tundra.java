@@ -151,7 +151,7 @@ public final class ObjectHelper {
         } else if (object instanceof IData || object instanceof IDataCodable || object instanceof IDataPortable || object instanceof ValuesCodable) {
             output = IDataHelper.toIData(object).toString();
         } else if (object instanceof Object[][]) {
-            output = ArrayHelper.stringify((Object[][])object);
+            output = TableHelper.stringify((Object[][])object);
         } else if (object instanceof Object[]) {
             output = ArrayHelper.stringify((Object[])object);
         } else {

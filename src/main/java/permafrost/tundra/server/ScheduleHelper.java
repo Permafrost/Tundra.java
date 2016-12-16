@@ -47,6 +47,11 @@ import java.util.List;
  */
 public class ScheduleHelper {
     /**
+     * Disallow instantiation of this class.
+     */
+    private ScheduleHelper() {}
+
+    /**
      * Returns the scheduled task identified by the given ID, or null if no task for that ID exists.
      *
      * @param identity          The ID of the scheduled task to be returned.
