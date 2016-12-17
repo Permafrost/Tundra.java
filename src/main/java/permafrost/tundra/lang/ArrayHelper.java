@@ -657,7 +657,7 @@ public final class ArrayHelper {
      *                      representation of each item in order, optionally separated by the given separator string.
      */
     public static <T> String join(T[] array, String itemSeparator) {
-        return join(array, itemSeparator, true);
+        return join(array, itemSeparator, (Sanitization)null);
     }
 
     /**
@@ -666,13 +666,13 @@ public final class ArrayHelper {
      *
      * @param array         The array whose contents are to be joined.
      * @param itemSeparator An optional separator string to be used between items of the array.
-     * @param includeNulls  If true, null values will be included in the output string, otherwise they are ignored.
+     * @param mode          The type of compaction to be applied to the array, if any.
      * @param <T>           The class of items stored in the array.
      * @return              A string representation of the given array created by concatenating together the string
      *                      representation of each item in order, optionally separated by the given separator string.
      */
-    public static <T> String join(T[] array, String itemSeparator, boolean includeNulls) {
-        return join(array, itemSeparator, null, includeNulls);
+    public static <T> String join(T[] array, String itemSeparator, Sanitization mode) {
+        return join(array, itemSeparator, null, mode);
     }
 
     /**
@@ -682,13 +682,29 @@ public final class ArrayHelper {
      * @param array         The array whose contents are to be joined.
      * @param itemSeparator An optional separator string to be used between items of the array.
      * @param defaultValue  An optional value returned if the given array is null or empty.
-     * @param includeNulls  If true, null values will be included in the output string, otherwise they are ignored.
      * @param <T>           The class of items stored in the array.
      * @return              A string representation of the given array created by concatenating together the string
      *                      representation of each item in order, optionally separated by the given separator string.
      */
-    public static <T> String join(T[] array, String itemSeparator, String defaultValue, boolean includeNulls) {
-        if (!includeNulls) array = compact(array);
+    public static <T> String join(T[] array, String itemSeparator, String defaultValue) {
+        return join(array, itemSeparator, defaultValue, null);
+    }
+
+    /**
+     * Returns a string created by concatenating each element of the given array, separated by the given separator
+     * string.
+     *
+     * @param array         The array whose contents are to be joined.
+     * @param itemSeparator An optional separator string to be used between items of the array.
+     * @param defaultValue  An optional value returned if the given array is null or empty.
+     * @param sanitization  The type of sanitization to be applied to the array, if any.
+     * @param <T>           The class of items stored in the array.
+     * @return              A string representation of the given array created by concatenating together the string
+     *                      representation of each item in order, optionally separated by the given separator string.
+     */
+    public static <T> String join(T[] array, String itemSeparator, String defaultValue, Sanitization sanitization) {
+        array = sanitize(array, sanitization);
+
         if (array == null || array.length == 0) return defaultValue;
 
         StringBuilder builder = new StringBuilder();
@@ -705,12 +721,12 @@ public final class ArrayHelper {
      * @param builder       The string builder to use when building the joined string.
      * @param <T>           The class of items stored in the array.
      */
-    static <T> void join(T[] array, String itemSeparator, StringBuilder builder) {
-        if (array != null && builder != null) {
-            for (int i = 0; i < array.length; i++) {
-                if (itemSeparator != null && i > 0) builder.append(itemSeparator);
-                builder.append(ObjectHelper.stringify(array[i]));
-            }
+    public static <T> void join(T[] array, String itemSeparator, StringBuilder builder) {
+        if (array == null || builder == null) return;
+
+        for (int i = 0; i < array.length; i++) {
+            if (itemSeparator != null && i > 0) builder.append(itemSeparator);
+            builder.append(ObjectHelper.stringify(array[i]));
         }
     }
 
@@ -722,7 +738,19 @@ public final class ArrayHelper {
      * @return              A string representation of the given array.
      */
     public static <T> String stringify(T[] array) {
-        return stringify(array, null, true);
+        return stringify(array, null, (Sanitization)null);
+    }
+
+    /**
+     * Returns a string representation of the given array.
+     *
+     * @param array         The array to be stringified.
+     * @param mode          The type of compaction to be applied to the array, if any.
+     * @param <T>           The class of items stored in the array.
+     * @return              A string representation of the given array.
+     */
+    public static <T> String stringify(T[] array, Sanitization mode) {
+        return stringify(array, null, mode);
     }
 
     /**
@@ -730,12 +758,25 @@ public final class ArrayHelper {
      *
      * @param array         The array to be stringified.
      * @param itemSeparator The separator string used between items of the array.
-     * @param includeNulls  Whether to include null values in the output.
      * @param <T>           The class of items stored in the array.
      * @return              A string representation of the given array.
      */
-    public static <T> String stringify(T[] array, String itemSeparator, boolean includeNulls) {
-        if (!includeNulls) array = compact(array);
+    public static <T> String stringify(T[] array, String itemSeparator) {
+        return stringify(array, itemSeparator, (Sanitization)null);
+    }
+
+    /**
+     * Returns a string representation of the given array.
+     *
+     * @param array         The array to be stringified.
+     * @param itemSeparator The separator string used between items of the array.
+     * @param sanitization  The type of sanitization to be applied to the array, if any.
+     * @param <T>           The class of items stored in the array.
+     * @return              A string representation of the given array.
+     */
+    public static <T> String stringify(T[] array, String itemSeparator, Sanitization sanitization) {
+        array = sanitize(array, sanitization);
+
         if (array == null) return null;
 
         StringBuilder builder = new StringBuilder();
@@ -751,12 +792,33 @@ public final class ArrayHelper {
      * @param builder       The string builder used to build the string.
      * @param <T>           The class of items stored in the array.
      */
-    static <T> void stringify(T[] array, String itemSeparator, StringBuilder builder) {
+    public static <T> void stringify(T[] array, String itemSeparator, StringBuilder builder) {
+        if (array == null || builder == null) return;
         if (itemSeparator == null) itemSeparator = DEFAULT_ITEM_SEPARATOR;
 
         builder.append("[");
         join(array, itemSeparator, builder);
         builder.append("]");
+    }
+
+    /**
+     * Sanitizes the given array by removing nulls, or removing blanks and nulls.
+     *
+     * @param array         The array to be compacted.
+     * @param sanitization  The type of sanitization required.
+     * @param <T>           The class of item stored in the array.
+     * @return              The resulting sanitized array.
+     */
+    public static <T> T[] sanitize(T[] array, Sanitization sanitization) {
+        if (array != null && sanitization != null) {
+            if (sanitization == Sanitization.REMOVE_NULLS) {
+                array = compact(array);
+            } else if (sanitization == Sanitization.REMOVE_NULLS_AND_BLANKS) {
+                array = squeeze(array);
+            }
+        }
+
+        return array;
     }
 
     /**
@@ -1049,6 +1111,28 @@ public final class ArrayHelper {
 
         for (T item : array) {
             if (item instanceof String) item = (T)StringHelper.squeeze((String)item, false);
+            if (item != null) list.add(item);
+        }
+
+        array = list.toArray(Arrays.copyOf(array, list.size()));
+
+        return array.length == 0 ? null : array;
+    }
+
+    /**
+     * Converts each string in the given array to null if it only contains whitespace characters.
+     *
+     * @param array   The array to be nullified.
+     * @return        The nullified array.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T[] nullify(T[] array) {
+        if (array == null || array.length == 0) return null;
+
+        List<T> list = new ArrayList<T>(array.length);
+
+        for (T item : array) {
+            if (item instanceof String) item = (T)StringHelper.nullify((String)item);
             if (item != null) list.add(item);
         }
 

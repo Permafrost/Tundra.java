@@ -62,21 +62,94 @@ public class TableHelper {
     }
 
     /**
+     * Returns a string created by concatenating each element of the given table.
+     *
+     * @param table             The table whose contents are to be joined.
+     * @param <T>               The class of items stored in the table.
+     * @return                  A string representation of the given table created by concatenating together the string
+     *                          representation of each item in order.
+     */
+    public static <T> String join(T[][] table) {
+        return join(table, null);
+    }
+
+    /**
+     * Returns a string created by concatenating each element of the given table, separated by the given separator
+     * string.
+     *
+     * @param table             The table whose contents are to be joined.
+     * @param separator         An optional separator string to be used between rows of the table and items of a row.
+     * @param <T>               The class of items stored in the table.
+     * @return                  A string representation of the given table created by concatenating together the string
+     *                          representation of each item in order.
+     */
+    public static <T> String join(T[][] table, String separator) {
+        return join(table, separator, separator);
+    }
+
+    /**
+     * Returns a string created by concatenating each element of the given table, separated by the given separator
+     * string.
+     *
+     * @param table             The table whose contents are to be joined.
+     * @param separator         An optional separator string to be used between rows of the table and items of a row.
+     * @param <T>               The class of items stored in the table.
+     * @return                  A string representation of the given table created by concatenating together the string
+     *                          representation of each item in order.
+     */
+    public static <T> String join(T[][] table, String separator, Sanitization mode) {
+        return join(table, separator, separator, null, null, mode);
+    }
+
+    /**
      * Returns a string created by concatenating each element of the given table, separated by the given separator
      * string.
      *
      * @param table             The table whose contents are to be joined.
      * @param rowSeparator      An optional separator string to be used between rows of the table.
-     * @param itemSeparator     An optional separator string to be used between items of the table.
-     * @param tableDefaultValue An optional value used when the table is null or empty.
-     * @param rowDefaultValue   An optional value used when a table row is null or empty.
-     * @param includeNulls      If true, null values will be included in the output string, otherwise they are ignored.
+     * @param itemSeparator     An optional separator string to be used between items of a row.
      * @param <T>               The class of items stored in the table.
      * @return                  A string representation of the given table created by concatenating together the string
-     *                          representation of each item in order, optionally separated by the given separator string.
+     *                          representation of each item in order.
      */
-    public static <T> String join(T[][] table, String rowSeparator, String itemSeparator, String tableDefaultValue, String rowDefaultValue, boolean includeNulls) {
-        if (!includeNulls) table = compact(table);
+    public static <T> String join(T[][] table, String rowSeparator, String itemSeparator) {
+        return join(table, rowSeparator, itemSeparator, null, (String)null);
+    }
+
+    /**
+     * Returns a string created by concatenating each element of the given table, separated by the given separator
+     * string.
+     *
+     * @param table             The table whose contents are to be joined.
+     * @param rowSeparator      An optional separator string to be used between rows of the table.
+     * @param itemSeparator     An optional separator string to be used between items of a row.
+     * @param tableDefaultValue An optional value used when the table is null or empty.
+     * @param rowDefaultValue   An optional value used when a table row is null or empty.
+     * @param <T>               The class of items stored in the table.
+     * @return                  A string representation of the given table created by concatenating together the string
+     *                          representation of each item in order.
+     */
+    public static <T> String join(T[][] table, String rowSeparator, String itemSeparator, String tableDefaultValue, String rowDefaultValue) {
+        return join(table, rowSeparator, itemSeparator, tableDefaultValue, rowDefaultValue, null);
+    }
+
+    /**
+     * Returns a string created by concatenating each element of the given table, separated by the given separator
+     * string.
+     *
+     * @param table             The table whose contents are to be joined.
+     * @param rowSeparator      An optional separator string to be used between rows of the table.
+     * @param itemSeparator     An optional separator string to be used between items of a row.
+     * @param tableDefaultValue An optional value used when the table is null or empty.
+     * @param rowDefaultValue   An optional value used when a table row is null or empty.
+     * @param sanitization      The type of sanitization required, if any.
+     * @param <T>               The class of items stored in the table.
+     * @return                  A string representation of the given table created by concatenating together the string
+     *                          representation of each item in order.
+     */
+    public static <T> String join(T[][] table, String rowSeparator, String itemSeparator, String tableDefaultValue, String rowDefaultValue, Sanitization sanitization) {
+        table = sanitize(table, sanitization);
+
         if (table == null || table.length == 0) return tableDefaultValue;
 
         StringBuilder builder = new StringBuilder();
@@ -94,15 +167,15 @@ public class TableHelper {
      * @param rowDefaultValue   An optional value used when a table row is null or empty.
      * @param <T>               The class of items stored in the table.
      */
-    private static <T> void join(T[][] table, String rowSeparator, String itemSeparator, String rowDefaultValue, StringBuilder builder) {
-        if (table != null && builder != null) {
-            for (int i = 0; i < table.length; i++) {
-                if (rowSeparator != null && i > 0) builder.append(rowSeparator);
-                if (table[i] == null) {
-                    builder.append(rowDefaultValue);
-                } else {
-                    ArrayHelper.join(table[i], itemSeparator, builder);
-                }
+    public static <T> void join(T[][] table, String rowSeparator, String itemSeparator, String rowDefaultValue, StringBuilder builder) {
+        if (table == null || builder == null) return;
+
+        for (int i = 0; i < table.length; i++) {
+            if (rowSeparator != null && i > 0) builder.append(rowSeparator);
+            if (table[i] == null) {
+                builder.append(rowDefaultValue);
+            } else {
+                ArrayHelper.join(table[i], itemSeparator, builder);
             }
         }
     }
@@ -115,20 +188,32 @@ public class TableHelper {
      * @return                  A string representation of the given array.
      */
     public static <T> String stringify(T[][] table) {
-        return stringify(table, null, null, true);
+        return stringify(table, null, null);
     }
 
     /**
      * Returns a string representation of the given table.
      *
      * @param table             The table to be stringified.
-     * @param itemSeparator     The separator string to be used between items of a row.
-     * @param includeNulls      Whether null values should be included in the output.
+     * @param separator         The separator string to be used between rows, and between items of a row.
      * @param <T>               The class of items stored in the array.
      * @return                  A string representation of the given array.
      */
-    public static <T> String stringify(T[][] table, String itemSeparator, boolean includeNulls) {
-        return stringify(table, null, itemSeparator, includeNulls);
+    public static <T> String stringify(T[][] table, String separator) {
+        return stringify(table, separator, separator, (Sanitization)null);
+    }
+
+    /**
+     * Returns a string representation of the given table.
+     *
+     * @param table             The table to be stringified.
+     * @param separator         The separator string to be used between rows, and between items of a row.
+     * @param sanitization      The type of sanitization required, if any.
+     * @param <T>               The class of items stored in the array.
+     * @return                  A string representation of the given array.
+     */
+    public static <T> String stringify(T[][] table, String separator, Sanitization sanitization) {
+        return stringify(table, separator, separator, sanitization);
     }
 
     /**
@@ -137,12 +222,13 @@ public class TableHelper {
      * @param table             The table to be stringified.
      * @param rowSeparator      The separator string to be used between rows of the table.
      * @param itemSeparator     The separator string to be used between items of a row.
-     * @param includeNulls      Whether null values should be included in the output.
+     * @param sanitization      The type of sanitization required, if any.
      * @param <T>               The class of items stored in the array.
      * @return                  A string representation of the given array.
      */
-    public static <T> String stringify(T[][] table, String rowSeparator, String itemSeparator, boolean includeNulls) {
-        if (!includeNulls) table = compact(table);
+    public static <T> String stringify(T[][] table, String rowSeparator, String itemSeparator, Sanitization sanitization) {
+        table = sanitize(table, sanitization);
+
         if (table == null) return null;
 
         StringBuilder builder = new StringBuilder();
@@ -159,7 +245,9 @@ public class TableHelper {
      * @param builder           The string builder to use when building the string.
      * @param <T>               The class of items stored in the array.
      */
-    private static <T> void stringify(T[][] table, String rowSeparator, String itemSeparator, StringBuilder builder) {
+    public static <T> void stringify(T[][] table, String rowSeparator, String itemSeparator, StringBuilder builder) {
+        if (table == null || builder == null) return;
+
         if (rowSeparator == null) rowSeparator = DEFAULT_ROW_SEPARATOR;
         if (itemSeparator == null) itemSeparator = ArrayHelper.DEFAULT_ITEM_SEPARATOR;
 
@@ -177,6 +265,26 @@ public class TableHelper {
     }
 
     /**
+     * Compacts the given table using the given compaction method.
+     *
+     * @param table         The table to be compacted.
+     * @param sanitization  The type of sanitization required, if any.
+     * @param <T>           The class of item stored in the array.
+     * @return              The resulting compacted table.
+     */
+    private static <T> T[][] sanitize(T[][] table, Sanitization sanitization) {
+        if (table != null && sanitization != null) {
+            if (sanitization == Sanitization.REMOVE_NULLS) {
+                table = compact(table);
+            } else if (sanitization == Sanitization.REMOVE_NULLS_AND_BLANKS) {
+                table = squeeze(table);
+            }
+        }
+
+        return table;
+    }
+
+    /**
      * Returns a new table with all empty or null elements removed.
      *
      * @param table A table to be squeezed.
@@ -190,6 +298,28 @@ public class TableHelper {
 
         for (T[] row : table) {
             row = ArrayHelper.squeeze(row);
+            if (row != null) list.add(row);
+        }
+
+        table = list.toArray(Arrays.copyOf(table, list.size()));
+
+        return table.length == 0 ? null : table;
+    }
+
+    /**
+     * Converts each string in the given table to null if it only contains whitespace characters.
+     *
+     * @param table     The table to be nullified.
+     * @param <T>       The nullified table.
+     * @return
+     */
+    private static <T> T[][] nullify(T[][] table) {
+        if (table == null || table.length == 0) return null;
+
+        List<T[]> list = new ArrayList<T[]>(table.length);
+
+        for (T[] row : table) {
+            row = ArrayHelper.nullify(row);
             if (row != null) list.add(row);
         }
 

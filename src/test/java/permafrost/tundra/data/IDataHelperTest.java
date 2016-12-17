@@ -12,6 +12,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 import permafrost.tundra.io.InputStreamHelper;
+import permafrost.tundra.lang.Sanitization;
 import permafrost.tundra.xml.dom.DocumentHelper;
 import permafrost.tundra.xml.sax.InputSourceHelper;
 import java.util.regex.Pattern;
@@ -1546,7 +1547,7 @@ public class IDataHelperTest {
         map.put("g", array);
         map.put("l", new String[0]);
 
-        assertEquals("z = null; a = 1; b = 2; c = {d = [null, 3, 4]; e = [[5, 6], [7, 8], null, [null, 9]]}; f = [9, 10, null, 12, null]; g = [{h = 13; i = 14}, {j = 15; k = null}]; l = []", IDataHelper.join(map, "; ", ", ", " = ", true));
-        assertEquals("a = 1; b = 2; c = {d = [3, 4]; e = [[5, 6], [7, 8], [9]]}; f = [9, 10, 12]; g = [{h = 13; i = 14}, {j = 15}]; l = []", IDataHelper.join(map, "; ", ", ", " = ", false));
+        assertEquals("z = null; a = 1; b = 2; c = {d = [null, 3, 4]; e = [[5, 6], [7, 8], null, [null, 9]]}; f = [9, 10, null, 12, null]; g = [{h = 13; i = 14}, {j = 15; k = null}]; l = []", IDataHelper.join(map, "; ", ", ", " = "));
+        assertEquals("a = 1; b = 2; c = {d = [3, 4]; e = [[5, 6], [7, 8], [9]]}; f = [9, 10, 12]; g = [{h = 13; i = 14}, {j = 15}]; l = []", IDataHelper.join(map, "; ", ", ", " = ", Sanitization.REMOVE_NULLS));
     }
 }

@@ -37,6 +37,7 @@ import org.w3c.dom.Node;
 import permafrost.tundra.flow.ConditionEvaluator;
 import permafrost.tundra.flow.variable.SubstitutionHelper;
 import permafrost.tundra.lang.ArrayHelper;
+import permafrost.tundra.lang.Sanitization;
 import permafrost.tundra.lang.ObjectHelper;
 import permafrost.tundra.lang.StringHelper;
 import permafrost.tundra.lang.TableHelper;
@@ -1117,6 +1118,16 @@ public final class IDataHelper {
      * Trims all string values, then converts empty strings to nulls, then compacts by removing all null values.
      *
      * @param document  An IData document to be squeezed.
+     * @return          A new IData document that is the given IData squeezed.
+     */
+    public static IData squeeze(IData document) {
+        return squeeze(document, true);
+    }
+
+    /**
+     * Trims all string values, then converts empty strings to nulls, then compacts by removing all null values.
+     *
+     * @param document  An IData document to be squeezed.
      * @param recurse   Whether to also squeeze embedded IData and IData[] objects.
      * @return          A new IData document that is the given IData squeezed.
      */
@@ -1174,6 +1185,16 @@ public final class IDataHelper {
      * Returns a new IData[] with all empty and null items removed.
      *
      * @param array     An IData[] to be squeezed.
+     * @return          A new IData[] that is the given IData[] squeezed.
+     */
+    public static IData[] squeeze(IData[] array) {
+        return squeeze(array, true);
+    }
+
+    /**
+     * Returns a new IData[] with all empty and null items removed.
+     *
+     * @param array     An IData[] to be squeezed.
      * @param recurse   Whether to also squeeze embedded IData and IData[] objects.
      * @return          A new IData[] that is the given IData[] squeezed.
      */
@@ -1190,6 +1211,16 @@ public final class IDataHelper {
         array = list.toArray(new IData[list.size()]);
 
         return array.length == 0 ? null : array;
+    }
+
+    /**
+     * Converts all strings that only contain whitespace characters to null.
+     *
+     * @param document An IData document to be nullified.
+     * @return         A new IData document that is the given IData nullified.
+     */
+    public static IData nullify(IData document) {
+        return nullify(document, true);
     }
 
     /**
@@ -1233,6 +1264,16 @@ public final class IDataHelper {
      * Converts all strings that only contain whitespace characters to null.
      *
      * @param input   An IData[] to be nullified.
+     * @return        A new IData[] that is the given IData[] nullify.
+     */
+    public static IData[] nullify(IData[] input) {
+        return nullify(input, true);
+    }
+
+    /**
+     * Converts all strings that only contain whitespace characters to null.
+     *
+     * @param input   An IData[] to be nullified.
      * @param recurse Whether to also nullify embedded IData and IData[] objects.
      * @return        A new IData[] that is the given IData[] nullify.
      */
@@ -1255,18 +1296,7 @@ public final class IDataHelper {
      * @return          A string representation of the given IData document.
      */
     public static String join(IData document) {
-        return join(document, true);
-    }
-
-    /**
-     * Returns a string created by concatenating each element of the given IData document.
-     *
-     * @param document      The IData document to be converted to a string.
-     * @param includeNulls  If true, null values will be included in the output string, otherwise they are ignored.
-     * @return              A string representation of the given IData document.
-     */
-    public static String join(IData document, boolean includeNulls) {
-        return join(document, null, null, null, includeNulls);
+        return join(document, null, null, null);
     }
 
     /**
@@ -1280,7 +1310,7 @@ public final class IDataHelper {
      * @return                  A string representation of the given IData document.
      */
     public static String join(IData document, String itemSeparator, String listSeparator, String valueSeparator) {
-        return join(document, itemSeparator, listSeparator, valueSeparator, true);
+        return join(document, itemSeparator, listSeparator, valueSeparator, (Sanitization)null);
     }
 
     /**
@@ -1291,11 +1321,31 @@ public final class IDataHelper {
      * @param itemSeparator     The string to use to delimit entries in IData documents.
      * @param listSeparator     The string to use to delimit list items.
      * @param valueSeparator    The string to use to delimit key value pairs.
-     * @param includeNulls      If true, null values will be included in the output string, otherwise they are ignored.
+     * @param sanitization      The type of sanitization required, if any.
      * @return                  A string representation of the given IData document.
      */
-    public static String join(IData document, String itemSeparator, String listSeparator, String valueSeparator, boolean includeNulls) {
-        if (document == null) return null;
+    public static String join(IData document, String itemSeparator, String listSeparator, String valueSeparator, Sanitization sanitization) {
+        document = sanitize(document, sanitization);
+
+        if (document == null || size(document) == 0) return null;
+
+        StringBuilder builder = new StringBuilder();
+        join(document, itemSeparator, listSeparator, valueSeparator, builder);
+        return builder.toString();
+    }
+
+    /**
+     * Returns a string created by concatenating each element of the given IData document, separated by the given
+     * separator strings.
+     *
+     * @param document          The IData document to be converted to a string.
+     * @param itemSeparator     The string to use to delimit entries in IData documents.
+     * @param listSeparator     The string to use to delimit list items.
+     * @param valueSeparator    The string to use to delimit key value pairs.
+     * @param builder           The string builder to use when building the output.
+     */
+    private static void join(IData document, String itemSeparator, String listSeparator, String valueSeparator, StringBuilder builder) {
+        if (document == null || builder == null) return;
 
         if (itemSeparator == null) itemSeparator = ", ";
         if (listSeparator == null) listSeparator = ", ";
@@ -1304,37 +1354,36 @@ public final class IDataHelper {
         boolean itemSeparatorRequired = false;
 
         IDataCursor cursor = document.getCursor();
-        StringBuilder builder = new StringBuilder();
 
         while (cursor.next()) {
             String key = cursor.getKey();
             Object value = cursor.getValue();
 
-            boolean includeItem = includeNulls || value != null;
+            if (itemSeparatorRequired) builder.append(itemSeparator);
 
-            if (itemSeparatorRequired && includeItem) builder.append(itemSeparator);
+            builder.append(key);
+            builder.append(valueSeparator);
 
-            if (includeItem) {
-                if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
-                    value = "[" + join(toIDataArray(value), itemSeparator, listSeparator, valueSeparator, includeNulls) + "]";
-                } else if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
-                    value = "{" + join(toIData(value), itemSeparator, listSeparator, valueSeparator, includeNulls) + "}";
-                } else if (value instanceof Object[][]) {
-                    value = TableHelper.stringify(TableHelper.toStringTable((Object[][])value), listSeparator, includeNulls);
-                } else if (value instanceof Object[]) {
-                    value = ArrayHelper.stringify(ArrayHelper.toStringArray((Object[])value), listSeparator, includeNulls);
-                }
-
-                builder.append(key);
-                builder.append(valueSeparator);
+            if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
+                builder.append("[");
+                join(toIDataArray(value), itemSeparator, listSeparator, valueSeparator, builder);
+                builder.append("]");
+            } else if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
+                builder.append("{");
+                join(toIData(value), itemSeparator, listSeparator, valueSeparator, builder);
+                builder.append("}");
+            } else if (value instanceof Object[][]) {
+                TableHelper.stringify(TableHelper.toStringTable((Object[][])value), listSeparator, listSeparator, builder);
+            } else if (value instanceof Object[]) {
+                ArrayHelper.stringify(ArrayHelper.toStringArray((Object[])value), listSeparator, builder);
+            } else {
                 builder.append(ObjectHelper.stringify(value));
-                itemSeparatorRequired = true;
             }
+
+            itemSeparatorRequired = true;
         }
 
         cursor.destroy();
-
-        return builder.toString();
     }
 
     /**
@@ -1344,7 +1393,7 @@ public final class IDataHelper {
      * @return      A string representation of the given IData document.
      */
     public static String join(IData[] array) {
-        return join(array, null, null, null, true);
+        return join(array, null, null, null);
     }
 
     /**
@@ -1358,7 +1407,7 @@ public final class IDataHelper {
      * @return                  A string representation of the given IData document.
      */
     public static String join(IData[] array, String itemSeparator, String listSeparator, String valueSeparator) {
-        return join(array, itemSeparator, listSeparator, valueSeparator, true);
+        return join(array, itemSeparator, listSeparator, valueSeparator, (Sanitization)null);
     }
 
     /**
@@ -1369,33 +1418,43 @@ public final class IDataHelper {
      * @param itemSeparator     The string to use to delimit entries in IData documents.
      * @param listSeparator     The string to use to delimit list items.
      * @param valueSeparator    The string to use to delimit key value pairs.
-     * @param includeNulls      If true, null values will be included in the output string, otherwise they are ignored.
+     * @param sanitization      The type of sanitization required, if any.
      * @return                  A string representation of the given IData document.
      */
-    public static String join(IData[] array, String itemSeparator, String listSeparator, String valueSeparator, boolean includeNulls) {
-        if (array == null) return null;
+    public static String join(IData[] array, String itemSeparator, String listSeparator, String valueSeparator, Sanitization sanitization) {
+        array = sanitize(array, sanitization);
+
+        if (array == null || array.length == 0) return null;
+
+        StringBuilder builder = new StringBuilder();
+        join(array, itemSeparator, listSeparator, valueSeparator, builder);
+        return builder.toString();
+    }
+
+    /**
+     * Returns a string created by concatenating each element of the given IData[] document list, separated by the given
+     * separator strings.
+     *
+     * @param array             The IData[] document list to be converted to a string.
+     * @param itemSeparator     The string to use to delimit entries in IData documents.
+     * @param listSeparator     The string to use to delimit list items.
+     * @param valueSeparator    The string to use to delimit key value pairs.
+     * @param builder           The string builder to use when building the output.
+     */
+    public static void join(IData[] array, String itemSeparator, String listSeparator, String valueSeparator, StringBuilder builder) {
+        if (array == null || builder == null) return;
 
         if (itemSeparator == null) itemSeparator = ", ";
         if (listSeparator == null) listSeparator = ", ";
         if (valueSeparator == null) valueSeparator = ": ";
 
-        StringBuilder builder = new StringBuilder();
-        boolean separatorRequired = false;
+        for(int i = 0; i < array.length; i++) {
+            if (i > 0) builder.append(listSeparator);
 
-        for(IData item : array) {
-            boolean includeItem = includeNulls || item != null;
-
-            if (separatorRequired && includeItem) builder.append(listSeparator);
-
-            if (includeItem) {
-                builder.append("{");
-                builder.append(join(item, itemSeparator, listSeparator, valueSeparator, includeNulls));
-                builder.append("}");
-                separatorRequired = true;
-            }
+            builder.append("{");
+            join(array[i], itemSeparator, listSeparator, valueSeparator, builder);
+            builder.append("}");
         }
-
-        return builder.toString();
     }
 
     /**
@@ -1532,6 +1591,35 @@ public final class IDataHelper {
     }
 
     /**
+     * Sanitizes the given IData document by removing nulls, or removing nulls and blanks.
+     *
+     * @param document          The IData document to be sanitized.
+     * @param sanitization      The type of sanitization required, if any.
+     * @return                  The sanitized IData document.
+     */
+    public static IData sanitize(IData document, Sanitization sanitization) {
+        if (document != null && sanitization != null) {
+            if (sanitization == Sanitization.REMOVE_NULLS) {
+                document = compact(document);
+            } else if (sanitization == Sanitization.REMOVE_NULLS_AND_BLANKS) {
+                document = squeeze(document);
+            }
+        }
+
+        return document;
+    }
+
+    /**
+     * Removes all null values from the given IData document.
+     *
+     * @param document  The IData document to be compacted.
+     * @return          The compacted IData.
+     */
+    public static IData compact(IData document) {
+        return compact(document, true);
+    }
+
+    /**
      * Removes all null values from the given IData document.
      *
      * @param document  The IData document to be compacted.
@@ -1569,6 +1657,35 @@ public final class IDataHelper {
         outputCursor.destroy();
 
         return output;
+    }
+
+    /**
+     * Sanitizes the given IData[] by removing nulls, or removing nulls and blanks.
+     *
+     * @param array             The IData[] to be sanitized.
+     * @param sanitization      The type of sanitization required.
+     * @return                  The sanitized IData[].
+     */
+    public static IData[] sanitize(IData[] array, Sanitization sanitization) {
+        if (array != null && sanitization != null) {
+            if (sanitization == Sanitization.REMOVE_NULLS) {
+                array = compact(array);
+            } else if (sanitization == Sanitization.REMOVE_NULLS_AND_BLANKS) {
+                array = squeeze(array);
+            }
+        }
+
+        return array;
+    }
+
+    /**
+     * Removes all null values from the given IData[].
+     *
+     * @param array     The IData[] to be compacted.
+     * @return          The compacted IData[].
+     */
+    public static IData[] compact(IData[] array) {
+        return compact(array, true);
     }
 
     /**

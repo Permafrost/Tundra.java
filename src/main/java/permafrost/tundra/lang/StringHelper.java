@@ -1169,7 +1169,7 @@ public final class StringHelper {
      * @return        Null if the given string only contains whitespace characters, otherwise the given string unmodified.
      */
     public static String nullify(String input, boolean nullify) {
-        return (input == null || input.trim().equals("")) ? null : input;
+        return (nullify && (input == null || input.trim().equals(""))) ? null : input;
     }
 
     /**

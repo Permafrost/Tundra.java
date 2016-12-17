@@ -98,35 +98,23 @@ public class ArrayHelperTest {
     }
 
     @Test
-    public void testToStringTableWithNull() throws Exception {
-        assertArrayEquals(null, TableHelper.toStringTable(null));
-    }
-
-    @Test
-    public void testToStringTableWithIntegerTable() throws Exception {
-        Integer[][] table = new Integer[2][];
-
-        table[0] = new Integer[2];
-        table[1] = new Integer[2];
-
-        table[0][0] = new Integer("1");
-        table[0][1] = new Integer("2");
-        table[1][0] = new Integer("3");
-        table[1][1] = new Integer("4");
-
-        assertArrayEquals(new String[][] { { "1", "2" }, { "3", "4" } }, TableHelper.toStringTable(table));
-    }
-
-    @Test
     public void testStringifyWithNull() throws Exception {
-        assertEquals(null, TableHelper.stringify(null));
+        assertEquals(null, ArrayHelper.stringify(null));
+    }
+
+    @Test
+    public void testStringifyWithBlanks() throws Exception {
+        String[] array = { "a", "   ", null, "c" };
+        assertEquals("[a,    , null, c]", ArrayHelper.stringify(array));
+        assertEquals("[a,    , c]", ArrayHelper.stringify(array, Sanitization.REMOVE_NULLS));
+        assertEquals("[a, c]", ArrayHelper.stringify(array, Sanitization.REMOVE_NULLS_AND_BLANKS));
     }
 
     @Test
     public void testStringifyWithIntegerArray() throws Exception {
         Integer[] array = new Integer[2];
-        array[0] = new Integer(1);
-        array[1] = new Integer(2);
+        array[0] = 1;
+        array[1] = 2;
 
         assertEquals("[1, 2]", ArrayHelper.stringify(array));
     }
