@@ -620,6 +620,25 @@ public final class StringHelper {
     }
 
     /**
+     * Trims each item in the given String[] of leading and trailing whitespace.
+     *
+     * @param input The String[] to be trimmed.
+     * @return      A new String[] contained the trimmed versions of the items in the given input.
+     */
+    public static String[] trim(String[] input) {
+        if (input == null) return null;
+
+        String[] output = new String[input.length];
+
+        for (int i = 0; i < input.length; i++) {
+            String item = input[i];
+            if (item != null) output[i] = input[i].trim();
+        }
+
+        return output;
+    }
+
+    /**
      * Returns the length or number of characters of the string.
      *
      * @param string The string to be measured.

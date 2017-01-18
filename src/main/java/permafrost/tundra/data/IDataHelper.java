@@ -1115,6 +1115,82 @@ public final class IDataHelper {
     }
 
     /**
+     * Trims all string values in the given IData of leading and trailing whitespace.
+     *
+     * @param document  The IData to be trimmed.
+     * @return          A new IData containing trimmed versions of the elements in the given input.
+     */
+    public static IData trim(IData document) {
+        return trim(document, true);
+    }
+
+    /**
+     * Trims all string values in the given IData of leading and trailing whitespace.
+     *
+     * @param document  The IData to be trimmed.
+     * @param recurse   Whether to recursively trim.
+     * @return          A new IData containing trimmed versions of the elements in the given input.
+     */
+    public static IData trim(IData document, boolean recurse) {
+        if (document == null) return null;
+
+        IData output = IDataFactory.create();
+        IDataCursor inputCursor = document.getCursor();
+        IDataCursor outputCursor = output.getCursor();
+
+        while (inputCursor.next()) {
+            String key = inputCursor.getKey();
+            Object value = inputCursor.getValue();
+
+            if (value instanceof String) {
+                value = ((String)value).trim();
+            } else if (value instanceof String[]) {
+                value = StringHelper.trim((String[])value);
+            } else if (recurse && (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[])) {
+                value = trim(toIDataArray(value), recurse);
+            } else if (recurse && (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable)) {
+                value = trim(toIData(value), recurse);
+            }
+
+            outputCursor.insertAfter(key, value);
+        }
+
+        inputCursor.destroy();
+        outputCursor.destroy();
+
+        return output;
+    }
+
+    /**
+     * Trims all string values in the given IData[] of leading and trailing whitespace.
+     *
+     * @param input     The IData[] to be trimmed.
+     * @return          A new IData[] containing trimmed versions of the elements in the given input.
+     */
+    public static IData[] trim(IData[] input) {
+        return trim(input, true);
+    }
+
+    /**
+     * Trims all string values in the given IData[] of leading and trailing whitespace.
+     *
+     * @param input     The IData[] to be trimmed.
+     * @param recurse   Whether to recursively trim.
+     * @return          A new IData[] containing trimmed versions of the elements in the given input.
+     */
+    public static IData[] trim(IData[] input, boolean recurse) {
+        if (input == null) return null;
+
+        IData[] output = new IData[input.length];
+
+        for (int i = 0; i < input.length; i++) {
+            output[i] = trim(input[i], recurse);
+        }
+
+        return output;
+    }
+
+    /**
      * Trims all string values, then converts empty strings to nulls, then compacts by removing all null values.
      *
      * @param document  An IData document to be squeezed.
