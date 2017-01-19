@@ -1146,6 +1146,8 @@ public final class IDataHelper {
                 value = ((String)value).trim();
             } else if (value instanceof String[]) {
                 value = StringHelper.trim((String[])value);
+            } else if (value instanceof String[][]) {
+                value = StringHelper.trim((String[][])value);
             } else if (recurse && (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[])) {
                 value = trim(toIDataArray(value), recurse);
             } else if (recurse && (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable)) {
