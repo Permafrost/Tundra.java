@@ -1193,6 +1193,103 @@ public final class IDataHelper {
     }
 
     /**
+     * Replaces either the first or all occurrences of the given regular expression in the given IData document with the
+     * given replacement.
+     *
+     * @param document    The IData document whose string values are to be replaced.
+     * @param pattern     The regular expression pattern.
+     * @param replacement The replacement string.
+     * @param literal     Whether the replacement string is literal and therefore requires quoting.
+     * @param firstOnly   If true, only the first occurrence is replaced, otherwise all occurrences are replaced.
+     * @param recurse     Whether to recursively process the document.
+     * @return            The document with replaced string values.
+     */
+    public static IData replace(IData document, String pattern, String replacement, boolean literal, boolean firstOnly, boolean recurse) {
+        return replace(document, pattern == null ? null : Pattern.compile(pattern), replacement != null && literal ? Matcher.quoteReplacement(replacement) : replacement, firstOnly, recurse);
+    }
+
+    /**
+     * Replaces either the first or all occurrences of the given regular expression in the given IData document with the
+     * given replacement.
+     *
+     * @param document    The IData document whose string values are to be replaced.
+     * @param pattern     The regular expression pattern.
+     * @param replacement The replacement string.
+     * @param firstOnly   If true, only the first occurrence is replaced, otherwise all occurrences are replaced.
+     * @param recurse     Whether to recursively process the document.
+     * @return            The document with replaced string values.
+     */
+    public static IData replace(IData document, Pattern pattern, String replacement, boolean firstOnly, boolean recurse) {
+        if (document == null || pattern == null || replacement == null) return document;
+
+        IData output = IDataFactory.create();
+        IDataCursor inputCursor = document.getCursor();
+        IDataCursor outputCursor = output.getCursor();
+
+        while (inputCursor.next()) {
+            String key = inputCursor.getKey();
+            Object value = inputCursor.getValue();
+
+            if (value instanceof String) {
+                value = StringHelper.replace((String)value, pattern, replacement, firstOnly);
+            } else if (value instanceof String[]) {
+                value = StringHelper.replace((String[])value, pattern, replacement, firstOnly);
+            } else if (value instanceof String[][]) {
+                value = StringHelper.replace((String[][])value, pattern, replacement, firstOnly);
+            } else if (recurse && (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[])) {
+                value = replace(toIDataArray(value), pattern, replacement, firstOnly, recurse);
+            } else if (recurse && (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable)) {
+                value = replace(toIData(value), pattern, replacement, firstOnly, recurse);
+            }
+
+            outputCursor.insertAfter(key, value);
+        }
+
+        inputCursor.destroy();
+        outputCursor.destroy();
+
+        return output;
+    }
+
+    /**
+     * Replaces either the first or all occurrences of the given regular expression in the given IData[] document list
+     * with the given replacement.
+     *
+     * @param array       The IData[] document list whose string values are to be replaced.
+     * @param pattern     The regular expression pattern.
+     * @param replacement The replacement string.
+     * @param firstOnly   If true, only the first occurrence is replaced, otherwise all occurrences are replaced.
+     * @param recurse     Whether to recursively process the document list.
+     * @return            The document list with replaced string values.
+     */
+    public static IData[] replace(IData[] array, String pattern, String replacement, boolean literal, boolean firstOnly, boolean recurse) {
+        return replace(array, pattern == null ? null : Pattern.compile(pattern), replacement != null && literal ? Matcher.quoteReplacement(replacement) : replacement, firstOnly, recurse);
+    }
+
+    /**
+     * Replaces either the first or all occurrences of the given regular expression in the given IData[] document list
+     * with the given replacement.
+     *
+     * @param array       The IData[] document list whose string values are to be replaced.
+     * @param pattern     The regular expression pattern.
+     * @param replacement The replacement string.
+     * @param firstOnly   If true, only the first occurrence is replaced, otherwise all occurrences are replaced.
+     * @param recurse     Whether to recursively process the document list.
+     * @return            The document list with replaced string values.
+     */
+    public static IData[] replace(IData[] array, Pattern pattern, String replacement, boolean firstOnly, boolean recurse) {
+        if (array == null || pattern == null || replacement == null) return array;
+
+        IData[] output = new IData[array.length];
+
+        for (int i = 0; i < array.length; i++) {
+            output[i] = replace(array[i], pattern, replacement, firstOnly, recurse);
+        }
+
+        return output;
+    }
+
+    /**
      * Trims all string values, then converts empty strings to nulls, then compacts by removing all null values.
      *
      * @param document  An IData document to be squeezed.
