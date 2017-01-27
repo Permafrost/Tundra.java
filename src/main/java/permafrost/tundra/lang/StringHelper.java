@@ -826,7 +826,7 @@ public final class StringHelper {
      * @return            The replaced string.
      */
     public static String replace(String string, String pattern, String replacement, boolean literal, boolean firstOnly) {
-        return replace(string, pattern == null ? null : Pattern.compile(pattern), replacement != null && literal ? Matcher.quoteReplacement(replacement) : null, firstOnly);
+        return replace(string, pattern == null ? null : Pattern.compile(pattern), replacement != null && literal ? Matcher.quoteReplacement(replacement) : replacement, firstOnly);
     }
 
     /**
@@ -977,7 +977,7 @@ public final class StringHelper {
         if (string == null) return null;
 
         string = string.trim();
-        if (internal) string = replace(string, "\\s+", " ", false);
+        if (internal) string = replace(string, "\\s+", " ", true);
 
         return string.equals("") ? null : string;
     }
