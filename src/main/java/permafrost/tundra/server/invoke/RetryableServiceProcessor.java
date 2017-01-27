@@ -35,12 +35,17 @@ import permafrost.tundra.server.ServiceHelper;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.regex.Pattern;
 
 /**
  * Converts any exceptions thrown by a registered service invocation to be instances of ISRuntimeException to support
  * being retried.
  */
 public class RetryableServiceProcessor extends AbstractInvokeChainProcessor {
+    /**
+     * Exceptions whose message match this pattern will not be converted to an ISRuntimeException.
+     */
+    protected static Pattern EXCLUDED_EXCEPTION_MESSAGE_PATTERN = Pattern.compile("(ISC\\.0049\\.9005|ISC\\.0049\\.9006)");
     /**
      * The service invocation instances in which to convert exceptions to be instances of ISRuntimeException.
      */
@@ -112,7 +117,7 @@ public class RetryableServiceProcessor extends AbstractInvokeChainProcessor {
         try {
             super.process(iterator, baseService, pipeline, serviceStatus);
         } catch(Throwable ex) {
-            if (registry.remove(Thread.currentThread(), baseService.getNSName().getFullName())) {
+            if (registry.remove(Thread.currentThread(), baseService.getNSName().getFullName()) && !EXCLUDED_EXCEPTION_MESSAGE_PATTERN.matcher(ex.getMessage()).find()) {
                 // convert all exceptions to be instances of ISRuntimeException
                 if (ex instanceof ISRuntimeException) {
                     throw (ISRuntimeException)ex;
