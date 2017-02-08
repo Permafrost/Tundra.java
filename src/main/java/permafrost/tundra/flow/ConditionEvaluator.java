@@ -169,7 +169,20 @@ public class ConditionEvaluator {
      * @return          True if the conditional statement evaluates to true, otherwise false.
      */
     public static boolean evaluate(String condition, IData scope) {
-        ConditionEvaluator evaluator = new ConditionEvaluator(condition);
+        return evaluate(condition, scope, null);
+    }
+
+    /**
+     * Evaluates the conditional statement against the given scope. This is a convenience method which constructs a new
+     * Condition object and evaluates it.
+     *
+     * @param condition         The conditional statement to be evaluated.
+     * @param scope             The scope against which the conditional statement is evaluated.
+     * @param namespaceContext  The namespace context used when evaluating XPath expressions against Node objects.
+     * @return                  True if the conditional statement evaluates to true, otherwise false.
+     */
+    public static boolean evaluate(String condition, IData scope, NamespaceContext namespaceContext) {
+        ConditionEvaluator evaluator = new ConditionEvaluator(condition, namespaceContext);
         return evaluator.evaluate(scope);
     }
 }
