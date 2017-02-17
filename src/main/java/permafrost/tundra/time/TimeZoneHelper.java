@@ -55,9 +55,13 @@ public final class TimeZoneHelper {
      */
     protected static final Pattern OFFSET_RAW_PATTERN = Pattern.compile("[\\+-]?\\d+");
     /**
+     * The UTC time zone.
+     */
+    public static final TimeZone UTC_TIME_ZONE = TimeZone.getTimeZone("UTC");
+    /**
      * The default time zone used by Tundra.
      */
-    public static final TimeZone DEFAULT_TIME_ZONE = TimeZone.getTimeZone("UTC");
+    public static final TimeZone DEFAULT_TIME_ZONE = UTC_TIME_ZONE;
 
     /**
      * Disallow instantiation of this class.
