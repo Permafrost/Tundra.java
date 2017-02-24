@@ -46,12 +46,6 @@ public class InvokeStateHelper {
     @SuppressWarnings("unchecked")
     public static InvokeState clone(InvokeState invokeState) {
         if (invokeState == null) throw new NullPointerException("invokeState must not be null");
-
-        InvokeState outputState = (InvokeState)invokeState.clone();
-        Stack<NSService> stack = invokeState.getCallStack();
-        for (NSService service : stack) {
-            outputState.pushService(service);
-        }
-        return outputState;
+        return (InvokeState)invokeState.clone();
     }
 }
