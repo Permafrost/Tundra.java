@@ -63,6 +63,18 @@ public class DateTimeHelperTest {
     }
 
     @Test
+    public void testConcatenateDateAndTimeWithTimeZones() throws Exception {
+        String dateValue = "2015-07-01+02:00";
+        String datePattern = "datetime";
+        String timeValue = "13:14:15.678+11:00";
+        String timePattern = "datetime";
+
+        Calendar datetime = DateTimeHelper.concatenate(DateTimeHelper.parse(dateValue, datePattern), DateTimeHelper.parse(timeValue, timePattern));
+
+        assertEquals("2015-07-01T02:14:15.678Z", DateTimeHelper.emit(datetime, "datetime", TimeZoneHelper.UTC_TIME_ZONE));
+    }
+
+    @Test
     public void testDB2TimestampParse() throws Exception {
         String timestamp = "2015-09-18-18.59.31.123456";
         String expected = "2015-09-18T18:59:31.123Z";

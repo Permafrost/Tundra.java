@@ -1183,29 +1183,26 @@ public final class DateTimeHelper {
      * Returns a new calendar that is constructed from the date part of the given date, and the time part from the given
      * time.
      *
-     * @param date The date part to be concatenated.
-     * @param time The time part to be concatenated.
-     * @return The resulting calendar with date and time parts from the given date and time calendars.
+     * @param date      The date part to be concatenated.
+     * @param time      The time part to be concatenated.
+     * @return          The resulting calendar with date and time parts from the given date and time calendars.
      */
     public static Calendar concatenate(Calendar date, Calendar time) {
-        return concatenate(date, time, null);
-    }
-
-    /**
-     * Returns a new calendar that is constructed from the date part of the given date, and the time part from the given
-     * time.
-     *
-     * @param date     The date part to be concatenated.
-     * @param time     The time part to be concatenated.
-     * @param timezone The time zone ID identifying the time zone into which the concatenated calendar will be forced.
-     * @return The resulting calendar with date and time parts from the given date and time calendars.
-     */
-    public static Calendar concatenate(Calendar date, Calendar time, TimeZone timezone) {
         if (date == null || time == null) return null;
 
-        String dateString = emit(date, "yyyy-MM-dd");
-        String timeString = emit(time, "HH:mm:ss.SSS");
-        return parse(dateString + "T" + timeString, "datetime", timezone);
+        // set date part of given time to epoch date to ensure it is not included in resulting datetime
+        time.set(Calendar.DAY_OF_MONTH, 1);
+        time.set(Calendar.MONTH, 0);
+        time.set(Calendar.YEAR, 1970);
+
+        Calendar datetime = Calendar.getInstance(time.getTimeZone());
+        datetime.setTimeInMillis(time.getTimeInMillis());
+
+        datetime.set(Calendar.DAY_OF_MONTH, date.get(Calendar.DAY_OF_MONTH));
+        datetime.set(Calendar.MONTH, date.get(Calendar.MONTH));
+        datetime.set(Calendar.YEAR, date.get(Calendar.YEAR));
+
+        return datetime;
     }
 
     /**
