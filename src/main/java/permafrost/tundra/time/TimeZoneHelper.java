@@ -42,7 +42,7 @@ public final class TimeZoneHelper {
     /**
      * A sorted set of all time zone IDs known to the JVM.
      */
-    protected static final SortedSet<String> ZONES = new TreeSet(Arrays.asList(TimeZone.getAvailableIDs()));
+    protected static final SortedSet<String> ZONES = new TreeSet<String>(Arrays.asList(TimeZone.getAvailableIDs()));
     /**
      * Regular expression pattern for matching a time zone offset specified as HH:mm (hours and minutes).
      */
