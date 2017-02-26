@@ -55,7 +55,7 @@ import javax.xml.transform.stream.StreamResult;
 /**
  * A collection of convenience methods for working with org.w3c.dom.Node objects.
  */
-public class NodeHelper {
+public final class NodeHelper {
 
     /**
      * Disallow instantiation of this class.

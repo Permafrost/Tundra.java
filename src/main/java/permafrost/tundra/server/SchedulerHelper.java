@@ -31,7 +31,7 @@ import permafrost.tundra.lang.ExceptionHelper;
 /**
  * A collection of methods for working with Integration Server user scheduled tasks.
  */
-public class SchedulerHelper {
+public final class SchedulerHelper {
     /**
      * Disallow instantiation of this class.
      */

@@ -27,7 +27,7 @@ package permafrost.tundra.lang;
 /**
  * A collection of convenience methods for working with Iterable objects.
  */
-public class IterableHelper {
+public final class IterableHelper {
     /**
      * Returns a string created by concatenating each element of the given iterable, separated by the given separator
      * string.

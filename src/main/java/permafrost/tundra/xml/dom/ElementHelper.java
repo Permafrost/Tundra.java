@@ -30,7 +30,7 @@ import org.w3c.dom.Node;
 /**
  * A collection of convenience methods for working with org.w3c.dom.Element objects.
  */
-public class ElementHelper {
+public final class ElementHelper {
     /**
      * Disallow instantiation of this class.
      */

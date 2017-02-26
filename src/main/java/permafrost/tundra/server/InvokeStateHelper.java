@@ -31,7 +31,7 @@ import java.util.Stack;
 /**
  * A collection of convenience methods for working with InvokeState objects.
  */
-public class InvokeStateHelper {
+public final class InvokeStateHelper {
     /**
      * Disallow instantiation of this class.
      */

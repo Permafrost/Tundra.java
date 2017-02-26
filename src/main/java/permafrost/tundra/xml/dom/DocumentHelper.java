@@ -42,7 +42,7 @@ import javax.xml.parsers.ParserConfigurationException;
 /**
  * Collection of convenience methods for working with Document objects.
  */
-public class DocumentHelper {
+public final class DocumentHelper {
     /**
      * Disallow instantiation of this class.
      */

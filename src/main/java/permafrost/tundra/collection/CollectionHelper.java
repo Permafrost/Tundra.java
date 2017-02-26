@@ -32,7 +32,7 @@ import java.util.List;
 /**
  * A collection of convenience methods for working with java.util.Collection objects.
  */
-public class CollectionHelper {
+public final class CollectionHelper {
     /**
      * Disallow instantiation of this class.
      */

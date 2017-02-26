@@ -35,7 +35,7 @@ import java.util.TreeMap;
 /**
  * A collection of convenience methods for working with java.util.Map objects.
  */
-public class MapHelper {
+public final class MapHelper {
     /**
      * Returns the value to which the specified key is mapped, or null if this map contains no mapping for the key.
      *

@@ -39,7 +39,7 @@ import javax.xml.xpath.XPathFactory;
 /**
  * A collection of convenience methods for working with XPath.
  */
-public class XPathHelper {
+public final class XPathHelper {
     /**
      * Disallow instantiation of this class.
      */

@@ -31,7 +31,7 @@ import java.util.List;
 /**
  * A collection of convenience methods for working with two dimensional arrays.
  */
-public class TableHelper {
+public final class TableHelper {
     /**
      * The default separator string between rows of a table when converting it to a string.
      */

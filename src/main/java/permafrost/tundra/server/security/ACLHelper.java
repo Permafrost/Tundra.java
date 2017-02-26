@@ -32,7 +32,7 @@ import java.util.Collection;
 /**
  * Collection of convenience methods for working with Integration Server ACLs.
  */
-public class ACLHelper {
+public final class ACLHelper {
     /**
      * Disallow instantiation of this class.
      */

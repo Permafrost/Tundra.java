@@ -34,7 +34,7 @@ import java.nio.charset.Charset;
 /**
  * A collection of convenience methods for Writer objects.
  */
-public class WriterHelper {
+public final class WriterHelper {
     /**
      * Disallow instantiation of this class.
      */

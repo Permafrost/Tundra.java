@@ -38,7 +38,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * A collection of convenience methods for invoking services.
  */
-public class DeferHelper {
+public final class DeferHelper {
     /**
      * The amount of time to wait for all queued deferred services to finish executing before shutdown.
      */

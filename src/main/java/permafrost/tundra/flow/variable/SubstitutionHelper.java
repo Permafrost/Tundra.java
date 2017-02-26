@@ -41,7 +41,7 @@ import java.util.regex.Pattern;
 /**
  * A collection of convenience methods for performing dynamic variable substitution.
  */
-public class SubstitutionHelper {
+public final class SubstitutionHelper {
     /**
      * A regular expression pattern for detecting variable substitution statements in strings.
      */

@@ -33,7 +33,7 @@ import java.io.Writer;
 /**
  * A collection of I/O related convenience methods.
  */
-public class InputOutputHelper {
+public final class InputOutputHelper {
     /**
      * The default I/O buffer size used by Tundra.
      */

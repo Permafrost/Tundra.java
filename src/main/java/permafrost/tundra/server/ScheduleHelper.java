@@ -45,7 +45,7 @@ import java.util.List;
 /**
  * A collection of convenience methods for working with Integration Server scheduled tasks.
  */
-public class ScheduleHelper {
+public final class ScheduleHelper {
     /**
      * Disallow instantiation of this class.
      */

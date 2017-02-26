@@ -32,7 +32,7 @@ import java.io.OutputStream;
 /**
  * A collection of convenience methods for working with OutputStream objects.
  */
-public class OutputStreamHelper {
+public final class OutputStreamHelper {
     /**
      * Disallow instantiation of this class.
      */

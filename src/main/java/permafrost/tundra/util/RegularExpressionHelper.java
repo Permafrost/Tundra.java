@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
 /**
  * A collection of convenience methods for working regular expressions.
  */
-public class RegularExpressionHelper {
+public final class RegularExpressionHelper {
     /**
      * Disallow instantiation of this class.
      */

@@ -34,7 +34,7 @@ import java.nio.charset.Charset;
 /**
  * A collection of convenience methods for working with InputSource objects.
  */
-public class InputSourceHelper {
+public final class InputSourceHelper {
     /**
      * Disallow instantiation of this class.
      */

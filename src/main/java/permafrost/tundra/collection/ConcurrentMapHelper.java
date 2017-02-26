@@ -34,7 +34,7 @@ import java.util.concurrent.ConcurrentSkipListMap;
 /**
  * A collection of convenience methods for working with java.util.concurrent.ConcurrentMap objects.
  */
-public class ConcurrentMapHelper {
+public final class ConcurrentMapHelper {
     /**
      * Returns a newly created Map object.
      *

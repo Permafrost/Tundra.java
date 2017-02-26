@@ -34,7 +34,7 @@ import javax.xml.transform.stream.StreamSource;
 /**
  * A collection of convenience methods for working with StreamSource objects.
  */
-public class StreamSourceHelper {
+public final class StreamSourceHelper {
     /**
      * Disallow instantiation of this class.
      */

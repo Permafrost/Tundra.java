@@ -51,7 +51,7 @@ import javax.xml.validation.SchemaFactory;
 /**
  * A collection of convenience methods for working with XML.
  */
-public class    XMLHelper {
+public final class XMLHelper {
     /**
      * Disallow instantiation of this class.
      */

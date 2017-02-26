@@ -32,7 +32,7 @@ import permafrost.tundra.lang.ExceptionHelper;
 /**
  * Collection of convenience methods for working with Integration Server groups.
  */
-public class GroupHelper {
+public final class GroupHelper {
     /**
      * Disallow instantiation of this class.
      */

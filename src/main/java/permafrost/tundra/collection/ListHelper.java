@@ -32,7 +32,7 @@ import java.util.Set;
 /**
  * A collection of convenience methods for working with java.util.List objects.
  */
-public class ListHelper {
+public final class ListHelper {
     /**
      * Disallow instantiation of this class.
      */

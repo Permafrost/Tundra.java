@@ -36,7 +36,7 @@ import java.nio.charset.Charset;
 /**
  * A collection of convenience methods for working with Reader objects.
  */
-public class ReaderHelper {
+public final class ReaderHelper {
     /**
      * Disallow instantiation of this class.
      */

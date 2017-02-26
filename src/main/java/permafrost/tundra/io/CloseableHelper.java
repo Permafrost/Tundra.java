@@ -30,7 +30,7 @@ import java.io.IOException;
 /**
  * A collection of convenience methods for working with Closeable objects.
  */
-public class CloseableHelper {
+public final class CloseableHelper {
     /**
      * Disallow instantiation of this class.
      */
