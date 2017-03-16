@@ -34,22 +34,26 @@ import com.wm.util.Table;
 import com.wm.util.coder.IDataCodable;
 import com.wm.util.coder.ValuesCodable;
 import org.w3c.dom.Node;
+import permafrost.tundra.data.transform.Blankifier;
+import permafrost.tundra.data.transform.Nullifier;
+import permafrost.tundra.data.transform.Replacer;
+import permafrost.tundra.data.transform.Stringifier;
+import permafrost.tundra.data.transform.TransformerMode;
+import permafrost.tundra.data.transform.Squeezer;
+import permafrost.tundra.data.transform.Transformer;
+import permafrost.tundra.data.transform.Trimmer;
 import permafrost.tundra.flow.ConditionEvaluator;
 import permafrost.tundra.flow.variable.SubstitutionHelper;
 import permafrost.tundra.lang.ArrayHelper;
 import permafrost.tundra.lang.Sanitization;
 import permafrost.tundra.lang.ObjectHelper;
-import permafrost.tundra.lang.StringHelper;
 import permafrost.tundra.lang.TableHelper;
-import permafrost.tundra.time.DateTimeHelper;
 import permafrost.tundra.xml.dom.NodeHelper;
 import permafrost.tundra.xml.dom.Nodes;
 import permafrost.tundra.xml.xpath.XPathHelper;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -1132,35 +1136,19 @@ public final class IDataHelper {
      * @return          A new IData containing trimmed versions of the elements in the given input.
      */
     public static IData trim(IData document, boolean recurse) {
-        if (document == null) return null;
+        return trim(document, TransformerMode.VALUES, recurse);
+    }
 
-        IData output = IDataFactory.create();
-        IDataCursor inputCursor = document.getCursor();
-        IDataCursor outputCursor = output.getCursor();
-
-        while (inputCursor.next()) {
-            String key = inputCursor.getKey();
-            Object value = inputCursor.getValue();
-
-            if (value instanceof String) {
-                value = ((String)value).trim();
-            } else if (value instanceof String[]) {
-                value = StringHelper.trim((String[])value);
-            } else if (value instanceof String[][]) {
-                value = StringHelper.trim((String[][])value);
-            } else if (recurse && (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[])) {
-                value = trim(toIDataArray(value), recurse);
-            } else if (recurse && (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable)) {
-                value = trim(toIData(value), recurse);
-            }
-
-            outputCursor.insertAfter(key, value);
-        }
-
-        inputCursor.destroy();
-        outputCursor.destroy();
-
-        return output;
+    /**
+     * Trims all string keys and/or values in the given IData of leading and trailing whitespace.
+     *
+     * @param document  The IData to be trimmed.
+     * @param mode      The transformer mode to use.
+     * @param recurse   Whether to recursively trim.
+     * @return          A new IData containing trimmed versions of the elements in the given input.
+     */
+    public static IData trim(IData document, TransformerMode mode, boolean recurse) {
+        return transform(document, new Trimmer(mode, recurse, true, true, true));
     }
 
     /**
@@ -1181,15 +1169,19 @@ public final class IDataHelper {
      * @return          A new IData[] containing trimmed versions of the elements in the given input.
      */
     public static IData[] trim(IData[] input, boolean recurse) {
-        if (input == null) return null;
+        return trim(input, TransformerMode.VALUES, recurse);
+    }
 
-        IData[] output = new IData[input.length];
-
-        for (int i = 0; i < input.length; i++) {
-            output[i] = trim(input[i], recurse);
-        }
-
-        return output;
+    /**
+     * Trims all string keys and/or values in the given IData[] of leading and trailing whitespace.
+     *
+     * @param input     The IData[] to be trimmed.
+     * @param mode      The transformer mode to use.
+     * @param recurse   Whether to recursively trim.
+     * @return          A new IData[] containing trimmed versions of the elements in the given input.
+     */
+    public static IData[] trim(IData[] input, TransformerMode mode, boolean recurse) {
+        return transform(input, new Trimmer(mode, recurse, true, true, true));
     }
 
     /**
@@ -1220,35 +1212,23 @@ public final class IDataHelper {
      * @return            The document with replaced string values.
      */
     public static IData replace(IData document, Pattern pattern, String replacement, boolean firstOnly, boolean recurse) {
-        if (document == null || pattern == null || replacement == null) return document;
+        return replace(document, pattern, replacement, firstOnly, TransformerMode.VALUES, recurse);
+    }
 
-        IData output = IDataFactory.create();
-        IDataCursor inputCursor = document.getCursor();
-        IDataCursor outputCursor = output.getCursor();
-
-        while (inputCursor.next()) {
-            String key = inputCursor.getKey();
-            Object value = inputCursor.getValue();
-
-            if (value instanceof String) {
-                value = StringHelper.replace((String)value, pattern, replacement, firstOnly);
-            } else if (value instanceof String[]) {
-                value = StringHelper.replace((String[])value, pattern, replacement, firstOnly);
-            } else if (value instanceof String[][]) {
-                value = StringHelper.replace((String[][])value, pattern, replacement, firstOnly);
-            } else if (recurse && (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[])) {
-                value = replace(toIDataArray(value), pattern, replacement, firstOnly, recurse);
-            } else if (recurse && (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable)) {
-                value = replace(toIData(value), pattern, replacement, firstOnly, recurse);
-            }
-
-            outputCursor.insertAfter(key, value);
-        }
-
-        inputCursor.destroy();
-        outputCursor.destroy();
-
-        return output;
+    /**
+     * Replaces either the first or all occurrences of the given regular expression in the given IData document with the
+     * given replacement.
+     *
+     * @param document    The IData document whose string values are to be replaced.
+     * @param pattern     The regular expression pattern.
+     * @param replacement The replacement string.
+     * @param firstOnly   If true, only the first occurrence is replaced, otherwise all occurrences are replaced.
+     * @param mode        The transformer mode to use.
+     * @param recurse     Whether to recursively process the document.
+     * @return            The document with replaced string values.
+     */
+    public static IData replace(IData document, Pattern pattern, String replacement, boolean firstOnly, TransformerMode mode, boolean recurse) {
+        return transform(document, new Replacer(mode, pattern, replacement, firstOnly, recurse));
     }
 
     /**
@@ -1278,15 +1258,23 @@ public final class IDataHelper {
      * @return            The document list with replaced string values.
      */
     public static IData[] replace(IData[] array, Pattern pattern, String replacement, boolean firstOnly, boolean recurse) {
-        if (array == null || pattern == null || replacement == null) return array;
+        return replace(array, pattern, replacement, firstOnly, TransformerMode.VALUES, recurse);
+    }
 
-        IData[] output = new IData[array.length];
-
-        for (int i = 0; i < array.length; i++) {
-            output[i] = replace(array[i], pattern, replacement, firstOnly, recurse);
-        }
-
-        return output;
+    /**
+     * Replaces either the first or all occurrences of the given regular expression in the given IData[] document list
+     * with the given replacement.
+     *
+     * @param array       The IData[] document list whose string values are to be replaced.
+     * @param pattern     The regular expression pattern.
+     * @param replacement The replacement string.
+     * @param firstOnly   If true, only the first occurrence is replaced, otherwise all occurrences are replaced.
+     * @param mode        The transformer mode to use.
+     * @param recurse     Whether to recursively process the document list.
+     * @return            The document list with replaced string values.
+     */
+    public static IData[] replace(IData[] array, Pattern pattern, String replacement, boolean firstOnly, TransformerMode mode, boolean recurse) {
+        return transform(array, new Replacer(mode, pattern, replacement, firstOnly, recurse));
     }
 
     /**
@@ -1307,57 +1295,11 @@ public final class IDataHelper {
      * @return          A new IData document that is the given IData squeezed.
      */
     public static IData squeeze(IData document, boolean recurse) {
-        if (document == null) return null;
-
-        IData output = IDataFactory.create();
-        IDataCursor inputCursor = document.getCursor();
-        IDataCursor outputCursor = output.getCursor();
-
-        while (inputCursor.next()) {
-            String key = inputCursor.getKey();
-            Object value = inputCursor.getValue();
-
-            if (value instanceof String) {
-                value = StringHelper.squeeze((String)value, false);
-            } else if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
-                IData[] array = toIDataArray(value);
-                if (recurse) {
-                    value = squeeze(array, recurse);
-                } else {
-                    if (array != null && array.length == 0) {
-                        value = null;
-                    } else {
-                        value = array;
-                    }
-                }
-            } else if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
-                IData data = toIData(value);
-                if (recurse) {
-                    value = squeeze(data, recurse);
-                } else {
-                    if (size(data) == 0) {
-                        value = null;
-                    } else {
-                        value = data;
-                    }
-                }
-            } else if (value instanceof Object[][]) {
-                value = ArrayHelper.squeeze((Object[][])value);
-            } else if (value instanceof Object[]) {
-                value = ArrayHelper.squeeze((Object[])value);
-            }
-
-            if (value != null) outputCursor.insertAfter(key, value);
-        }
-
-        inputCursor.destroy();
-        outputCursor.destroy();
-
-        return size(output) == 0 ? null : output;
+        return transform(document, new Squeezer(recurse));
     }
 
     /**
-     * Returns a new IData[] with all empty and null items removed.
+     * Returns a new IData[] with all empty and null values removed.
      *
      * @param array     An IData[] to be squeezed.
      * @return          A new IData[] that is the given IData[] squeezed.
@@ -1367,25 +1309,14 @@ public final class IDataHelper {
     }
 
     /**
-     * Returns a new IData[] with all empty and null items removed.
+     * Returns a new IData[] with all empty and null values removed.
      *
      * @param array     An IData[] to be squeezed.
      * @param recurse   Whether to also squeeze embedded IData and IData[] objects.
      * @return          A new IData[] that is the given IData[] squeezed.
      */
     public static IData[] squeeze(IData[] array, boolean recurse) {
-        if (array == null) return null;
-
-        List<IData> list = new ArrayList<IData>(array.length);
-
-        for (IData document : array) {
-            document = squeeze(document, recurse);
-            if (document != null) list.add(document);
-        }
-
-        array = list.toArray(new IData[list.size()]);
-
-        return array.length == 0 ? null : array;
+        return transform(array, new Squeezer(recurse));
     }
 
     /**
@@ -1406,33 +1337,7 @@ public final class IDataHelper {
      * @return         A new IData document that is the given IData nullified.
      */
     public static IData nullify(IData document, boolean recurse) {
-        if (document == null) return null;
-
-        IData output = IDataFactory.create();
-        IDataCursor inputCursor = document.getCursor();
-        IDataCursor outputCursor = output.getCursor();
-
-        while (inputCursor.next()) {
-            String key = inputCursor.getKey();
-            Object value = inputCursor.getValue();
-
-            if (value instanceof String) {
-                value = StringHelper.nullify((String)value);
-            } else if (recurse) {
-                if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
-                    value = nullify(toIDataArray(value), recurse);
-                } else if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
-                    value = nullify(toIData(value), recurse);
-                }
-            }
-
-            outputCursor.insertAfter(key, value);
-        }
-
-        inputCursor.destroy();
-        outputCursor.destroy();
-
-        return output;
+        return transform(document, new Nullifier(recurse));
     }
 
     /**
@@ -1453,15 +1358,93 @@ public final class IDataHelper {
      * @return        A new IData[] that is the given IData[] nullify.
      */
     public static IData[] nullify(IData[] input, boolean recurse) {
-        if (input == null) return null;
+        return transform(input, new Nullifier(recurse));
+    }
 
-        IData[] output = new IData[input.length];
+    /**
+     * Converts all null values to empty strings.
+     *
+     * @param document  The IData document to blankify.
+     * @param recurse   Whether embedded IData and IData[] objects should be recursively blankified.
+     * @return          The blankified IData.
+     */
+    public static IData blankify(IData document, boolean recurse) {
+        return transform(document, new Blankifier(recurse));
+    }
 
-        for (int i = 0; i < input.length; i++) {
-            output[i] = nullify(input[i], recurse);
-        }
+    /**
+     * Converts all null values to empty strings.
+     *
+     * @param array     The IData[] to blankify.
+     * @param recurse   Whether embedded IData and IData[] objects should be recursively blankified.
+     * @return          The blankified IData[].
+     */
+    public static IData[] blankify(IData[] array, boolean recurse) {
+        return transform(array, new Blankifier(recurse));
+    }
 
-        return output;
+    /**
+     * Converts all non-string values to strings, except for IData and IData[] compatible objects.
+     *
+     * @param document  The IData document to stringify.
+     * @return          The stringified IData document.
+     */
+    public static IData stringify(IData document) {
+        return stringify(document, true);
+    }
+
+    /**
+     * Converts all non-string values to strings, except for IData and IData[] compatible objects.
+     *
+     * @param document  The IData document to stringify.
+     * @param recurse   Whether embedded IData and IData[] objects should also be stringified recursively.
+     * @return          The stringified IData document.
+     */
+    public static IData stringify(IData document, boolean recurse) {
+        return transform(document, new Stringifier(recurse));
+    }
+
+    /**
+     * Converts all non-string values to strings, except for IData and IData[] compatible objects.
+     *
+     * @param array     The IData[] to stringify.
+     * @return          The stringified IData[].
+     */
+    public static IData[] stringify(IData[] array) {
+        return stringify(array, true);
+    }
+
+    /**
+     * Converts all non-string values to strings, except for IData and IData[] compatible objects.
+     *
+     * @param array     The IData[] to stringify.
+     * @param recurse   Whether to stringify embedded IData and IData[] objects recursively.
+     * @return          The stringified IData[].
+     */
+    public static IData[] stringify(IData[] array, boolean recurse) {
+        return transform(array, new Stringifier(recurse));
+    }
+
+    /**
+     * Transforms the given IData document using the given transformer.
+     *
+     * @param document      The IData document to be transformed.
+     * @param transformer   The Transformer object to use to transform the given IData document.
+     * @return              The resulting transformed IData document.
+     */
+    public static IData transform(IData document, Transformer transformer) {
+        return transformer.transform(document);
+    }
+
+    /**
+     * Transforms the given IData[] document list using the given transformer.
+     *
+     * @param array         The IData[] document list to be transformed.
+     * @param transformer   The Transformer object to use to transform the given IData[] document list.
+     * @return              The resulting transformed IData[] document list.
+     */
+    public static IData[] transform(IData[] array, Transformer transformer) {
+        return transformer.transform(array);
     }
 
     /**
@@ -1630,123 +1613,6 @@ public final class IDataHelper {
             join(array[i], itemSeparator, listSeparator, valueSeparator, builder);
             builder.append("}");
         }
-    }
-
-    /**
-     * Converts all non-string values to strings, except for IData and IData[] compatible objects.
-     *
-     * @param document  The IData document to stringify.
-     * @param recurse   Whether embedded IData and IData[] objects should also be stringified recursively.
-     * @return          The stringified IData document.
-     */
-    public static IData stringify(IData document, boolean recurse) {
-        if (document == null) return null;
-
-        IData output = IDataFactory.create();
-        IDataCursor inputCursor = document.getCursor();
-        IDataCursor outputCursor = output.getCursor();
-
-        while (inputCursor.next()) {
-            String key = inputCursor.getKey();
-            Object value = inputCursor.getValue();
-
-            if (value instanceof String || value instanceof String[] || value instanceof String[][]) {
-                // do nothing, value is already a string
-            } else if (recurse && (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[])) {
-                value = stringify(toIDataArray(value), recurse);
-            } else if (recurse && (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable)) {
-                value = stringify(toIData(value), recurse);
-            } else if (value instanceof Object[][]) {
-                value = TableHelper.toStringTable((Object[][]) value);
-            } else if (value instanceof Object[]) {
-                value = ArrayHelper.toStringArray((Object[])value);
-            } else if (value instanceof Calendar) {
-                value = DateTimeHelper.emit((Calendar)value);
-            } else if (value instanceof Date) {
-                value = DateTimeHelper.emit((Date)value);
-            } else if (value != null){
-                value = value.toString();
-            }
-
-            outputCursor.insertAfter(key, value);
-        }
-
-        inputCursor.destroy();
-        outputCursor.destroy();
-
-        return output;
-    }
-
-    /**
-     * Converts all non-string values to strings, except for IData and IData[] compatible objects.
-     *
-     * @param array     The IData[] to stringify.
-     * @param recurse   Whether to stringify embedded IData and IData[] objects recursively.
-     * @return          The stringified IData[].
-     */
-    public static IData[] stringify(IData[] array, boolean recurse) {
-        if (array == null) return null;
-
-        IData[] output = new IData[array.length];
-
-        for (int i = 0; i < array.length; i++) {
-            output[i] = stringify(array[i], recurse);
-        }
-
-        return output;
-    }
-
-    /**
-     * Converts all null values to empty strings.
-     *
-     * @param document  The IData document to blankify.
-     * @param recurse   Whether embedded IData and IData[] objects should be recursively blankified.
-     * @return          The blankified IData.
-     */
-    public static IData blankify(IData document, boolean recurse) {
-        if (document == null) return null;
-
-        IData output = IDataFactory.create();
-        IDataCursor inputCursor = document.getCursor();
-        IDataCursor outputCursor = output.getCursor();
-
-        while (inputCursor.next()) {
-            String key = inputCursor.getKey();
-            Object value = inputCursor.getValue();
-
-            if (value == null) {
-                value = "";
-            } else if (recurse && (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[])) {
-                value = blankify(toIDataArray(value), recurse);
-            } else if (recurse && (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable)) {
-                value = blankify(toIData(value), recurse);
-            }
-            outputCursor.insertAfter(key, value);
-        }
-
-        inputCursor.destroy();
-        outputCursor.destroy();
-
-        return output;
-    }
-
-    /**
-     * Converts all null values to empty strings.
-     *
-     * @param array     The IData[] to blankify.
-     * @param recurse   Whether embedded IData and IData[] objects should be recursively blankified.
-     * @return          The blankified IData[].
-     */
-    public static IData[] blankify(IData[] array, boolean recurse) {
-        if (array == null) return null;
-
-        IData[] output = new IData[array.length];
-
-        for (int i = 0; i < array.length; i++) {
-            output[i] = blankify(array[i], recurse);
-        }
-
-        return output;
     }
 
     /**

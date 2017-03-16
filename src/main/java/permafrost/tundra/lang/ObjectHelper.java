@@ -250,8 +250,12 @@ public final class ObjectHelper {
     private static Set<Class<?>> toClassSet(Object... objects) {
         Set<Class<?>> classes = new LinkedHashSet<Class<?>>();
 
-        for (Object object : objects) {
-            if (object != null) classes.add(object.getClass());
+        if (objects != null) {
+            for (Object object : objects) {
+                if (object != null) classes.add(object.getClass());
+            }
+        } else {
+            classes.add(Object.class);
         }
 
         return classes;
@@ -266,8 +270,12 @@ public final class ObjectHelper {
     private static Set<Class<?>> toClassSet(Collection<?> objects) {
         Set<Class<?>> classes = new LinkedHashSet<Class<?>>();
 
-        for (Object object : objects) {
-            if (object != null) classes.add(object.getClass());
+        if (objects != null) {
+            for (Object object : objects) {
+                if (object != null) classes.add(object.getClass());
+            }
+        } else {
+            classes.add(Object.class);
         }
 
         return classes;

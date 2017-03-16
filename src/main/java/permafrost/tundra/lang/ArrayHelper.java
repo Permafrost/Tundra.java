@@ -1037,21 +1037,9 @@ public final class ArrayHelper {
      * @param <T>               The class of items to be stored in the array.
      * @return                  A new array of the given class with the given length.
      */
-    public static <T> T[] instantiate(Class<T> componentClass, int length) {
-        return instantiate(componentClass, new int[] {length});
-    }
-
-    /**
-     * Dynamically instantiates a new array of the given class with the given length.
-     *
-     * @param componentClass    The class of items to be stored in the array.
-     * @param dimensions        The desired length of the returned array.
-     * @param <T>               The class of items to be stored in the array.
-     * @return                  A new array of the given class with the given length.
-     */
     @SuppressWarnings("unchecked")
-    public static <T> T[] instantiate(Class<T> componentClass, int... dimensions) {
-        return (T[])Array.newInstance(componentClass, dimensions);
+    public static <T> T[] instantiate(Class<T> componentClass, int length) {
+        return (T[])Array.newInstance(componentClass, length);
     }
 
     /**
@@ -1088,8 +1076,21 @@ public final class ArrayHelper {
      */
     @SuppressWarnings("unchecked")
     public static <T> T[] normalize(T[] input) {
+        return normalize(input, ObjectHelper.getNearestAncestor(input));
+    }
+
+    /**
+     * Returns a new array using the given class as its new component type.
+     *
+     * @param input The array to be normalized.
+     * @param klass The class to use.
+     * @param <T>   The type of item in the array.
+     * @return      A new copy of the given array whose class is the nearest ancestor of all contained items.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T[] normalize(T[] input, Class<?> klass) {
         if (input == null) return null;
-        return toList(input).toArray((T[])instantiate(ObjectHelper.getNearestAncestor(input), input.length));
+        return toList(input).toArray((T[])instantiate(klass, input.length));
     }
 
     /**
@@ -1101,8 +1102,21 @@ public final class ArrayHelper {
      */
     @SuppressWarnings("unchecked")
     public static <T> T[] normalize(Collection<T> input) {
+        return normalize(input, ObjectHelper.getNearestAncestor(input));
+    }
+
+    /**
+     * Returns a new array whose class is the nearest ancestor class of all contained items.
+     *
+     * @param input The array to be normalized.
+     * @param klass The class to use.
+     * @param <T>   The type of item in the collection.
+     * @return      A new copy of the given array whose class is the nearest ancestor of all contained items.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T[] normalize(Collection<T> input, Class<?> klass) {
         if (input == null) return null;
-        return input.toArray((T[])instantiate(ObjectHelper.getNearestAncestor(input), input.size()));
+        return input.toArray((T[])instantiate(klass, input.size()));
     }
 
     /**

@@ -24,9 +24,13 @@
 
 package permafrost.tundra.lang;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * A collection of convenience methods for working with two dimensional arrays.
@@ -344,5 +348,68 @@ public final class TableHelper {
         }
 
         return stringTable;
+    }
+
+    /**
+     * Returns a new table whose class is the nearest ancestor class of all contained items.
+     *
+     * @param table The table to be normalized.
+     * @param <T>   The type of item in the table.
+     * @return      A new copy of the given table whose class is the nearest ancestor of all contained items.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T[][] normalize(T[][] table) {
+        if (table == null) return null;
+
+        List<T[]> list = new ArrayList<T[]>(table.length);
+        Set<Class<?>> classes = new HashSet<Class<?>>();
+
+        for (T[] row : table) {
+            Class<?> nearestAncestor = ObjectHelper.getNearestAncestor(row);
+            classes.add(nearestAncestor);
+            list.add(ArrayHelper.normalize(row, nearestAncestor));
+        }
+
+        Class nearestAncestor = ClassHelper.getNearestAncestor(classes);
+
+        return list.toArray((T[][])instantiate(nearestAncestor, 0, 0));
+    }
+
+    /**
+     * Returns a new table whose class is the nearest ancestor class of all contained items.
+     *
+     * @param table The table to be normalized.
+     * @param <T>   The type of item in the table.
+     * @return      A new copy of the given table whose class is the nearest ancestor of all contained items.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T[][] normalize(Collection<T[]> table) {
+        if (table == null) return null;
+
+        List<T[]> list = new ArrayList<T[]>(table.size());
+        Set<Class<?>> classes = new HashSet<Class<?>>();
+
+        for (T[] row : table) {
+            Class<?> nearestAncestor = ObjectHelper.getNearestAncestor(row);
+            classes.add(nearestAncestor);
+            list.add(ArrayHelper.normalize(row, nearestAncestor));
+        }
+
+        Class nearestAncestor = ClassHelper.getNearestAncestor(classes);
+
+        return list.toArray((T[][])instantiate(nearestAncestor, 0, 0));
+    }
+
+    /**
+     * Dynamically instantiates a new array of the given class with the given length.
+     *
+     * @param componentClass    The class of items to be stored in the array.
+     * @param dimensions        The desired length of the returned array.
+     * @param <T>               The class of items to be stored in the array.
+     * @return                  A new array of the given class with the given length.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> Object instantiate(Class<T> componentClass, int... dimensions) {
+        return Array.newInstance(componentClass, dimensions);
     }
 }
