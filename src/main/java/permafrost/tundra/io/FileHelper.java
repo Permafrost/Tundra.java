@@ -38,6 +38,8 @@ import permafrost.tundra.math.LongHelper;
 import permafrost.tundra.mime.MIMETypeHelper;
 import permafrost.tundra.net.uri.URIHelper;
 import permafrost.tundra.time.DateTimeHelper;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -50,6 +52,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.Date;
+import java.util.zip.GZIPOutputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 /**
  * A collection of convenience methods for working with files.
@@ -539,7 +544,169 @@ public final class FileHelper {
     }
 
     /**
-     * Returns a java.io.File object given a file name.
+     * GZips the given file as a new file in the same directory with the same name suffixed with ".gz".
+     *
+     * @param source        The file to be gzipped.
+     * @param replace       Whether the source file should be deleted once compressed.
+     * @return              The resulting gzipped file.
+     * @throws IOException  If an IO error occurs.
+     */
+    public static String gzip(String source, boolean replace) throws IOException {
+        return normalize(gzip(construct(source), replace));
+    }
+
+    /**
+     * Gzips the given file as a new file in the same directory with the same name suffixed with ".gz".
+     *
+     * @param source        The file to be gzipped.
+     * @param replace       Whether the source file should be deleted once compressed.
+     * @return              The resulting gzipped file.
+     * @throws IOException  If an IO error occurs.
+     */
+    public static File gzip(File source, boolean replace) throws IOException {
+        if (source == null) throw new NullPointerException("source must not be null");
+        File target = new File(source.getParentFile(), source.getName() + ".gz");
+        return gzip(source, target, replace);
+    }
+
+    /**
+     * Gzips the given file as a new file with the given target name.
+     *
+     * @param source        The file to be gzipped.
+     * @param target        The file to write the gzipped content to.
+     * @param replace       Whether the source file should be deleted once compressed.*
+     * @return              The resulting gzipped file.
+     * @throws IOException  If an IO error occurs.
+     */
+    public static String gzip(String source, String target, boolean replace) throws IOException {
+        return normalize(gzip(construct(source), construct(target), replace));
+    }
+
+    /**
+     * Gzips the given file as a new file with the given target name.
+     *
+     * @param source        The file to be gzipped.
+     * @param target        The file to write the gzipped content to.
+     * @param replace       Whether the source file should be deleted once compressed.
+     * @return              The resulting gzipped file.
+     * @throws IOException  If an IO error occurs.
+     */
+    public static File gzip(File source, File target, boolean replace) throws IOException {
+        if (source == null) throw new NullPointerException("source must not be null");
+        if (target == null) throw new NullPointerException("target must not be null");
+
+        if (source.isFile()) {
+            if (source.exists()) {
+                if (source.canRead() && (!replace || source.canWrite())) {
+                    if (target.exists()) {
+                        throw new IOException("Unable to create file because it already exists: " + normalize(target));
+                    } else {
+                        InputOutputHelper.copy(new FileInputStream(source), new GZIPOutputStream(new BufferedOutputStream(new FileOutputStream(target), InputOutputHelper.DEFAULT_BUFFER_SIZE)));
+                        target.setLastModified(source.lastModified());
+                        if (replace) source.delete();
+                        return target;
+                    }
+                } else {
+                    throw new IOException("Unable to gzip file because it cannot be read: " + normalize(source));
+                }
+            } else {
+                throw new IOException("Unable to gzip file because it does not exist: " + normalize(source));
+            }
+        } else {
+            throw new IOException("Unable to gzip file because it is a directory: " + normalize(source));
+        }
+    }
+
+    /**
+     * Zips the given file as a new file in the same directory with the same name suffixed with ".zip".
+     *
+     * @param source        The file to be zipped.
+     * @param replace       Whether the source file should be deleted once compressed.
+     * @return              The resulting zipped file.
+     * @throws IOException  If an IO error occurs.
+     */
+    public static String zip(String source, boolean replace) throws IOException {
+        return normalize(zip(construct(source), replace));
+    }
+
+    /**
+     * Zips the given file as a new file in the same directory with the same name suffixed with ".zip".
+     *
+     * @param source        The file to be zipped.
+     * @param replace       Whether the source file should be deleted once compressed.
+     * @return              The resulting zipped file.
+     * @throws IOException  If an IO error occurs.
+     */
+    public static File zip(File source, boolean replace) throws IOException {
+        if (source == null) throw new NullPointerException("source must not be null");
+        File target = new File(source.getParentFile(), source.getName() + ".zip");
+        return zip(source, target, replace);
+    }
+
+    /**
+     * Zips the given file as a new file with the given name.
+     *
+     * @param source        The file to be zipped.
+     * @param target        The file to write the zipped content to.
+     * @param replace       Whether the source file should be deleted once compressed.
+     * @return              The resulting zipped file.
+     * @throws IOException  If an IO error occurs.
+     */
+    public static String zip(String source, String target, boolean replace) throws IOException {
+        return normalize(zip(construct(source), construct(target), replace));
+    }
+
+    /**
+     * Zips the given file as a new file with the given target name.
+     *
+     * @param source        The file to be zipped.
+     * @param target        The file to write the zipped content to.
+     * @param replace       Whether the source file should be deleted once compressed.
+     * @return              The resulting zipped file.
+     * @throws IOException  If an IO error occurs.
+     */
+    public static File zip(File source, File target, boolean replace) throws IOException {
+        if (source == null) throw new NullPointerException("source must not be null");
+        if (target == null) throw new NullPointerException("target must not be null");
+
+        if (source.isFile()) {
+            if (source.exists()) {
+                if (source.canRead() && (!replace || source.canWrite())) {
+                    if (target.exists()) {
+                        throw new IOException("Unable to create file because it already exists: " + normalize(target));
+                    } else {
+                        InputStream inputStream = null;
+                        ZipOutputStream outputStream = null;
+
+                        try {
+                            inputStream = new BufferedInputStream(new FileInputStream(source), InputOutputHelper.DEFAULT_BUFFER_SIZE);
+                            outputStream = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(target), InputOutputHelper.DEFAULT_BUFFER_SIZE));
+
+                            outputStream.putNextEntry(new ZipEntry(source.getName()));
+
+                            InputOutputHelper.copy(inputStream, outputStream, false);
+                        } finally {
+                            if (outputStream != null) outputStream.closeEntry();
+                            CloseableHelper.close(inputStream, outputStream);
+                            target.setLastModified(source.lastModified());
+                            if (replace) source.delete();
+                        }
+
+                        return target;
+                    }
+                } else {
+                    throw new IOException("Unable to zip file because it cannot be read: " + normalize(source));
+                }
+            } else {
+                throw new IOException("Unable to zip file because it does not exist: " + normalize(source));
+            }
+        } else {
+            throw new IOException("Unable to zip file because it is a directory: " + normalize(source));
+        }
+    }
+
+    /**
+     * Returns a File object given a file name.
      *
      * @param filename The name of the file, specified as a path or file:// URI.
      * @return The file representing the given name.
