@@ -215,7 +215,7 @@ public final class DirectoryHelper {
      * @throws FileNotFoundException    If the directory does not exist.
      */
     public static long purge(File directory, Duration duration, FilenameFilter filter, boolean recurse) throws FileNotFoundException {
-        return purge(directory, DateTimeHelper.earlier(duration), filter, recurse);
+        return purge(directory, duration == null ? null : DateTimeHelper.earlier(duration), filter, recurse);
     }
 
     /**
@@ -251,9 +251,15 @@ public final class DirectoryHelper {
             File child = new File(directory, item);
             if (child.exists()) {
                 if (child.isFile() && (filter == null || filter.accept(directory, item))) {
-                    Calendar modified = Calendar.getInstance();
-                    modified.setTime(new java.util.Date(child.lastModified()));
-                    if (modified.compareTo(olderThan) <= 0 && child.delete()) count += 1;
+                    boolean shouldPurge = true;
+
+                    if (olderThan != null) {
+                        Calendar modified = Calendar.getInstance();
+                        modified.setTime(new Date(child.lastModified()));
+                        shouldPurge = modified.compareTo(olderThan) <= 0;
+                    }
+
+                    if (shouldPurge && child.delete()) count += 1;
                 } else if (recurse && child.isDirectory()) {
                     count += purge(child, olderThan, filter, recurse);
                 }
