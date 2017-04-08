@@ -2606,7 +2606,7 @@ public final class IDataHelper {
      *                          the given value will be associated with the given key.
      */
     public static void put(IDataCursor cursor, String key, Object value, boolean includeNullValue) {
-        put(cursor, key, value, includeNullValue, true);
+        put(cursor, key, value, true, includeNullValue);
     }
 
     /**
@@ -2615,16 +2615,40 @@ public final class IDataHelper {
      * @param cursor            The IDataCursor to add the key value association to.
      * @param key               The key literal to be added.
      * @param value             The value to be associated with the given key. If null, no change is made to the cursor.
-     * @param includeNullValue  If false and the given value is null, no change is made to the cursor. In all other
-     *                          cases the given value will be associated with the given key.
      * @param includeEmptyValue If false and the given value is an empty array or empty string, no change is made to the
      *                          cursor. In all other cases the given value will be associated with the given key.
+     * @param includeNullValue  If false and the given value is null, no change is made to the cursor. In all other
+     *                          cases the given value will be associated with the given key.
      */
-    public static void put(IDataCursor cursor, String key, Object value, boolean includeNullValue, boolean includeEmptyValue) {
+    public static void put(IDataCursor cursor, String key, Object value, boolean includeEmptyValue, boolean includeNullValue) {
         if (!includeNullValue && value == null) return;
         if (!includeEmptyValue && ObjectHelper.isEmpty(value)) return;
 
-        cursor.insertAfter(key, value);
+        put(cursor, key, value, false, includeEmptyValue, includeNullValue);
+    }
+
+    /**
+     * Associates the given key with the given value in an IDataCursor.
+     *
+     * @param cursor            The IDataCursor to add the key value association to.
+     * @param key               The key literal to be added.
+     * @param value             The value to be associated with the given key. If null, no change is made to the cursor.
+     * @param replace           If a value is already associated with the given key, replace it, rather than add a new
+     *                          instance of the key.
+     * @param includeEmptyValue If false and the given value is an empty array or empty string, no change is made to the
+     *                          cursor. In all other cases the given value will be associated with the given key.
+     * @param includeNullValue  If false and the given value is null, no change is made to the cursor. In all other
+     *                          cases the given value will be associated with the given key.
+     */
+    public static void put(IDataCursor cursor, String key, Object value, boolean replace, boolean includeEmptyValue, boolean includeNullValue) {
+        if (!includeNullValue && value == null) return;
+        if (!includeEmptyValue && ObjectHelper.isEmpty(value)) return;
+
+        if (replace && cursor.first(key)) {
+            cursor.setValue(value);
+        } else {
+            cursor.insertAfter(key, value);
+        }
     }
 
     /**
