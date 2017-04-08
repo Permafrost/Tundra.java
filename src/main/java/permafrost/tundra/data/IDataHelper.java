@@ -2586,6 +2586,31 @@ public final class IDataHelper {
     }
 
     /**
+     * Returns the value associated with the given key from the IDataCursor, if it is an instance of the given class.
+     *
+     * @param cursor    The IDataCursor to add the key value association to.
+     * @param key       The key literal to be added.
+     * @param klass     The class the returned value is required to be an instance of.
+     * @param <T>       The class the returned value is required to be an instance of.
+     * @return          The value associated with the given key, if one exists that is an instance of the given class.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T get(IDataCursor cursor, String key, Class<T> klass) {
+        if (cursor == null || key == null || klass == null) return null;
+
+        T value = null;
+
+        if (cursor.first(key)) {
+            Object object = cursor.getValue();
+            if (klass.isInstance(object)) {
+                value = (T)object;
+            }
+        }
+
+        return value;
+    }
+
+    /**
      * Associates the given key with the given value in an IDataCursor.
      *
      * @param cursor    The IDataCursor to add the key value association to.
