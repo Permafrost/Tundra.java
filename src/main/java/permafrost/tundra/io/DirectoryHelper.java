@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import javax.xml.datatype.Duration;
 
@@ -449,5 +450,61 @@ public final class DirectoryHelper {
         }
 
         return size(directory, recurse);
+    }
+
+    /**
+     * Compresses files in the given directory, and child directories if recurse is true, older than the given
+     * duration using gzip.
+     *
+     * @param directory     The directory whose files are to be compressed.
+     * @param olderThan     Only files modified prior to this datetime will be compressed.
+     * @param filter        An optional FilenameFilter used to filter which files are compressed.
+     * @param recurse       If true, then child files and directories will also be recursively compressed.
+     * @param replace       Whether the original file should be deleted once compressed.
+     * @return              The number of files compressed.
+     * @throws IOException  If an IO error occurs.
+     */
+    public static long gzip(File directory, Calendar olderThan, FilenameFilter filter, boolean recurse, boolean replace) throws IOException {
+        long count = 0;
+
+        for (String item : list(directory)) {
+            File child = new File(directory, item);
+            if (child.exists()) {
+                if (child.isFile() && (filter == null || filter.accept(directory, item))) {
+                    boolean shouldCompress = true;
+
+                    if (olderThan != null) {
+                        Calendar modified = Calendar.getInstance();
+                        modified.setTime(new Date(child.lastModified()));
+                        shouldCompress = modified.compareTo(olderThan) <= 0;
+                    }
+
+                    if (shouldCompress) {
+                        FileHelper.gzip(child, replace);
+                        count += 1;
+                    }
+                } else if (recurse && child.isDirectory()) {
+                    count += gzip(child, olderThan, filter, recurse, replace);
+                }
+            }
+        }
+
+        return count;
+    }
+
+    /**
+     * Compresses files in the given directory, and child directories if recurse is true, older than the given
+     * duration using gzip.
+     *
+     * @param directory     The directory whose files are to be compressed.
+     * @param duration      The age files must be before they are deleted.
+     * @param filter        An optional FilenameFilter used to filter which files are compressed.
+     * @param recurse       If true, then child files and directories will also be recursively compressed.
+     * @param replace       Whether the original file should be deleted once compressed.
+     * @return              The number of files compressed.
+     * @throws IOException  If an IO error occurs.
+     */
+    public static long gzip(File directory, Duration duration, FilenameFilter filter, boolean recurse, boolean replace) throws IOException {
+        return gzip(directory, duration == null ? null : DateTimeHelper.earlier(duration), filter, recurse, replace);
     }
 }
