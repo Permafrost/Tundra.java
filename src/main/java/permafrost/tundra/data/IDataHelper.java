@@ -45,20 +45,29 @@ import permafrost.tundra.data.transform.Trimmer;
 import permafrost.tundra.flow.ConditionEvaluator;
 import permafrost.tundra.flow.variable.SubstitutionHelper;
 import permafrost.tundra.lang.ArrayHelper;
+import permafrost.tundra.lang.BooleanHelper;
 import permafrost.tundra.lang.Sanitization;
 import permafrost.tundra.lang.ObjectHelper;
 import permafrost.tundra.lang.TableHelper;
+import permafrost.tundra.math.DoubleHelper;
+import permafrost.tundra.math.FloatHelper;
+import permafrost.tundra.math.IntegerHelper;
+import permafrost.tundra.math.LongHelper;
+import permafrost.tundra.time.DateTimeHelper;
+import permafrost.tundra.time.DurationHelper;
 import permafrost.tundra.xml.dom.NodeHelper;
 import permafrost.tundra.xml.dom.Nodes;
 import permafrost.tundra.xml.xpath.XPathHelper;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.xml.datatype.Duration;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
@@ -2604,6 +2613,29 @@ public final class IDataHelper {
             Object object = cursor.getValue();
             if (klass.isInstance(object)) {
                 value = (T)object;
+            } else if (!klass.isAssignableFrom(Object.class) && object instanceof String) {
+                String string = (String)object;
+                if (klass.isAssignableFrom(Boolean.class)) {
+                    value = (T)Boolean.valueOf(BooleanHelper.parse(string));
+                } else if (klass.isAssignableFrom(Integer.class)) {
+                    value = (T)Integer.valueOf(IntegerHelper.parse(string));
+                } else if (klass.isAssignableFrom(Long.class)) {
+                    value = (T)Long.valueOf(LongHelper.parse(string));
+                } else if (klass.isAssignableFrom(Float.class)) {
+                    value = (T)Float.valueOf(FloatHelper.parse(string));
+                } else if (klass.isAssignableFrom(Double.class)) {
+                    value = (T)Double.valueOf(DoubleHelper.parse(string));
+                } else if (klass.isAssignableFrom(Short.class)) {
+                    value = (T)Short.valueOf(string);
+                } else if (klass.isAssignableFrom(Byte.class)) {
+                    value = (T)Byte.valueOf(string);
+                } else if (klass.isAssignableFrom(Character.class) && string.length() > 0) {
+                    value = (T)Character.valueOf(string.charAt(0));
+                } else if (klass.isAssignableFrom(Calendar.class)) {
+                    value = (T)DateTimeHelper.parse(string);
+                } else if (klass.isAssignableFrom(Duration.class)) {
+                    value = (T)DurationHelper.parse(string);
+                }
             }
         }
 
