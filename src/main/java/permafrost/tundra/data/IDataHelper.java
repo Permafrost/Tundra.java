@@ -2597,45 +2597,67 @@ public final class IDataHelper {
     /**
      * Returns the value associated with the given key from the IDataCursor, if it is an instance of the given class.
      *
-     * @param cursor    The IDataCursor to add the key value association to.
-     * @param key       The key literal to be added.
-     * @param klass     The class the returned value is required to be an instance of.
-     * @param <T>       The class the returned value is required to be an instance of.
-     * @return          The value associated with the given key, if one exists that is an instance of the given class.
+     * @param cursor        The IDataCursor to add the key value association to.
+     * @param key           The key literal to be added.
+     * @param klass         The class the returned value is required to be an instance of.
+     * @param <T>           The class the returned value is required to be an instance of.
+     * @return              The value associated with the given key, if one exists that is an instance of the given
+     *                      class.
      */
     @SuppressWarnings("unchecked")
     public static <T> T get(IDataCursor cursor, String key, Class<T> klass) {
+        return get(cursor, key, klass, null);
+    }
+
+    /**
+     * Returns the value associated with the given key from the IDataCursor, if it is an instance of the given class.
+     *
+     * @param cursor        The IDataCursor to add the key value association to.
+     * @param key           The key literal to be added.
+     * @param klass         The class the returned value is required to be an instance of.
+     * @param defaultValue  The value to return if the associated value is null or the key does not exist.
+     * @param <T>           The class the returned value is required to be an instance of.
+     * @return              The value associated with the given key, if one exists that is an instance of the given
+     *                      class.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T get(IDataCursor cursor, String key, Class<T> klass, T defaultValue) {
         if (cursor == null || key == null || klass == null) return null;
+        if (defaultValue == null && klass.isAssignableFrom(Boolean.class)) defaultValue = (T)Boolean.FALSE;
 
         T value = null;
+        Object object = null;
 
         if (cursor.first(key)) {
-            Object object = cursor.getValue();
-            if (klass.isInstance(object)) {
-                value = (T)object;
-            } else if (!klass.isAssignableFrom(Object.class) && object instanceof String) {
-                String string = (String)object;
-                if (klass.isAssignableFrom(Boolean.class)) {
-                    value = (T)Boolean.valueOf(BooleanHelper.parse(string));
-                } else if (klass.isAssignableFrom(Integer.class)) {
-                    value = (T)Integer.valueOf(IntegerHelper.parse(string));
-                } else if (klass.isAssignableFrom(Long.class)) {
-                    value = (T)Long.valueOf(LongHelper.parse(string));
-                } else if (klass.isAssignableFrom(Float.class)) {
-                    value = (T)Float.valueOf(FloatHelper.parse(string));
-                } else if (klass.isAssignableFrom(Double.class)) {
-                    value = (T)Double.valueOf(DoubleHelper.parse(string));
-                } else if (klass.isAssignableFrom(Short.class)) {
-                    value = (T)Short.valueOf(string);
-                } else if (klass.isAssignableFrom(Byte.class)) {
-                    value = (T)Byte.valueOf(string);
-                } else if (klass.isAssignableFrom(Character.class) && string.length() > 0) {
-                    value = (T)Character.valueOf(string.charAt(0));
-                } else if (klass.isAssignableFrom(Calendar.class)) {
-                    value = (T)DateTimeHelper.parse(string);
-                } else if (klass.isAssignableFrom(Duration.class)) {
-                    value = (T)DurationHelper.parse(string);
-                }
+            object = cursor.getValue();
+        }
+
+        if (klass.isInstance(object)) {
+            value = (T)object;
+        } else if (defaultValue != null) {
+            value = defaultValue;
+        } else if (!klass.isAssignableFrom(Object.class) && (object instanceof String)) {
+            String string = (String)object;
+            if (klass.isAssignableFrom(Boolean.class)) {
+                value = (T)Boolean.valueOf(BooleanHelper.parse(object));
+            } else if (klass.isAssignableFrom(Double.class)) {
+                value = (T)Double.valueOf(DoubleHelper.parse(string));
+            } else if (klass.isAssignableFrom(Long.class)) {
+                value = (T)Long.valueOf(LongHelper.parse(string));
+            } else if (klass.isAssignableFrom(Float.class)) {
+                value = (T)Float.valueOf(FloatHelper.parse(string));
+            } else if (klass.isAssignableFrom(Integer.class)) {
+                value = (T)Integer.valueOf(IntegerHelper.parse(string));
+            } else if (klass.isAssignableFrom(Short.class)) {
+                value = (T)Short.valueOf(string);
+            } else if (klass.isAssignableFrom(Byte.class)) {
+                value = (T)Byte.valueOf(string);
+            } else if (klass.isAssignableFrom(Character.class) && string.length() > 0) {
+                value = (T)Character.valueOf(string.charAt(0));
+            } else if (klass.isAssignableFrom(Calendar.class)) {
+                value = (T)DateTimeHelper.parse(string);
+            } else if (klass.isAssignableFrom(Duration.class)) {
+                value = (T)DurationHelper.parse(string);
             }
         }
 

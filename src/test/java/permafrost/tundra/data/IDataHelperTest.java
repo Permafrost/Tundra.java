@@ -17,6 +17,28 @@ import permafrost.tundra.xml.sax.InputSourceHelper;
 import java.util.regex.Pattern;
 
 public class IDataHelperTest {
+    @Test
+    public void testGetFromCursor() throws Exception {
+        IDataCursor cursor = document.getCursor();
+        IDataUtil.put(cursor, "a", "1");
+        IDataUtil.put(cursor, "b", 2);
+        IDataUtil.put(cursor, "c", 3.14f);
+        IDataUtil.put(cursor, "d", true);
+        IDataUtil.put(cursor, "e", 4L);
+        cursor.destroy();
+
+        cursor = document.getCursor();
+        assertEquals("1", IDataHelper.get(cursor, "a", String.class));
+        assertEquals(new Integer(2), IDataHelper.get(cursor, "b", Integer.class));
+        assertEquals(new Float(3.14), IDataHelper.get(cursor, "c", Float.class));
+        assertEquals(true, IDataHelper.get(cursor, "d", Boolean.class));
+        assertEquals(false, IDataHelper.get(cursor, "e", Boolean.class));
+        assertEquals(true, IDataHelper.get(cursor, "e", Boolean.class, true));
+        assertEquals(false, IDataHelper.get(cursor, "missing", Boolean.class));
+        assertEquals(true, IDataHelper.get(cursor, "missing", Boolean.class, true));
+        cursor.destroy();
+    }
+
     IData document = IDataFactory.create();
 
     @Before
