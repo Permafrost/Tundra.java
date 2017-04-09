@@ -564,9 +564,7 @@ public final class FileHelper {
      * @throws IOException  If an IO error occurs.
      */
     public static File gzip(File source, boolean replace) throws IOException {
-        if (source == null) throw new NullPointerException("source must not be null");
-        File target = new File(source.getParentFile(), source.getName() + ".gz");
-        return gzip(source, target, replace);
+        return gzip(source, null, replace);
     }
 
     /**
@@ -593,7 +591,7 @@ public final class FileHelper {
      */
     public static File gzip(File source, File target, boolean replace) throws IOException {
         if (source == null) throw new NullPointerException("source must not be null");
-        if (target == null) throw new NullPointerException("target must not be null");
+        if (target == null) target = new File(source.getParentFile(), source.getName() + ".gz");
 
         if (source.isFile()) {
             if (source.exists()) {
@@ -638,9 +636,7 @@ public final class FileHelper {
      * @throws IOException  If an IO error occurs.
      */
     public static File zip(File source, boolean replace) throws IOException {
-        if (source == null) throw new NullPointerException("source must not be null");
-        File target = new File(source.getParentFile(), source.getName() + ".zip");
-        return zip(source, target, replace);
+        return zip(source, null, replace);
     }
 
     /**
@@ -660,14 +656,15 @@ public final class FileHelper {
      * Zips the given file as a new file with the given target name.
      *
      * @param source        The file to be zipped.
-     * @param target        The file to write the zipped content to.
+     * @param target        The file to write the zipped content to. If not specified, defaults to a file with
+     *                      the same name as source suffixed with ".zip".
      * @param replace       Whether the source file should be deleted once compressed.
      * @return              The resulting zipped file.
      * @throws IOException  If an IO error occurs.
      */
     public static File zip(File source, File target, boolean replace) throws IOException {
         if (source == null) throw new NullPointerException("source must not be null");
-        if (target == null) throw new NullPointerException("target must not be null");
+        if (target == null) target = new File(source.getParentFile(), source.getName() + ".zip");
 
         if (source.isFile()) {
             if (source.exists()) {
