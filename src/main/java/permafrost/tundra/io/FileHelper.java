@@ -593,8 +593,8 @@ public final class FileHelper {
         if (source == null) throw new NullPointerException("source must not be null");
         if (target == null) target = new File(source.getParentFile(), source.getName() + ".gz");
 
-        if (source.isFile()) {
-            if (source.exists()) {
+        if (source.exists()) {
+            if (source.isFile()) {
                 if (source.canRead() && (!replace || source.canWrite())) {
                     if (target.exists()) {
                         throw new IOException("Unable to create file because it already exists: " + normalize(target));
@@ -605,13 +605,13 @@ public final class FileHelper {
                         return target;
                     }
                 } else {
-                    throw new IOException("Unable to gzip file because it cannot be read: " + normalize(source));
+                    throw new IOException("Unable to gzip file because access is denied: " + normalize(source));
                 }
             } else {
-                throw new IOException("Unable to gzip file because it does not exist: " + normalize(source));
+                throw new IOException("Unable to gzip file because it is a directory: " + normalize(source));
             }
         } else {
-            throw new IOException("Unable to gzip file because it is a directory: " + normalize(source));
+            throw new IOException("Unable to gzip file because it does not exist: " + normalize(source));
         }
     }
 
@@ -666,8 +666,8 @@ public final class FileHelper {
         if (source == null) throw new NullPointerException("source must not be null");
         if (target == null) target = new File(source.getParentFile(), source.getName() + ".zip");
 
-        if (source.isFile()) {
-            if (source.exists()) {
+        if (source.exists()) {
+            if (source.isFile()) {
                 if (source.canRead() && (!replace || source.canWrite())) {
                     if (target.exists()) {
                         throw new IOException("Unable to create file because it already exists: " + normalize(target));
@@ -692,13 +692,13 @@ public final class FileHelper {
                         return target;
                     }
                 } else {
-                    throw new IOException("Unable to zip file because it cannot be read: " + normalize(source));
+                    throw new IOException("Unable to zip file because access is denied: " + normalize(source));
                 }
             } else {
-                throw new IOException("Unable to zip file because it does not exist: " + normalize(source));
+                throw new IOException("Unable to zip file because it is a directory: " + normalize(source));
             }
         } else {
-            throw new IOException("Unable to zip file because it is a directory: " + normalize(source));
+            throw new IOException("Unable to zip file because it does not exist: " + normalize(source));
         }
     }
 
