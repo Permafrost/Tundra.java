@@ -106,7 +106,8 @@ public final class ObjectHelper {
         return object == null ||
                (object instanceof String && object.equals("")) ||
                (object instanceof Object[] && ((Object[])object).length == 0) ||
-               (object instanceof Collection && ((Collection)object).size() == 0);
+               (object instanceof Collection && ((Collection)object).size() == 0) ||
+               (object instanceof IData && IDataHelper.size((IData)object) == 0);
     }
 
     /**
