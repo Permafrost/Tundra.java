@@ -19,7 +19,7 @@ import java.util.Iterator;
 import java.util.regex.Pattern;
 
 /**
- * Runs any install services found in a package after it is installed, and any uninstall services found in a packager
+ * Runs any install services found in a package after it is installed, and any uninstall services found in a package
  * prior to it being uninstalled.
  */
 public class PackageInstallProcessor extends AbstractInvokeChainProcessor {
