@@ -31,12 +31,15 @@ import com.wm.app.b2b.server.Service;
 import com.wm.app.b2b.server.ServiceException;
 import com.wm.app.b2b.server.ServiceSetupException;
 import com.wm.app.b2b.server.ServiceThread;
+import com.wm.app.b2b.server.ns.NSDependencyManager;
 import com.wm.app.b2b.server.ns.Namespace;
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
 import com.wm.data.IDataUtil;
+import com.wm.lang.ns.DependencyManager;
 import com.wm.lang.ns.NSName;
+import com.wm.lang.ns.NSNode;
 import com.wm.lang.ns.NSService;
 import com.wm.lang.ns.NSServiceType;
 import com.wm.net.HttpHeader;
@@ -45,6 +48,7 @@ import permafrost.tundra.data.IDataMap;
 import permafrost.tundra.lang.BytesHelper;
 import permafrost.tundra.lang.ExceptionHelper;
 import permafrost.tundra.lang.StringHelper;
+import permafrost.tundra.math.IntegerHelper;
 import permafrost.tundra.math.NormalDistributionEstimator;
 import permafrost.tundra.mime.MIMETypeHelper;
 import permafrost.tundra.net.http.HTTPHelper;
@@ -59,6 +63,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 /**
  * A collection of convenience methods for working with webMethods Integration Server services.
@@ -147,10 +155,142 @@ public final class ServiceHelper {
         IDataUtil.put(cursor, "name", serviceName);
         IDataUtil.put(cursor, "type", service.getServiceType().getType());
         IDataUtil.put(cursor, "package", service.getPackageName());
+        IDataHelper.put(cursor, "description", service.getComment(), false);
+        IDataUtil.put(cursor, "references", getReferences(service.getNSName().getFullName()));
+        IDataUtil.put(cursor, "dependents", getDependents(service.getNSName().getFullName()));
 
-        String description = service.getComment();
-        if (description != null) IDataUtil.put(cursor, "description", description);
+        cursor.destroy();
 
+        return output;
+    }
+
+    /**
+     * Returns the list of services that are depending on the given list of services.
+     *
+     * @param services  The services to get dependents for.
+     * @return          The list of dependents for the given services.
+     */
+    public static IData getDependents(String ...services) {
+        DependencyManager manager = NSDependencyManager.current();
+        Namespace namespace = Namespace.current();
+
+        SortedSet<String> packages = new TreeSet<String>();
+        SortedMap<String, IData> elements = new TreeMap<String, IData>();
+
+        if (services != null) {
+            for (String service : services) {
+                if (service != null) {
+                    NSNode node = namespace.getNode(service);
+                    if (node != null) {
+                        IData results = manager.getDependent(node, null);
+                        if (results != null) {
+                            IDataCursor resultsCursor = results.getCursor();
+                            IData[] referencedBy = IDataUtil.getIDataArray(resultsCursor, "referencedBy");
+                            resultsCursor.destroy();
+                            if (referencedBy != null) {
+                                for (IData dependent : referencedBy) {
+                                    if (dependent != null) {
+                                        IDataCursor dependentCursor = dependent.getCursor();
+                                        String name = IDataUtil.getString(dependentCursor, "name");
+                                        dependentCursor.destroy();
+
+                                        String[] parts = name.split("\\/");
+
+                                        if (parts.length > 1) {
+                                            IData result = IDataFactory.create();
+                                            IDataCursor resultCursor = result.getCursor();
+                                            IDataUtil.put(resultCursor, "package", parts[0]);
+                                            IDataUtil.put(resultCursor, "node", parts[1]);
+                                            resultCursor.destroy();
+
+                                            packages.add(parts[0]);
+                                            elements.put(name, result);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        IData output = IDataFactory.create();
+        IDataCursor cursor = output.getCursor();
+        IDataUtil.put(cursor, "packages", packages.toArray(new String[packages.size()]));
+        IDataUtil.put(cursor, "packages.length", IntegerHelper.emit(packages.size()));
+        IDataUtil.put(cursor, "nodes", elements.values().toArray(new IData[elements.size()]));
+        IDataUtil.put(cursor, "nodes.length", IntegerHelper.emit(elements.size()));
+        cursor.destroy();
+
+        return output;
+    }
+
+    /**
+     * Returns the list of elements referenced by the given list of services.
+     *
+     * @param services  The list of services to get references for.
+     * @return          The list of references for the given services.
+     */
+    public static IData getReferences(String ...services) {
+        DependencyManager manager = NSDependencyManager.current();
+        Namespace namespace = Namespace.current();
+
+        SortedSet<String> packages = new TreeSet<String>();
+        SortedMap<String, IData> resolved = new TreeMap<String, IData>();
+        SortedSet<String> unresolved = new TreeSet<String>();
+
+        if (services != null) {
+            for (String service : services) {
+                if (service != null) {
+                    NSNode node = namespace.getNode(service);
+                    IData results = manager.getReferenced(node, null);
+
+                    if (results != null) {
+                        IDataCursor resultsCursor = results.getCursor();
+                        IData[] references = IDataUtil.getIDataArray(resultsCursor, "reference");
+                        resultsCursor.destroy();
+
+                        if (references != null) {
+                            for (IData reference : references) {
+                                if (reference != null) {
+                                    IDataCursor referenceCursor = reference.getCursor();
+                                    String name = IDataUtil.getString(referenceCursor, "name");
+                                    String status = IDataUtil.getString(referenceCursor, "status");
+                                    referenceCursor.destroy();
+
+                                    if (status.equals("unresolved")) {
+                                        unresolved.add(name);
+                                    } else {
+                                        String[] parts = name.split("\\/");
+
+                                        if (parts.length > 1) {
+                                            IData result = IDataFactory.create();
+                                            IDataCursor resultCursor = result.getCursor();
+                                            IDataUtil.put(resultCursor, "package", parts[0]);
+                                            IDataUtil.put(resultCursor, "node", parts[1]);
+                                            resultCursor.destroy();
+
+                                            packages.add(parts[0]);
+                                            resolved.put(name, result);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        IData output = IDataFactory.create();
+        IDataCursor cursor = output.getCursor();
+        IDataUtil.put(cursor, "packages", packages.toArray(new String[packages.size()]));
+        IDataUtil.put(cursor, "packages.length", IntegerHelper.emit(packages.size()));
+        IDataUtil.put(cursor, "nodes", resolved.values().toArray(new IData[resolved.size()]));
+        IDataUtil.put(cursor, "nodes.length", IntegerHelper.emit(resolved.size()));
+        IDataUtil.put(cursor, "unresolved", unresolved.toArray(new String[unresolved.size()]));
+        IDataUtil.put(cursor, "unresolved.length", IntegerHelper.emit(unresolved.size()));
         cursor.destroy();
 
         return output;
