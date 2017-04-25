@@ -30,15 +30,25 @@ import com.wm.app.b2b.server.PackageManager;
 import com.wm.app.b2b.server.PackageState;
 import com.wm.app.b2b.server.PackageStore;
 import com.wm.app.b2b.server.ServerAPI;
+import com.wm.app.b2b.server.ns.NSDependencyManager;
+import com.wm.app.b2b.server.ns.Namespace;
 import com.wm.data.IData;
+import com.wm.data.IDataCursor;
+import com.wm.data.IDataFactory;
+import com.wm.data.IDataUtil;
+import com.wm.lang.ns.DependencyManager;
+import com.wm.lang.ns.NSNode;
 import com.wm.lang.ns.NSService;
 import permafrost.tundra.data.IDataMap;
 import permafrost.tundra.io.FileHelper;
 import permafrost.tundra.lang.BooleanHelper;
 import permafrost.tundra.lang.IterableEnumeration;
+import permafrost.tundra.math.IntegerHelper;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.SortedMap;
 import java.util.SortedSet;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 /**
@@ -53,8 +63,8 @@ public final class PackageHelper {
     /**
      * Returns true if a package with the given name exists on this Integration Server.
      *
-     * @param packageName The name of the package to check existence of.
-     * @return True if a package with the given name exists.
+     * @param packageName   The name of the package to check existence of.
+     * @return              True if a package with the given name exists.
      */
     public static boolean exists(String packageName) {
         return getPackage(packageName) != null;
@@ -63,8 +73,8 @@ public final class PackageHelper {
     /**
      * Returns the package with the given name if it exists on this Integration Server.
      *
-     * @param packageName The name of the package.
-     * @return The package with the given name, or null if no package with the given name exists.
+     * @param packageName   The name of the package.
+     * @return              The package with the given name, or null if no package with the given name exists.
      */
     public static Package getPackage(String packageName) {
         if (packageName == null) return null;
@@ -87,8 +97,8 @@ public final class PackageHelper {
     /**
      * Returns true if the package with the given name is enabled on this Integration Server.
      *
-     * @param packageName The name of the package.
-     * @return True if the package with the given name is enabled.
+     * @param packageName   The name of the package.
+     * @return              True if the package with the given name is enabled.
      */
     public static boolean isEnabled(String packageName) {
         Package pkg = getPackage(packageName);
@@ -107,8 +117,8 @@ public final class PackageHelper {
     /**
      * Returns a list of packages on this Integration Server.
      *
-     * @param enabledOnly If true, only returns enabled packages.
-     * @return A list of packages on this Integration Server.
+     * @param enabledOnly   If true, only returns enabled packages.
+     * @return              A list of packages on this Integration Server.
      */
     public static Package[] list(boolean enabledOnly) {
         Package[] packages = PackageManager.getAllPackages();
@@ -133,10 +143,166 @@ public final class PackageHelper {
     }
 
     /**
+     * Returns the list of elements referenced by given the services in the given package.
+     *
+     * @param packageName   The package to get references for.
+     * @return              The list of references for the given package.
+     */
+    public static IData getReferences(String packageName) {
+        return getReferences(getPackage(packageName));
+    }
+
+    /**
+     * Returns the list of elements referenced by given the services in the given package.
+     *
+     * @param pkg           The package to get references for.
+     * @return              The list of references for the given package.
+     */
+    public static IData getReferences(Package pkg) {
+        String[] services = toStringArray(IterableEnumeration.of(pkg.getLoaded()));
+
+        DependencyManager manager = NSDependencyManager.current();
+        Namespace namespace = Namespace.current();
+
+        SortedSet<String> packages = new TreeSet<String>();
+        SortedMap<String, IData> resolved = new TreeMap<String, IData>();
+        SortedSet<String> unresolved = new TreeSet<String>();
+
+        for (String service : services) {
+            if (service != null) {
+                NSNode node = namespace.getNode(service);
+                IData results = manager.getReferenced(node, null);
+
+                if (results != null) {
+                    IDataCursor resultsCursor = results.getCursor();
+                    IData[] references = IDataUtil.getIDataArray(resultsCursor, "reference");
+                    resultsCursor.destroy();
+
+                    if (references != null) {
+                        for (IData reference : references) {
+                            if (reference != null) {
+                                IDataCursor referenceCursor = reference.getCursor();
+                                String name = IDataUtil.getString(referenceCursor, "name");
+                                String status = IDataUtil.getString(referenceCursor, "status");
+                                referenceCursor.destroy();
+
+                                if (status.equals("unresolved")) {
+                                    unresolved.add(name);
+                                } else {
+                                    String[] parts = name.split("\\/");
+
+                                    if (parts.length > 1) {
+                                        if (!pkg.getName().equals(parts[0])) {
+                                            IData result = IDataFactory.create();
+                                            IDataCursor resultCursor = result.getCursor();
+                                            IDataUtil.put(resultCursor, "package", parts[0]);
+                                            IDataUtil.put(resultCursor, "node", parts[1]);
+                                            resultCursor.destroy();
+
+                                            packages.add(parts[0]);
+                                            resolved.put(name, result);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        IData output = IDataFactory.create();
+        IDataCursor cursor = output.getCursor();
+        IDataUtil.put(cursor, "packages", packages.toArray(new String[packages.size()]));
+        IDataUtil.put(cursor, "packages.length", IntegerHelper.emit(packages.size()));
+        IDataUtil.put(cursor, "nodes", resolved.values().toArray(new IData[resolved.size()]));
+        IDataUtil.put(cursor, "nodes.length", IntegerHelper.emit(resolved.size()));
+        IDataUtil.put(cursor, "unresolved", unresolved.toArray(new String[unresolved.size()]));
+        IDataUtil.put(cursor, "unresolved.length", IntegerHelper.emit(unresolved.size()));
+        cursor.destroy();
+
+        return output;
+    }
+
+    /**
+     * Returns the list of services that are dependent on the services in the given package.
+     *
+     * @param packageName   The package to get dependents for.
+     * @return              The list of dependents for the given package.
+     */
+    private static IData getDependents(String packageName) {
+        return getDependents(getPackage(packageName));
+    }
+
+    /**
+     * Returns the list of services that are dependent on the services in the given package.
+     *
+     * @param pkg           The package to get dependents for.
+     * @return              The list of dependents for the given package.
+     */
+    private static IData getDependents(Package pkg) {
+        String[] services = toStringArray(IterableEnumeration.of(pkg.getLoaded()));
+
+        DependencyManager manager = NSDependencyManager.current();
+        Namespace namespace = Namespace.current();
+
+        SortedSet<String> packages = new TreeSet<String>();
+        SortedMap<String, IData> nodes = new TreeMap<String, IData>();
+
+        for (String service : services) {
+            if (service != null) {
+                NSNode node = namespace.getNode(service);
+                if (node != null) {
+                    IData results = manager.getDependent(node, null);
+                    if (results != null) {
+                        IDataCursor resultsCursor = results.getCursor();
+                        IData[] referencedBy = IDataUtil.getIDataArray(resultsCursor, "referencedBy");
+                        resultsCursor.destroy();
+                        if (referencedBy != null) {
+                            for (IData dependent : referencedBy) {
+                                if (dependent != null) {
+                                    IDataCursor dependentCursor = dependent.getCursor();
+                                    String name = IDataUtil.getString(dependentCursor, "name");
+                                    dependentCursor.destroy();
+
+                                    String[] parts = name.split("\\/");
+
+                                    if (parts.length > 1) {
+                                        if (!pkg.getName().equals(parts[0])) {
+                                            IData result = IDataFactory.create();
+                                            IDataCursor resultCursor = result.getCursor();
+                                            IDataUtil.put(resultCursor, "package", parts[0]);
+                                            IDataUtil.put(resultCursor, "node", parts[1]);
+                                            resultCursor.destroy();
+
+                                            packages.add(parts[0]);
+                                            nodes.put(name, result);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        IData output = IDataFactory.create();
+        IDataCursor cursor = output.getCursor();
+        IDataUtil.put(cursor, "packages", packages.toArray(new String[packages.size()]));
+        IDataUtil.put(cursor, "packages.length", IntegerHelper.emit(packages.size()));
+        IDataUtil.put(cursor, "nodes", nodes.values().toArray(new IData[nodes.size()]));
+        IDataUtil.put(cursor, "nodes.length", IntegerHelper.emit(nodes.size()));
+        cursor.destroy();
+
+        return output;
+    }
+
+    /**
      * Converts the given Package to an IData document.
      *
-     * @param pkg The package to be converted.
-     * @return An IData representation of the given package.
+     * @param pkg   The package to be converted.
+     * @return      An IData representation of the given package.
      */
     public static IData toIData(Package pkg) {
         if (pkg == null) return null;
@@ -155,14 +321,16 @@ public final class PackageHelper {
         directories.put("config", FileHelper.normalize(ServerAPI.getPackageConfigDir(pkg.getName())));
         map.put("directories", directories);
 
+        map.put("references", getReferences(pkg));
+
         return map;
     }
 
     /**
      * Converts the given list of packages to an IData[].
      *
-     * @param packages The list of packages to convert.
-     * @return The IData[] representation of the packages.
+     * @param packages  The list of packages to convert.
+     * @return          The IData[] representation of the packages.
      */
     public static IData[] toIDataArray(Package... packages) {
         if (packages == null) return new IData[0];
@@ -178,8 +346,8 @@ public final class PackageHelper {
     /**
      * Converts an Package[] to a String[] by calling getName on each package in the list.
      *
-     * @param packages The list of packages to convert.
-     * @return The String[] representation of the list.
+     * @param packages  The list of packages to convert.
+     * @return          The String[] representation of the list.
      */
     private static String[] toStringArray(Package... packages) {
         if (packages == null) return new String[0];
@@ -195,8 +363,8 @@ public final class PackageHelper {
     /**
      * Converts an Iterable object to a String[] by calling toString on each object returned by the iterator.
      *
-     * @param iterable The object to convert.
-     * @return The String[] representation of the object.
+     * @param iterable  The object to convert.
+     * @return          The String[] representation of the object.
      */
     private static String[] toStringArray(Iterable iterable) {
         if (iterable == null) return new String[0];
@@ -212,8 +380,8 @@ public final class PackageHelper {
     /**
      * Converts the given Manifest object to an IData document representation.
      *
-     * @param manifest The object to be converted.
-     * @return An IData representation of the object.
+     * @param manifest  The object to be converted.
+     * @return          An IData representation of the object.
      */
     @SuppressWarnings("unchecked")
     private static IData toIData(Manifest manifest) {
@@ -250,8 +418,8 @@ public final class PackageHelper {
     /**
      * Convert the given list of package dependencies to an IData[].
      *
-     * @param packageDependencies The object to convert.
-     * @return The IData[] representation of the object.
+     * @param packageDependencies   The object to convert.
+     * @return                      The IData[] representation of the object.
      */
     private static IData[] toIDataArray(Iterable<Manifest.Requires> packageDependencies) {
         if (packageDependencies == null) return new IData[0];
@@ -270,8 +438,8 @@ public final class PackageHelper {
     /**
      * Converts the given PackageState object to an IData document representation.
      *
-     * @param packageState The object to be converted.
-     * @return An IData representation of the object.
+     * @param packageState  The object to be converted.
+     * @return              An IData representation of the object.
      */
     private static IData toIData(PackageState packageState) {
         if (packageState == null) return null;
@@ -280,7 +448,7 @@ public final class PackageHelper {
 
         String[] loadedServices = toStringArray(IterableEnumeration.of(packageState.getLoaded()));
         map.put("loaded", loadedServices);
-        map.put("loaded.length", "" + loadedServices.length);
+        map.put("loaded.length", IntegerHelper.emit(loadedServices.length));
 
         return map;
     }
@@ -288,8 +456,8 @@ public final class PackageHelper {
     /**
      * Converts the given PackageStore object to an IData document representation.
      *
-     * @param packageStore The object to be converted.
-     * @return An IData representation of the object.
+     * @param packageStore  The object to be converted.
+     * @return              An IData representation of the object.
      */
     private static IData toIData(PackageStore packageStore) {
         if (packageStore == null) return null;

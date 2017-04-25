@@ -165,7 +165,7 @@ public final class ServiceHelper {
     }
 
     /**
-     * Returns the list of services that are depending on the given list of services.
+     * Returns the list of services that are dependent on the given list of services.
      *
      * @param services  The services to get dependents for.
      * @return          The list of dependents for the given services.
@@ -175,7 +175,7 @@ public final class ServiceHelper {
         Namespace namespace = Namespace.current();
 
         SortedSet<String> packages = new TreeSet<String>();
-        SortedMap<String, IData> elements = new TreeMap<String, IData>();
+        SortedMap<String, IData> nodes = new TreeMap<String, IData>();
 
         if (services != null) {
             for (String service : services) {
@@ -204,7 +204,7 @@ public final class ServiceHelper {
                                             resultCursor.destroy();
 
                                             packages.add(parts[0]);
-                                            elements.put(name, result);
+                                            nodes.put(name, result);
                                         }
                                     }
                                 }
@@ -219,8 +219,8 @@ public final class ServiceHelper {
         IDataCursor cursor = output.getCursor();
         IDataUtil.put(cursor, "packages", packages.toArray(new String[packages.size()]));
         IDataUtil.put(cursor, "packages.length", IntegerHelper.emit(packages.size()));
-        IDataUtil.put(cursor, "nodes", elements.values().toArray(new IData[elements.size()]));
-        IDataUtil.put(cursor, "nodes.length", IntegerHelper.emit(elements.size()));
+        IDataUtil.put(cursor, "nodes", nodes.values().toArray(new IData[nodes.size()]));
+        IDataUtil.put(cursor, "nodes.length", IntegerHelper.emit(nodes.size()));
         cursor.destroy();
 
         return output;
