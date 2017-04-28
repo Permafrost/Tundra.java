@@ -177,21 +177,29 @@ public final class ArrayHelper {
      * @return          A new array which contains all the elements from the given arrays.
      */
     public static <T> T[] concatenate(List<T[]> arrays) {
-        if (arrays == null || arrays.size() == 0) return null;
-        if (arrays.size() == 1) return Arrays.copyOf(arrays.get(0), arrays.get(0).length);
+        T[] concatenation = null, copyable = null;
 
-        int length = 0;
-        for (T[] array : arrays) {
-            if (array != null) length += array.length;
+        if (arrays != null && arrays.size() > 0) {
+            int length = 0;
+            for (T[] array : arrays) {
+                if (array != null) {
+                    length += array.length;
+                    copyable = array;
+                }
+            }
+
+            if (copyable != null) {
+                List<T> list = new ArrayList<T>(length);
+
+                for (T[] array : arrays) {
+                    if (array != null) Collections.addAll(list, array);
+                }
+
+                concatenation = list.toArray(Arrays.copyOf(copyable, length));
+            }
         }
 
-        List<T> list = new ArrayList<T>(length);
-
-        for (T[] array : arrays) {
-            if (array != null) Collections.addAll(list, array);
-        }
-
-        return list.toArray(Arrays.copyOf(arrays.get(0), length));
+        return concatenation;
     }
 
     /**
