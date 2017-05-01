@@ -17,28 +17,6 @@ import permafrost.tundra.xml.sax.InputSourceHelper;
 import java.util.regex.Pattern;
 
 public class IDataHelperTest {
-    @Test
-    public void testGetFromCursor() throws Exception {
-        IDataCursor cursor = document.getCursor();
-        IDataUtil.put(cursor, "a", "1");
-        IDataUtil.put(cursor, "b", 2);
-        IDataUtil.put(cursor, "c", 3.14f);
-        IDataUtil.put(cursor, "d", true);
-        IDataUtil.put(cursor, "e", 4L);
-        cursor.destroy();
-
-        cursor = document.getCursor();
-        assertEquals("1", IDataHelper.get(cursor, "a", String.class));
-        assertEquals(new Integer(2), IDataHelper.get(cursor, "b", Integer.class));
-        assertEquals(new Float(3.14), IDataHelper.get(cursor, "c", Float.class));
-        assertEquals(true, IDataHelper.get(cursor, "d", Boolean.class));
-        assertEquals(false, IDataHelper.get(cursor, "e", Boolean.class));
-        assertEquals(true, IDataHelper.get(cursor, "e", Boolean.class, true));
-        assertEquals(false, IDataHelper.get(cursor, "missing", Boolean.class));
-        assertEquals(true, IDataHelper.get(cursor, "missing", Boolean.class, true));
-        cursor.destroy();
-    }
-
     IData document = IDataFactory.create();
 
     @Before
@@ -1570,5 +1548,31 @@ public class IDataHelperTest {
 
         assertEquals("z = null; a = 1; b = 2; c = {d = [null, 3, 4]; e = [[5, 6], [7, 8], null, [null, 9]]}; f = [9, 10, null, 12, null]; g = [{h = 13; i = 14}, {j = 15; k = null}]; l = []", IDataHelper.join(map, "; ", ", ", " = "));
         assertEquals("a = 1; b = 2; c = {d = [3, 4]; e = [[5, 6], [7, 8], [9]]}; f = [9, 10, 12]; g = [{h = 13; i = 14}, {j = 15}]; l = []", IDataHelper.join(map, "; ", ", ", " = ", Sanitization.REMOVE_NULLS));
+    }
+
+    @Test
+    public void testGetFromCursor() throws Exception {
+        IDataCursor cursor = document.getCursor();
+        IDataUtil.put(cursor, "a", "1");
+        IDataUtil.put(cursor, "b", 2);
+        IDataUtil.put(cursor, "c", 3.14f);
+        IDataUtil.put(cursor, "d", true);
+        IDataUtil.put(cursor, "e", 4L);
+        IDataUtil.put(cursor, "f", "true");
+        cursor.destroy();
+
+        cursor = document.getCursor();
+        assertEquals("1", IDataHelper.get(cursor, "a", String.class));
+        assertEquals(new Integer(2), IDataHelper.get(cursor, "b", Integer.class));
+        assertEquals(new Long(2), IDataHelper.get(cursor, "b", Long.class));
+        assertEquals(new Float(3.14), IDataHelper.get(cursor, "c", Float.class));
+        assertEquals(new Double(new Float(3.14).doubleValue()), IDataHelper.get(cursor, "c", Double.class));
+        assertEquals(true, IDataHelper.get(cursor, "d", Boolean.class));
+        assertEquals(false, IDataHelper.get(cursor, "e", Boolean.class));
+        assertEquals(true, IDataHelper.get(cursor, "e", Boolean.class, true));
+        assertEquals(true, IDataHelper.get(cursor, "f", Boolean.class));
+        assertEquals(false, IDataHelper.get(cursor, "missing", Boolean.class));
+        assertEquals(true, IDataHelper.get(cursor, "missing", Boolean.class, true));
+        cursor.destroy();
     }
 }

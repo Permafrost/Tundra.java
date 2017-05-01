@@ -58,6 +58,7 @@ import permafrost.tundra.time.DurationHelper;
 import permafrost.tundra.xml.dom.NodeHelper;
 import permafrost.tundra.xml.dom.Nodes;
 import permafrost.tundra.xml.xpath.XPathHelper;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -2623,7 +2624,7 @@ public final class IDataHelper {
     @SuppressWarnings("unchecked")
     public static <T> T get(IDataCursor cursor, String key, Class<T> klass, T defaultValue) {
         if (cursor == null || key == null || klass == null) return null;
-        if (defaultValue == null && klass.isAssignableFrom(Boolean.class)) defaultValue = (T)Boolean.FALSE;
+        if (defaultValue == null && !klass.isAssignableFrom(Object.class) && klass.isAssignableFrom(Boolean.class)) defaultValue = (T)Boolean.FALSE;
 
         T value = null;
         Object object = null;
@@ -2634,12 +2635,12 @@ public final class IDataHelper {
 
         if (klass.isInstance(object)) {
             value = (T)object;
-        } else if (defaultValue != null) {
-            value = defaultValue;
         } else if (!klass.isAssignableFrom(Object.class) && (object instanceof String)) {
             String string = (String)object;
-            if (klass.isAssignableFrom(Boolean.class)) {
-                value = (T)Boolean.valueOf(BooleanHelper.parse(object));
+            if (klass.isAssignableFrom(String.class)) {
+                value = (T)string;
+            } else if (klass.isAssignableFrom(Boolean.class)) {
+                value = (T)Boolean.valueOf(BooleanHelper.parse(string));
             } else if (klass.isAssignableFrom(Double.class)) {
                 value = (T)Double.valueOf(DoubleHelper.parse(string));
             } else if (klass.isAssignableFrom(Long.class)) {
@@ -2658,7 +2659,28 @@ public final class IDataHelper {
                 value = (T)DateTimeHelper.parse(string);
             } else if (klass.isAssignableFrom(Duration.class)) {
                 value = (T)DurationHelper.parse(string);
+            } else {
+                throw new UnsupportedOperationException(MessageFormat.format("Unsupported class conversion from {0} to {1}", object.getClass().getName(), klass.getName()));
             }
+        } else if (Number.class.isAssignableFrom(klass) && object instanceof Number) {
+            Number number = (Number)object;
+            if (klass.isAssignableFrom(Double.class)) {
+                value = (T)new Double(number.doubleValue());
+            } else if (klass.isAssignableFrom(Long.class)) {
+                value = (T)new Long(number.longValue());
+            } else if (klass.isAssignableFrom(Float.class)) {
+                value = (T)new Float(number.floatValue());
+            } else if (klass.isAssignableFrom(Integer.class)) {
+                value = (T)new Integer(number.intValue());
+            } else if (klass.isAssignableFrom(Short.class)) {
+                value = (T)new Short(number.shortValue());
+            } else if (klass.isAssignableFrom(Byte.class)) {
+                value = (T)new Byte(number.byteValue());
+            } else {
+                throw new UnsupportedOperationException(MessageFormat.format("Unsupported class conversion from {0} to {1}", object.getClass().getName(), klass.getName()));
+            }
+        } else if (defaultValue != null) {
+            value = defaultValue;
         }
 
         return value;
