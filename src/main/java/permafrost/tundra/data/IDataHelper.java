@@ -44,8 +44,11 @@ import permafrost.tundra.data.transform.Transformer;
 import permafrost.tundra.data.transform.Trimmer;
 import permafrost.tundra.flow.ConditionEvaluator;
 import permafrost.tundra.flow.variable.SubstitutionHelper;
+import permafrost.tundra.io.filter.FilenameFilterType;
 import permafrost.tundra.lang.ArrayHelper;
 import permafrost.tundra.lang.BooleanHelper;
+import permafrost.tundra.lang.CharsetHelper;
+import permafrost.tundra.lang.ObjectConvertMode;
 import permafrost.tundra.lang.Sanitization;
 import permafrost.tundra.lang.ObjectHelper;
 import permafrost.tundra.lang.TableHelper;
@@ -53,11 +56,16 @@ import permafrost.tundra.math.DoubleHelper;
 import permafrost.tundra.math.FloatHelper;
 import permafrost.tundra.math.IntegerHelper;
 import permafrost.tundra.math.LongHelper;
+import permafrost.tundra.mime.MIMETypeHelper;
+import permafrost.tundra.net.http.HTTPMethod;
+import permafrost.tundra.server.NodePermission;
 import permafrost.tundra.time.DateTimeHelper;
 import permafrost.tundra.time.DurationHelper;
+import permafrost.tundra.time.DurationPattern;
 import permafrost.tundra.xml.dom.NodeHelper;
 import permafrost.tundra.xml.dom.Nodes;
 import permafrost.tundra.xml.xpath.XPathHelper;
+import java.nio.charset.Charset;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -68,6 +76,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.activation.MimeType;
 import javax.xml.datatype.Duration;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.xpath.XPathExpression;
@@ -2596,6 +2605,19 @@ public final class IDataHelper {
     }
 
     /**
+     * Returns the value associated with the given key from the IDataCursor.
+     *
+     * @param cursor        The IDataCursor to add the key value association to.
+     * @param key           The key literal to be added.
+     * @return              The value associated with the given key, if one exists that is an instance of the given
+     *                      class.
+     */
+    @SuppressWarnings("unchecked")
+    public static Object get(IDataCursor cursor, String key) {
+        return get(cursor, key, Object.class);
+    }
+
+    /**
      * Returns the value associated with the given key from the IDataCursor, if it is an instance of the given class.
      *
      * @param cursor        The IDataCursor to add the key value association to.
@@ -2626,7 +2648,7 @@ public final class IDataHelper {
         if (cursor == null || key == null || klass == null) return null;
         if (defaultValue == null && !klass.isAssignableFrom(Object.class) && klass.isAssignableFrom(Boolean.class)) defaultValue = (T)Boolean.FALSE;
 
-        T value = null;
+        T value;
         Object object = null;
 
         if (cursor.first(key)) {
@@ -2635,7 +2657,7 @@ public final class IDataHelper {
 
         if (klass.isInstance(object)) {
             value = (T)object;
-        } else if (!klass.isAssignableFrom(Object.class) && (object instanceof String)) {
+        } else if (object instanceof String && !klass.isAssignableFrom(Object.class)) {
             String string = (String)object;
             if (klass.isAssignableFrom(String.class)) {
                 value = (T)string;
@@ -2659,10 +2681,30 @@ public final class IDataHelper {
                 value = (T)DateTimeHelper.parse(string);
             } else if (klass.isAssignableFrom(Duration.class)) {
                 value = (T)DurationHelper.parse(string);
+            } else if (klass.isAssignableFrom(DurationPattern.class)) {
+                value = (T)DurationPattern.normalize(string);
+            } else if (klass.isAssignableFrom(Charset.class)) {
+                value = (T)CharsetHelper.normalize(string);
+            } else if (klass.isAssignableFrom(ObjectConvertMode.class)) {
+                value = (T)ObjectConvertMode.normalize(string);
+            } else if (klass.isAssignableFrom(Sanitization.class)) {
+                value = (T)Sanitization.normalize(string);
+            } else if (klass.isAssignableFrom(TransformerMode.class)) {
+                value = (T)TransformerMode.normalize(string);
+            } else if (klass.isAssignableFrom(IDataComparisonType.class)) {
+                value = (T)IDataComparisonType.normalize(string);
+            } else if (klass.isAssignableFrom(FilenameFilterType.class)) {
+                value = (T)FilenameFilterType.normalize(string);
+            } else if (klass.isAssignableFrom(MimeType.class)) {
+                value = (T)MIMETypeHelper.of(string);
+            } else if (klass.isAssignableFrom(HTTPMethod.class)) {
+                value = (T)HTTPMethod.normalize(string);
+            } else if (klass.isAssignableFrom(NodePermission.class)) {
+                value = (T)NodePermission.normalize(string);
             } else {
                 throw new UnsupportedOperationException(MessageFormat.format("Unsupported class conversion from {0} to {1}", object.getClass().getName(), klass.getName()));
             }
-        } else if (Number.class.isAssignableFrom(klass) && object instanceof Number) {
+        } else if (object instanceof Number && Number.class.isAssignableFrom(klass)) {
             Number number = (Number)object;
             if (klass.isAssignableFrom(Double.class)) {
                 value = (T)new Double(number.doubleValue());
@@ -2679,7 +2721,7 @@ public final class IDataHelper {
             } else {
                 throw new UnsupportedOperationException(MessageFormat.format("Unsupported class conversion from {0} to {1}", object.getClass().getName(), klass.getName()));
             }
-        } else if (defaultValue != null) {
+        } else {
             value = defaultValue;
         }
 

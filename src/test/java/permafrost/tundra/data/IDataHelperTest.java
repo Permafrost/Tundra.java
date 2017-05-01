@@ -308,7 +308,7 @@ public class IDataHelperTest {
 
     @Test
     public void testGetWithNullIData() throws Exception {
-        assertEquals(null, IDataHelper.get(null, "a"));
+        assertEquals(null, IDataHelper.get((IData)null, "a"));
     }
 
     @Test
