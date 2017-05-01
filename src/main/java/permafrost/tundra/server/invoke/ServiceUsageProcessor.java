@@ -30,15 +30,17 @@ import com.wm.app.b2b.server.invoke.ServiceStatus;
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
+import com.wm.data.IDataPortable;
 import com.wm.data.IDataUtil;
 import com.wm.util.ServerException;
+import com.wm.util.Table;
 import com.wm.util.coder.IDataCodable;
+import com.wm.util.coder.ValuesCodable;
 import permafrost.tundra.data.IDataHelper;
 import permafrost.tundra.lang.BooleanHelper;
 import permafrost.tundra.time.DateTimeHelper;
 import permafrost.tundra.time.DurationHelper;
 import permafrost.tundra.time.DurationPattern;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.Iterator;
@@ -218,6 +220,14 @@ public class ServiceUsageProcessor extends AbstractInvokeChainProcessor {
      */
     private static class Frame implements IDataCodable {
         /**
+         * The depth to which the pipeline is cloned.
+         */
+        private static int DEFAULT_PIPELINE_CLONE_DEPTH = 2;
+        /**
+         * The depth to which the pipeline is cloned.
+         */
+        private static int DEFAULT_PIPELINE_CLONE_LENGTH = 10;
+        /**
          * The time this service invocation started.
          */
         private long startTime;
@@ -243,14 +253,97 @@ public class ServiceUsageProcessor extends AbstractInvokeChainProcessor {
          */
         public Frame(BaseService service, IData pipeline, InvokeState state) {
             this.service = service;
-            try {
-                this.pipeline = IDataUtil.deepClone(pipeline);
-            } catch(IOException ex) {
-                this.pipeline = IDataFactory.create();
-            }
+            this.pipeline = cloneWithDepth(pipeline, DEFAULT_PIPELINE_CLONE_LENGTH, DEFAULT_PIPELINE_CLONE_DEPTH);
             this.startTime = System.currentTimeMillis();
             this.session = state.getSession().getSessionID();
             this.user = state.getUser().getName();
+        }
+
+        /**
+         * Clones the given IData to the given length and depth.
+         *
+         * @param source    The IData to be cloned.
+         * @param length    The length to which the given IData will be cloned.
+         * @param depth     The depth to which the given IData will be cloned.
+         * @return          A clone of the given IData.
+         */
+        private static IData cloneWithDepth(IData source, int length, int depth) {
+            return cloneWithDepth(source, length, depth, 1);
+        }
+
+        /**
+         * Clones the given IData to the given length and depth.
+         *
+         * @param source        The IData to be cloned.
+         * @param maxLength     The length to which the given IData will be cloned.
+         * @param maxDepth      The depth to which the given IData will be cloned.
+         * @param currentDepth  The current depth of the clone.
+         * @return              A clone of the given IData.
+         */
+        private static IData cloneWithDepth(IData source, int maxLength, int maxDepth, int currentDepth) {
+            if (source == null) return null;
+            IData destination = IDataFactory.create();
+
+            IDataCursor sourceCursor = source.getCursor();
+            IDataCursor destinationCursor = destination.getCursor();
+
+            try {
+                int length = IDataHelper.size(source);
+                int i = 0;
+
+                while(sourceCursor.next() && i++ < maxLength) {
+                    String key = sourceCursor.getKey();
+                    Object value = sourceCursor.getValue();
+
+                    if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
+                        if (currentDepth < maxDepth) {
+                            value = cloneWithDepth(IDataHelper.toIDataArray(value), maxLength, maxDepth, currentDepth + 1);
+                        } else {
+                            value = "⋮";
+                        }
+                    } else if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
+                        if (currentDepth < maxDepth) {
+                            value = cloneWithDepth(IDataHelper.toIData(value), maxLength, maxDepth, currentDepth + 1);
+                        } else {
+                            value = "…";
+                        }
+                    }
+
+                    destinationCursor.insertAfter(key, value);
+                }
+
+                if (length > maxLength) {
+                    destinationCursor.insertAfter("⋮", "…");
+                }
+            } finally {
+                sourceCursor.destroy();
+                destinationCursor.destroy();
+            }
+
+            return destination;
+        }
+
+        /**
+         * Clones the given IData[] to the given length and depth.
+         *
+         * @param source        The IData[] to be cloned.
+         * @param maxLength     The length to which the given IData[] will be cloned.
+         * @param maxDepth      The depth to which the given IData[] will be cloned.
+         * @param currentDepth  The current depth of the clone.
+         * @return              A clone of the given IData[].
+         */
+        private static IData[] cloneWithDepth(IData[] source, int maxLength, int maxDepth, int currentDepth) {
+            if (source == null) return null;
+
+            int length = Math.min(source.length, maxLength);
+
+            IData[] destination = new IData[length];
+
+            for (int i = 0; i < length; i++) {
+                destination[i] = cloneWithDepth(source[i], maxLength, maxDepth, currentDepth);
+            }
+
+            return destination;
         }
 
         /**
