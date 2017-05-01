@@ -2725,7 +2725,7 @@ public final class IDataHelper {
         if (!includeNullValue && value == null) return;
         if (!includeEmptyValue && ObjectHelper.isEmpty(value)) return;
 
-        put(cursor, key, value, false, includeEmptyValue, includeNullValue);
+        put(cursor, key, value, true, includeEmptyValue, includeNullValue);
     }
 
     /**
