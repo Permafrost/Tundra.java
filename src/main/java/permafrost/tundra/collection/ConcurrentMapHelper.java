@@ -121,11 +121,15 @@ public final class ConcurrentMapHelper {
 
         if (document != null) {
             IDataCursor cursor = document.getCursor();
-            while (cursor.next()) {
-                String key = cursor.getKey();
-                V value = (V)cursor.getValue();
-                // ignore null values, as they are not supported by either ConcurrentHashMap or ConcurrentSkipListMap
-                if (value != null) map.put(key, value);
+            try {
+                while (cursor.next()) {
+                    String key = cursor.getKey();
+                    V value = (V)cursor.getValue();
+                    // ignore null values, as they are not supported by either ConcurrentHashMap or ConcurrentSkipListMap
+                    if (value != null) map.put(key, value);
+                }
+            } finally {
+                cursor.destroy();
             }
         }
 
