@@ -38,6 +38,28 @@ public final class ClassHelper {
     private ClassHelper() {}
 
     /**
+     * Converts the given object to a Class.
+     *
+     * @param object    The object to be converted.
+     * @return          The converted object.
+     */
+    public static Class normalize(Object object) {
+        Class value = null;
+
+        if (object instanceof Class) {
+            value = (Class)object;
+        } else if (object instanceof String) {
+            try {
+                value = Class.forName((String)object);
+            } catch(ClassNotFoundException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+
+        return value;
+    }
+
+    /**
      * Returns an array of Class objects associated with the class or interface with the given names.
      *
      * @param classNames                A list of class or interface names.
