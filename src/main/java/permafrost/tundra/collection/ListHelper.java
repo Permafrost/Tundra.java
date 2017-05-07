@@ -138,14 +138,10 @@ public final class ListHelper {
      * @param <E>   The component type of the list.
      * @return      The cleared list.
      */
+    @SuppressWarnings("unchecked")
     public static <E> List<E> clear(List<E> list, Class<E> klass) {
-        if (list == null) {
-            list = create();
-        } else {
-            CollectionHelper.clear(list);
-        }
-
-        return list;
+        if (list == null) return null;
+        return (List<E>)CollectionHelper.clear(list);
     }
 
     /**
@@ -498,6 +494,8 @@ public final class ListHelper {
      * @return      A new list containing only the unique items from the given list.
      */
     public static <E> List<E> unique(List<E> list) {
+        if (list == null) return null;
+
         Set<E> set = new LinkedHashSet<E>();
 
         if (list != null) {
