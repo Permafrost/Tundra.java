@@ -40,15 +40,6 @@ import java.util.Locale;
  * A collection of convenience methods for working with decimals.
  */
 public final class BigDecimalHelper {
-    /**
-     * The default rounding mode used by the methods in this class.
-     */
-    public static RoundingMode DEFAULT_ROUNDING_MODE = RoundingMode.HALF_UP;
-
-    /**
-     * The default decimal precision used by the methods in this class.
-     */
-    public static int DEFAULT_DECIMAL_PRECISION = 0;
 
     /**
      * Disallow instantiation of this class.
@@ -389,7 +380,7 @@ public final class BigDecimalHelper {
      * @param input         The decimal string
      * @param inputPattern  The pattern the input string adheres to.
      * @param outputPattern The pattern the input string is reformatted to.
-     * @return The given input string reformatted to the desired pattern.
+     * @return              The given input string reformatted to the desired pattern.
      */
     public static String format(String input, String inputPattern, String outputPattern) {
         return emit(parse(input, inputPattern), outputPattern);
@@ -401,7 +392,7 @@ public final class BigDecimalHelper {
      * @param input         The decimal string
      * @param inputPatterns A list of patterns one of which the input string adheres to.
      * @param outputPattern The pattern the input string is reformatted to.
-     * @return The given input string reformatted to the desired pattern.
+     * @return              The given input string reformatted to the desired pattern.
      */
     public static String format(String input, String[] inputPatterns, String outputPattern) {
         return emit(parse(input, inputPatterns), outputPattern);
@@ -411,8 +402,8 @@ public final class BigDecimalHelper {
      * Returns a BigDecimal representation of the given object, if it an instance of java.lang.Number or a
      * java.lang.String which can be parsed as a decimal number.
      *
-     * @param object An object to be converted to a BigDecimal.
-     * @return A BigDecimal representation of the given object.
+     * @param object    An object to be converted to a BigDecimal.
+     * @return          A BigDecimal representation of the given object.
      */
     public static BigDecimal normalize(Object object) {
         BigDecimal decimal = null;
@@ -433,8 +424,8 @@ public final class BigDecimalHelper {
     /**
      * Returns BigDecimal representations of the given list of Objects.
      *
-     * @param values The objects to convert to BigDecimal representations.
-     * @return BigDecimal representations of the given objects.
+     * @param values    The objects to convert to BigDecimal representations.
+     * @return          BigDecimal representations of the given objects.
      */
     public static BigDecimal[] normalize(Object[] values) {
         if (values == null) return null;
@@ -451,19 +442,18 @@ public final class BigDecimalHelper {
     /**
      * Returns the absolute value of the given decimal number.
      *
-     * @param decimal A decimal number.
-     * @return The absolute value of the given decimal number.
+     * @param decimal   A decimal number.
+     * @return          The absolute value of the given decimal number.
      */
     public static BigDecimal absolute(BigDecimal decimal) {
-        if (decimal == null) return null;
-        return decimal.abs();
+        return decimal == null ? null : decimal.abs();
     }
 
     /**
      * Returns the absolute values of the given decimal numbers.
      *
-     * @param decimals A list of decimal numbers.
-     * @return The absolute values of the given list of decimal numbers.
+     * @param decimals  A list of decimal numbers.
+     * @return          The absolute values of the given list of decimal numbers.
      */
     public static BigDecimal[] absolute(BigDecimal[] decimals) {
         if (decimals == null) return null;
@@ -480,19 +470,18 @@ public final class BigDecimalHelper {
     /**
      * Returns the negated value of the given decimal number.
      *
-     * @param decimal A decimal number.
-     * @return The negated value of the given decimal number.
+     * @param decimal   A decimal number.
+     * @return          The negated value of the given decimal number.
      */
     public static BigDecimal negate(BigDecimal decimal) {
-        if (decimal == null) return null;
-        return decimal.negate();
+        return decimal == null ? null : decimal.negate();
     }
 
     /**
      * Returns the negated values of the given decimal numbers.
      *
-     * @param decimals A list of decimal numbers.
-     * @return The negated values of the given list of decimal numbers.
+     * @param decimals  A list of decimal numbers.
+     * @return          The negated values of the given list of decimal numbers.
      */
     public static BigDecimal[] negate(BigDecimal[] decimals) {
         if (decimals == null) return null;
@@ -509,14 +498,14 @@ public final class BigDecimalHelper {
     /**
      * Returns the sum of all the given decimals.
      *
-     * @param operands The decimal numbers to be summed.
-     * @return The sum of all the given decimal numbers.
+     * @param decimals      The decimal numbers to be summed.
+     * @return              The sum of all the given decimal numbers.
      */
-    public static BigDecimal add(BigDecimal... operands) {
+    public static BigDecimal add(BigDecimal... decimals) {
         BigDecimal result = null;
 
-        if (operands != null) {
-            for (BigDecimal operand : operands) {
+        if (decimals != null) {
+            for (BigDecimal operand : decimals) {
                 if (operand != null) {
                     if (result == null) {
                         result = operand;
@@ -530,12 +519,13 @@ public final class BigDecimalHelper {
         return result;
     }
 
+
     /**
      * Subtracts one decimal from another returning the result.
      *
-     * @param minuend    The decimal to be subtracted from.
-     * @param subtrahend The decimal to be subtracted.
-     * @return The result of subtracting the subtrahend from the minuend.
+     * @param minuend       The decimal to be subtracted from.
+     * @param subtrahend    The decimal to be subtracted.
+     * @return              The result of subtracting the subtrahend from the minuend.
      */
     public static BigDecimal subtract(BigDecimal minuend, BigDecimal subtrahend) {
         BigDecimal result = null;
@@ -550,14 +540,14 @@ public final class BigDecimalHelper {
     /**
      * Returns the multiplication of all the given decimals.
      *
-     * @param operands The decimal numbers to be summed.
-     * @return The multiplication of all the given decimal numbers.
+     * @param decimals      The decimal numbers to be summed.
+     * @return              The multiplication of all the given decimal numbers.
      */
-    public static BigDecimal multiply(BigDecimal... operands) {
+    public static BigDecimal multiply(BigDecimal... decimals) {
         BigDecimal result = null;
 
-        if (operands != null) {
-            for (BigDecimal operand : operands) {
+        if (decimals != null) {
+            for (BigDecimal operand : decimals) {
                 if (operand != null) {
                     if (result == null) {
                         result = operand;
@@ -574,163 +564,52 @@ public final class BigDecimalHelper {
     /**
      * Divides the given dividend by the divisor.
      *
-     * @param dividend The decimal to be divided.
-     * @param divisor  The decimal to divide by.
-     * @return The result of dividing the dividend by the divisor.
-     */
-    public static BigDecimal divide(BigDecimal dividend, BigDecimal divisor) {
-        return divide(dividend, divisor, (RoundingMode)null);
-    }
-
-    /**
-     * Divides the given dividend by the divisor.
-     *
-     * @param dividend  The decimal to be divided.
-     * @param divisor   The decimal to divide by.
-     * @param precision The number of decimal places preserved in the result.
-     * @return The result of dividing the dividend by the divisor.
-     */
-    public static BigDecimal divide(BigDecimal dividend, BigDecimal divisor, int precision) {
-        return divide(dividend, divisor, precision, null);
-    }
-
-    /**
-     * Divides the given dividend by the divisor.
-     *
-     * @param dividend     The decimal to be divided.
-     * @param divisor      The decimal to divide by.
-     * @param roundingMode The rounding algorithm to use when rounding the result.
-     * @return The result of dividing the dividend by the divisor.
-     */
-    public static BigDecimal divide(BigDecimal dividend, BigDecimal divisor, RoundingMode roundingMode) {
-        return divide(dividend, divisor, getMaxPrecision(dividend, divisor), roundingMode);
-    }
-
-    /**
-     * Divides the given dividend by the divisor.
-     *
-     * @param dividend     The decimal to be divided.
-     * @param divisor      The decimal to divide by.
-     * @param precision    The number of decimal places preserved in the result.
-     * @param roundingMode The rounding algorithm to use when rounding the result.
-     * @return The result of dividing the dividend by the divisor.
+     * @param dividend      The decimal to be divided.
+     * @param divisor       The decimal to divide by.
+     * @param precision     The number of decimal places preserved in the result.
+     * @param roundingMode  The rounding algorithm to use when rounding the result.
+     * @return              The result of dividing the dividend by the divisor.
      */
     public static BigDecimal divide(BigDecimal dividend, BigDecimal divisor, int precision, RoundingMode roundingMode) {
-        if (roundingMode == null) roundingMode = DEFAULT_ROUNDING_MODE;
-
         BigDecimal result = null;
 
         if (dividend != null && divisor != null) {
-            result = dividend.divide(divisor, precision, roundingMode);
+            result = dividend.divide(divisor, PrecisionHelper.normalize(precision, dividend, divisor), RoundingModeHelper.normalize(roundingMode));
         }
 
         return result;
     }
 
     /**
-     * Divides the given dividend by the divisor.
-     *
-     * @param dividend     The decimal to be divided.
-     * @param divisor      The decimal to divide by.
-     * @param precision    The number of decimal places preserved in the result.
-     * @param roundingMode The rounding algorithm to use when rounding the result.
-     * @return The result of dividing the dividend by the divisor.
-     */
-    public static BigDecimal divide(BigDecimal dividend, BigDecimal divisor, String precision, String roundingMode) {
-        return divide(dividend, divisor, normalizePrecision(precision, dividend, divisor), normalizeRoundingMode(roundingMode));
-    }
-
-    /**
      * Returns the exponentiation of the given base raised to power of the given exponent.
      *
-     * @param base     The decimal base to be raised to the power of the given exponent.
-     * @param exponent The exponent to raise the given base to.
-     * @return The result of raising the given base to the power of the given exponent.
-     */
-    public static BigDecimal power(BigDecimal base, BigInteger exponent) {
-        if (exponent == null) return base;
-        return power(base, exponent.intValue());
-    }
-
-    /**
-     * Returns the exponentiation of the given base raised to power of the given exponent.
-     *
-     * @param base     The decimal base to be raised to the power of the given exponent.
-     * @param exponent The exponent to raise the given base to.
-     * @return The result of raising the given base to the power of the given exponent.
+     * @param base      The decimal base to be raised to the power of the given exponent.
+     * @param exponent  The exponent to raise the given base to.
+     * @return          The result of raising the given base to the power of the given exponent.
      */
     public static BigDecimal power(BigDecimal base, int exponent) {
-        if (base == null) return null;
-        return base.pow(exponent);
-    }
-
-    /**
-     * Rounds the given decimal to the given precision using the default rounding algorithm.
-     *
-     * @param decimal   A decimal to be rounded.
-     * @param precision The number of decimal places to round to.
-     * @return The given decimal rounded to the given precision using the default algorithm.
-     */
-    public static BigDecimal round(BigDecimal decimal, int precision) {
-        return round(decimal, precision, null);
+        return base == null ? null : base.pow(exponent);
     }
 
     /**
      * Rounds the given decimal to the given precision with the given rounding algorithm.
      *
-     * @param decimal      A decimal to be rounded.
-     * @param precision    The number of decimal places to round to.
-     * @param roundingMode The rounding algorithm to be used.
-     * @return The given decimal rounded to the given precision using the given algorithm.
+     * @param decimal       A decimal to be rounded.
+     * @param precision     The number of decimal places to round to.
+     * @param roundingMode  The rounding algorithm to be used.
+     * @return              The given decimal rounded to the given precision using the given algorithm.
      */
     public static BigDecimal round(BigDecimal decimal, int precision, RoundingMode roundingMode) {
-        if (decimal == null) return null;
-        if (roundingMode == null) roundingMode = DEFAULT_ROUNDING_MODE;
-        return decimal.setScale(precision, roundingMode);
-    }
-
-    /**
-     * Rounds the given decimal to the given precision using the default rounding algorithm.
-     *
-     * @param decimal   A decimal to be rounded.
-     * @param precision The number of decimal places to round to.
-     * @return The given decimal rounded to the given precision using the default algorithm.
-     */
-    public static BigDecimal round(BigDecimal decimal, String precision) {
-        return round(decimal, precision, null);
-    }
-
-    /**
-     * Rounds the given decimal to the given precision with the given rounding algorithm.
-     *
-     * @param decimal      A decimal to be rounded.
-     * @param precision    The number of decimal places to round to.
-     * @param roundingMode The rounding algorithm to be used.
-     * @return The given decimal rounded to the given precision using the given algorithm.
-     */
-    public static BigDecimal round(BigDecimal decimal, String precision, String roundingMode) {
-        if (precision == null) return decimal;
-        return round(decimal, Integer.parseInt(precision), normalizeRoundingMode(roundingMode));
-    }
-
-    /**
-     * Rounds the given list of decimals to the given precision using the default rounding algorithm.
-     *
-     * @param decimals  A decimal to be rounded.
-     * @param precision The number of decimal places to round to.
-     * @return The given list of decimals rounded to the given precision using the default algorithm.
-     */
-    public static BigDecimal[] round(BigDecimal[] decimals, int precision) {
-        return round(decimals, precision, null);
+        return decimal == null ? null : decimal.setScale(PrecisionHelper.normalize(precision), RoundingModeHelper.normalize(roundingMode));
     }
 
     /**
      * Rounds the given list of decimals to the given precision with the given rounding algorithm.
      *
-     * @param decimals     A list of decimals to be rounded.
-     * @param precision    The number of decimal places to round to.
-     * @param roundingMode The rounding algorithm to be used.
-     * @return The given list of decimals rounded to the given precision using the given algorithm.
+     * @param decimals      A list of decimals to be rounded.
+     * @param precision     The number of decimal places to round to.
+     * @param roundingMode  The rounding algorithm to be used.
+     * @return              The given list of decimals rounded to the given precision using the given algorithm.
      */
     public static BigDecimal[] round(BigDecimal[] decimals, int precision, RoundingMode roundingMode) {
         if (decimals == null) return null;
@@ -745,34 +624,10 @@ public final class BigDecimalHelper {
     }
 
     /**
-     * Rounds the given list of decimals to the given precision using the default rounding algorithm.
-     *
-     * @param decimals  A list of decimals to be rounded.
-     * @param precision The number of decimal places to round to.
-     * @return The given decimal rounded to the given precision using the default algorithm.
-     */
-    public static BigDecimal[] round(BigDecimal[] decimals, String precision) {
-        return round(decimals, precision, null);
-    }
-
-    /**
-     * Rounds the given list of decimals to the given precision with the given rounding algorithm.
-     *
-     * @param decimals     A list of decimals to be rounded.
-     * @param precision    The number of decimal places to round to.
-     * @param roundingMode The rounding algorithm to be used.
-     * @return The given list of decimals rounded to the given precision using the given algorithm.
-     */
-    public static BigDecimal[] round(BigDecimal[] decimals, String precision, String roundingMode) {
-        if (precision == null) return decimals;
-        return round(decimals, Integer.parseInt(precision), normalizeRoundingMode(roundingMode));
-    }
-
-    /**
      * Returns the largest of the given list of decimal numbers.
      *
-     * @param decimals A list of decimal numbers.
-     * @return The largest of the given numbers.
+     * @param decimals      A list of decimal numbers.
+     * @return              The largest of the given numbers.
      */
     public static BigDecimal maximum(BigDecimal... decimals) {
         BigDecimal result = null;
@@ -795,8 +650,8 @@ public final class BigDecimalHelper {
     /**
      * Returns the smallest of the given list of decimal numbers.
      *
-     * @param decimals A list of decimal numbers.
-     * @return The smallest of the given numbers.
+     * @param decimals      A list of decimal numbers.
+     * @return              The smallest of the given numbers.
      */
     public static BigDecimal minimum(BigDecimal... decimals) {
         BigDecimal result = null;
@@ -819,10 +674,10 @@ public final class BigDecimalHelper {
     /**
      * Returns the average or mean from the given list of decimal numbers.
      *
-     * @param precision    The number of decimal places to round to.
-     * @param roundingMode The rounding algorithm to be used.
-     * @param decimals     A list of decimal numbers.
-     * @return The average or mean value of the given list of values.
+     * @param precision     The number of decimal places to round to.
+     * @param roundingMode  The rounding algorithm to be used.
+     * @param decimals      A list of decimal numbers.
+     * @return              The average or mean value of the given list of values.
      */
     public static BigDecimal average(int precision, RoundingMode roundingMode, BigDecimal... decimals) {
         BigDecimal result = null;
@@ -840,33 +695,11 @@ public final class BigDecimalHelper {
                 }
             }
             if (result != null) {
-                result = divide(result, new BigDecimal(length), precision, roundingMode);
+                result = divide(result, new BigDecimal(length), PrecisionHelper.normalize(precision, decimals), roundingMode);
             }
         }
 
         return result;
-    }
-
-    /**
-     * Returns the average or mean from the given list of decimal numbers.
-     *
-     * @param precision    The number of decimal places to round to.
-     * @param roundingMode The rounding algorithm to be used.
-     * @param decimals     A list of decimal numbers.
-     * @return The average or mean value of the given list of values.
-     */
-    public static BigDecimal average(String precision, String roundingMode, BigDecimal... decimals) {
-        return average(normalizePrecision(precision, decimals), normalizeRoundingMode(roundingMode), decimals);
-    }
-
-    /**
-     * Returns the average or mean from the given list of decimal numbers.
-     *
-     * @param decimals A list of decimal numbers.
-     * @return The average or mean value of the given list of values.
-     */
-    public static BigDecimal average(BigDecimal... decimals) {
-        return average(null, null, decimals);
     }
 
     /**
@@ -976,53 +809,9 @@ public final class BigDecimalHelper {
                 parse(decimal, decimalPattern, locale);
                 valid = true;
             }
-        } catch (Exception ex) {
+        } catch(Exception ex) {
             if (raise) ExceptionHelper.raise(ex);
         }
         return valid;
-    }
-
-    /**
-     * Returns the maximum precision used by the given list of decimals.
-     *
-     * @param decimals A list of decimals to calculate the maximum precision of.
-     * @return The maximum precision used by the given list of decimals.
-     */
-    private static int getMaxPrecision(BigDecimal... decimals) {
-        int precision = DEFAULT_DECIMAL_PRECISION;
-        if (decimals != null) {
-            for (BigDecimal decimal : decimals) {
-                if (decimal != null && decimal.scale() > precision) precision = decimal.scale();
-            }
-        }
-        return precision;
-    }
-
-    /**
-     * Returns the specified precision unless it is null, in which case the maximum precision from the list of decimals
-     * is returned.
-     *
-     * @param precision Optional precision to be returned.
-     * @param decimals  If precision not specified, the maximum precision from this list of decimals is returned.
-     * @return The resolved precision to be used by the caller.
-     */
-    private static int normalizePrecision(String precision, BigDecimal... decimals) {
-        int result;
-        if (precision != null) {
-            result = Integer.parseInt(precision);
-        } else {
-            result = getMaxPrecision(decimals);
-        }
-        return result;
-    }
-
-    /**
-     * Returns the given rounding mode if specified, or the default rounding mode.
-     *
-     * @param roundingMode An optional rounding algorithm name.
-     * @return The rounding algorithm to be used by the caller.
-     */
-    private static RoundingMode normalizeRoundingMode(String roundingMode) {
-        return roundingMode == null ? DEFAULT_ROUNDING_MODE : RoundingMode.valueOf(roundingMode);
     }
 }

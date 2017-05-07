@@ -388,18 +388,6 @@ public final class BigIntegerHelper {
      * @param exponent The exponent to raise the given base to.
      * @return The result of raising the given base to the power of the given exponent.
      */
-    public static BigInteger power(BigInteger base, BigInteger exponent) {
-        if (exponent == null) return base;
-        return power(base, exponent.intValue());
-    }
-
-    /**
-     * Returns the exponentiation of the given base raised to power of the given exponent.
-     *
-     * @param base     The integer base to be raised to the power of the given exponent.
-     * @param exponent The exponent to raise the given base to.
-     * @return The result of raising the given base to the power of the given exponent.
-     */
     public static BigInteger power(BigInteger base, int exponent) {
         if (base == null) return null;
         return base.pow(exponent);

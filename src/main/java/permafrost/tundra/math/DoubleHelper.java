@@ -24,6 +24,8 @@
 
 package permafrost.tundra.math;
 
+import java.text.MessageFormat;
+
 /**
  * A collection of convenience methods for working with doubles.
  */
@@ -37,6 +39,24 @@ public final class DoubleHelper {
      * Disallow instantiation of this class.
      */
     private DoubleHelper() {}
+
+    /**
+     * Converts the given object to a Double.
+     *
+     * @param object    The object to be converted.
+     * @return          The converted object.
+     */
+    public static Double normalize(Object object) {
+        Double value = null;
+
+        if (object instanceof Number) {
+            value = ((Number)object).doubleValue();
+        } else if (object instanceof String) {
+            value = parse((String)object);
+        }
+
+        return value;
+    }
 
     /**
      * Parses the given string as a double.

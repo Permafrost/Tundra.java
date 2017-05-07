@@ -24,6 +24,8 @@
 
 package permafrost.tundra.math;
 
+import java.text.MessageFormat;
+
 /**
  * A collection of convenience methods for working with longs.
  */
@@ -37,6 +39,24 @@ public final class LongHelper {
      * Disallow instantiation of this class.
      */
     private LongHelper() {}
+
+    /**
+     * Converts the given object to a Long.
+     *
+     * @param object    The object to be converted.
+     * @return          The converted object.
+     */
+    public static Long normalize(Object object) {
+        Long value = null;
+
+        if (object instanceof Number) {
+            value = ((Number)object).longValue();
+        } else if (object instanceof String) {
+            value = parse((String)object);
+        }
+
+        return value;
+    }
 
     /**
      * Parses the given string as a long.
@@ -79,6 +99,7 @@ public final class LongHelper {
      */
     public static long[] parse(String[] input, long defaultValue) {
         if (input == null) return null;
+
         long[] output = new long[input.length];
 
         for (int i = 0; i < input.length; i++) {
@@ -99,13 +120,14 @@ public final class LongHelper {
     }
 
     /**
-     * Serializes the given integers as strings.
+     * Serializes the given longs as strings.
      *
-     * @param input A list of integers to be serialized.
-     * @return      A list of string representations of the given integers.
+     * @param input A list of longs to be serialized.
+     * @return      A list of string representations of the given longs.
      */
-    public static String[] emit(int[] input) {
+    public static String[] emit(long[] input) {
         if (input == null) return null;
+
         String[] output = new String[input.length];
 
         for (int i = 0; i < input.length; i++) {

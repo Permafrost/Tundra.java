@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Lachlan Dowding
+ * Copyright (c) 2017 Lachlan Dowding
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,30 +27,30 @@ package permafrost.tundra.math;
 import java.text.MessageFormat;
 
 /**
- * A collection of convenience methods for working with floats.
+ * A collection of convenience methods for working with bytes.
  */
-public final class FloatHelper {
+public final class ByteHelper {
     /**
      * The default value used when parsing a null string.
      */
-    private static float DEFAULT_FLOAT_VALUE = 0f;
+    private static byte DEFAULT_BYTE_VALUE = 0;
 
     /**
      * Disallow instantiation of this class.
      */
-    private FloatHelper() {}
+    private ByteHelper() {}
 
     /**
-     * Converts the given object to a Float.
+     * Converts the given object to a Byte.
      *
      * @param object    The object to be converted.
      * @return          The converted object.
      */
-    public static Float normalize(Object object) {
-        Float value = null;
+    public static Byte normalize(Object object) {
+        Byte value = null;
 
         if (object instanceof Number) {
-            value = ((Number)object).floatValue();
+            value = ((Number)object).byteValue();
         } else if (object instanceof String) {
             value = parse((String)object);
         }
@@ -59,47 +59,48 @@ public final class FloatHelper {
     }
 
     /**
-     * Parses the given string as a float.
+     * Parses the given string as an byte.
      *
-     * @param input A string to be parsed as float.
-     * @return      Float representing the given string, or 0 if the given string was null.
+     * @param input A string to be parsed as byte.
+     * @return      Byte representing the given string, or 0 if the given string was null.
      */
-    public static float parse(String input) {
-        return parse(input, DEFAULT_FLOAT_VALUE);
+    public static byte parse(String input) {
+        return parse(input, DEFAULT_BYTE_VALUE);
     }
 
     /**
-     * Parses the given string as a float.
+     * Parses the given string as an byte.
      *
-     * @param input        A string to be parsed as float.
+     * @param input        A string to be parsed as byte.
      * @param defaultValue The value returned if the given string is null.
-     * @return             Float representing the given string, or defaultValue if the given string is null.
+     * @return             Byte representing the given string, or defaultValue if the given string is null.
      */
-    public static float parse(String input, float defaultValue) {
+    public static byte parse(String input, byte defaultValue) {
         if (input == null) return defaultValue;
-        return Float.parseFloat(input);
+        return Byte.parseByte(input);
     }
 
     /**
-     * Parses the given strings as floats.
+     * Parses the given strings as bytea.
      *
-     * @param input         A list of strings to be parsed as integers.
-     * @return              A list of floats representing the given strings.
+     * @param input         A list of strings to be parsed as bytes.
+     * @return              A list of bytes representing the given strings.
      */
-    public static float[] parse(String[] input) {
-        return parse(input, DEFAULT_FLOAT_VALUE);
+    public static byte[] parse(String[] input) {
+        return parse(input, DEFAULT_BYTE_VALUE);
     }
 
     /**
-     * Parses the given strings as floats.
+     * Parses the given strings as bytes.
      *
-     * @param input         A list of strings to be parsed as floats.
+     * @param input         A list of strings to be parsed as bytes.
      * @param defaultValue  The value returned if a string in the list is null.
-     * @return              A list of floats representing the given strings.
+     * @return              A list of bytes representing the given strings.
      */
-    public static float[] parse(String[] input, float defaultValue) {
+    public static byte[] parse(String[] input, byte defaultValue) {
         if (input == null) return null;
-        float[] output = new float[input.length];
+
+        byte[] output = new byte[input.length];
 
         for (int i = 0; i < input.length; i++) {
             output[i] = parse(input[i], defaultValue);
@@ -109,23 +110,24 @@ public final class FloatHelper {
     }
 
     /**
-     * Serializes the given float as a string.
+     * Serializes the given byte as a string.
      *
-     * @param input The float to be serialized.
-     * @return      A string representation of the given float.
+     * @param input The byte to be serialized.
+     * @return      A string representation of the given byte.
      */
-    public static String emit(float input) {
-        return Float.toString(input);
+    public static String emit(byte input) {
+        return Byte.toString(input);
     }
 
     /**
-     * Serializes the given floats as strings.
+     * Serializes the given bytes as strings.
      *
-     * @param input A list of floats to be serialized.
-     * @return      A list of string representations of the given floats.
+     * @param input A list of bytes to be serialized.
+     * @return      A list of string representations of the given bytes.
      */
-    public static String[] emit(int[] input) {
+    public static String[] emit(byte[] input) {
         if (input == null) return null;
+
         String[] output = new String[input.length];
 
         for (int i = 0; i < input.length; i++) {

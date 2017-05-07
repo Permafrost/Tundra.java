@@ -24,6 +24,8 @@
 
 package permafrost.tundra.math;
 
+import java.text.MessageFormat;
+
 /**
  * A collection of convenience methods for working with integers.
  */
@@ -37,6 +39,24 @@ public final class IntegerHelper {
      * Disallow instantiation of this class.
      */
     private IntegerHelper() {}
+
+    /**
+     * Converts the given object to a Integer.
+     *
+     * @param object    The object to be converted.
+     * @return          The converted object.
+     */
+    public static Integer normalize(Object object) {
+        Integer value = null;
+
+        if (object instanceof Number) {
+            value = ((Number)object).intValue();
+        } else if (object instanceof String) {
+            value = parse((String)object);
+        }
+
+        return value;
+    }
 
     /**
      * Parses the given string as an integer.
