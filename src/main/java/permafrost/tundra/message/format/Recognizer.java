@@ -100,7 +100,7 @@ public class Recognizer {
      * @return              The format with the given name, if it was registered.
      */
     public Format get(String formatName, boolean enabledOnly) {
-        Format format = formats.get(formatName);
+        Format format = formatName == null ? null : formats.get(formatName);
         return format == null || (enabledOnly && !format.isEnabled()) ? null : format;
     }
 
