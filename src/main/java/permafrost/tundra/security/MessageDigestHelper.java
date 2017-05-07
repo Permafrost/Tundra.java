@@ -42,11 +42,32 @@ public final class MessageDigestHelper {
      * The default message digest algorithm name.
      */
     public static final String DEFAULT_ALGORITHM_NAME = "SHA-512";
+    /**
+     * The default message digest algorithm.
+     */
+    public static final MessageDigest DEFAULT_ALGORITHM = getDefault();
 
     /**
      * Disallow instantiation of this class.
      */
     private MessageDigestHelper() {}
+
+    /**
+     * Returns the default MessageDigest algorithm.
+     *
+     * @return The default MessageDigest algorithm.
+     */
+    private static MessageDigest getDefault() {
+        MessageDigest messageDigest = null;
+
+        try {
+            messageDigest = MessageDigest.getInstance(DEFAULT_ALGORITHM_NAME);
+        } catch(NoSuchAlgorithmException ex) {
+            throw new RuntimeException(ex);
+        }
+
+        return messageDigest;
+    }
 
     /**
      * Returns a MessageDigest object for the given named algorithm.
@@ -56,8 +77,7 @@ public final class MessageDigestHelper {
      * @throws NoSuchAlgorithmException If there is no provider for the named algorithm.
      */
     public static MessageDigest normalize(String algorithmName) throws NoSuchAlgorithmException {
-        if (algorithmName == null) algorithmName = DEFAULT_ALGORITHM_NAME;
-        return MessageDigest.getInstance(algorithmName);
+        return algorithmName == null ? DEFAULT_ALGORITHM : MessageDigest.getInstance(algorithmName);
     }
 
     /**
@@ -68,8 +88,7 @@ public final class MessageDigestHelper {
      * @throws NoSuchAlgorithmException If there is no provider for the default algorithm.
      */
     public static MessageDigest normalize(MessageDigest algorithm) throws NoSuchAlgorithmException {
-        if (algorithm == null) return normalize(DEFAULT_ALGORITHM_NAME);
-        return algorithm;
+        return algorithm == null ? DEFAULT_ALGORITHM : algorithm;
     }
 
     /**
