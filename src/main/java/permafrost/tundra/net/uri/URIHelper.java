@@ -35,6 +35,8 @@ import permafrost.tundra.lang.CharsetHelper;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.nio.charset.Charset;
 
 /**
@@ -294,10 +296,10 @@ public final class URIHelper {
     public static String encode(String input, Charset charset) {
         if (input == null) return null;
 
-        String output = null;
+        String output;
 
         try {
-            output = java.net.URLEncoder.encode(input, CharsetHelper.normalize(charset, DEFAULT_CHARSET).name()).replace("+", "%20");
+            output = URLEncoder.encode(input, CharsetHelper.normalize(charset, DEFAULT_CHARSET).name()).replace("+", "%20");
         } catch (UnsupportedEncodingException ex) {
             throw new IllegalArgumentException(ex); // this should never happen
         }
@@ -376,10 +378,10 @@ public final class URIHelper {
     public static String decode(String input, Charset charset) {
         if (input == null) return null;
 
-        String output = null;
+        String output;
 
         try {
-            output = java.net.URLDecoder.decode(input, CharsetHelper.normalize(charset, DEFAULT_CHARSET).name());
+            output = URLDecoder.decode(input, CharsetHelper.normalize(charset, DEFAULT_CHARSET).name());
         } catch (UnsupportedEncodingException ex) {
             throw new IllegalArgumentException(ex); // this should never happen
         }
