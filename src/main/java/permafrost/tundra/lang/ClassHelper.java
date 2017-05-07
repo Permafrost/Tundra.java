@@ -24,6 +24,7 @@
 
 package permafrost.tundra.lang;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -58,6 +59,17 @@ public final class ClassHelper {
     }
 
     /**
+     * Returns the one dimensional array class associated with the given component class.
+     *
+     * @param componentClass    The component class to use for the array class.
+     * @param <T>               The component class of the array.
+     * @return                  The one dimensional array class associated with the given component class.
+     */
+    public static <T> Class<?> getArrayClass(Class<T> componentClass) {
+        return getArrayClass(componentClass, 1);
+    }
+
+    /**
      * Returns the array class associated with the given component class and number of dimensions.
      *
      * @param componentClass    The component class to use for the array class.
@@ -65,13 +77,12 @@ public final class ClassHelper {
      * @param <T>               The component class of the array.
      * @return                  The array class associated with the given component class and number of dimensions.
      */
-    public static <T> Class getArrayClass(Class<T> componentClass, int dimensions) {
+    public static <T> Class<?> getArrayClass(Class<T> componentClass, int dimensions) {
         if (dimensions < 1) throw new IllegalArgumentException("array dimensions must be >= 1");
-        try {
-            return Class.forName(StringHelper.repeat("[", dimensions) + "L" + componentClass.getName() + ";");
-        } catch(ClassNotFoundException ex) {
-            throw new IllegalArgumentException(ex);
-        }
+
+        int[] dimensionArray = new int[dimensions];
+        Arrays.fill(dimensionArray, 0);
+        return Array.newInstance(componentClass, dimensionArray).getClass();
     }
 
     /**
