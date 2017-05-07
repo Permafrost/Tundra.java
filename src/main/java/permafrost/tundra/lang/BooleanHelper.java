@@ -24,6 +24,8 @@
 
 package permafrost.tundra.lang;
 
+import java.text.MessageFormat;
+
 /**
  * A collection of convenience methods for working with booleans.
  */
@@ -32,6 +34,24 @@ public final class BooleanHelper {
      * Disallow instantiation of this class.
      */
     private BooleanHelper() {}
+
+    /**
+     * Converts the given object to a Boolean.
+     *
+     * @param object    The object to be converted.
+     * @return          The converted object.
+     */
+    public static Boolean normalize(Object object) {
+        Boolean value = null;
+
+        if (object instanceof Boolean) {
+            value = (Boolean)object;
+        } else if (object instanceof String) {
+            value = parse((String)object);
+        }
+
+        return value;
+    }
 
     /**
      * Normalizes a boolean string to either "true" or "false", substituting the given default if the string is null.
