@@ -34,18 +34,37 @@ import java.nio.charset.Charset;
  */
 public final class CharsetHelper {
     /**
-     * The default character set used by Tundra.
-     */
-    public static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
-    /**
      * The default character set name used by Tundra.
      */
-    public static final String DEFAULT_CHARSET_NAME = DEFAULT_CHARSET.name();
+    public static final String DEFAULT_CHARSET_NAME = "UTF-8";
+
+    /**
+     * The default character set used by Tundra.
+     */
+    public static final Charset DEFAULT_CHARSET = Charset.forName(DEFAULT_CHARSET_NAME);
 
     /**
      * Disallow instantiation of this class.
      */
     private CharsetHelper() {}
+
+    /**
+     * Converts the given object to a Class.
+     *
+     * @param object    The object to be converted.
+     * @return          The converted object.
+     */
+    public static Charset normalize(Object object) {
+        Charset value = null;
+
+        if (object instanceof Charset) {
+            value = (Charset)object;
+        } else if (object instanceof String) {
+            value = Charset.forName((String)object);
+        }
+
+        return value;
+    }
 
     /**
      * Normalizes the given charset name as a Charset object.
