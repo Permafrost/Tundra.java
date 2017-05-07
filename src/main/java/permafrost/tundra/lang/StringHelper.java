@@ -35,17 +35,25 @@ import com.wm.util.coder.ValuesCodable;
 import permafrost.tundra.data.IDataHelper;
 import permafrost.tundra.io.InputOutputHelper;
 import permafrost.tundra.io.InputStreamHelper;
+import permafrost.tundra.io.ReaderHelper;
 import permafrost.tundra.math.BigDecimalHelper;
 import permafrost.tundra.math.BigIntegerHelper;
+import permafrost.tundra.math.DoubleHelper;
+import permafrost.tundra.math.FloatHelper;
+import permafrost.tundra.math.IntegerHelper;
+import permafrost.tundra.math.LongHelper;
+import permafrost.tundra.math.NumberHelper;
 import permafrost.tundra.time.DateTimeHelper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -68,18 +76,7 @@ public final class StringHelper {
      * @return A string representation of the given byte[].
      */
     public static String normalize(byte[] bytes) {
-        return normalize(bytes, CharsetHelper.DEFAULT_CHARSET);
-    }
-
-    /**
-     * Converts the given byte[] as a string.
-     *
-     * @param bytes       A byte[] to be converted to a string.
-     * @param charsetName The character set name to use.
-     * @return A string representation of the given byte[].
-     */
-    public static String normalize(byte[] bytes, String charsetName) {
-        return normalize(bytes, CharsetHelper.normalize(charsetName));
+        return normalize(bytes, null);
     }
 
     /**
@@ -110,19 +107,6 @@ public final class StringHelper {
      * Converts the given java.io.InputStream as a String, and closes the stream.
      *
      * @param inputStream A java.io.InputStream to be converted to a string.
-     * @param charsetName The character set to use.
-     * @return A string representation of the given java.io.InputStream.
-     * @throws IOException If the given encoding is unsupported, or if there is an error reading from the
-     *                     java.io.InputStream.
-     */
-    public static String normalize(InputStream inputStream, String charsetName) throws IOException {
-        return normalize(inputStream, CharsetHelper.normalize(charsetName));
-    }
-
-    /**
-     * Converts the given java.io.InputStream as a String, and closes the stream.
-     *
-     * @param inputStream A java.io.InputStream to be converted to a string.
      * @param charset     The character set to use.
      * @return A string representation of the given java.io.InputStream.
      * @throws IOException If there is an error reading from the java.io.InputStream.
@@ -138,52 +122,45 @@ public final class StringHelper {
     /**
      * Normalizes the given String, byte[], or java.io.InputStream object to a String.
      *
-     * @param object The object to be normalized to a string.
-     * @return A string representation of the given object.
-     * @throws IOException If the given encoding is unsupported, or if there is an error reading from the
-     *                     java.io.InputStream.
+     * @param object        The object to be normalized to a string.
+     * @return              A string representation of the given object.
+     * @throws IOException  If the given encoding is unsupported, or if there is an error reading from the
+     *                      java.io.InputStream.
      */
     public static String normalize(Object object) throws IOException {
-        return normalize(object, CharsetHelper.DEFAULT_CHARSET);
+        return normalize(object, null);
     }
 
     /**
      * Normalizes the given String, byte[], or java.io.InputStream object to a String.
      *
-     * @param object      The object to be normalized to a string.
-     * @param charsetName The character set to use.
-     * @return A string representation of the given object.
-     * @throws IOException If the given encoding is unsupported, or if there is an error reading from the
-     *                     java.io.InputStream.
-     */
-    public static String normalize(Object object, String charsetName) throws IOException {
-        return normalize(object, CharsetHelper.normalize(charsetName));
-    }
-
-    /**
-     * Normalizes the given String, byte[], or java.io.InputStream object to a String.
-     *
-     * @param object  The object to be normalized to a string.
-     * @param charset The character set to use.
-     * @return A string representation of the given object.
-     * @throws IOException If there is an error reading from the java.io.InputStream.
+     * @param object        The object to be normalized to a string.
+     * @param charset       The character set to use.
+     * @return              A string representation of the given object.
+     * @throws IOException  If there is an error reading from the java.io.InputStream.
      */
     public static String normalize(Object object, Charset charset) throws IOException {
-        if (object == null) return null;
+        String value = null;
 
-        String output;
-
-        if (object instanceof byte[]) {
-            output = normalize((byte[])object, charset);
-        } else if (object instanceof String) {
-            output = (String)object;
+        if (object instanceof String) {
+            value = (String)object;
+        } else if (object instanceof Boolean) {
+            value = BooleanHelper.emit((Boolean)object);
+        } else if (object instanceof Number) {
+            value = NumberHelper.emit((Number)object);
         } else if (object instanceof InputStream) {
-            output = normalize((InputStream)object, charset);
-        } else {
-            throw new IllegalArgumentException("object must be a String, byte[], or java.io.InputStream");
+            value = normalize((InputStream)object, charset);
+        } else if (object instanceof byte[]) {
+            value = normalize((byte[])object, charset);
+        } else if (object instanceof Reader) {
+            value = ReaderHelper.read((Reader)object);
+        } else if (object instanceof Class) {
+            value = ((Class)object).getName();
+        } else if (object != null) {
+            value = object.toString();
         }
 
-        return output;
+        return value;
     }
 
     /**
