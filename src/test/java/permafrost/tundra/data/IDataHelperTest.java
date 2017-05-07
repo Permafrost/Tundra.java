@@ -241,7 +241,7 @@ public class IDataHelperTest {
 
     @Test
     public void testRemoveFromNullIData() throws Exception {
-        Object value = IDataHelper.remove(null, "1");
+        Object value = IDataHelper.remove((IData)null, "1");
         assertTrue(value == null);
     }
 
@@ -1553,12 +1553,14 @@ public class IDataHelperTest {
     @Test
     public void testGetFromCursor() throws Exception {
         IDataCursor cursor = document.getCursor();
-        IDataUtil.put(cursor, "a", "1");
-        IDataUtil.put(cursor, "b", 2);
-        IDataUtil.put(cursor, "c", 3.14f);
-        IDataUtil.put(cursor, "d", true);
-        IDataUtil.put(cursor, "e", 4L);
-        IDataUtil.put(cursor, "f", "true");
+        IDataHelper.put(cursor, "a", "1");
+        IDataHelper.put(cursor, "b", 2);
+        IDataHelper.put(cursor, "c", 3.14f);
+        IDataHelper.put(cursor, "d", true);
+        IDataHelper.put(cursor, "e", 4L);
+        IDataHelper.put(cursor, "f", "true");
+        IDataHelper.put(cursor, "g", 5, false, false, false);
+        IDataHelper.put(cursor, "g", true, false, false, false);
         cursor.destroy();
 
         cursor = document.getCursor();
@@ -1568,11 +1570,13 @@ public class IDataHelperTest {
         assertEquals(new Float(3.14), IDataHelper.get(cursor, "c", Float.class));
         assertEquals(new Double(new Float(3.14).doubleValue()), IDataHelper.get(cursor, "c", Double.class));
         assertEquals(true, IDataHelper.get(cursor, "d", Boolean.class));
-        assertEquals(false, IDataHelper.get(cursor, "e", Boolean.class));
-        assertEquals(true, IDataHelper.get(cursor, "e", Boolean.class, true));
+        assertEquals(false, IDataHelper.getOrDefault(cursor, "e", Boolean.class, false));
+        assertEquals(true, IDataHelper.getOrDefault(cursor, "e", Boolean.class, true));
         assertEquals(true, IDataHelper.get(cursor, "f", Boolean.class));
-        assertEquals(false, IDataHelper.get(cursor, "missing", Boolean.class));
-        assertEquals(true, IDataHelper.get(cursor, "missing", Boolean.class, true));
+        assertEquals(false, IDataHelper.getOrDefault(cursor, "missing", Boolean.class, false));
+        assertEquals(true, IDataHelper.getOrDefault(cursor, "missing", Boolean.class, true));
+        assertEquals(true, IDataHelper.get(cursor, "g", Boolean.class, true));
+
         cursor.destroy();
     }
 }

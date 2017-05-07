@@ -52,10 +52,13 @@ import permafrost.tundra.lang.ObjectConvertMode;
 import permafrost.tundra.lang.Sanitization;
 import permafrost.tundra.lang.ObjectHelper;
 import permafrost.tundra.lang.TableHelper;
+import permafrost.tundra.math.BigDecimalHelper;
+import permafrost.tundra.math.BigIntegerHelper;
 import permafrost.tundra.math.DoubleHelper;
 import permafrost.tundra.math.FloatHelper;
 import permafrost.tundra.math.IntegerHelper;
 import permafrost.tundra.math.LongHelper;
+import permafrost.tundra.math.RoundingModeHelper;
 import permafrost.tundra.mime.MIMETypeHelper;
 import permafrost.tundra.net.http.HTTPMethod;
 import permafrost.tundra.server.NodePermission;
@@ -64,7 +67,11 @@ import permafrost.tundra.time.DurationHelper;
 import permafrost.tundra.time.DurationPattern;
 import permafrost.tundra.xml.dom.NodeHelper;
 import permafrost.tundra.xml.dom.Nodes;
+import permafrost.tundra.xml.namespace.IDataNamespaceContext;
 import permafrost.tundra.xml.xpath.XPathHelper;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.nio.charset.Charset;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -326,12 +333,7 @@ public final class IDataHelper {
      * @return          All leaf values recursively collected from the given document and its children.
      */
     public static Object[] getLeafValues(IData document, Class... classes) {
-        Object[] values = ArrayHelper.normalize(getLeafValues(new ArrayList<Object>(), document, classes).toArray());
-        if (values != null && values.length > 0) {
-            return values;
-        } else {
-            return null;
-        }
+        return ArrayHelper.normalize(getLeafValues(new ArrayList<Object>(), document, classes).toArray());
     }
 
     /**
@@ -352,12 +354,7 @@ public final class IDataHelper {
      * @return          All leaf values recursively collected from the given document list and its children.
      */
     public static Object[] getLeafValues(IData[] array, Class... classes) {
-        Object[] values = ArrayHelper.normalize(getLeafValues(new ArrayList<Object>(), array, classes).toArray());
-        if (values != null && values.length > 0) {
-            return values;
-        } else {
-            return null;
-        }
+        return ArrayHelper.normalize(getLeafValues(new ArrayList<Object>(), array, classes).toArray());
     }
 
     /**
@@ -2605,6 +2602,117 @@ public final class IDataHelper {
     }
 
     /**
+     * Removes the given key and its associated value from the given cursor.
+     *
+     * @param cursor    The cursor to remove the key from.
+     * @param key       The key to be removed.
+     * @return          The value that was associated with the key.
+     */
+    public static Object remove(IDataCursor cursor, String key) {
+        return remove(cursor, key, false);
+    }
+
+    /**
+     * Removes the given key and its associated value from the given cursor.
+     *
+     * @param cursor    The cursor to remove the key from.
+     * @param key       The key to be removed.
+     * @param required  Throws an exception if true and a non-null value is not associated with the given key.
+     * @return          The value that was associated with the key.
+     */
+    public static Object remove(IDataCursor cursor, String key, boolean required) {
+        if (cursor == null || key == null) return null;
+
+        Object value = null;
+
+        if (cursor.first(key)) {
+            value = cursor.getValue();
+            cursor.delete();
+        }
+
+        if (value == null && required) {
+            throw new RuntimeException(new NoSuchFieldException(MessageFormat.format("Key \"{0}\" either does not exist or is associated with a null value", key)));
+        }
+
+        return value;
+    }
+
+    /**
+     * Removes the given key and its associated value from the given cursor.
+     *
+     * @param cursor    The cursor to remove the key from.
+     * @param key       The key to be removed.
+     * @param klass     The class the associated value is required to be an instance of.
+     * @param <T>       The class the associated value is required to be an instance of.
+     * @return          The value that was associated with the key.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T remove(IDataCursor cursor, String key, Class<T> klass) {
+        return remove(cursor, key, klass, false);
+    }
+
+    /**
+     * Removes the given key and its associated value from the given cursor.
+     *
+     * @param cursor    The cursor to remove the key from.
+     * @param key       The key to be removed.
+     * @param klass     The class the associated value is required to be an instance of.
+     * @param required  Throws an exception if true and a value with the required class is not associated with the
+     *                  given key.
+     * @param <T>       The class the associated value is required to be an instance of.
+     * @return          The value that was associated with the key.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T remove(IDataCursor cursor, String key, Class<T> klass, boolean required) {
+        if (cursor == null || key == null) return null;
+
+        T value = null;
+
+        if (cursor.first(key)) {
+            do {
+                value = ObjectHelper.convert(cursor.getValue(), klass);
+            } while(value == null && cursor.next(key));
+            cursor.delete();
+        }
+
+        if (value == null && required) {
+            throw new RuntimeException(new NoSuchFieldException(MessageFormat.format("Key \"{0}\" either does not exist or is not associated with a value compatible with the required class {1}", key, klass == null ? "null" : klass.getName())));
+        }
+
+        return value;
+    }
+
+    /**
+     * Removes the given key and its associated value from the given cursor.
+     *
+     * @param cursor        The cursor to remove the key from.
+     * @param key           The key to be removed.
+     * @param defaultValue  The value to return if the associated value is null or the key does not exist.
+     * @return              The value that was associated with the key.
+     */
+    @SuppressWarnings("unchecked")
+    public static Object removeOrDefault(IDataCursor cursor, String key, Object defaultValue) {
+        Object value = remove(cursor, key, false);
+        return value == null ? defaultValue : value;
+    }
+
+    /**
+     * Removes the given key and its associated value from the given cursor.
+     *
+     * @param cursor        The cursor to remove the key from.
+     * @param key           The key to be removed.
+     * @param klass         The class the associated value is required to be an instance of.
+     * @param defaultValue  The value to return if the associated value is null or the key does not exist.
+     * @param <T>           The class the associated value is required to be an instance of.
+     * @return              The value that was associated with the key.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T removeOrDefault(IDataCursor cursor, String key, Class<T> klass, T defaultValue) {
+        T value = remove(cursor, key, klass, false);
+        return value == null ? defaultValue : value;
+    }
+
+    /**
      * Returns the value associated with the given key from the IDataCursor.
      *
      * @param cursor        The IDataCursor to add the key value association to.
@@ -2612,9 +2720,32 @@ public final class IDataHelper {
      * @return              The value associated with the given key, if one exists that is an instance of the given
      *                      class.
      */
-    @SuppressWarnings("unchecked")
     public static Object get(IDataCursor cursor, String key) {
-        return get(cursor, key, Object.class);
+        return get(cursor, key, false);
+    }
+
+    /**
+     * Returns the value associated with the given key from the IDataCursor.
+     *
+     * @param cursor        The IDataCursor to add the key value association to.
+     * @param key           The key literal to be added.
+     * @return              The value associated with the given key, if one exists that is an instance of the given
+     *                      class.
+     */
+    public static Object get(IDataCursor cursor, String key, boolean required) {
+        if (cursor == null || key == null) return null;
+
+        Object value = null;
+
+        if (cursor.first(key)) {
+            value = cursor.getValue();
+        }
+
+        if (value == null && required) {
+            throw new RuntimeException(new NoSuchFieldException(MessageFormat.format("Key \"{0}\" either does not exist or is associated with null value", key)));
+        }
+
+        return value;
     }
 
     /**
@@ -2629,7 +2760,38 @@ public final class IDataHelper {
      */
     @SuppressWarnings("unchecked")
     public static <T> T get(IDataCursor cursor, String key, Class<T> klass) {
-        return get(cursor, key, klass, null);
+        return get(cursor, key, klass, false);
+    }
+
+    /**
+     * Returns the value associated with the given key from the IDataCursor, if it is an instance of the given class.
+     *
+     * @param cursor        The IDataCursor to add the key value association to.
+     * @param key           The key literal to be added.
+     * @param klass         The class the returned value is required to be an instance of.
+     * @param required      Throws an exception if true and a value with the required class is not associated with the
+     *                      given key.
+     * @param <T>           The class the returned value is required to be an instance of.
+     * @return              The value associated with the given key, if one exists that is an instance of the given
+     *                      class.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T get(IDataCursor cursor, String key, Class<T> klass, boolean required) {
+        if (cursor == null || key == null || klass == null) return null;
+
+        T value = null;
+
+        if (cursor.first(key)) {
+            do {
+                value = ObjectHelper.convert(cursor.getValue(), klass);
+            } while(value == null && cursor.next(key));
+        }
+
+        if (value == null && required) {
+            throw new RuntimeException(new NoSuchFieldException(MessageFormat.format("Key \"{0}\" either does not exist or is not associated with a value compatible with the required class {1}", key, klass.getName())));
+        }
+
+        return value;
     }
 
     /**
@@ -2644,88 +2806,20 @@ public final class IDataHelper {
      *                      class.
      */
     @SuppressWarnings("unchecked")
-    public static <T> T get(IDataCursor cursor, String key, Class<T> klass, T defaultValue) {
-        if (cursor == null || key == null || klass == null) return null;
-        if (defaultValue == null && !klass.isAssignableFrom(Object.class) && klass.isAssignableFrom(Boolean.class)) defaultValue = (T)Boolean.FALSE;
+    public static <T> T getOrDefault(IDataCursor cursor, String key, Class<T> klass, T defaultValue) {
+        T value = get(cursor, key, klass, false);
+        return value == null ? defaultValue : value;
+    }
 
-        T value;
-        Object object = null;
-
-        if (cursor.first(key)) {
-            object = cursor.getValue();
-        }
-
-        if (klass.isInstance(object)) {
-            value = (T)object;
-        } else if (object instanceof String && !klass.isAssignableFrom(Object.class)) {
-            String string = (String)object;
-            if (klass.isAssignableFrom(String.class)) {
-                value = (T)string;
-            } else if (klass.isAssignableFrom(Boolean.class)) {
-                value = (T)Boolean.valueOf(BooleanHelper.parse(string));
-            } else if (klass.isAssignableFrom(Double.class)) {
-                value = (T)Double.valueOf(DoubleHelper.parse(string));
-            } else if (klass.isAssignableFrom(Long.class)) {
-                value = (T)Long.valueOf(LongHelper.parse(string));
-            } else if (klass.isAssignableFrom(Float.class)) {
-                value = (T)Float.valueOf(FloatHelper.parse(string));
-            } else if (klass.isAssignableFrom(Integer.class)) {
-                value = (T)Integer.valueOf(IntegerHelper.parse(string));
-            } else if (klass.isAssignableFrom(Short.class)) {
-                value = (T)Short.valueOf(string);
-            } else if (klass.isAssignableFrom(Byte.class)) {
-                value = (T)Byte.valueOf(string);
-            } else if (klass.isAssignableFrom(Character.class) && string.length() > 0) {
-                value = (T)Character.valueOf(string.charAt(0));
-            } else if (klass.isAssignableFrom(Calendar.class)) {
-                value = (T)DateTimeHelper.parse(string);
-            } else if (klass.isAssignableFrom(Duration.class)) {
-                value = (T)DurationHelper.parse(string);
-            } else if (klass.isAssignableFrom(DurationPattern.class)) {
-                value = (T)DurationPattern.normalize(string);
-            } else if (klass.isAssignableFrom(Charset.class)) {
-                value = (T)CharsetHelper.normalize(string);
-            } else if (klass.isAssignableFrom(ObjectConvertMode.class)) {
-                value = (T)ObjectConvertMode.normalize(string);
-            } else if (klass.isAssignableFrom(Sanitization.class)) {
-                value = (T)Sanitization.normalize(string);
-            } else if (klass.isAssignableFrom(TransformerMode.class)) {
-                value = (T)TransformerMode.normalize(string);
-            } else if (klass.isAssignableFrom(IDataComparisonType.class)) {
-                value = (T)IDataComparisonType.normalize(string);
-            } else if (klass.isAssignableFrom(FilenameFilterType.class)) {
-                value = (T)FilenameFilterType.normalize(string);
-            } else if (klass.isAssignableFrom(MimeType.class)) {
-                value = (T)MIMETypeHelper.of(string);
-            } else if (klass.isAssignableFrom(HTTPMethod.class)) {
-                value = (T)HTTPMethod.normalize(string);
-            } else if (klass.isAssignableFrom(NodePermission.class)) {
-                value = (T)NodePermission.normalize(string);
-            } else {
-                throw new UnsupportedOperationException(MessageFormat.format("Unsupported class conversion from {0} to {1}", object.getClass().getName(), klass.getName()));
-            }
-        } else if (object instanceof Number && Number.class.isAssignableFrom(klass)) {
-            Number number = (Number)object;
-            if (klass.isAssignableFrom(Double.class)) {
-                value = (T)new Double(number.doubleValue());
-            } else if (klass.isAssignableFrom(Long.class)) {
-                value = (T)new Long(number.longValue());
-            } else if (klass.isAssignableFrom(Float.class)) {
-                value = (T)new Float(number.floatValue());
-            } else if (klass.isAssignableFrom(Integer.class)) {
-                value = (T)new Integer(number.intValue());
-            } else if (klass.isAssignableFrom(Short.class)) {
-                value = (T)new Short(number.shortValue());
-            } else if (klass.isAssignableFrom(Byte.class)) {
-                value = (T)new Byte(number.byteValue());
-            } else {
-                throw new UnsupportedOperationException(MessageFormat.format("Unsupported class conversion from {0} to {1}", object.getClass().getName(), klass.getName()));
-            }
-        } else {
-            value = defaultValue;
-        }
-
-        return value;
+    /**
+     * Associates the given key with the given value in an IDataCursor.
+     *
+     * @param cursor    The IDataCursor to add the key value association to.
+     * @param key       The key literal to be added.
+     * @param value     The value to be associated with the given key.
+     */
+    public static <T> void put(IDataCursor cursor, String key, Class<T> klass, Object value) {
+        put(cursor, key, ObjectHelper.convert(value, klass), true, true);
     }
 
     /**
@@ -2736,7 +2830,7 @@ public final class IDataHelper {
      * @param value     The value to be associated with the given key.
      */
     public static void put(IDataCursor cursor, String key, Object value) {
-        put(cursor, key, value, true, true);
+        put(cursor, key, value, true);
     }
 
     /**
@@ -2749,7 +2843,7 @@ public final class IDataHelper {
      *                          the given value will be associated with the given key.
      */
     public static void put(IDataCursor cursor, String key, Object value, boolean includeNullValue) {
-        put(cursor, key, value, true, includeNullValue);
+        put(cursor, key, value, includeNullValue, true);
     }
 
     /**
@@ -2758,16 +2852,13 @@ public final class IDataHelper {
      * @param cursor            The IDataCursor to add the key value association to.
      * @param key               The key literal to be added.
      * @param value             The value to be associated with the given key. If null, no change is made to the cursor.
-     * @param includeEmptyValue If false and the given value is an empty array or empty string, no change is made to the
-     *                          cursor. In all other cases the given value will be associated with the given key.
      * @param includeNullValue  If false and the given value is null, no change is made to the cursor. In all other
      *                          cases the given value will be associated with the given key.
+     * @param includeEmptyValue If false and the given value is an empty array or empty string, no change is made to the
+     *                          cursor. In all other cases the given value will be associated with the given key.
      */
-    public static void put(IDataCursor cursor, String key, Object value, boolean includeEmptyValue, boolean includeNullValue) {
-        if (!includeNullValue && value == null) return;
-        if (!includeEmptyValue && ObjectHelper.isEmpty(value)) return;
-
-        put(cursor, key, value, true, includeEmptyValue, includeNullValue);
+    public static void put(IDataCursor cursor, String key, Object value, boolean includeNullValue, boolean includeEmptyValue) {
+        put(cursor, key, value, includeNullValue, includeEmptyValue, true);
     }
 
     /**
@@ -2776,14 +2867,14 @@ public final class IDataHelper {
      * @param cursor            The IDataCursor to add the key value association to.
      * @param key               The key literal to be added.
      * @param value             The value to be associated with the given key. If null, no change is made to the cursor.
+     * @param includeNullValue  If false and the given value is null, no change is made to the cursor. In all other
+     *                          cases the given value will be associated with the given key.
+     * @param includeEmptyValue If false and the given value is an empty array or empty string, no change is made to the
+     *                          cursor. In all other cases the given value will be associated with the given key.
      * @param replace           If a value is already associated with the given key, replace it, rather than add a new
      *                          instance of the key.
-     * @param includeEmptyValue If false and the given value is an empty array or empty string, no change is made to the
-     *                          cursor. In all other cases the given value will be associated with the given key.
-     * @param includeNullValue  If false and the given value is null, no change is made to the cursor. In all other
-     *                          cases the given value will be associated with the given key.
      */
-    public static void put(IDataCursor cursor, String key, Object value, boolean replace, boolean includeEmptyValue, boolean includeNullValue) {
+    public static void put(IDataCursor cursor, String key, Object value, boolean includeNullValue, boolean includeEmptyValue, boolean replace) {
         if (!includeNullValue && value == null) return;
         if (!includeEmptyValue && ObjectHelper.isEmpty(value)) return;
 
@@ -2792,6 +2883,88 @@ public final class IDataHelper {
         } else {
             cursor.insertAfter(key, value);
         }
+    }
+
+    /**
+     * Associates the given key with the given value in an IDataCursor.
+     *
+     * @param cursor            The IDataCursor to add the key value association to.
+     * @param key               The key literal to be added.
+     * @param value             The value to be associated with the given key. If null, no change is made to the cursor.
+     * @param klass             The required class of the value; the value will be coerced to this class if possible.
+     */
+    public static <T> void put(IDataCursor cursor, String key, Object value, Class<T> klass) {
+        put(cursor, key, value, klass, true);
+    }
+
+    /**
+     * Associates the given key with the given value in an IDataCursor.
+     *
+     * @param cursor            The IDataCursor to add the key value association to.
+     * @param key               The key literal to be added.
+     * @param value             The value to be associated with the given key. If null, no change is made to the cursor.
+     * @param klass             The required class of the value; the value will be coerced to this class if possible.
+     * @param includeNullValue  If false and the given value is null, no change is made to the cursor. In all other
+     *                          cases the given value will be associated with the given key.
+     */
+    public static <T> void put(IDataCursor cursor, String key, Object value, Class<T> klass, boolean includeNullValue) {
+        put(cursor, key, value, klass, includeNullValue, true);
+    }
+
+    /**
+     * Associates the given key with the given value in an IDataCursor.
+     *
+     * @param cursor            The IDataCursor to add the key value association to.
+     * @param key               The key literal to be added.
+     * @param value             The value to be associated with the given key. If null, no change is made to the cursor.
+     * @param klass             The required class of the value; the value will be coerced to this class if possible.
+     * @param includeNullValue  If false and the given value is null, no change is made to the cursor. In all other
+     *                          cases the given value will be associated with the given key.
+     * @param includeEmptyValue If false and the given value is an empty array or empty string, no change is made to the
+     *                          cursor. In all other cases the given value will be associated with the given key.
+     */
+    public static <T> void put(IDataCursor cursor, String key, Object value, Class<T> klass, boolean includeNullValue, boolean includeEmptyValue) {
+        put(cursor, key, value, klass, includeNullValue, includeEmptyValue, true);
+    }
+
+    /**
+     * Associates the given key with the given value in an IDataCursor.
+     *
+     * @param cursor            The IDataCursor to add the key value association to.
+     * @param key               The key literal to be added.
+     * @param value             The value to be associated with the given key. If null, no change is made to the cursor.
+     * @param klass             The required class of the value; the value will be coerced to this class if possible.
+     * @param includeNullValue  If false and the given value is null, no change is made to the cursor. In all other
+     *                          cases the given value will be associated with the given key.
+     * @param includeEmptyValue If false and the given value is an empty array or empty string, no change is made to the
+     *                          cursor. In all other cases the given value will be associated with the given key.
+     * @param replace           If a value is already associated with the given key, replace it, rather than add a new
+     *                          instance of the key.
+     */
+    public static <T> void put(IDataCursor cursor, String key, Object value, Class<T> klass, boolean includeNullValue, boolean includeEmptyValue, boolean replace) {
+        put(cursor, key, ObjectHelper.convert(value, klass, false), includeNullValue, includeEmptyValue, replace);
+    }
+
+    /**
+     * Associates the given key with the given value in an IDataCursor.
+     *
+     * @param cursor    The IDataCursor to add the key value association to.
+     * @param key       The key literal to be added.
+     * @param value     The value to be associated with the given key.
+     */
+    public static void putOrDefault(IDataCursor cursor, String key, Object value, Object defaultValue) {
+        put(cursor, key, value == null ? defaultValue : value, true, true);
+    }
+
+    /**
+     * Associates the given key with the given value in an IDataCursor.
+     *
+     * @param cursor    The IDataCursor to add the key value association to.
+     * @param key       The key literal to be added.
+     * @param value     The value to be associated with the given key.
+     */
+    public static <T> void putOrDefault(IDataCursor cursor, String key, Object value, Class<T> klass, T defaultValue) {
+        put(cursor, key, value == null ? defaultValue : value, klass, true, true, true);
     }
 
     /**
@@ -3103,7 +3276,9 @@ public final class IDataHelper {
 
         IData output = null;
 
-        if (object instanceof IDataCodable) {
+        if (object instanceof IData) {
+            output = (IData)object;
+        } else if (object instanceof IDataCodable) {
             output = toIData((IDataCodable)object);
         } else if (object instanceof IDataPortable) {
             output = toIData((IDataPortable)object);
@@ -3111,8 +3286,6 @@ public final class IDataHelper {
             output = toIData((ValuesCodable)object);
         } else if (object instanceof Map) {
             output = toIData((Map)object);
-        } else if (object instanceof IData) {
-            output = (IData)object;
         }
 
         return output;
