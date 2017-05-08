@@ -600,7 +600,8 @@ public final class BigDecimalHelper {
      * @return              The given decimal rounded to the given precision using the given algorithm.
      */
     public static BigDecimal round(BigDecimal decimal, int precision, RoundingMode roundingMode) {
-        return decimal == null ? null : decimal.setScale(PrecisionHelper.normalize(precision), RoundingModeHelper.normalize(roundingMode));
+        if (precision < 0 || decimal == null) return decimal;
+        return decimal.setScale(PrecisionHelper.normalize(precision), RoundingModeHelper.normalize(roundingMode));
     }
 
     /**
@@ -695,7 +696,7 @@ public final class BigDecimalHelper {
                 }
             }
             if (result != null) {
-                result = divide(result, new BigDecimal(length), PrecisionHelper.normalize(precision, decimals), roundingMode);
+                result = divide(result, new BigDecimal(length), precision, roundingMode);
             }
         }
 
