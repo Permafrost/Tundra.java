@@ -380,7 +380,7 @@ public final class ServiceHelper {
 
         try {
             MimeType mimeType = new MimeType(contentType);
-            if (charset == null) mimeType.setParameter("charset", charset.displayName());
+            if (charset != null) mimeType.setParameter("charset", charset.displayName());
 
             setHeader(response, "Content-Type", mimeType);
         } catch (MimeTypeParseException ex) {
