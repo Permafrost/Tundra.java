@@ -2812,6 +2812,66 @@ public final class IDataHelper {
     }
 
     /**
+     * Returns the value associated with a given key from the IDataCursor, if it is an instance of the given class.
+     *
+     * @param cursor        The IDataCursor to add the key value association to.
+     * @param klass         The class the returned value is required to be an instance of.
+     * @param keys          One or more keys, the first whose value is an instance of the desired class is returned.
+     * @param <T>           The class the returned value is required to be an instance of.
+     * @return              The value associated with a given key, if one exists that is an instance of the given
+     *                      class.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T first(IDataCursor cursor, Class<T> klass, String ...keys) {
+        return first(cursor, klass, false, keys);
+    }
+
+    /**
+     * Returns the value associated with a given key from the IDataCursor, if it is an instance of the given class.
+     *
+     * @param cursor        The IDataCursor to add the key value association to.
+     * @param klass         The class the returned value is required to be an instance of.
+     * @param required      Throws an exception if true and a value with the required class is not associated with the
+     *                      given key.
+     * @param keys          One or more keys, the first whose value is an instance of the desired class is returned.
+     * @param <T>           The class the returned value is required to be an instance of.
+     * @return              The value associated with a given key, if one exists that is an instance of the given
+     *                      class.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T first(IDataCursor cursor, Class<T> klass, boolean required, String ...keys) {
+        if (cursor == null || keys == null || klass == null) return null;
+
+        for (String key : keys) {
+            T value = get(cursor, key, klass, false);
+            if (value != null) return value;
+        }
+
+        if (required) {
+            throw new RuntimeException(new NoSuchFieldException(MessageFormat.format("Either no keys {0} exist or are associated with a value compatible with the required class {1}", ArrayHelper.stringify(keys), klass.getName())));
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns the value associated with a given key from the IDataCursor, if it is an instance of the given class.
+     *
+     * @param cursor        The IDataCursor to add the key value association to.
+     * @param klass         The class the returned value is required to be an instance of.
+     * @param defaultValue  The value to return if the associated value is null or the key does not exist.
+     * @param keys          One or more keys, the first whose value is an instance of the desired class is returned.
+     * @param <T>           The class the returned value is required to be an instance of.
+     * @return              The value associated with a given key, if one exists that is an instance of the given
+     *                      class.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T firstOrDefault(IDataCursor cursor, Class<T> klass, T defaultValue, String ...keys) {
+        T value = first(cursor, klass, false, keys);
+        return value == null ? defaultValue : value;
+    }
+
+    /**
      * Associates the given key with the given value in an IDataCursor.
      *
      * @param cursor    The IDataCursor to add the key value association to.
