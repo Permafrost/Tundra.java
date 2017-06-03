@@ -511,7 +511,7 @@ public final class DateTimeHelper {
         if (input == null) return null;
         if (pattern == null) pattern = DEFAULT_DATETIME_PATTERN;
 
-        Calendar output = null;
+        Calendar output;
 
         try {
             if (pattern.equals("datetime") || pattern.equals("datetime.xml")) {
@@ -598,8 +598,8 @@ public final class DateTimeHelper {
         if (patterns == null) patterns = new String[1];
 
         Calendar output = null;
-
         boolean parsed = false;
+
         for (String pattern : patterns) {
             try {
                 output = parse(input, pattern, timezone);
@@ -609,6 +609,7 @@ public final class DateTimeHelper {
                 // ignore and continue on to try the next pattern
             }
         }
+
         if (!parsed) {
             throw new IllegalArgumentException(MessageFormat.format("Unparseable datetime: \"{0}\" does not conform to pattern \"{1}\"", input, ArrayHelper.stringify(patterns)));
         }
@@ -659,9 +660,11 @@ public final class DateTimeHelper {
         if (inputs == null) return null;
 
         Calendar[] outputs = new Calendar[inputs.length];
+
         for (int i = 0; i < inputs.length; i++) {
             outputs[i] = parse(inputs[i]);
         }
+
         return outputs;
     }
 
@@ -677,9 +680,11 @@ public final class DateTimeHelper {
         if (inputs == null) return null;
 
         Calendar[] outputs = new Calendar[inputs.length];
+
         for (int i = 0; i < inputs.length; i++) {
             outputs[i] = parse(inputs[i], pattern, timezone);
         }
+
         return outputs;
     }
 
@@ -721,9 +726,11 @@ public final class DateTimeHelper {
         if (inputs == null) return null;
 
         Calendar[] outputs = new Calendar[inputs.length];
+
         for (int i = 0; i < inputs.length; i++) {
             outputs[i] = parse(inputs[i], patterns, timezone);
         }
+
         return outputs;
     }
 
@@ -1235,8 +1242,14 @@ public final class DateTimeHelper {
      */
     public static Calendar maximum(Collection<Calendar> calendars) {
         if (calendars == null || calendars.size() == 0) return null;
-        SortedSet<Calendar> set = new TreeSet<Calendar>(calendars);
-        return set.last();
+
+        SortedSet<Calendar> set = new TreeSet<Calendar>();
+
+        for (Calendar calendar : calendars) {
+            if (calendar != null) set.add(calendar);
+        }
+
+        return set.size() == 0 ? null : set.last();
     }
 
     /**
@@ -1258,8 +1271,14 @@ public final class DateTimeHelper {
      */
     public static Calendar minimum(Collection<Calendar> calendars) {
         if (calendars == null || calendars.size() == 0) return null;
-        SortedSet<Calendar> set = new TreeSet<Calendar>(calendars);
-        return set.first();
+
+        SortedSet<Calendar> set = new TreeSet<Calendar>();
+
+        for (Calendar calendar : calendars) {
+            if (calendar != null) set.add(calendar);
+        }
+
+        return set.size() == 0 ? null : set.first();
     }
 
     /**
@@ -1318,7 +1337,7 @@ public final class DateTimeHelper {
     public static Calendar normalize(Object object, String pattern, TimeZone timezone) {
         if (object == null) return null;
 
-        Calendar calendar = null;
+        Calendar calendar;
 
         if (object instanceof Calendar) {
             calendar = TimeZoneHelper.convert((Calendar)object, timezone);
