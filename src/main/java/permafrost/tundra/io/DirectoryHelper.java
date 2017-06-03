@@ -317,8 +317,8 @@ public final class DirectoryHelper {
      * @param  path     The path items.
      * @return          A new path.
      */
-    public static String join(String... path) {
-        return FileHelper.normalize(join(null, path));
+    public static File join(String... path) {
+        return join(null, path);
     }
 
     /**
