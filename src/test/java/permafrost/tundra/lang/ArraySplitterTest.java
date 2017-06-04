@@ -48,10 +48,22 @@ public class ArraySplitterTest {
         assertArrayEquals(new String[] { }, arraySplitter.getTail());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testNegativeCount() throws Exception {
         String[] array = new String[]  { "a", "b", "c", "d", "e", "f", "g" };
-        ArraySplitter<String> arraySplitter = new ArraySplitter<String>(array, -1);
+        ArraySplitter<String> arraySplitter = new ArraySplitter<String>(array, -3);
+
+        assertArrayEquals(new String[] { "a", "b", "c", "d" }, arraySplitter.getHead());
+        assertArrayEquals(new String[] { "e", "f", "g" }, arraySplitter.getTail());
+    }
+
+    @Test
+    public void testNegativeCountBeyondBounds() throws Exception {
+        String[] array = new String[]  { "a", "b", "c", "d", "e", "f", "g" };
+        ArraySplitter<String> arraySplitter = new ArraySplitter<String>(array, -10);
+
+        assertArrayEquals(new String[] { }, arraySplitter.getHead());
+        assertArrayEquals(new String[] { "a", "b", "c", "d", "e", "f", "g" }, arraySplitter.getTail());
     }
 
     @Test

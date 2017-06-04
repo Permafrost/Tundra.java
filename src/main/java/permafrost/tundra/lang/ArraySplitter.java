@@ -40,6 +40,10 @@ public class ArraySplitter<T> {
      * The number of items to take as the head of the array.
      */
     int count;
+    /**
+     * Whether to take items from the head or tail of the array.
+     */
+    boolean fromHead = true;
 
     /**
      * Constructs a new ArrayHeadTail object.
@@ -66,7 +70,7 @@ public class ArraySplitter<T> {
      *
      * @param array The array to take the head and tail from.
      */
-    public void setArray(T[] array) {
+    protected void setArray(T[] array) {
         if (array == null) throw new NullPointerException("array must not be null");
         this.array = array;
     }
@@ -85,10 +89,10 @@ public class ArraySplitter<T> {
      *
      * @param count The number of items to take as the head of the array.
      */
-    public void setCount(int count) {
-        if (count < 0) throw new IllegalArgumentException("count must be greater than zero");
-        this.count = count;
-        if (count > array.length) this.count = array.length;
+    protected void setCount(int count) {
+        if (count < 0) fromHead = false;
+        this.count = Math.abs(count);
+        if (this.count > array.length) this.count = array.length;
     }
 
     /**
@@ -97,7 +101,15 @@ public class ArraySplitter<T> {
      * @return The head of the array.
      */
     public T[] getHead() {
-        return Arrays.copyOf(array, count);
+        T[] head;
+
+        if (fromHead) {
+            head = Arrays.copyOf(array, count);
+        } else {
+            head = Arrays.copyOf(array, array.length - count);
+        }
+
+        return head;
     }
 
     /**
@@ -108,10 +120,10 @@ public class ArraySplitter<T> {
     public T[] getTail() {
         T[] tail;
 
-        if (count >= array.length) {
-            tail = Arrays.copyOf(array, 0);
-        } else {
+        if (fromHead) {
             tail = Arrays.copyOfRange(array, count, array.length);
+        } else {
+            tail = Arrays.copyOfRange(array, array.length - count, array.length);
         }
 
         return tail;
