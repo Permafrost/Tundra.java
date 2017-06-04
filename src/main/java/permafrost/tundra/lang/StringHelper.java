@@ -771,11 +771,25 @@ public final class StringHelper {
      *
      * @param string    The string to remove the pattern from.
      * @param pattern   The regular expression pattern to be removed.
+     * @param literal   Whether the replacement string is literal and therefore requires quoting.
+     * @return          The given string with either the first or all occurrences of the given pattern removed.
+     */
+    public static String remove(String string, String pattern, boolean literal) {
+        return replace(string, pattern, "", literal, false);
+    }
+
+    /**
+     * Removes either the first or all occurrences of the given regular expression in the given string.
+     *
+     * @param string    The string to remove the pattern from.
+     * @param pattern   The regular expression pattern to be removed.
+     * @param literal   Whether the replacement string is literal and therefore requires quoting.
      * @param firstOnly If true, only the first occurrence is removed, otherwise all occurrences are removed.
      * @return          The given string with either the first or all occurrences of the given pattern removed.
      */
-    public static String remove(String string, String pattern, boolean firstOnly) {
-        return replace(string, pattern, "", true, firstOnly);
+    public static String remove(String string, String pattern, boolean literal, boolean firstOnly) {
+        if (pattern != null && literal) pattern = Matcher.quoteReplacement(pattern);
+        return replace(string, pattern == null ? null : Pattern.compile(pattern), "", firstOnly);
     }
 
     /**
