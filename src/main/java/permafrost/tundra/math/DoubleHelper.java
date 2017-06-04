@@ -59,6 +59,24 @@ public final class DoubleHelper {
     }
 
     /**
+     * Returns double representations of the given list of Objects.
+     *
+     * @param values    The objects to convert to double representations.
+     * @return          Double representations of the given objects.
+     */
+    public static double[] normalize(Object[] values) {
+        if (values == null) return null;
+
+        double[] decimals = new double[values.length];
+
+        for (int i = 0; i < values.length; i++) {
+            decimals[i] = normalize(values[i]);
+        }
+
+        return decimals;
+    }
+
+    /**
      * Parses the given string as a double.
      *
      * @param input A string to be parsed as double.
