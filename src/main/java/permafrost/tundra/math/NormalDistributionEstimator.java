@@ -24,6 +24,8 @@
 
 package permafrost.tundra.math;
 
+import java.util.Collection;
+
 /**
  * Class for incrementally calculating the mean and standard deviation.
  */
@@ -75,7 +77,7 @@ public class NormalDistributionEstimator {
      *
      * @param samples An initial collection of samples to seed the estimator with.
      */
-    public NormalDistributionEstimator(java.util.Collection<Double> samples) {
+    public NormalDistributionEstimator(Collection<Double> samples) {
         this();
         add(samples);
     }
@@ -86,7 +88,7 @@ public class NormalDistributionEstimator {
      * @param unit    The unit of measurement related to the measured samples.
      * @param samples An initial collection of samples to seed the estimator with.
      */
-    public NormalDistributionEstimator(String unit, java.util.Collection<Double> samples) {
+    public NormalDistributionEstimator(String unit, Collection<Double> samples) {
         this(unit);
         add(samples);
     }
@@ -132,7 +134,7 @@ public class NormalDistributionEstimator {
      * @param samples A collection of samples to be added.
      * @return The estimator object itself, to support method chaining.
      */
-    public final NormalDistributionEstimator add(java.util.Collection<Double> samples) {
+    public final NormalDistributionEstimator add(Collection<Double> samples) {
         for (double sample : samples) {
             add(sample);
         }
