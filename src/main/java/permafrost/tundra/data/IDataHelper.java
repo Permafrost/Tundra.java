@@ -2716,33 +2716,64 @@ public final class IDataHelper {
      * Returns the value associated with the given key from the IDataCursor.
      *
      * @param cursor        The IDataCursor to add the key value association to.
-     * @param key           The key literal to be added.
-     * @return              The value associated with the given key, if one exists that is an instance of the given
-     *                      class.
+     * @param key           The key whose associated value is to be returned.
+     * @return              The value associated with the given key.
      */
     public static Object get(IDataCursor cursor, String key) {
         return get(cursor, key, false);
     }
 
     /**
+     * Returns the first value found associated with one of the given keys from the IDataCursor.
+     *
+     * @param cursor        The IDataCursor to add the key value association to.
+     * @param keys          One or more keys in order of precedence.
+     * @return              The first value found associated with a given key.
+     */
+    public static Object get(IDataCursor cursor, String... keys) {
+        return get(cursor, false, keys);
+    }
+
+    /**
      * Returns the value associated with the given key from the IDataCursor.
      *
      * @param cursor        The IDataCursor to add the key value association to.
-     * @param key           The key literal to be added.
-     * @return              The value associated with the given key, if one exists that is an instance of the given
-     *                      class.
+     * @param key           The key whose associated value is to be returned.
+     * @param required      Throws an exception if true and a value is not associated with the given key.
+     * @return              The value associated with the given key.
      */
     public static Object get(IDataCursor cursor, String key, boolean required) {
-        if (cursor == null || key == null) return null;
+        return get(cursor, required, key);
+    }
+
+    /**
+     * Returns the value associated with the given key from the IDataCursor.
+     *
+     * @param cursor        The IDataCursor to add the key value association to.
+     * @param required      Throws an exception if true and a value is not associated with any of the given keys.
+     * @param keys          One or more keys in order of precedence.
+     * @return              The first value found associated with a given key.
+     */
+    public static Object get(IDataCursor cursor, boolean required, String... keys) {
+        if (cursor == null || keys == null || keys.length == 0 || keys[0] == null) return null;
 
         Object value = null;
 
-        if (cursor.first(key)) {
-            value = cursor.getValue();
+        for (String key : keys) {
+            if (key != null) {
+                if (cursor.first(key)) {
+                    value = cursor.getValue();
+                }
+                if (value != null) break;
+            }
         }
 
         if (value == null && required) {
-            throw new RuntimeException(new NoSuchFieldException(MessageFormat.format("Key \"{0}\" either does not exist or is associated with null value", key)));
+            if (keys.length == 1) {
+                throw new RuntimeException(new NoSuchFieldException(MessageFormat.format("Specified key does not exist or is associated with null value: {0}", keys[0])));
+            } else {
+                throw new RuntimeException(new NoSuchFieldException(MessageFormat.format("Specified keys do not exist or are associated with null values: {0}", ArrayHelper.join(keys, Sanitization.REMOVE_NULLS))));
+            }
         }
 
         return value;
@@ -2752,7 +2783,7 @@ public final class IDataHelper {
      * Returns the value associated with the given key from the IDataCursor, if it is an instance of the given class.
      *
      * @param cursor        The IDataCursor to add the key value association to.
-     * @param key           The key literal to be added.
+     * @param key           The key whose associated value is to be returned.
      * @param klass         The class the returned value is required to be an instance of.
      * @param <T>           The class the returned value is required to be an instance of.
      * @return              The value associated with the given key, if one exists that is an instance of the given
@@ -2767,7 +2798,7 @@ public final class IDataHelper {
      * Returns the value associated with the given key from the IDataCursor, if it is an instance of the given class.
      *
      * @param cursor        The IDataCursor to add the key value association to.
-     * @param key           The key literal to be added.
+     * @param key           The key whose associated value is to be returned.
      * @param klass         The class the returned value is required to be an instance of.
      * @param required      Throws an exception if true and a value with the required class is not associated with the
      *                      given key.
@@ -2798,7 +2829,7 @@ public final class IDataHelper {
      * Returns the value associated with the given key from the IDataCursor, if it is an instance of the given class.
      *
      * @param cursor        The IDataCursor to add the key value association to.
-     * @param key           The key literal to be added.
+     * @param key           The key whose associated value is to be returned.
      * @param klass         The class the returned value is required to be an instance of.
      * @param defaultValue  The value to return if the associated value is null or the key does not exist.
      * @param <T>           The class the returned value is required to be an instance of.
