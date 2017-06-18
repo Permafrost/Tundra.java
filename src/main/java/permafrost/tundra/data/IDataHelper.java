@@ -43,6 +43,7 @@ import permafrost.tundra.data.transform.TransformerMode;
 import permafrost.tundra.data.transform.Squeezer;
 import permafrost.tundra.data.transform.Transformer;
 import permafrost.tundra.data.transform.Trimmer;
+import permafrost.tundra.data.transform.Uppercaser;
 import permafrost.tundra.flow.ConditionEvaluator;
 import permafrost.tundra.flow.variable.SubstitutionHelper;
 import permafrost.tundra.lang.ArrayHelper;
@@ -1126,7 +1127,7 @@ public final class IDataHelper {
      *
      * @param document  The IData to be lowercased.
      * @param recurse   Whether to recursively convert.
-     * @return          A new IData containing lowercased versions of the elements in the given input.
+     * @return          A new IData containing lowercase versions of the elements in the given input.
      */
     public static IData lowercase(IData document, boolean recurse) {
         return lowercase(document, TransformerMode.VALUES, recurse);
@@ -1138,7 +1139,7 @@ public final class IDataHelper {
      * @param document  The IData to be lowercased.
      * @param mode      The transformer mode to use.
      * @param recurse   Whether to recursively convert.
-     * @return          A new IData containing lowercased versions of the elements in the given input.
+     * @return          A new IData containing lowercase versions of the elements in the given input.
      */
     public static IData lowercase(IData document, TransformerMode mode, boolean recurse) {
         return lowercase(document, null, mode, recurse);
@@ -1151,7 +1152,7 @@ public final class IDataHelper {
      * @param locale    The locale to use for lowercasing rules.
      * @param mode      The transformer mode to use.
      * @param recurse   Whether to recursively convert.
-     * @return          A new IData containing lowercased versions of the elements in the given input.
+     * @return          A new IData containing lowercase versions of the elements in the given input.
      */
     public static IData lowercase(IData document, Locale locale, TransformerMode mode, boolean recurse) {
         return transform(document, new Lowercaser(locale, mode, recurse, true, true, true));
@@ -1161,7 +1162,7 @@ public final class IDataHelper {
      * Converts all string values in the given IData[] to lowercase.
      *
      * @param input     The IData[] to be lowercased.
-     * @return          A new IData[] containing lowercased versions of the elements in the given input.
+     * @return          A new IData[] containing lowercase versions of the elements in the given input.
      */
     public static IData[] lowercase(IData[] input) {
         return lowercase(input, true);
@@ -1172,7 +1173,7 @@ public final class IDataHelper {
      *
      * @param input     The IData[] to be lowercased.
      * @param recurse   Whether to recursively convert.
-     * @return          A new IData[] containing lowercased versions of the elements in the given input.
+     * @return          A new IData[] containing lowercase versions of the elements in the given input.
      */
     public static IData[] lowercase(IData[] input, boolean recurse) {
         return lowercase(input, TransformerMode.VALUES, recurse);
@@ -1184,7 +1185,7 @@ public final class IDataHelper {
      * @param input     The IData[] to be lowercased.
      * @param mode      The transformer mode to use.
      * @param recurse   Whether to recursively convert.
-     * @return          A new IData[] containing lowercased versions of the elements in the given input.
+     * @return          A new IData[] containing lowercase versions of the elements in the given input.
      */
     public static IData[] lowercase(IData[] input, TransformerMode mode, boolean recurse) {
         return lowercase(input, null, mode, recurse);
@@ -1201,6 +1202,98 @@ public final class IDataHelper {
      */
     public static IData[] lowercase(IData[] input, Locale locale, TransformerMode mode, boolean recurse) {
         return transform(input, new Lowercaser(locale, mode, recurse, true, true, true));
+    }
+
+    /**
+     * Converts all string values in the given IData to uppercase.
+     *
+     * @param document  The IData to be uppercased.
+     * @return          A new IData containing uppercase versions of the elements in the given input.
+     */
+    public static IData uppercase(IData document) {
+        return uppercase(document, true);
+    }
+
+    /**
+     * Converts all string values in the given IData to uppercase.
+     *
+     * @param document  The IData to be uppercased.
+     * @param recurse   Whether to recursively convert.
+     * @return          A new IData containing uppercase versions of the elements in the given input.
+     */
+    public static IData uppercase(IData document, boolean recurse) {
+        return uppercase(document, TransformerMode.VALUES, recurse);
+    }
+
+    /**
+     * Converts all string values in the given IData to uppercase.
+     *
+     * @param document  The IData to be uppercased.
+     * @param mode      The transformer mode to use.
+     * @param recurse   Whether to recursively convert.
+     * @return          A new IData containing uppercase versions of the elements in the given input.
+     */
+    public static IData uppercase(IData document, TransformerMode mode, boolean recurse) {
+        return uppercase(document, null, mode, recurse);
+    }
+
+    /**
+     * Converts all string values in the given IData to uppercase.
+     *
+     * @param document  The IData to be uppercased.
+     * @param locale    The locale to use for uppercasing rules.
+     * @param mode      The transformer mode to use.
+     * @param recurse   Whether to recursively convert.
+     * @return          A new IData containing uppercase versions of the elements in the given input.
+     */
+    public static IData uppercase(IData document, Locale locale, TransformerMode mode, boolean recurse) {
+        return transform(document, new Uppercaser(locale, mode, recurse, true, true, true));
+    }
+
+    /**
+     * Converts all string values in the given IData[] to uppercase.
+     *
+     * @param input     The IData[] to be uppercased.
+     * @return          A new IData[] containing uppercase versions of the elements in the given input.
+     */
+    public static IData[] uppercase(IData[] input) {
+        return uppercase(input, true);
+    }
+
+    /**
+     * Converts all string values in the given IData[] to uppercase.
+     *
+     * @param input     The IData[] to be uppercased.
+     * @param recurse   Whether to recursively convert.
+     * @return          A new IData[] containing uppercase versions of the elements in the given input.
+     */
+    public static IData[] uppercase(IData[] input, boolean recurse) {
+        return uppercase(input, TransformerMode.VALUES, recurse);
+    }
+
+    /**
+     * Converts all string values in the given IData[] to uppercase.
+     *
+     * @param input     The IData[] to be uppercased.
+     * @param mode      The transformer mode to use.
+     * @param recurse   Whether to recursively convert.
+     * @return          A new IData[] containing uppercase versions of the elements in the given input.
+     */
+    public static IData[] uppercase(IData[] input, TransformerMode mode, boolean recurse) {
+        return uppercase(input, null, mode, recurse);
+    }
+
+    /**
+     * Converts all string values in the given IData[] to uppercase.
+     *
+     * @param input     The IData[] to be uppercased.
+     * @param locale    The locale to use for lowercasing rules.
+     * @param mode      The transformer mode to use.
+     * @param recurse   Whether to recursively convert.
+     * @return          A new IData[] containing uppercase versions of the elements in the given input.
+     */
+    public static IData[] uppercase(IData[] input, Locale locale, TransformerMode mode, boolean recurse) {
+        return transform(input, new Uppercaser(locale, mode, recurse, true, true, true));
     }
 
     /**

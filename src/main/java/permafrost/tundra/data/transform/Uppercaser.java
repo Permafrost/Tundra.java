@@ -28,24 +28,24 @@ import permafrost.tundra.lang.LocaleHelper;
 import java.util.Locale;
 
 /**
- * Converts String elements to lowercase in an IData document or IData[] document list.
+ * Converts String elements to uppercase in an IData document or IData[] document list.
  */
-public class Lowercaser extends Transformer<String, String> {
+public class Uppercaser extends Transformer<String, String> {
     /**
-     * The locale used for the lowercase rules.
+     * The locale used for the uppercase rules.
      */
     protected Locale locale;
-    
+
     /**
-     * Creates a new Lowercaser object.
+     * Creates a new Uppercaser object.
      *
-     * @param locale        The locale to use for lowercasing rules.
+     * @param locale        The locale to use for uppercase rules.
      * @param mode          The transformer mode to use.
      * @param recurse       Whether to recursively transform child IData documents and IData[] document lists.
      * @param includeNulls  Whether null values should be included in transformed IData documents and IData[] document
      *                      lists.
      */
-    public Lowercaser(Locale locale, TransformerMode mode, boolean recurse, boolean includeNulls, boolean includeEmptyDocuments, boolean includeEmptyArrays) {
+    public Uppercaser(Locale locale, TransformerMode mode, boolean recurse, boolean includeNulls, boolean includeEmptyDocuments, boolean includeEmptyArrays) {
         super(String.class, String.class, mode, recurse, includeNulls, includeEmptyDocuments, includeEmptyArrays);
         this.locale = LocaleHelper.normalize(locale);
     }
@@ -58,7 +58,7 @@ public class Lowercaser extends Transformer<String, String> {
      * @return      The transformed key.
      */
     protected String transformKey(String key, Object value) {
-        return key.toLowerCase(locale);
+        return key.toUpperCase(locale);
     }
 
     /**
@@ -69,6 +69,6 @@ public class Lowercaser extends Transformer<String, String> {
      * @return      The transformed value.
      */
     protected String transformValue(String key, String value) {
-        return value.toLowerCase(locale);
+        return value.toUpperCase(locale);
     }
 }
