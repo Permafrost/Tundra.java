@@ -656,6 +656,30 @@ public final class ArrayHelper {
     }
 
     /**
+     * Returns a string created by concatenating each element of the given array, separated by ", ".
+     *
+     * @param array         The array whose contents are to be joined.
+     * @param <T>           The class of items stored in the array.
+     * @return              A string representation of the given array created by concatenating together the string
+     *                      representation of each item in order, separated by ", ".
+     */
+    public static <T> String join(T[] array) {
+        return join(array, (Sanitization)null);
+    }
+
+    /**
+     * Returns a string created by concatenating each element of the given array, separated by ", ".
+     *
+     * @param array         The array whose contents are to be joined.* @param mode          The type of compaction to be applied to the array, if any.
+     * @param <T>           The class of items stored in the array.
+     * @return              A string representation of the given array created by concatenating together the string
+     *                      representation of each item in order, separated by ", ".
+     */
+    public static <T> String join(T[] array, Sanitization mode) {
+        return join(array, ", ", mode);
+    }
+
+    /**
      * Returns a string created by concatenating each element of the given array, separated by the given separator
      * string.
      *
