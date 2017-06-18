@@ -35,6 +35,7 @@ import com.wm.util.coder.IDataCodable;
 import com.wm.util.coder.ValuesCodable;
 import org.w3c.dom.Node;
 import permafrost.tundra.data.transform.Blankifier;
+import permafrost.tundra.data.transform.Lowercaser;
 import permafrost.tundra.data.transform.Nullifier;
 import permafrost.tundra.data.transform.Replacer;
 import permafrost.tundra.data.transform.Stringifier;
@@ -44,47 +45,23 @@ import permafrost.tundra.data.transform.Transformer;
 import permafrost.tundra.data.transform.Trimmer;
 import permafrost.tundra.flow.ConditionEvaluator;
 import permafrost.tundra.flow.variable.SubstitutionHelper;
-import permafrost.tundra.io.filter.FilenameFilterType;
 import permafrost.tundra.lang.ArrayHelper;
-import permafrost.tundra.lang.BooleanHelper;
-import permafrost.tundra.lang.CharsetHelper;
-import permafrost.tundra.lang.ObjectConvertMode;
 import permafrost.tundra.lang.Sanitization;
 import permafrost.tundra.lang.ObjectHelper;
 import permafrost.tundra.lang.TableHelper;
-import permafrost.tundra.math.BigDecimalHelper;
-import permafrost.tundra.math.BigIntegerHelper;
-import permafrost.tundra.math.DoubleHelper;
-import permafrost.tundra.math.FloatHelper;
-import permafrost.tundra.math.IntegerHelper;
-import permafrost.tundra.math.LongHelper;
-import permafrost.tundra.math.RoundingModeHelper;
-import permafrost.tundra.mime.MIMETypeHelper;
-import permafrost.tundra.net.http.HTTPMethod;
-import permafrost.tundra.server.NodePermission;
-import permafrost.tundra.time.DateTimeHelper;
-import permafrost.tundra.time.DurationHelper;
-import permafrost.tundra.time.DurationPattern;
 import permafrost.tundra.xml.dom.NodeHelper;
 import permafrost.tundra.xml.dom.Nodes;
-import permafrost.tundra.xml.namespace.IDataNamespaceContext;
 import permafrost.tundra.xml.xpath.XPathHelper;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.math.RoundingMode;
-import java.nio.charset.Charset;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.activation.MimeType;
-import javax.xml.datatype.Duration;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
@@ -1132,6 +1109,98 @@ public final class IDataHelper {
         }
 
         return output;
+    }
+
+    /**
+     * Converts all string values in the given IData to lowercase.
+     *
+     * @param document  The IData to be lowercased.
+     * @return          A new IData containing lowercase versions of the elements in the given input.
+     */
+    public static IData lowercase(IData document) {
+        return lowercase(document, true);
+    }
+
+    /**
+     * Converts all string values in the given IData to lowercase.
+     *
+     * @param document  The IData to be lowercased.
+     * @param recurse   Whether to recursively convert.
+     * @return          A new IData containing lowercased versions of the elements in the given input.
+     */
+    public static IData lowercase(IData document, boolean recurse) {
+        return lowercase(document, TransformerMode.VALUES, recurse);
+    }
+
+    /**
+     * Converts all string values in the given IData to lowercase.
+     *
+     * @param document  The IData to be lowercased.
+     * @param mode      The transformer mode to use.
+     * @param recurse   Whether to recursively convert.
+     * @return          A new IData containing lowercased versions of the elements in the given input.
+     */
+    public static IData lowercase(IData document, TransformerMode mode, boolean recurse) {
+        return lowercase(document, null, mode, recurse);
+    }
+
+    /**
+     * Converts all string values in the given IData to lowercase.
+     *
+     * @param document  The IData to be lowercased.
+     * @param locale    The locale to use for lowercasing rules.
+     * @param mode      The transformer mode to use.
+     * @param recurse   Whether to recursively convert.
+     * @return          A new IData containing lowercased versions of the elements in the given input.
+     */
+    public static IData lowercase(IData document, Locale locale, TransformerMode mode, boolean recurse) {
+        return transform(document, new Lowercaser(locale, mode, recurse, true, true, true));
+    }
+
+    /**
+     * Converts all string values in the given IData[] to lowercase.
+     *
+     * @param input     The IData[] to be lowercased.
+     * @return          A new IData[] containing lowercased versions of the elements in the given input.
+     */
+    public static IData[] lowercase(IData[] input) {
+        return lowercase(input, true);
+    }
+
+    /**
+     * Converts all string values in the given IData[] to lowercase.
+     *
+     * @param input     The IData[] to be lowercased.
+     * @param recurse   Whether to recursively convert.
+     * @return          A new IData[] containing lowercased versions of the elements in the given input.
+     */
+    public static IData[] lowercase(IData[] input, boolean recurse) {
+        return lowercase(input, TransformerMode.VALUES, recurse);
+    }
+
+    /**
+     * Converts all string values in the given IData[] to lowercase.
+     *
+     * @param input     The IData[] to be lowercased.
+     * @param mode      The transformer mode to use.
+     * @param recurse   Whether to recursively convert.
+     * @return          A new IData[] containing lowercased versions of the elements in the given input.
+     */
+    public static IData[] lowercase(IData[] input, TransformerMode mode, boolean recurse) {
+        return lowercase(input, null, mode, recurse);
+    }
+
+    /**
+     * Converts all string values in the given IData[] to lowercase.
+     *
+     * @param input     The IData[] to be lowercased.
+     * @param locale    The locale to use for lowercasing rules.
+     * @param mode      The transformer mode to use.
+     * @param recurse   Whether to recursively convert.
+     * @return          A new IData[] containing lowercased versions of the elements in the given input.
+     */
+    public static IData[] lowercase(IData[] input, Locale locale, TransformerMode mode, boolean recurse) {
+        return transform(input, new Lowercaser(locale, mode, recurse, true, true, true));
     }
 
     /**
