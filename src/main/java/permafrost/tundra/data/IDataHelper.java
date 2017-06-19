@@ -542,15 +542,7 @@ public final class IDataHelper {
      * @return          A new IData document containing the keys and values from all merged input documents.
      */
     public static IData merge(Iterable<IData> documents) {
-        IData output = IDataFactory.create();
-        if (documents != null) {
-            for (IData document : documents) {
-                if (document != null) {
-                    IDataUtil.merge(document, output);
-                }
-            }
-        }
-        return output;
+        return mergeInto(IDataFactory.create(), documents);
     }
 
     /**
@@ -562,38 +554,92 @@ public final class IDataHelper {
      */
     public static IData merge(Iterable<IData> documents, boolean recurse) {
         IData output = IDataFactory.create();
+        if (recurse) {
+            mergeRecursivelyInto(output, documents);
+        } else {
+            mergeInto(output, documents);
+        }
+        return output;
+    }
 
-        if (documents != null) {
-            for (IData document : documents) {
+    /**
+     * Merges multiple IData documents into a single given IData document.
+     *
+     * @param target    The target IData document into which all the other given IData documents will be merged.
+     * @param source    One or more IData documents to be merged.
+     * @return          The target IData document after being merged with the source IData documents.
+     */
+    public static IData mergeInto(IData target, IData... source) {
+        return mergeInto(target, source == null ? null : Arrays.asList(source));
+    }
+
+    /**
+     * Merges multiple IData documents into a single given IData document.
+     *
+     * @param target    The target IData document into which all the other given IData documents will be merged.
+     * @param source    One or more IData documents to be merged.
+     * @return          The target IData document after being merged with the source IData documents.
+     */
+    public static IData mergeInto(IData target, Iterable<IData> source) {
+        if (source != null) {
+            for (IData document : source) {
                 if (document != null) {
-                    IDataCursor documentCursor = document.getCursor();
-                    IDataCursor outputCursor = output.getCursor();
+                    IDataUtil.merge(document, target);
+                }
+            }
+        }
+        return target;
+    }
+
+    /**
+     * Merges multiple IData documents into a single given IData document.
+     *
+     * @param target    The IData document into which all the other given IData documents will be merged.
+     * @param sources   One or more IData documents to be merged.
+     * @return          The target IData document after being merged with the source IData documents.
+     */
+    public static IData mergeRecursivelyInto(IData target, IData... sources) {
+        return mergeRecursivelyInto(target, sources == null ? null : Arrays.asList(sources));
+    }
+
+    /**
+     * Merges multiple IData documents recursively into a single given IData document.
+     *
+     * @param target    The IData document into which all the other given IData documents will be merged.
+     * @param sources   One or more IData documents to be merged.
+     * @return          The target IData document after being merged with the source IData documents.
+     */
+    public static IData mergeRecursivelyInto(IData target, Iterable<IData> sources) {
+        if (sources != null) {
+            for (IData source : sources) {
+                if (source != null) {
+                    IDataCursor sourceCursor = source.getCursor();
+                    IDataCursor targetCursor = target.getCursor();
 
                     try {
-                        while(documentCursor.next()) {
-                            String key = documentCursor.getKey();
-                            Object value = documentCursor.getValue();
-                            Object existingValue = IDataUtil.get(outputCursor, key);
+                        while(sourceCursor.next()) {
+                            String key = sourceCursor.getKey();
+                            Object value = sourceCursor.getValue();
+                            Object existingValue = IDataUtil.get(targetCursor, key);
 
                             if (value != null) {
-                                if (recurse &&
-                                        (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) &&
-                                        (existingValue instanceof IData || existingValue instanceof IDataCodable || existingValue instanceof IDataPortable || existingValue instanceof ValuesCodable)) {
-                                    IDataUtil.put(outputCursor, key, merge(Arrays.asList(toIData(existingValue), toIData(value)), recurse));
+                                if ((value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) &&
+                                    (existingValue instanceof IData || existingValue instanceof IDataCodable || existingValue instanceof IDataPortable || existingValue instanceof ValuesCodable)) {
+                                    IDataUtil.put(targetCursor, key, mergeRecursivelyInto(toIData(existingValue), toIData(value)));
                                 } else {
-                                    IDataUtil.put(outputCursor, key, value);
+                                    IDataUtil.put(targetCursor, key, value);
                                 }
                             }
                         }
                     } finally {
-                        documentCursor.destroy();
-                        outputCursor.destroy();
+                        sourceCursor.destroy();
+                        targetCursor.destroy();
                     }
                 }
             }
         }
 
-        return output;
+        return target;
     }
 
     /**
