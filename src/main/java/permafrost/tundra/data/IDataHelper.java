@@ -57,9 +57,12 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -843,6 +846,97 @@ public final class IDataHelper {
 
         for (int i = 0; i < array.length; i++) {
             output[i] = duplicate(array[i], recurse);
+        }
+
+        return output;
+    }
+
+    /**
+     * Returns a new IData document which is a shallow copy of the given IData document.
+     *
+     * @param document  An IData document to be cloned.
+     * @return          A new IData document which is a shallow copy of the given IData document.
+     */
+    public static IData clone(IData document) {
+        return clone(document, (Set<String>)null);
+    }
+
+    /**
+     * Returns a new IData document which is a shallow copy of the given IData document.
+     *
+     * @param document  An IData document to be cloned.
+     * @param excluding Optional set of keys which will be excluded from the clone.
+     * @return          A new IData document which is a shallow copy of the given IData document.
+     */
+    public static IData clone(IData document, String... excluding) {
+        return clone(document, excluding == null || excluding.length == 0 ? null : new HashSet<String>(Arrays.asList(excluding)));
+    }
+
+    /**
+     * Returns a new IData document which is a shallow copy of the given IData document.
+     *
+     * @param document  An IData document to be cloned.
+     * @param excluding Optional set of keys which will be excluded from the clone.
+     * @return          A new IData document which is a shallow copy of the given IData document.
+     */
+    public static IData clone(IData document, Set<String> excluding) {
+        if (document == null) return null;
+        if (excluding == null) excluding = Collections.emptySet();
+
+        IData output = IDataFactory.create();
+        IDataCursor inputCursor = document.getCursor();
+        IDataCursor outputCursor = output.getCursor();
+
+        while(inputCursor.next()) {
+            String key = inputCursor.getKey();
+            Object value = inputCursor.getValue();
+
+            if (!excluding.contains(key)) {
+                outputCursor.insertAfter(key, value);
+            }
+        }
+
+        inputCursor.destroy();
+        outputCursor.destroy();
+
+        return output;
+    }
+
+    /**
+     * Returns a new IData[] document list which is a shallow copy of the given IData[] document list.
+     *
+     * @param array     An IData[] document list to be cloned.
+     * @return          A new IData[] document list which is a shallow copy of the given IData[] document list.
+     */
+    public static IData[] clone(IData[] array) {
+        return clone(array, (Set<String>)null);
+    }
+
+    /**
+     * Returns a new IData[] document list which is a shallow copy of the given IData[] document list.
+     *
+     * @param array     An IData[] document list to be cloned.
+     * @param excluding Optional set of keys which will be excluded from the clone.
+     * @return          A new IData[] document list which is a shallow copy of the given IData[] document list.
+     */
+    public static IData[] clone(IData[] array, String... excluding) {
+        return clone(array, excluding == null || excluding.length == 0 ? null : new HashSet<String>(Arrays.asList(excluding)));
+    }
+
+    /**
+     * Returns a new IData[] document list which is a shallow copy of the given IData[] document list.
+     *
+     * @param array     An IData[] document list to be cloned.
+     * @param excluding Optional set of keys which will be excluded from the clone.
+     * @return          A new IData[] document list which is a shallow copy of the given IData[] document list.
+     */
+    public static IData[] clone(IData[] array, Set<String> excluding) {
+        if (array == null) return null;
+
+        IData[] output = new IData[array.length];
+
+        for (int i = 0; i < array.length; i++) {
+            output[i] = clone(array[i], excluding);
         }
 
         return output;
