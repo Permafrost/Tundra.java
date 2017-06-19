@@ -849,6 +849,52 @@ public final class IDataHelper {
     }
 
     /**
+     * Flips the given IData document so the keys become the values and the values become the keys.
+     *
+     * @param document  The IData document to be flipped.
+     * @return          The flipped IData document.
+     */
+    public static IData flip(IData document) {
+        if (document == null) return null;
+
+        IData output = IDataFactory.create();
+        IDataCursor inputCursor = document.getCursor();
+        IDataCursor outputCursor = output.getCursor();
+
+        while(inputCursor.next()) {
+            String key = inputCursor.getKey();
+            Object value = inputCursor.getValue();
+
+            if (value instanceof String) {
+                outputCursor.insertAfter((String)value, key);
+            }
+        }
+
+        inputCursor.destroy();
+        outputCursor.destroy();
+
+        return output;
+    }
+
+    /**
+     * Flips the given IData[] document list so for each item the keys become the values and the values become the keys.
+     *
+     * @param array     The IData[] document list to be flipped.
+     * @return          The flipped IData[] document list.
+     */
+    public static IData[] flip(IData[] array) {
+        if (array == null) return null;
+
+        IData[] output = new IData[array.length];
+
+        for (int i = 0; i < array.length; i++) {
+            output[i] = flip(array[i]);
+        }
+
+        return output;
+    }
+
+    /**
      * Removes the value with the given key from the given IData document.
      *
      * @param document  An IData document.
