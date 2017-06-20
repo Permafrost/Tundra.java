@@ -92,7 +92,6 @@ public class BaseException extends ServiceException implements IDataCodable {
      */
     public IData getIData() {
         IDataMap map = new IDataMap();
-        map.put("$exception", this);
         map.put("$exception?", "true");
         map.put("$exception.class", getClass().getName());
         map.put("$exception.message", getMessage());

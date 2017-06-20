@@ -687,34 +687,39 @@ public final class ServiceHelper {
             IDataCursor cursor = pipeline.getCursor();
 
             try {
-                IDataUtil.put(cursor, "$exception", exception);
-                IDataUtil.put(cursor, "$exception?", "true");
-                IDataUtil.put(cursor, "$exception.class", exception.getClass().getName());
-                IDataUtil.put(cursor, "$exception.message", exception.getMessage());
+                IData exceptionInfo = null;
+                String exceptionService = null, exceptionPackage = null;
 
                 InvokeState invokeState = InvokeState.getCurrentState();
                 if (invokeState != null) {
-                    IData exceptionInfo = IDataHelper.duplicate(invokeState.getErrorInfoFormatted(), true);
+                    exceptionInfo = IDataHelper.duplicate(invokeState.getErrorInfoFormatted(), true);
                     if (exceptionInfo != null) {
                         IDataCursor ec = exceptionInfo.getCursor();
-                        String exceptionService = IDataUtil.getString(ec, "service");
+                        exceptionService = IDataHelper.get(ec, "service", String.class);
                         if (exceptionService != null) {
-                            IDataUtil.put(cursor, "$exception.service", exceptionService);
                             BaseService baseService = Namespace.getService(NSName.create(exceptionService));
                             if (baseService != null) {
-                                String packageName = baseService.getPackageName();
-                                if (packageName != null) {
-                                    IDataUtil.put(ec, "package", packageName);
-                                    IDataUtil.put(cursor, "$exception.package", packageName);
-                                }
+                                exceptionPackage = baseService.getPackageName();
+                                IDataHelper.put(ec, "package", exceptionPackage, false);
                             }
                         }
+
+                        IData exceptionPipeline = IDataHelper.remove(ec, "pipeline", IData.class);
+                        // deep clone the exception pipeline, to prevent recursive references causing stack overflows
+                        IDataHelper.put(ec, "pipeline", IDataHelper.duplicate(exceptionPipeline), false);
+
                         ec.destroy();
-                        IDataUtil.put(cursor, "$exception.info", exceptionInfo);
                     }
                 }
 
-                IDataUtil.put(cursor, "$exception.stack", ExceptionHelper.getStackTrace(exception));
+                IDataHelper.put(cursor, "$exception", exception, false);
+                IDataHelper.put(cursor, "$exception?", true, String.class);
+                IDataHelper.put(cursor, "$exception.class", exception.getClass().getName(), false);
+                IDataHelper.put(cursor, "$exception.message", exception.getMessage(), false);
+                IDataHelper.put(cursor, "$exception.service", exceptionService, false);
+                IDataHelper.put(cursor, "$exception.package", exceptionPackage, false);
+                IDataHelper.put(cursor, "$exception.info", exceptionInfo, false);
+                IDataHelper.put(cursor, "$exception.stack", ExceptionHelper.getStackTrace(exception), false);
             } finally {
                 cursor.destroy();
             }

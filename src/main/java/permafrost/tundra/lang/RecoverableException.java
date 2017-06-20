@@ -94,7 +94,6 @@ public class RecoverableException extends ISRuntimeException implements IDataCod
      */
     public IData getIData() {
         IDataMap map = new IDataMap();
-        map.put("$exception", this);
         map.put("$exception?", "true");
         map.put("$exception.class", getClass().getName());
         map.put("$exception.message", getMessage());
