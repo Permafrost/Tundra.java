@@ -29,6 +29,7 @@ import com.wm.app.b2b.server.Service;
 import com.wm.data.IData;
 import com.wm.data.IDataUtil;
 import com.wm.lang.ns.NSName;
+import permafrost.tundra.data.IDataHelper;
 import permafrost.tundra.server.ServerThreadFactory;
 import permafrost.tundra.server.service.CallableService;
 import java.util.concurrent.ExecutorService;
@@ -76,7 +77,7 @@ public final class DeferHelper {
      * @param pipeline  The input pipeline for the service.
      */
     public static void defer(NSName service, IData pipeline) {
-        Holder.DEFER_EXECUTOR.submit(new CallableService(service, Service.getSession(), IDataUtil.clone(pipeline)));
+        Holder.DEFER_EXECUTOR.submit(new CallableService(service, Service.getSession(), IDataHelper.duplicate(pipeline)));
     }
 
     /**
