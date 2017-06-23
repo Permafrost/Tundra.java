@@ -440,6 +440,6 @@ public final class URIHelper {
      * @throws URISyntaxException   If the given string is not a valid URI.
      */
     public static String substitute(String uri, IData scope) throws ServiceException, URISyntaxException {
-        return emit(SubstitutionHelper.substitute(parse(uri), scope, true));
+        return emit(SubstitutionHelper.substitute(parse(uri), true, scope));
     }
 }
