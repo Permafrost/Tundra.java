@@ -24,10 +24,10 @@
 
 package permafrost.tundra.data;
 
+import permafrost.tundra.collection.ListHelper;
 import permafrost.tundra.lang.CaseInsensitiveString;
 import permafrost.tundra.lang.LocaleHelper;
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Locale;
 import java.util.Map;
@@ -99,7 +99,7 @@ public class CaseInsensitiveElement<V> extends KeyAliasElement<String, V> implem
      * @param locale    The locale used for case comparison.
      */
     public CaseInsensitiveElement(String key, V value, Locale locale, String ...aliases) {
-        this(key, value, locale, aliases == null ? null : Arrays.asList(aliases));
+        this(key, value, locale, ListHelper.of(aliases));
     }
 
     /**

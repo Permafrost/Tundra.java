@@ -26,8 +26,8 @@ package permafrost.tundra.xml.xpath;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import permafrost.tundra.collection.ListHelper;
 import permafrost.tundra.xml.dom.Nodes;
-import java.util.Arrays;
 import java.util.List;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.xpath.XPath;
@@ -56,7 +56,7 @@ public final class XPathHelper {
      * @throws XPathExpressionException If a parsing error occurs.
      */
     public static boolean evaluate(Node context, XPathExpression expression, String ... expectedContent) throws XPathExpressionException {
-        return evaluate(context, expression, expectedContent == null ? null : Arrays.asList(expectedContent));
+        return evaluate(context, expression, ListHelper.of(expectedContent));
     }
 
     /**

@@ -24,8 +24,8 @@
 
 package permafrost.tundra.flow.variable;
 
+import permafrost.tundra.collection.ListHelper;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
@@ -77,7 +77,7 @@ public enum SubstitutionType {
      * @return      If the given type is null the default type set, otherwise the given types in a set.
      */
     public static EnumSet<SubstitutionType> normalize(SubstitutionType ...types) {
-        return normalize(types == null ? null : Arrays.asList(types));
+        return normalize(ListHelper.of(types));
     }
 
     /**

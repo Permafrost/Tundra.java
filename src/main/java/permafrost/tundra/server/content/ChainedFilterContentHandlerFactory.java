@@ -27,8 +27,8 @@ package permafrost.tundra.server.content;
 import com.wm.app.b2b.server.ContentHandler;
 import com.wm.app.b2b.server.ContentHandlerFactory;
 import com.wm.app.b2b.server.ContentManager;
+import permafrost.tundra.collection.ListHelper;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -49,7 +49,7 @@ public class ChainedFilterContentHandlerFactory extends ProxyContentHandlerFacto
      * @param filters The chain of filters wrapped by this factory.
      */
     public ChainedFilterContentHandlerFactory(ContentHandlerFactory factory, FilterContentHandlerFactory ...filters) {
-        this(factory, filters == null ? null : Arrays.asList(filters));
+        this(factory, ListHelper.of(filters));
     }
 
     /**
@@ -90,7 +90,7 @@ public class ChainedFilterContentHandlerFactory extends ProxyContentHandlerFacto
      * @param filters   The filters to be registered.
      */
     public static void register(FilterContentHandlerFactory ...filters) {
-        register(filters == null ? null : Arrays.asList(filters));
+        register(ListHelper.of(filters));
     }
 
     /**

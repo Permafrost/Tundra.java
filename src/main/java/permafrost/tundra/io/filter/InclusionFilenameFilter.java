@@ -24,7 +24,7 @@
 
 package permafrost.tundra.io.filter;
 
-import java.util.Arrays;
+import permafrost.tundra.collection.ListHelper;
 import java.util.Collection;
 
 /**
@@ -38,7 +38,7 @@ public class InclusionFilenameFilter extends OrFilenameFilter {
      * @param patterns  The patterns to use to include filenames.
      */
     public InclusionFilenameFilter(FilenameFilterType type, String ...patterns) {
-        this(type, patterns == null ? null : Arrays.asList(patterns));
+        this(type, ListHelper.of(patterns));
     }
 
     /**

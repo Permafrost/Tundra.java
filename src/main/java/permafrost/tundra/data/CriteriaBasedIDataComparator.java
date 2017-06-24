@@ -25,6 +25,7 @@
 package permafrost.tundra.data;
 
 import com.wm.data.IData;
+import permafrost.tundra.collection.ListHelper;
 import permafrost.tundra.math.BigDecimalHelper;
 import permafrost.tundra.math.BigIntegerHelper;
 import permafrost.tundra.time.DateTimeHelper;
@@ -48,7 +49,7 @@ public class CriteriaBasedIDataComparator implements IDataComparator {
      * @param criteria      The comparison criteria to be used when comparing IData objects.
      */
     public CriteriaBasedIDataComparator(IDataComparisonCriterion... criteria) {
-        this(criteria == null ? new ArrayList<IDataComparisonCriterion>() : Arrays.asList(criteria));
+        this(ListHelper.of(true, criteria));
     }
 
     /**

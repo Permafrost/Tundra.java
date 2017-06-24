@@ -31,6 +31,7 @@ import com.wm.lang.ns.NSNode;
 import com.wm.util.Table;
 import com.wm.util.coder.IDataCodable;
 import com.wm.util.coder.ValuesCodable;
+import permafrost.tundra.collection.ListHelper;
 import permafrost.tundra.data.IDataComparisonType;
 import permafrost.tundra.data.IDataHelper;
 import permafrost.tundra.data.transform.TransformerMode;
@@ -227,7 +228,7 @@ public final class ObjectHelper {
         List<Object> list = new ArrayList<Object>();
 
         if (item instanceof Object[]) {
-            list.addAll(ArrayHelper.toList((Object[])item));
+            list.addAll(ListHelper.of((Object[])item));
         } else if (item != null) {
             list.add(item);
         }

@@ -25,6 +25,8 @@
 package permafrost.tundra.collection;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -366,6 +368,70 @@ public final class ListHelper {
         if (index < 0) index += list.size();
 
         return list.get(index);
+    }
+
+    /**
+     * Returns a new List containing the given items.
+     *
+     * @param items     The items to be added to the returned List.
+     * @param <T>       The class of the items in the List.
+     * @return          A new List containing the given items, or null if items was null.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> List<T> of(T... items) {
+        return of(false, items);
+    }
+
+    /**
+     * Returns a new List containing the given items.
+     *
+     * @param returnEmpty   If true, an empty List will be returned if items is null, otherwise null is returned.
+     * @param items         The items to be added to the returned List.
+     * @param <T>           The class of the items in the List.
+     * @return              A new List containing the given items.
+     */
+    public static <T> List<T> of(boolean returnEmpty, T... items) {
+        List<T> list;
+
+        if (items == null) {
+            list = new ArrayList<T>();
+        } else {
+            list = Arrays.asList(items);
+        }
+
+        return list;
+    }
+
+    /**
+     * Returns a new List containing the items in the given collection.
+     *
+     * @param collection    A collection containing the items to be added to the returned List.
+     * @param <T>           The class of the items in the List.
+     * @return              A new List containing the given items, or null if items was null.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> List<T> of(Collection<T> collection) {
+        return of(false, collection);
+    }
+
+    /**
+     * Returns a new Set containing the given items.
+     *
+     * @param returnEmpty   If true, an empty Set will be returned if collection is null, otherwise null is returned.
+     * @param collection    A collection containing the items to be added to the returned Set.
+     * @param <T>           The class of the items in the Set.
+     * @return              A new Set containing the given items.
+     */
+    public static <T> List<T> of(boolean returnEmpty, Collection<T> collection) {
+        List<T> list;
+
+        if (collection == null) {
+            list = new ArrayList<T>();
+        } else {
+            list = new ArrayList<T>(collection);
+        }
+
+        return list;
     }
 
     /**

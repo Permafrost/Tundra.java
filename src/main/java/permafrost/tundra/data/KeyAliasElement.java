@@ -24,12 +24,13 @@
 
 package permafrost.tundra.data;
 
+import permafrost.tundra.collection.ListHelper;
+import permafrost.tundra.collection.SortedSetHelper;
 import permafrost.tundra.lang.ObjectHelper;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
-import java.util.TreeSet;
 
 /**
  * An element that supports key aliases.
@@ -65,7 +66,7 @@ public class KeyAliasElement<K, V> extends Element<K, V> implements Serializable
      * @param aliases   Optional key aliases.
      */
     public KeyAliasElement(K key, V value, K ... aliases) {
-        this(key, value, aliases == null ? null : Arrays.asList(aliases));
+        this(key, value, ListHelper.of(aliases));
     }
 
     /**
@@ -77,7 +78,7 @@ public class KeyAliasElement<K, V> extends Element<K, V> implements Serializable
      */
     public KeyAliasElement(K key, V value, Collection<K> aliases) {
         super(key, value);
-        keyAliases = aliases == null ? new TreeSet<K>() : new TreeSet<K>(aliases);
+        keyAliases = SortedSetHelper.of(true, aliases);
     }
 
     /**
@@ -148,7 +149,7 @@ public class KeyAliasElement<K, V> extends Element<K, V> implements Serializable
     public static <K, V> Element<K, V> normalize(Element<K, V> element) {
         if (element == null) throw new NullPointerException("element must not be null");
 
-        KeyAliasElement<K, V> output = null;
+        KeyAliasElement<K, V> output;
 
         if (element instanceof KeyAliasElement) {
             output = (KeyAliasElement)element;

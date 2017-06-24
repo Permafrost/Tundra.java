@@ -25,6 +25,7 @@
 package permafrost.tundra.lang;
 
 import com.wm.data.IData;
+import permafrost.tundra.collection.ListHelper;
 import permafrost.tundra.data.IDataHelper;
 import permafrost.tundra.data.IDataMap;
 import java.lang.reflect.Array;
@@ -35,6 +36,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * A collection of convenience methods for working with arrays.
@@ -166,7 +169,7 @@ public final class ArrayHelper {
      * @return          A new array which contains all the elements from the given arrays.
      */
     public static <T> T[] concatenate(T[]... arrays) {
-        return concatenate(arrays == null ? null : Arrays.asList(arrays));
+        return concatenate(ListHelper.of(arrays));
     }
 
     /**
@@ -278,7 +281,7 @@ public final class ArrayHelper {
      * @return          True if the given arrays are all considered equivalent, otherwise false.
      */
     public static <T> boolean equal(T[]... arrays) {
-        return equal(arrays == null ? null : Arrays.asList(arrays));
+        return equal(ListHelper.of(arrays));
     }
 
     /**
@@ -632,7 +635,7 @@ public final class ArrayHelper {
      * @return          A new array which is a set intersection of the given arrays.
      */
     public static <T> T[] intersect(T[]... arrays) {
-        return intersect(arrays == null ? null : Arrays.asList(arrays));
+        return intersect(ListHelper.of(arrays));
     }
 
     /**
@@ -1046,7 +1049,7 @@ public final class ArrayHelper {
      */
     public static <T> T[] unique(T[] array) {
         if (array == null) return null;
-        java.util.Set<T> set = new java.util.TreeSet<T>(Arrays.asList(array));
+        Set<T> set = new TreeSet<T>(Arrays.asList(array));
         return set.toArray(Arrays.copyOf(array, set.size()));
     }
 
@@ -1082,21 +1085,9 @@ public final class ArrayHelper {
      * @return      An array representation of the given Collection.
      */
     @SuppressWarnings("unchecked")
-    public static <T> T[] toArray(Collection<T> input) {
+    public static <T> T[] of(Collection<T> input) {
         if (input == null) return null;
         return (T[])normalize(input.toArray());
-    }
-
-    /**
-     * Converts an array to a Collection.
-     *
-     * @param input An array to be converted to a Collection.
-     * @param <T>   The type of item in the array.
-     * @return      An Collection representation of the given array.
-     */
-    public static <T> List<T> toList(T[] input) {
-        if (input == null) return null;
-        return Arrays.asList(input);
     }
 
     /**
@@ -1122,7 +1113,7 @@ public final class ArrayHelper {
     @SuppressWarnings("unchecked")
     public static <T> T[] normalize(T[] input, Class<?> klass) {
         if (input == null) return null;
-        return toList(input).toArray((T[])instantiate(klass, input.length));
+        return Arrays.asList(input).toArray((T[])instantiate(klass, input.length));
     }
 
     /**

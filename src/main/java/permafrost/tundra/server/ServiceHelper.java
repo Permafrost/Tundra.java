@@ -43,6 +43,7 @@ import com.wm.lang.ns.NSNode;
 import com.wm.lang.ns.NSService;
 import com.wm.lang.ns.NSServiceType;
 import com.wm.net.HttpHeader;
+import permafrost.tundra.collection.ListHelper;
 import permafrost.tundra.data.IDataHelper;
 import permafrost.tundra.data.IDataMap;
 import permafrost.tundra.lang.BytesHelper;
@@ -59,7 +60,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -507,7 +507,7 @@ public final class ServiceHelper {
      * @throws ServiceException If an exception is thrown by one of the invoked services.
      */
     public static IData chain(String[] services, IData pipeline) throws ServiceException {
-        return chain(services == null ? null : Arrays.asList(services), pipeline);
+        return chain(ListHelper.of(services), pipeline);
     }
 
     /**

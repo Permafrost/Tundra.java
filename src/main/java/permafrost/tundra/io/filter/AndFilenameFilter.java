@@ -24,9 +24,9 @@
 
 package permafrost.tundra.io.filter;
 
+import permafrost.tundra.collection.ListHelper;
 import java.io.File;
 import java.io.FilenameFilter;
-import java.util.Arrays;
 import java.util.Collection;
 
 /**
@@ -44,7 +44,7 @@ public class AndFilenameFilter extends ConditionalFilenameFilter {
      * @param filters   The list of filters to be chained with a logical AND operation.
      */
     public AndFilenameFilter(FilenameFilter ...filters) {
-        this(filters == null ? null : Arrays.asList(filters));
+        this(ListHelper.of(filters));
     }
 
     /**

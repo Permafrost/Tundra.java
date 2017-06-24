@@ -24,9 +24,9 @@
 
 package permafrost.tundra.io.filter;
 
+import permafrost.tundra.collection.ListHelper;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -47,7 +47,7 @@ public class FilenameFilterHelper {
      * @return          A list of FilenameFilter objects using the given patterns.
      */
     public static FilenameFilter[] create(FilenameFilterType type, String... patterns) {
-        Collection<FilenameFilter> filters = create(type, patterns == null ? null : Arrays.asList(patterns));
+        Collection<FilenameFilter> filters = create(type, ListHelper.of(patterns));
         return filters == null ? null : filters.toArray(new FilenameFilter[filters.size()]);
     }
 

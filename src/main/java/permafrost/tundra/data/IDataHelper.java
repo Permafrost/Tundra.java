@@ -34,6 +34,8 @@ import com.wm.util.Table;
 import com.wm.util.coder.IDataCodable;
 import com.wm.util.coder.ValuesCodable;
 import org.w3c.dom.Node;
+import permafrost.tundra.collection.ListHelper;
+import permafrost.tundra.collection.SetHelper;
 import permafrost.tundra.data.transform.Blankifier;
 import permafrost.tundra.data.transform.Lowercaser;
 import permafrost.tundra.data.transform.Nullifier;
@@ -58,7 +60,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -360,7 +361,6 @@ public final class IDataHelper {
         return recurse;
     }
 
-
     /**
      * Returns all leaf values that are instances of the given classes from the given top-level IData.
      *
@@ -499,7 +499,7 @@ public final class IDataHelper {
      * @return          A new IData document containing the keys and values from all merged input documents.
      */
     public static IData merge(IData... documents) {
-        return merge(documents == null ? null : Arrays.asList(documents));
+        return merge(ListHelper.of(documents));
     }
 
     /**
@@ -521,7 +521,7 @@ public final class IDataHelper {
      * @return          A new IData document containing the keys and values from all merged input documents.
      */
     public static IData merge(IData[] documents, boolean recurse) {
-        return merge(documents == null ? null : Arrays.asList(documents), recurse);
+        return merge(ListHelper.of(documents), recurse);
     }
 
     /**
@@ -570,7 +570,7 @@ public final class IDataHelper {
      * @return          The target IData document after being merged with the source IData documents.
      */
     public static IData mergeInto(IData target, IData... source) {
-        return mergeInto(target, source == null ? null : Arrays.asList(source));
+        return mergeInto(target, ListHelper.of(source));
     }
 
     /**
@@ -599,7 +599,7 @@ public final class IDataHelper {
      * @return          The target IData document after being merged with the source IData documents.
      */
     public static IData mergeRecursivelyInto(IData target, IData... sources) {
-        return mergeRecursivelyInto(target, sources == null ? null : Arrays.asList(sources));
+        return mergeRecursivelyInto(target, ListHelper.of(sources));
     }
 
     /**
@@ -915,7 +915,7 @@ public final class IDataHelper {
      * @return          A new IData document which is a shallow copy of the given IData document.
      */
     public static IData clone(IData document, String... excluding) {
-        return clone(document, excluding == null || excluding.length == 0 ? null : new HashSet<String>(Arrays.asList(excluding)));
+        return clone(document, SetHelper.of(excluding));
     }
 
     /**
@@ -966,7 +966,7 @@ public final class IDataHelper {
      * @return          A new IData[] document list which is a shallow copy of the given IData[] document list.
      */
     public static IData[] clone(IData[] array, String... excluding) {
-        return clone(array, excluding == null || excluding.length == 0 ? null : new HashSet<String>(Arrays.asList(excluding)));
+        return clone(array, SetHelper.of(excluding));
     }
 
     /**
@@ -2227,7 +2227,7 @@ public final class IDataHelper {
      * @return              An Object[] representation of the given java.util.Collection object.
      */
     private static Object[] normalize(Collection collection) {
-        return normalize(ArrayHelper.toArray(collection));
+        return normalize(ArrayHelper.of(collection));
     }
 
     /**
@@ -2888,7 +2888,7 @@ public final class IDataHelper {
             do {
                 list.addAll(ObjectHelper.listify(cursor.getValue()));
             } while (cursor.next(key));
-            output = ArrayHelper.toArray(list);
+            output = ArrayHelper.of(list);
         } else if (IDataKey.isFullyQualified(key, literal)) {
             output = getAsArray(document, IDataKey.of(key, literal));
         }
@@ -2940,7 +2940,7 @@ public final class IDataHelper {
                         list.addAll(ObjectHelper.listify(cursor.getValue()));
                     }
                 }
-                output = ArrayHelper.toArray(list);
+                output = ArrayHelper.of(list);
             }
 
             cursor.destroy();
