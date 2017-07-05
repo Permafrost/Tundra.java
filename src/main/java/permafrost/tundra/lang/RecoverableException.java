@@ -37,9 +37,7 @@ public class RecoverableException extends ISRuntimeException implements IDataCod
     /**
      * Constructs a new RecoverableException.
      */
-    public RecoverableException() {
-        super();
-    }
+    public RecoverableException() {}
 
     /**
      * Constructs a new RecoverableException with the given message.
@@ -47,7 +45,7 @@ public class RecoverableException extends ISRuntimeException implements IDataCod
      * @param message A message describing why the RecoverableException was thrown.
      */
     public RecoverableException(String message) {
-        super(message);
+        super(null, null, message);
     }
 
     /**
@@ -56,7 +54,8 @@ public class RecoverableException extends ISRuntimeException implements IDataCod
      * @param cause The cause of this RecoverableException.
      */
     public RecoverableException(Throwable cause) {
-        super(cause);
+        super(null, null, (String)null);
+        initCause(cause);
     }
 
     /**
@@ -66,7 +65,8 @@ public class RecoverableException extends ISRuntimeException implements IDataCod
      * @param cause   The cause of this Exception.
      */
     public RecoverableException(String message, Throwable cause) {
-        super(message, cause);
+        super(null, null, message, cause);
+        initCause(cause);
     }
 
     /**
@@ -75,7 +75,7 @@ public class RecoverableException extends ISRuntimeException implements IDataCod
      * @param exceptions A collection of exceptions this exception will wrap.
      */
     public RecoverableException(Collection<? extends Throwable> exceptions) {
-        super(ExceptionHelper.getMessage(exceptions));
+        super(null, null, ExceptionHelper.getMessage(exceptions));
     }
 
     /**
@@ -84,7 +84,7 @@ public class RecoverableException extends ISRuntimeException implements IDataCod
      * @param exceptions A collection of exceptions this exception will wrap.
      */
     public RecoverableException(Throwable... exceptions) {
-        super(ExceptionHelper.getMessage(exceptions));
+        super(null, null, ExceptionHelper.getMessage(exceptions));
     }
 
     /**
