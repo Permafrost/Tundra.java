@@ -112,23 +112,33 @@ public final class ObjectHelper {
     /**
      * Returns the first non-null argument.
      *
-     * @param objects A list of arguments to be coalesced.
-     * @param <T>     The type of the arguments.
-     * @return The first non-null argument, or null.
+     * @param objects   A list of arguments to be coalesced.
+     * @param <T>       The type of the arguments.
+     * @return          The first non-null argument, or null.
      */
     public static <T> T coalesce(T... objects) {
-        if (objects == null) return null;
-
-        T output = null;
-
-        for (T item : objects) {
-            if (item != null) {
-                output = item;
-                break;
+        if (objects != null) {
+            for (T object : objects) {
+                if (object != null) return object;
             }
         }
+        return null;
+    }
 
-        return output;
+    /**
+     * Returns the first non-null argument.
+     *
+     * @param objects   A list of arguments to be coalesced.
+     * @param <T>       The type of the arguments.
+     * @return          The first non-null argument, or null.
+     */
+    public static <T> T coalesce(Iterable<T> objects) {
+        if (objects != null) {
+            for (T object : objects) {
+                if (object != null) return object;
+            }
+        }
+        return null;
     }
 
     /**
