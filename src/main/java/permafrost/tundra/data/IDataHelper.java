@@ -1552,31 +1552,19 @@ public final class IDataHelper {
      * Replaces either the first or all occurrences of the given regular expression in the given IData document with the
      * given replacement.
      *
-     * @param document    The IData document whose string values are to be replaced.
-     * @param pattern     The regular expression pattern.
-     * @param replacement The replacement string.
-     * @param literal     Whether the replacement string is literal and therefore requires quoting.
-     * @param firstOnly   If true, only the first occurrence is replaced, otherwise all occurrences are replaced.
-     * @param recurse     Whether to recursively process the document.
-     * @return            The document with replaced string values.
+     * @param document              The IData document whose string values are to be replaced.
+     * @param pattern               The regular expression pattern.
+     * @param literalPattern        Whether the pattern string is literal and therefore requires quoting.
+     * @param replacement           The replacement string.
+     * @param literalReplacement    Whether the replacement string is literal and therefore requires quoting.
+     * @param firstOnly             If true, only the first occurrence is replaced, otherwise all occurrences are
+     *                              replaced.
+     * @param mode                  The transformer mode to use.
+     * @param recurse               Whether to recursively process the document.
+     * @return                      The document with replaced string values.
      */
-    public static IData replace(IData document, String pattern, String replacement, boolean literal, boolean firstOnly, boolean recurse) {
-        return replace(document, pattern == null ? null : Pattern.compile(pattern), replacement != null && literal ? Matcher.quoteReplacement(replacement) : replacement, firstOnly, recurse);
-    }
-
-    /**
-     * Replaces either the first or all occurrences of the given regular expression in the given IData document with the
-     * given replacement.
-     *
-     * @param document    The IData document whose string values are to be replaced.
-     * @param pattern     The regular expression pattern.
-     * @param replacement The replacement string.
-     * @param firstOnly   If true, only the first occurrence is replaced, otherwise all occurrences are replaced.
-     * @param recurse     Whether to recursively process the document.
-     * @return            The document with replaced string values.
-     */
-    public static IData replace(IData document, Pattern pattern, String replacement, boolean firstOnly, boolean recurse) {
-        return replace(document, pattern, replacement, firstOnly, TransformerMode.VALUES, recurse);
+    public static IData replace(IData document, String pattern, boolean literalPattern, String replacement, boolean literalReplacement, boolean firstOnly, TransformerMode mode, boolean recurse) {
+        return replace(document, pattern == null ? null : Pattern.compile(literalPattern ? Matcher.quoteReplacement(pattern) : pattern), replacement != null && literalReplacement ? Matcher.quoteReplacement(replacement) : replacement, firstOnly, mode, recurse);
     }
 
     /**
@@ -1599,30 +1587,19 @@ public final class IDataHelper {
      * Replaces either the first or all occurrences of the given regular expression in the given IData[] document list
      * with the given replacement.
      *
-     * @param array       The IData[] document list whose string values are to be replaced.
-     * @param pattern     The regular expression pattern.
-     * @param replacement The replacement string.
-     * @param firstOnly   If true, only the first occurrence is replaced, otherwise all occurrences are replaced.
-     * @param recurse     Whether to recursively process the document list.
-     * @return            The document list with replaced string values.
+     * @param array                 The IData[] document list whose string values are to be replaced.
+     * @param pattern               The regular expression pattern.
+     * @param literalPattern        Whether the pattern string is literal and therefore requires quoting.
+     * @param replacement           The replacement string.
+     * @param literalReplacement    Whether the replacement string is literal and therefore requires quoting.
+     * @param firstOnly             If true, only the first occurrence is replaced, otherwise all occurrences are
+     *                              replaced.
+     * @param mode                  The transformer mode to use.
+     * @param recurse               Whether to recursively process the document list.
+     * @return                      The document list with replaced string values.
      */
-    public static IData[] replace(IData[] array, String pattern, String replacement, boolean literal, boolean firstOnly, boolean recurse) {
-        return replace(array, pattern == null ? null : Pattern.compile(pattern), replacement != null && literal ? Matcher.quoteReplacement(replacement) : replacement, firstOnly, recurse);
-    }
-
-    /**
-     * Replaces either the first or all occurrences of the given regular expression in the given IData[] document list
-     * with the given replacement.
-     *
-     * @param array       The IData[] document list whose string values are to be replaced.
-     * @param pattern     The regular expression pattern.
-     * @param replacement The replacement string.
-     * @param firstOnly   If true, only the first occurrence is replaced, otherwise all occurrences are replaced.
-     * @param recurse     Whether to recursively process the document list.
-     * @return            The document list with replaced string values.
-     */
-    public static IData[] replace(IData[] array, Pattern pattern, String replacement, boolean firstOnly, boolean recurse) {
-        return replace(array, pattern, replacement, firstOnly, TransformerMode.VALUES, recurse);
+    public static IData[] replace(IData[] array, String pattern, boolean literalPattern, String replacement, boolean literalReplacement, boolean firstOnly, TransformerMode mode, boolean recurse) {
+        return replace(array, pattern == null ? null : Pattern.compile(literalPattern ? Matcher.quoteReplacement(pattern) : pattern), replacement != null && literalReplacement ? Matcher.quoteReplacement(replacement) : replacement, firstOnly, mode, recurse);
     }
 
     /**
