@@ -1619,6 +1619,69 @@ public final class IDataHelper {
     }
 
     /**
+     * Removes either the first or all occurrences of the given pattern in the given IData document.
+     *
+     * @param document              The IData document to be processed.
+     * @param pattern               The pattern to be removed.
+     * @param literalPattern        Whether the pattern string is literal and therefore requires quoting, or a regular
+     *                              expression.
+     * @param firstOnly             If true, only the first occurrence is removed, otherwise all occurrences are
+     *                              removed.
+     * @param mode                  The transformer mode to use.
+     * @param recurse               Whether to recursively process the document.
+     * @return                      The document with the given pattern removed from string values.
+     */
+    public static IData remove(IData document, String pattern, boolean literalPattern, boolean firstOnly, TransformerMode mode, boolean recurse) {
+        return remove(document, pattern == null ? null : Pattern.compile(literalPattern ? Matcher.quoteReplacement(pattern) : pattern), firstOnly, mode, recurse);
+    }
+
+    /**
+     * Removes either the first or all occurrences of the given pattern in the given IData document.
+     *
+     * @param document              The IData document to be processed.
+     * @param pattern               The pattern to be removed.
+     * @param firstOnly             If true, only the first occurrence is removed, otherwise all occurrences are
+     *                              removed.
+     * @param mode                  The transformer mode to use.
+     * @param recurse               Whether to recursively process the document.
+     * @return                      The document with the given pattern removed from string values.
+     */
+    public static IData remove(IData document, Pattern pattern, boolean firstOnly, TransformerMode mode, boolean recurse) {
+        return replace(document, pattern, "", firstOnly, mode, recurse);
+    }
+
+    /**
+     * Removes either the first or all occurrences of the given pattern in the given IData[] document list.
+     *
+     * @param array                 The IData[] document list to be processed.
+     * @param pattern               The pattern to be removed.
+     * @param literalPattern        Whether the pattern string is literal and therefore requires quoting.
+     * @param firstOnly             If true, only the first occurrence is removed, otherwise all occurrences are
+     *                              removed.
+     * @param mode                  The transformer mode to use.
+     * @param recurse               Whether to recursively process the document list.
+     * @return                      The document list with the given pattern removed from string values.
+     */
+    public static IData[] remove(IData[] array, String pattern, boolean literalPattern, boolean firstOnly, TransformerMode mode, boolean recurse) {
+        return remove(array, pattern == null ? null : Pattern.compile(literalPattern ? Matcher.quoteReplacement(pattern) : pattern), firstOnly, mode, recurse);
+    }
+
+    /**
+     * Removes either the first or all occurrences of the given pattern in the given IData[] document list.
+     *
+     * @param array                 The IData[] document list to be processed.
+     * @param pattern               The pattern to be removed.
+     * @param firstOnly             If true, only the first occurrence is removed, otherwise all occurrences are
+     *                              removed.
+     * @param mode                  The transformer mode to use.
+     * @param recurse               Whether to recursively process the document list.
+     * @return                      The document list with the given pattern removed from string values.
+     */
+    public static IData[] remove(IData[] array, Pattern pattern, boolean firstOnly, TransformerMode mode, boolean recurse) {
+        return replace(array, pattern, "", firstOnly, mode, recurse);
+    }
+
+    /**
      * Trims all string values, then converts empty strings to nulls, then compacts by removing all null values.
      *
      * @param document  An IData document to be squeezed.
