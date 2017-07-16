@@ -1346,4 +1346,32 @@ public final class StringHelper {
     public static String reverse(String input) {
         return input == null ? null : new StringBuilder(input).reverse().toString();
     }
+
+    /**
+     * The character used to replace illegal characters when converting a string to a legal Java identifier.
+     */
+    private static final char JAVA_IDENTIFIER_ILLEGAL_CHARACTER_REPLACEMENT = '_';
+
+    /**
+     * Converts the given identifier name to a legal Java identifier by replacing illegal characters with underscores.
+     *
+     * @param input The string to be converted.
+     * @return      The given string converted to a legal Java identifier.
+     */
+    public static String legalize(String input) {
+        if (input == null) return null;
+
+        char[] characters = input.toCharArray();
+        StringBuilder output = new StringBuilder();
+
+        for (int i = 0; i < characters.length; i++) {
+            char character = characters[i];
+            if ((i == 0 && !Character.isJavaIdentifierStart(character)) || (i > 0 && !Character.isJavaIdentifierPart(character))) {
+                character = JAVA_IDENTIFIER_ILLEGAL_CHARACTER_REPLACEMENT;
+            }
+            output.append(character);
+        }
+
+        return output.toString();
+    }
 }
