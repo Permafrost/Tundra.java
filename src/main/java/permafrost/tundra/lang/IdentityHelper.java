@@ -24,8 +24,6 @@
 
 package permafrost.tundra.lang;
 
-import java.util.UUID;
-
 /**
  * A collection of convenience methods for working with IDs.
  */
@@ -34,57 +32,6 @@ public final class IdentityHelper {
      * Disallow instantiation of this class.
      */
     private IdentityHelper() {}
-
-    /**
-     * Returns a new random UUID as a string.
-     *
-     * @return The new random UUID.
-     */
-    public static String generate() {
-        return generate((ObjectConvertMode)null);
-    }
-
-    /**
-     * Returns a new random UUID as a string.
-     *
-     * @param mode Determines how the UUID is represented, either as a UUID string or as a base64-encoded byte array.
-     * @return The new random UUID.
-     */
-    public static String generate(String mode) {
-        return generate(mode == null ? (ObjectConvertMode)null : ObjectConvertMode.normalize(mode));
-    }
-
-    /**
-     * Returns a new random UUID as a string.
-     *
-     * @param mode Determines how the UUID is represented, either as a UUID string or as a base64-encoded byte array.
-     * @return The new random UUID.
-     */
-    public static String generate(ObjectConvertMode mode) {
-        UUID uuid = UUID.randomUUID();
-        String id = null;
-
-        if (mode == null) mode = ObjectConvertMode.STRING;
-
-        if (mode == ObjectConvertMode.STRING) {
-            id = uuid.toString();
-        } else if (mode == ObjectConvertMode.BASE64) {
-            long mostSignificantBits = uuid.getMostSignificantBits();
-            long leastSignificantBits = uuid.getLeastSignificantBits();
-            byte[] bytes = new byte[16];
-
-            for (int i = 0; i < 8; i++) {
-                bytes[i] = (byte)(mostSignificantBits >>> 8 * (7 - i));
-            }
-            for (int i = 8; i < 16; i++) {
-                bytes[i] = (byte)(leastSignificantBits >>> 8 * (7 - i));
-            }
-            id = BytesHelper.base64Encode(bytes);
-        } else {
-            throw new IllegalArgumentException("Unsupported conversion mode specified: " + mode);
-        }
-        return id;
-    }
 
     /**
      * Converts the given identifier name to a legal Java identifier by replacing illegal characters with underscores.
