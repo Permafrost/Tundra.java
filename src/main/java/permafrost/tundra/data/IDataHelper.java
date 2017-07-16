@@ -40,12 +40,16 @@ import permafrost.tundra.data.transform.Blankifier;
 import permafrost.tundra.data.transform.Legalizer;
 import permafrost.tundra.data.transform.Lowercaser;
 import permafrost.tundra.data.transform.Nullifier;
+import permafrost.tundra.data.transform.Prefixer;
 import permafrost.tundra.data.transform.Replacer;
 import permafrost.tundra.data.transform.Stringifier;
+import permafrost.tundra.data.transform.Suffixer;
 import permafrost.tundra.data.transform.TransformerMode;
 import permafrost.tundra.data.transform.Squeezer;
 import permafrost.tundra.data.transform.Transformer;
 import permafrost.tundra.data.transform.Trimmer;
+import permafrost.tundra.data.transform.Unprefixer;
+import permafrost.tundra.data.transform.Unsuffixer;
 import permafrost.tundra.data.transform.Uppercaser;
 import permafrost.tundra.flow.ConditionEvaluator;
 import permafrost.tundra.flow.variable.SubstitutionHelper;
@@ -1559,6 +1563,114 @@ public final class IDataHelper {
      */
     public static IData legalize(IData document, TransformerMode mode, boolean recurse) {
         return transform(document, new Legalizer(mode, recurse));
+    }
+
+    /**
+     * Adds the given prefix to the keys and/or values in the given IData document.
+     *
+     * @param document    The IData document to be processed.
+     * @param prefix      The prefix to be added.
+     * @param force       Whether the prefix should be added even when it already exists on a string.
+     * @param mode        The transformer mode to use.
+     * @param recurse     Whether to recursively process the document.
+     * @return            The IData document with prefixed keys and/or values.
+     */
+    public static IData prefix(IData document, String prefix, boolean force, TransformerMode mode, boolean recurse) {
+        return transform(document, new Prefixer(prefix, force, mode, recurse));
+    }
+
+    /**
+     * Adds the given prefix to the keys and/or values in the given IData[] document list.
+     *
+     * @param array       The IData[] document list to be processed.
+     * @param prefix      The prefix to be added.
+     * @param force       Whether the prefix should be added even when it already exists on a string.
+     * @param mode        The transformer mode to use.
+     * @param recurse     Whether to recursively process the document.
+     * @return            The IData[] document list with prefixed keys and/or values.
+     */
+    public static IData[] prefix(IData[] array, String prefix, boolean force, TransformerMode mode, boolean recurse) {
+        return transform(array, new Prefixer(prefix, force, mode, recurse));
+    }
+
+    /**
+     * Removes the given prefix from the keys and/or values in the given IData document.
+     *
+     * @param document    The IData document to be processed.
+     * @param prefix      The prefix to be removed.
+     * @param mode        The transformer mode to use.
+     * @param recurse     Whether to recursively process the document.
+     * @return            The IData document with unprefixed keys and/or values.
+     */
+    public static IData unprefix(IData document, String prefix, TransformerMode mode, boolean recurse) {
+        return transform(document, new Unprefixer(prefix, mode, recurse));
+    }
+
+    /**
+     * Removes the given prefix from the keys and/or values in the given IData[] document list.
+     *
+     * @param array       The IData[] document list to be processed.
+     * @param prefix      The prefix to be removed.
+     * @param mode        The transformer mode to use.
+     * @param recurse     Whether to recursively process the document.
+     * @return            The IData[] document list with unprefixed keys and/or values.
+     */
+    public static IData[] unprefix(IData[] array, String prefix, TransformerMode mode, boolean recurse) {
+        return transform(array, new Unprefixer(prefix, mode, recurse));
+    }
+
+    /**
+     * Adds the given suffix to the keys and/or values in the given IData document.
+     *
+     * @param document    The IData document to be processed.
+     * @param suffix      The suffix to be added.
+     * @param force       Whether the suffix should be added even when it already exists on a string.
+     * @param mode        The transformer mode to use.
+     * @param recurse     Whether to recursively process the document.
+     * @return            The IData document with suffixed keys and/or values.
+     */
+    public static IData suffix(IData document, String suffix, boolean force, TransformerMode mode, boolean recurse) {
+        return transform(document, new Suffixer(suffix, force, mode, recurse));
+    }
+
+    /**
+     * Adds the given suffix to the keys and/or values in the given IData[] document list.
+     *
+     * @param array       The IData[] document list to be processed.
+     * @param suffix      The suffix to be added.
+     * @param force       Whether the suffix should be added even when it already exists on a string.
+     * @param mode        The transformer mode to use.
+     * @param recurse     Whether to recursively process the document.
+     * @return            The IData[] document list with suffixed keys and/or values.
+     */
+    public static IData[] suffix(IData[] array, String suffix, boolean force, TransformerMode mode, boolean recurse) {
+        return transform(array, new Suffixer(suffix, force, mode, recurse));
+    }
+
+    /**
+     * Removes the given suffix from the keys and/or values in the given IData document.
+     *
+     * @param document    The IData document to be processed.
+     * @param suffix      The suffix to be removed.
+     * @param mode        The transformer mode to use.
+     * @param recurse     Whether to recursively process the document.
+     * @return            The IData document with unsuffixed keys and/or values.
+     */
+    public static IData unsuffix(IData document, String suffix, TransformerMode mode, boolean recurse) {
+        return transform(document, new Unsuffixer(suffix, mode, recurse));
+    }
+
+    /**
+     * Removes the given suffix from the keys and/or values in the given IData[] document list.
+     *
+     * @param array       The IData[] document list to be processed.
+     * @param suffix      The suffix to be removed.
+     * @param mode        The transformer mode to use.
+     * @param recurse     Whether to recursively process the document.
+     * @return            The IData[] document list with unsuffixed keys and/or values.
+     */
+    public static IData[] unsuffix(IData[] array, String suffix, TransformerMode mode, boolean recurse) {
+        return transform(array, new Unsuffixer(suffix, mode, recurse));
     }
 
     /**
