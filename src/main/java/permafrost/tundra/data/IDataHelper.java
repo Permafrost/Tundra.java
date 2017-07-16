@@ -37,6 +37,7 @@ import org.w3c.dom.Node;
 import permafrost.tundra.collection.ListHelper;
 import permafrost.tundra.collection.SetHelper;
 import permafrost.tundra.data.transform.Blankifier;
+import permafrost.tundra.data.transform.Legalizer;
 import permafrost.tundra.data.transform.Lowercaser;
 import permafrost.tundra.data.transform.Nullifier;
 import permafrost.tundra.data.transform.Replacer;
@@ -1546,6 +1547,18 @@ public final class IDataHelper {
      */
     public static IData[] trim(IData[] input, TransformerMode mode, boolean recurse) {
         return transform(input, new Trimmer(mode, recurse, true, true, true));
+    }
+
+    /**
+     * Replaces illegal characters with underscores to create legal Java identifiers in the given IData document.
+     *
+     * @param document    The IData document whose string values are to be replaced.
+     * @param mode        The transformer mode to use.
+     * @param recurse     Whether to recursively process the document.
+     * @return            The document with replaced string values.
+     */
+    public static IData legalize(IData document, TransformerMode mode, boolean recurse) {
+        return transform(document, new Legalizer(mode, recurse));
     }
 
     /**
