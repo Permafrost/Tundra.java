@@ -481,6 +481,21 @@ public final class ServiceHelper {
      * @throws ServiceException If raise is true and the service throws an exception while being invoked.
      */
     public static IData invoke(String service, IData pipeline, boolean raise, boolean clone) throws ServiceException {
+        return invoke(service, pipeline, raise, true, false);
+    }
+
+    /**
+     * Invokes the given service with the given pipeline synchronously.
+     *
+     * @param service           The service to be invoked.
+     * @param pipeline          The input pipeline used when invoking the service.
+     * @param raise             If true will rethrow exceptions thrown by the invoked service.
+     * @param clone             If true the pipeline will first be cloned before being used by the invocation.
+     * @param logError          Logs a caught exception if true and raise is false, otherwise exception is not logged.
+     * @return                  The output pipeline returned by the service invocation.
+     * @throws ServiceException If raise is true and the service throws an exception while being invoked.
+     */
+    public static IData invoke(String service, IData pipeline, boolean raise, boolean clone, boolean logError) throws ServiceException {
         if (service != null) {
             if (pipeline == null) pipeline = IDataFactory.create();
 
@@ -491,6 +506,7 @@ public final class ServiceHelper {
                     ExceptionHelper.raise(exception);
                 } else {
                     pipeline = addExceptionToPipeline(pipeline, exception);
+                    if (logError) ServerAPI.logError(exception);
                 }
             }
         }
