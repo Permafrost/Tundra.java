@@ -24,8 +24,6 @@
 
 package permafrost.tundra.lang;
 
-import java.text.MessageFormat;
-
 /**
  * A collection of convenience methods for working with booleans.
  */
@@ -174,13 +172,13 @@ public final class BooleanHelper {
     public static boolean parse(String string, String trueValue, String falseValue, boolean defaultValue) {
         if (string == null) return defaultValue;
 
-        string = string.trim().toLowerCase();
+        string = string.trim();
 
         boolean result;
 
-        if (string.equals("1") || string.equals("true") || (trueValue != null && string.equalsIgnoreCase(trueValue))) {
+        if ((trueValue != null && trueValue.equals(string)) || (trueValue == null && ("1".equals(string) || "true".equalsIgnoreCase(string)))) {
             result = true;
-        } else if (string.equals("0") || string.equals("false") || (falseValue != null && string.equalsIgnoreCase(falseValue))) {
+        } else if ((falseValue != null && falseValue.equals(string)) || (falseValue == null && ("0".equals(string) || "false".equalsIgnoreCase(string)))) {
             result = false;
         } else {
             throw new IllegalArgumentException("Unparseable boolean value: " + string);
