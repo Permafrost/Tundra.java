@@ -25,30 +25,34 @@
 package permafrost.tundra.io;
 
 import com.wm.app.b2b.server.MimeTypes;
+import com.wm.app.b2b.server.ServerAPI;
+import com.wm.app.b2b.server.ServiceException;
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
 import com.wm.data.IDataUtil;
+import permafrost.tundra.data.IDataHelper;
 import permafrost.tundra.io.filter.RegularExpressionFilenameFilter;
 import permafrost.tundra.io.filter.WildcardFilenameFilter;
 import permafrost.tundra.lang.BooleanHelper;
-import permafrost.tundra.lang.BytesHelper;
 import permafrost.tundra.lang.CharsetHelper;
+import permafrost.tundra.lang.ExceptionHelper;
 import permafrost.tundra.lang.StringHelper;
 import permafrost.tundra.math.LongHelper;
 import permafrost.tundra.mime.MIMETypeHelper;
 import permafrost.tundra.net.uri.URIHelper;
+import permafrost.tundra.server.ServiceHelper;
 import permafrost.tundra.time.DateTimeHelper;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
@@ -162,6 +166,57 @@ public final class FileHelper {
      */
     public static String create(String filename) throws IOException {
         return normalize(create(construct(filename)));
+    }
+
+    /**
+     * Opens a file for reading, appending, or writing, and processes it by calling the given service with the resulting
+     * stream.
+     *
+     * @param file              The file to be processed.
+     * @param mode              The mode to use when opening the file.
+     * @param service           The service to be invoked to process the opened stream
+     * @param input             The input variable name to use for the opened stream.
+     * @param pipeline          The input pipeline.
+     * @param raise             Whether to rethrow any errors that occur.
+     * @param logError          Whether to log any errors that occur when raise is false.
+     * @return                  The output pipeline.
+     * @throws ServiceException If any errors occur during processing.
+     */
+    public static IData process(File file, String mode, String service, String input, IData pipeline, boolean raise, boolean logError) throws ServiceException {
+        if (file != null) {
+            if (input == null) input = "$stream";
+            Closeable stream = null;
+
+            try {
+                if (mode == null || mode.equalsIgnoreCase("read")) {
+                    stream = InputStreamHelper.normalize(new FileInputStream(file));
+                } else {
+                    if (!FileHelper.exists(file)) FileHelper.create(file);
+                    stream = OutputStreamHelper.normalize(new FileOutputStream(file, mode.equalsIgnoreCase("append")));
+                }
+
+                IDataCursor cursor = pipeline.getCursor();
+                IDataHelper.put(cursor, input, stream);
+                cursor.destroy();
+
+                pipeline = ServiceHelper.invoke(service, pipeline, true);
+            } catch (Throwable exception) {
+                if (raise) {
+                    ExceptionHelper.raise(exception);
+                } else {
+                    pipeline = ServiceHelper.addExceptionToPipeline(pipeline, exception);
+                    if (logError) ServerAPI.logError(exception);
+                }
+            } finally {
+                CloseableHelper.close(stream);
+
+                IDataCursor cursor = pipeline.getCursor();
+                IDataHelper.remove(cursor, input);
+                cursor.destroy();
+            }
+        }
+
+        return pipeline;
     }
 
     /**

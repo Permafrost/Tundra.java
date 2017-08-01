@@ -696,7 +696,7 @@ public final class ServiceHelper {
      * @param exception The exception to be added.
      * @return          The pipeline with the added exception.
      */
-    private static IData addExceptionToPipeline(IData pipeline, Throwable exception) {
+    public static IData addExceptionToPipeline(IData pipeline, Throwable exception) {
         if (pipeline == null) pipeline = IDataFactory.create();
 
         if (exception != null) {
