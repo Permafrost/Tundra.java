@@ -133,8 +133,8 @@ public class BooleanHelperTest {
 
     @Test
     public void testNegateWithCustomValues() throws Exception {
-        assertEquals("N", BooleanHelper.negate("true", "Y", "N"));
-        assertEquals("Y", BooleanHelper.negate("false", "Y", "N"));
+        assertEquals("N", BooleanHelper.negate("Y", "Y", "N"));
+        assertEquals("Y", BooleanHelper.negate("N", "Y", "N"));
     }
 
     @Test
