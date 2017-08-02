@@ -532,7 +532,7 @@ public final class StringHelper {
      */
     @SuppressWarnings("unchecked")
     public static String concatenate(IData operands, String separator, boolean includeNulls) {
-        return concatenate(separator, includeNulls, (String[])IDataHelper.getLeafValues(operands, String.class));
+        return concatenate(separator, includeNulls, IDataHelper.getLeaves(operands, String.class));
     }
 
     /**

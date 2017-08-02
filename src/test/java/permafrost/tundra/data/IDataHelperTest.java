@@ -1446,7 +1446,7 @@ public class IDataHelperTest {
     }
 
     @Test
-    public void testGetLeafValuesForIData() throws Exception {
+    public void testGetLeavesForIData() throws Exception {
         String[] expected = new String[] { "1", "2", "3", "4", "6" };
 
         IDataMap parent = new IDataMap();
@@ -1460,13 +1460,13 @@ public class IDataHelperTest {
 
         parent.put("b", child);
 
-        Object[] actual = IDataHelper.getLeafValues(parent, String.class);
+        String[] actual = IDataHelper.getLeaves(parent, String.class);
 
         assertArrayEquals(expected, actual);
     }
 
     @Test
-    public void testGetLeafValuesForIDataArray() throws Exception {
+    public void testGetLeavesForIDataArray() throws Exception {
         String[] expected = new String[] { "1", "2", "3", "4", "6", "7", "8", "9" };
 
         IData[] array = new IData[2];
@@ -1491,7 +1491,7 @@ public class IDataHelperTest {
 
         array[1] = parent;
 
-        Object[] actual = IDataHelper.getLeafValues(array, String.class);
+        String[] actual = IDataHelper.getLeaves(array, String.class);
 
         assertArrayEquals(expected, actual);
     }
