@@ -376,11 +376,11 @@ public final class IDataHelper {
 
         if (!anyClass && klass.isInstance(value)) {
             values.add((T)value);
-        } else if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
+        } else if (value instanceof IData[] || value instanceof Table) {
             for (IData document : toIDataArray(value)) {
                 getLeaves(values, document, klass);
             }
-        } else if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
+        } else if (value instanceof IData) {
             for (Map.Entry<String, Object> entry : IDataMap.of(toIData(value))) {
                 getLeaves(values, entry.getValue(), klass);
             }
