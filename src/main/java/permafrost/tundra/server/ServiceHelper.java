@@ -659,12 +659,31 @@ public final class ServiceHelper {
      *                          specified, or the catch service rethrows the exception.
      */
     public static IData ensure(String tryService, String catchService, String finallyService, IData pipeline) throws ServiceException {
+        return ensure(tryService, catchService, finallyService, pipeline, null, null);
+    }
+
+    /**
+     * Provides a try/catch/finally pattern for flow services.
+     *
+     * @param tryService        The service to be executed in the try clause of the try/catch/finally pattern.
+     * @param catchService      The service to be executed in the catch clause of the try/catch/finally pattern.
+     * @param finallyService    The service to be executed in the finally clause of the try/catch/finally pattern.
+     * @param pipeline          The input pipeline used when invoking the services.
+     * @param catchPipeline     Optional additional variables to be merged with the pipeline before calling the
+     *                          catch service.
+     * @param finallyPipeline   Optional additional variables to be merged with the pipeline before calling the
+     *                          finally service.
+     * @return                  The output pipeline containing the results of the try/catch/finally pattern.
+     * @throws ServiceException If the service throws an exception while being invoked, and either no catch service is
+     *                          specified, or the catch service rethrows the exception.
+     */
+    public static IData ensure(String tryService, String catchService, String finallyService, IData pipeline, IData catchPipeline, IData finallyPipeline) throws ServiceException {
         try {
-            pipeline = invoke(tryService, pipeline);
+            pipeline = invoke(tryService, pipeline, true, false, true);
         } catch (Throwable exception) {
-            pipeline = rescue(catchService, pipeline, exception);
+            pipeline = rescue(catchService, IDataHelper.mergeInto(pipeline, catchPipeline), exception);
         } finally {
-            pipeline = invoke(finallyService, pipeline);
+            pipeline = invoke(finallyService, IDataHelper.mergeInto(pipeline, finallyPipeline));
         }
 
         return pipeline;
