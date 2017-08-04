@@ -394,7 +394,11 @@ public final class ListHelper {
         List<T> list;
 
         if (items == null) {
-            list = new ArrayList<T>();
+            if (returnEmpty) {
+                list = new ArrayList<T>();
+            } else {
+                list = null;
+            }
         } else {
             list = Arrays.asList(items);
         }
@@ -426,7 +430,11 @@ public final class ListHelper {
         List<T> list;
 
         if (collection == null) {
-            list = new ArrayList<T>();
+            if (returnEmpty) {
+                list = new ArrayList<T>();
+            } else {
+                list = null;
+            }
         } else {
             list = new ArrayList<T>(collection);
         }
