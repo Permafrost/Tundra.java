@@ -175,4 +175,17 @@ public final class InputStreamHelper {
         InputOutputHelper.copy(inputStream, outputStream, close);
         return outputStream.toByteArray();
     }
+
+    /**
+     * Returns an InputStream which transcodes the character data in the given InputStream from one character set to
+     * another.
+     *
+     * @param inputStream   The input stream to transcode.
+     * @param sourceCharset The character set to decode the data from.
+     * @param targetCharset The character set to transcode the data to.
+     * @return              A new input stream which transcodes the given input stream.
+     */
+    public static InputStream transcode(InputStream inputStream, Charset sourceCharset, Charset targetCharset) {
+        return new TranscodingInputStream(inputStream, sourceCharset, targetCharset);
+    }
 }
