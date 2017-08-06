@@ -28,7 +28,12 @@ import permafrost.tundra.io.InputStreamHelper;
 import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CharsetEncoder;
+import java.nio.charset.CodingErrorAction;
 
 /**
  * A collection of convenience methods for working with byte[] objects.
@@ -177,5 +182,37 @@ public final class BytesHelper {
     public static byte[] hexDecode(String string) {
         if (string == null) return null;
         return DatatypeConverter.parseHexBinary(string);
+    }
+
+    /**
+     * Transcodes character data from one character set to another.
+     *
+     * @param data                      The character data to be transcoded.
+     * @param sourceCharset             The character set of the given data.
+     * @param targetCharset             The character set to transcode the give data to.
+     * @return                          The transcoded character data.
+     * @throws CharacterCodingException If any transcoding error occurs.
+     */
+    public static byte[] transcode(byte[] data, Charset sourceCharset, Charset targetCharset) throws CharacterCodingException {
+        return transcode(data, sourceCharset.newDecoder().onMalformedInput(CodingErrorAction.REPORT).onUnmappableCharacter(CodingErrorAction.REPORT),
+                               targetCharset.newEncoder().onMalformedInput(CodingErrorAction.REPORT).onUnmappableCharacter(CodingErrorAction.REPORT));
+    }
+
+    /**
+     * Transcodes character data from one character set to another.
+     *
+     * @param data                      The character data to be transcoded.
+     * @param decoder                   The character set decoder to decode the given data.
+     * @param encoder                   The character set encoder to encode the returned data.
+     * @return                          The transcoded character data.
+     * @throws CharacterCodingException If any transcoding error occurs.
+     */
+    public static byte[] transcode(byte[] data, CharsetDecoder decoder, CharsetEncoder encoder) throws CharacterCodingException {
+        ByteBuffer encoded = encoder.encode(decoder.decode(ByteBuffer.wrap(data)));
+        encoded.flip();
+        byte[] output = new byte[encoded.remaining()];
+        encoded.get(output);
+
+        return output;
     }
 }
