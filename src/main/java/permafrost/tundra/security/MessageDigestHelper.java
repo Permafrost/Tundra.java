@@ -58,7 +58,7 @@ public final class MessageDigestHelper {
      * @return The default MessageDigest algorithm.
      */
     private static MessageDigest getDefault() {
-        MessageDigest messageDigest = null;
+        MessageDigest messageDigest;
 
         try {
             messageDigest = MessageDigest.getInstance(DEFAULT_ALGORITHM_NAME);
