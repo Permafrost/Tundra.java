@@ -679,10 +679,12 @@ public final class ServiceHelper {
      */
     public static IData ensure(String tryService, String catchService, String finallyService, IData pipeline, IData catchPipeline, IData finallyPipeline) throws ServiceException {
         try {
-            pipeline = invoke(tryService, pipeline, true, false, true);
+            pipeline = invoke(tryService, pipeline);
         } catch (Throwable exception) {
-            pipeline = rescue(catchService, IDataHelper.mergeInto(pipeline, catchPipeline), exception);
+            if (catchPipeline != null) pipeline = IDataHelper.mergeInto(pipeline, catchPipeline);
+            pipeline = rescue(catchService, pipeline, exception);
         } finally {
+            if (finallyPipeline != null) pipeline = IDataHelper.mergeInto(pipeline, finallyPipeline);
             pipeline = invoke(finallyService, IDataHelper.mergeInto(pipeline, finallyPipeline));
         }
 
