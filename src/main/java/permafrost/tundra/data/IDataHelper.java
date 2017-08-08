@@ -313,6 +313,17 @@ public final class IDataHelper {
     }
 
     /**
+     * Returns all leaf values from the given document.
+     *
+     * @param document  The IData document to get leaf values from.
+     * @param recurse   Whether to recurse through embedded IData and IData[] structures.
+     * @return          An array of leaf values.
+     */
+    public static Object[] getLeaves(IData document, boolean recurse) {
+        return getLeaves(document, Object.class, recurse);
+    }
+
+    /**
      * Returns all leaf values from the given document that are instances of the given class.
      *
      * @param document  The IData document to get leaf values from.
@@ -321,11 +332,24 @@ public final class IDataHelper {
      * @return          An array of leaf values of the given class.
      */
     public static <T> T[] getLeaves(IData document, Class<T> klass) {
+        return getLeaves(document, klass, true);
+    }
+
+    /**
+     * Returns all leaf values from the given document that are instances of the given class.
+     *
+     * @param document  The IData document to get leaf values from.
+     * @param klass     The class that the returned values are required to be instances of.
+     * @param recurse   Whether to recurse through embedded IData and IData[] structures.
+     * @param <T>       The class that the returned values are required to be instances of.
+     * @return          An array of leaf values of the given class.
+     */
+    public static <T> T[] getLeaves(IData document, Class<T> klass, boolean recurse) {
         List<T> list = new ArrayList<T>();
 
         if (document != null) {
             for (Map.Entry<String, Object> entry : IDataMap.of(toIData(document))) {
-                getLeaves(list, entry.getValue(), klass);
+                getLeaves(list, entry.getValue(), klass, recurse);
             }
         }
 
@@ -343,6 +367,17 @@ public final class IDataHelper {
     }
 
     /**
+     * Returns all leaf values from the given document list.
+     *
+     * @param array     The document list to get leaf values from.
+     * @param recurse   Whether to recurse through embedded IData and IData[] structures.
+     * @return          An array of leaf values.
+     */
+    public static Object[] getLeaves(IData[] array, boolean recurse) {
+        return getLeaves(array, Object.class, recurse);
+    }
+
+    /**
      * Returns all leaf values from the given document list that are instances of the given class.
      *
      * @param array     The document list to get leaf values from.
@@ -351,11 +386,24 @@ public final class IDataHelper {
      * @return          An array of leaf values of the given class.
      */
     public static <T> T[] getLeaves(IData[] array, Class<T> klass) {
+        return getLeaves(array, klass, true);
+    }
+
+    /**
+     * Returns all leaf values from the given document list that are instances of the given class.
+     *
+     * @param array     The document list to get leaf values from.
+     * @param klass     The class that the returned values are required to be instances of.
+     * @param recurse   Whether to recurse through embedded IData and IData[] structures.
+     * @param <T>       The class that the returned values are required to be instances of.
+     * @return          An array of leaf values of the given class.
+     */
+    public static <T> T[] getLeaves(IData[] array, Class<T> klass, boolean recurse) {
         List<T> list = new ArrayList<T>();
 
         if (array != null) {
             for (IData document : array) {
-                getLeaves(list, document, klass);
+                getLeaves(list, document, klass, recurse);
             }
         }
 
@@ -371,26 +419,26 @@ public final class IDataHelper {
      * @param <T>       The class leaf values are required to be instances of.
      */
     @SuppressWarnings("unchecked")
-    private static <T> void getLeaves(List<T> values, Object value, Class<T> klass) {
+    private static <T> void getLeaves(List<T> values, Object value, Class<T> klass, boolean recurse) {
         boolean anyClass = klass.equals(Object.class);
 
         if (!anyClass && klass.isInstance(value)) {
             values.add((T)value);
-        } else if (value instanceof IData[] || value instanceof Table) {
+        } else if (recurse && (value instanceof IData[] || value instanceof Table)) {
             for (IData document : toIDataArray(value)) {
-                getLeaves(values, document, klass);
+                getLeaves(values, document, klass, recurse);
             }
-        } else if (value instanceof IData) {
+        } else if (recurse && (value instanceof IData)) {
             for (Map.Entry<String, Object> entry : IDataMap.of(toIData(value))) {
-                getLeaves(values, entry.getValue(), klass);
+                getLeaves(values, entry.getValue(), klass, recurse);
             }
-        } else if (value instanceof Object[][]) {
+        } else if (recurse && (value instanceof Object[][])) {
             for (Object[] array : (Object[][])value) {
-                getLeaves(values, array, klass);
+                getLeaves(values, array, klass, recurse);
             }
-        } else if (value instanceof Object[]) {
+        } else if (recurse && (value instanceof Object[])) {
             for (Object item : (Object[])value) {
-                getLeaves(values, item, klass);
+                getLeaves(values, item, klass, recurse);
             }
         } else if (anyClass && value != null) {
             values.add((T)value);
