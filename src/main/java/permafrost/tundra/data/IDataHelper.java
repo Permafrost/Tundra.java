@@ -345,15 +345,9 @@ public final class IDataHelper {
      * @return          An array of leaf values of the given class.
      */
     public static <T> T[] getLeaves(IData document, Class<T> klass, boolean recurse) {
-        List<T> list = new ArrayList<T>();
-
-        if (document != null) {
-            for (Map.Entry<String, Object> entry : IDataMap.of(toIData(document))) {
-                getLeaves(list, entry.getValue(), klass, recurse);
-            }
-        }
-
-        return list.toArray(ArrayHelper.instantiate(klass));
+        List<T> leaves = new ArrayList<T>();
+        getLeavesFromIData(leaves, document, klass, recurse);
+        return leaves.toArray(ArrayHelper.instantiate(klass, leaves.size()));
     }
 
     /**
@@ -399,49 +393,79 @@ public final class IDataHelper {
      * @return          An array of leaf values of the given class.
      */
     public static <T> T[] getLeaves(IData[] array, Class<T> klass, boolean recurse) {
-        List<T> list = new ArrayList<T>();
-
-        if (array != null) {
-            for (IData document : array) {
-                getLeaves(list, document, klass, recurse);
-            }
-        }
-
-        return list.toArray(ArrayHelper.instantiate(klass));
+        List<T> leaves = new ArrayList<T>();
+        getLeavesFromIDataArray(leaves, array, klass, recurse);
+        return leaves.toArray(ArrayHelper.instantiate(klass, leaves.size()));
     }
 
     /**
-     * Adds all leaf values to the given list.
+     * Populates the given List with the leaf values that are instances of the given class from the given IData
+     * document.
      *
-     * @param values    A list to add leaf values to.
+     * @param leaves    The List to add leaf values to.
+     * @param document  The IData document to return the leaf values from.
+     * @param klass     The required class the returned leaf values should be instances of.
+     * @param recurse   Whether to recursively return leaf values from child IData and IData[] objects.
+     * @param <T>       The required class the returned leaf values should be instances of.
+     */
+    private static <T> void getLeavesFromIData(List<T> leaves, IData document, Class<T> klass, boolean recurse) {
+        if (document != null) {
+            for (Map.Entry<String, Object> entry : IDataMap.of(toIData(document))) {
+                getLeavesFromObject(leaves, entry.getValue(), klass, recurse);
+            }
+        }
+    }
+
+    /**
+     * Populates the given List with the leaf values that are instances of the given class from the given IData[]
+     * document list.
+     *
+     * @param leaves    The List to add leaf values to.
+     * @param array     The IData[] document list to return the leaf values from.
+     * @param klass     The required class the returned leaf values should be instances of.
+     * @param recurse   Whether to recursively return leaf values from child IData and IData[] objects.
+     * @param <T>       The required class the returned leaf values should be instances of.
+     */
+    private static <T> void getLeavesFromIDataArray(List<T> leaves, IData[] array, Class<T> klass, boolean recurse) {
+        if (array != null) {
+            for (IData document : array) {
+                getLeavesFromIData(leaves, document, klass, recurse);
+            }
+        }
+    }
+
+    /**
+     * Populates the given List with the leaf values that are instances of the given class from the given Object.
+     *
+     * @param leaves    A list to add leaf values to.
      * @param value     The value to be processed.
      * @param klass     The class leaf values are required to be instances of.
      * @param <T>       The class leaf values are required to be instances of.
      */
     @SuppressWarnings("unchecked")
-    private static <T> void getLeaves(List<T> values, Object value, Class<T> klass, boolean recurse) {
+    private static <T> void getLeavesFromObject(List<T> leaves, Object value, Class<T> klass, boolean recurse) {
         boolean anyClass = klass.equals(Object.class);
 
         if (!anyClass && klass.isInstance(value)) {
-            values.add((T)value);
+            leaves.add((T)value);
         } else if (recurse && (value instanceof IData[] || value instanceof Table)) {
             for (IData document : toIDataArray(value)) {
-                getLeaves(values, document, klass, recurse);
+                getLeavesFromObject(leaves, document, klass, recurse);
             }
-        } else if (recurse && (value instanceof IData)) {
+        } else if (recurse && value instanceof IData) {
             for (Map.Entry<String, Object> entry : IDataMap.of(toIData(value))) {
-                getLeaves(values, entry.getValue(), klass, recurse);
+                getLeavesFromObject(leaves, entry.getValue(), klass, recurse);
             }
-        } else if (recurse && (value instanceof Object[][])) {
+        } else if (value instanceof Object[][]) {
             for (Object[] array : (Object[][])value) {
-                getLeaves(values, array, klass, recurse);
+                getLeavesFromObject(leaves, array, klass, recurse);
             }
-        } else if (recurse && (value instanceof Object[])) {
+        } else if (value instanceof Object[]) {
             for (Object item : (Object[])value) {
-                getLeaves(values, item, klass, recurse);
+                getLeavesFromObject(leaves, item, klass, recurse);
             }
         } else if (anyClass && value != null) {
-            values.add((T)value);
+            leaves.add((T)value);
         }
     }
 

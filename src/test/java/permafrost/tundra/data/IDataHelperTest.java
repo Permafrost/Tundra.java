@@ -1466,6 +1466,26 @@ public class IDataHelperTest {
     }
 
     @Test
+    public void testGetLeavesNoRecurseWithArrays() throws Exception {
+        String[] expected = new String[] { "1", "2", "3" };
+
+        IDataMap parent = new IDataMap();
+        parent.put("a", "1");
+        parent.put("b", new String[] { "2", "3" });
+
+        IDataMap child = new IDataMap();
+        child.put("d", "4");
+        child.put("e", new Integer("5"));
+        child.put("f", "6");
+
+        parent.put("c", child);
+
+        String[] actual = IDataHelper.getLeaves(parent, String.class, false);
+
+        assertArrayEquals(expected, actual);
+    }
+
+    @Test
     public void testGetLeavesForIDataArray() throws Exception {
         String[] expected = new String[] { "1", "2", "3", "4", "6", "7", "8", "9" };
 
