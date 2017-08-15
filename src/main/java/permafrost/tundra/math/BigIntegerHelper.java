@@ -44,6 +44,18 @@ public final class BigIntegerHelper {
     private BigIntegerHelper() {}
 
     /**
+     * Converts the given string representation of a BigInteger to a different radix.
+     *
+     * @param string        The string to convert.
+     * @param inputRadix    The radix to parse the string with.
+     * @param outputRadix   The radix to convert the parsed integer to.
+     * @return              The given string converted from the input radix to the output radix.
+     */
+    public static String rebase(String string, int inputRadix, int outputRadix) {
+        return emit(parse(string, inputRadix), outputRadix);
+    }
+
+    /**
      * Returns a java.math.BigInteger object by parsing the given an integer string.
      *
      * @param string    A string to be parsed.
