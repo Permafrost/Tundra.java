@@ -685,7 +685,7 @@ public final class ServiceHelper {
             pipeline = rescue(catchService, pipeline, exception);
         } finally {
             if (finallyPipeline != null) pipeline = IDataHelper.mergeInto(pipeline, finallyPipeline);
-            pipeline = invoke(finallyService, IDataHelper.mergeInto(pipeline, finallyPipeline));
+            pipeline = invoke(finallyService, pipeline);
         }
 
         return pipeline;
