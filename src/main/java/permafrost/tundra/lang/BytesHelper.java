@@ -209,7 +209,6 @@ public final class BytesHelper {
      */
     public static byte[] transcode(byte[] data, CharsetDecoder decoder, CharsetEncoder encoder) throws CharacterCodingException {
         ByteBuffer encoded = encoder.encode(decoder.decode(ByteBuffer.wrap(data)));
-        encoded.flip();
         byte[] output = new byte[encoded.remaining()];
         encoded.get(output);
 
