@@ -1251,7 +1251,7 @@ public final class IDataHelper {
      * @throws ServiceException If an error occurs.
      */
     public static IData amend(IData document, IData[] amendments, IData scope) throws ServiceException {
-        if (amendments == null) return document;
+        if (amendments == null || amendments.length == 0) return document;
 
         IData output = duplicate(document);
 
