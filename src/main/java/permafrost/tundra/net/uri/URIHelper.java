@@ -60,25 +60,251 @@ public final class URIHelper {
     /**
      * Parses a URI string into an IData representation.
      *
-     * @param input The URI string to be parsed.
-     * @return An IData representation of the give URI.
-     * @throws URISyntaxException If the given string is an invalid URI.
+     * @param input                 The URI string to be parsed.
+     * @return                      An IData representation of the given URI.
+     * @throws URISyntaxException   If the given string is an invalid URI.
      */
     public static IData parse(String input) throws URISyntaxException {
         if (input == null) return null;
+        return toIData(fromString(input));
+    }
 
-        // treat Windows UNC file URIs as server-based rather than path-based
-        if (input.toLowerCase().startsWith("file:////")) {
-            input = "file://" + input.substring(9, input.length());
+    /**
+     * Emits a URI given as an IData document as a string.
+     *
+     * @param input                 An IData containing a specific URI structure to be serialized.
+     * @return                      The URI string representing the given IData.
+     * @throws URISyntaxException   If the given string is an invalid URI.
+     */
+    public static String emit(IData input) throws URISyntaxException {
+        if (input == null) return null;
+        return toString(fromIData(input));
+    }
+
+    /**
+     * Normalizes a URI string, refer: http://docs.oracle.com/javase/6/docs/api/java/net/URI.html#normalize().
+     *
+     * @param input                 The URI string to be normalized.
+     * @return                      The normalized URI string.
+     * @throws URISyntaxException   If the given string is an invalid URI.
+     */
+    public static String normalize(String input) throws URISyntaxException {
+        return toString(normalize(fromString(input)));
+    }
+
+    /**
+     * Normalizes a IData URI structure, refer: http://docs.oracle.com/javase/6/docs/api/java/net/URI.html#normalize().
+     *
+     * @param input                 The IData document representing a URI structure to be normalized.
+     * @return                      The normalized URI IData document.
+     * @throws URISyntaxException   If the given string is an invalid URI.
+     */
+    public static IData normalize(IData input) throws URISyntaxException {
+        return toIData(normalize(fromIData(input)));
+    }
+
+    /**
+     * Normalizes a URI object, refer: http://docs.oracle.com/javase/6/docs/api/java/net/URI.html#normalize().
+     *
+     * @param uri   The URI object to be normalized.
+     * @return      The normalized URI object.
+     */
+    public static URI normalize(URI uri) {
+        if (uri == null) return null;
+        return uri.normalize();
+    }
+
+    /**
+     * URI encodes a string, refer: http://docs.oracle.com/javase/6/docs/api/java/net/URLEncoder.html.
+     *
+     * @param input The string to be URI encoded.
+     * @return      The string after being URI encoded.
+     */
+    public static String encode(String input) {
+        return encode(input, DEFAULT_CHARSET);
+    }
+
+    /**
+     * URI encodes a string, refer: http://docs.oracle.com/javase/6/docs/api/java/net/URLEncoder.html.
+     *
+     * @param input         The string to be URI encoded.
+     * @param charsetName   The character set to use when URI encoding the string.
+     * @return              The string after being URI encoded.
+     */
+    public static String encode(String input, String charsetName) {
+        return encode(input, CharsetHelper.normalize(charsetName, DEFAULT_CHARSET));
+    }
+
+    /**
+     * URI encodes a string, refer: http://docs.oracle.com/javase/6/docs/api/java/net/URLEncoder.html.
+     *
+     * @param input     The string to be URI encoded.
+     * @param charset   The character set to use when URI encoding the string.
+     * @return          The string after being URI encoded.
+     */
+    public static String encode(String input, Charset charset) {
+        if (input == null) return null;
+
+        String output;
+
+        try {
+            output = URLEncoder.encode(input, CharsetHelper.normalize(charset, DEFAULT_CHARSET).name()).replace("+", "%20");
+        } catch (UnsupportedEncodingException ex) {
+            throw new IllegalArgumentException(ex); // this should never happen
         }
+
+        return output;
+    }
+
+    /**
+     * URI encodes a string list, refer: http://docs.oracle.com/javase/6/docs/api/java/net/URLEncoder.html.
+     *
+     * @param input A list of strings to be URI encoded.
+     * @return      The new copy of the list of strings after being URI encoded.
+     */
+    public static String[] encode(String[] input) {
+        return encode(input, DEFAULT_CHARSET);
+    }
+
+    /**
+     * URI encodes a string list, refer: http://docs.oracle.com/javase/6/docs/api/java/net/URLEncoder.html.
+     *
+     * @param input         A list of strings to be URI encoded.
+     * @param charsetName   The character set to use when URI encoding the strings.
+     * @return              The new copy of the list of strings after being URI encoded.
+     */
+    public static String[] encode(String[] input, String charsetName) {
+        return encode(input, CharsetHelper.normalize(charsetName, DEFAULT_CHARSET));
+    }
+
+    /**
+     * URI encodes a string list, refer: http://docs.oracle.com/javase/6/docs/api/java/net/URLEncoder.html.
+     *
+     * @param input     A list of strings to be URI encoded.
+     * @param charset   The character set to use when URI encoding the strings.
+     * @return          The new copy of the list of strings after being URI encoded.
+     */
+    public static String[] encode(String[] input, Charset charset) {
+        if (input == null) return null;
+
+        String[] output = new String[input.length];
+
+        for (int i = 0; i < input.length; i++) {
+            output[i] = encode(input[i], charset);
+        }
+
+        return output;
+    }
+
+    /**
+     * URI decodes a string, refer: http://docs.oracle.com/javase/6/docs/api/java/net/URLDecoder.html.
+     *
+     * @param input The string to be URI decoded.
+     * @return      The string after being URI decoded.
+     */
+    public static String decode(String input) {
+        return decode(input, DEFAULT_CHARSET);
+    }
+
+    /**
+     * URI decodes a string, refer: http://docs.oracle.com/javase/6/docs/api/java/net/URLDecoder.html.
+     *
+     * @param input         The string to be URI decoded.
+     * @param charsetName   The character set to use when URI decoding the string.
+     * @return              The string after it has been URI decoded.
+     */
+    public static String decode(String input, String charsetName) {
+        return decode(input, CharsetHelper.normalize(charsetName, DEFAULT_CHARSET));
+    }
+
+    /**
+     * URI decodes a string, refer: http://docs.oracle.com/javase/6/docs/api/java/net/URLDecoder.html.
+     *
+     * @param input     The string to be URI decoded.
+     * @param charset   The character set to use when URI decoding the string.
+     * @return          The string after it has been URI decoded.
+     */
+    public static String decode(String input, Charset charset) {
+        if (input == null) return null;
+
+        String output;
+
+        try {
+            output = URLDecoder.decode(input, CharsetHelper.normalize(charset, DEFAULT_CHARSET).name());
+        } catch (UnsupportedEncodingException ex) {
+            throw new IllegalArgumentException(ex); // this should never happen
+        }
+
+        return output;
+    }
+
+    /**
+     * URI decodes a string list, refer: http://docs.oracle.com/javase/6/docs/api/java/net/URLDecoder.html.
+     *
+     * @param input     The list of strings to be URI decoded.
+     * @return          A new copy of the list of strings after being URI decoded.
+     */
+    public static String[] decode(String[] input) {
+        return decode(input, DEFAULT_CHARSET);
+    }
+
+    /**
+     * URI decodes a string list, refer: http://docs.oracle.com/javase/6/docs/api/java/net/URLDecoder.html.
+     *
+     * @param input         The list of strings to be URI decoded.
+     * @param charsetName   The character set to use when URI decoding the strings.
+     * @return              A new copy of the list of strings after being URI decoded.
+     */
+    public static String[] decode(String[] input, String charsetName) {
+        return decode(input, CharsetHelper.normalize(charsetName, DEFAULT_CHARSET));
+    }
+
+
+    /**
+     * URI decodes a string list, refer: http://docs.oracle.com/javase/6/docs/api/java/net/URLDecoder.html.
+     *
+     * @param input     The list of strings to be URI decoded.
+     * @param charset   The character set to use when URI decoding the strings.
+     * @return          A new copy of the list of strings after being URI decoded.
+     */
+    public static String[] decode(String[] input, Charset charset) {
+        if (input == null) return null;
+
+        String[] output = new String[input.length];
+
+        for (int i = 0; i < input.length; i++) {
+            output[i] = decode(input[i], charset);
+        }
+
+        return output;
+    }
+
+    /**
+     * Performs variable substitution on the components of the given URI string.
+     *
+     * @param uri                   The URI string to perform variable substitution on.
+     * @param scope                 The scope variables are resolved against.
+     * @return                      The resulting URI string after variable substitution.
+     * @throws ServiceException     If an error occurs during substitution.
+     * @throws URISyntaxException   If the given string is not a valid URI.
+     */
+    public static String substitute(String uri, IData scope) throws ServiceException, URISyntaxException {
+        return emit(SubstitutionHelper.substitute(parse(uri), true, scope));
+    }
+
+    /**
+     * Converts a URI object to an IData representation.
+     *
+     * @param uri The URI object to be converted.
+     * @return    An IData representation of the given URI.
+     */
+    public static IData toIData(URI uri) {
+        if (uri == null) return null;
 
         IData output = IDataFactory.create();
         IDataCursor cursor = output.getCursor();
 
         try {
-            URI uri = new URI(input);
-            uri.normalize();
-
             String scheme = uri.getScheme();
             // schemes are case-insensitive, according to RFC 2396
             if (scheme != null) scheme = scheme.toLowerCase();
@@ -88,11 +314,13 @@ public final class URIHelper {
             String ssp = uri.getRawSchemeSpecificPart();
 
             if (uri.isOpaque()) {
-                if (ssp.contains("?")) {
-                    query = URIQueryHelper.parse(ssp.substring(ssp.indexOf("?") + 1, ssp.length()), true);
-                    ssp = ssp.substring(0, ssp.indexOf("?"));
+                if (ssp != null) {
+                    if (ssp.contains("?")) {
+                        query = URIQueryHelper.parse(ssp.substring(ssp.indexOf("?") + 1, ssp.length()), true);
+                        ssp = ssp.substring(0, ssp.indexOf("?"));
+                    }
+                    IDataUtil.put(cursor, "body", decode(ssp));
                 }
-                if (ssp != null) IDataUtil.put(cursor, "body", decode(ssp));
             } else {
                 String authority = uri.getAuthority();
                 if (authority != null) {
@@ -163,29 +391,26 @@ public final class URIHelper {
     }
 
     /**
-     * Emits a URI given as an IData document as a string.
+     * Converts an IData document to a URI object.
      *
-     * @param input An IData containing a specific URI structure to be serialized.
-     * @return The URI string representing the given IData.
-     * @throws URISyntaxException If the given string is an invalid URI.
+     * @param input                 An IData containing a specific URI structure.
+     * @return                      The resulting URI object representing the given IData.
+     * @throws URISyntaxException   If the given IData document represents an invalid URI.
      */
-    public static String emit(IData input) throws URISyntaxException {
+    public static URI fromIData(IData input) throws URISyntaxException {
         if (input == null) return null;
 
-        String output = null;
+        URI uri = null;
         IDataCursor cursor = input.getCursor();
 
         try {
-            URI uri = null;
-            String type = IDataUtil.getString(cursor, "type");
-
             String scheme = IDataUtil.getString(cursor, "scheme");
             // schemes are case-insensitive, according to RFC 2396
             if (scheme != null) scheme = scheme.toLowerCase();
 
             String fragment = IDataUtil.getString(cursor, "fragment");
             IData queryDocument = IDataUtil.getIData(cursor, "query");
-            String query = URIQueryHelper.emit(queryDocument, true);
+            String query = URIQueryHelper.emit(queryDocument, false);
 
             String body = IDataUtil.getString(cursor, "body");
             IData authority = IDataUtil.getIData(cursor, "authority");
@@ -230,216 +455,55 @@ public final class URIHelper {
                         }
 
                         sc.destroy();
-                        uri = new URI(scheme, userinfo, host, port, path, null, null);
+                        uri = new URI(scheme, userinfo, host, port, path, query, fragment);
                     } else {
-                        uri = new URI(scheme, registry, path, null, null);
+                        uri = new URI(scheme, registry, path, query, fragment);
                     }
                 }
-            } else {
-                uri = new URI(scheme, body, null);
-            }
-            output = uri.normalize().toASCIIString();
-            if (query != null) output = output + "?" + query;
-            if (fragment != null && !(fragment.equals(""))) output = output + "#" + encode(fragment);
-
-            // support Windows UNC file URIs, and work-around java bug with
-            // file URIs where scheme is followed by ':/' rather than '://'
-            if (output.startsWith("file:") && uri.getHost() == null) {
-                output = "file://" + output.substring(5, output.length());
+            } else if (query != null) {
+                uri = new URI(scheme, body + "?" + query, fragment);
             }
         } finally {
             cursor.destroy();
         }
 
-        return output;
+        return uri;
     }
 
     /**
-     * Normalizes a URI string, refer: http://docs.oracle.com/javase/6/docs/api/java/net/URI.html#normalize().
+     * Parses a given string to a URI object.
      *
-     * @param input The URI string to be normalized.
-     * @return The normalized URI string.
-     * @throws URISyntaxException If the given string is an invalid URI.
+     * @param input                 A URI string to be parsed.
+     * @return                      The parsed URI object.
      */
-    public static String normalize(String input) throws URISyntaxException {
-        return emit(parse(input));
-    }
-
-    /**
-     * URI encodes a string, refer: http://docs.oracle.com/javase/6/docs/api/java/net/URLEncoder.html.
-     *
-     * @param input The string to be URI encoded.
-     * @return The string after being URI encoded.
-     */
-    public static String encode(String input) {
-        return encode(input, DEFAULT_CHARSET);
-    }
-
-    /**
-     * URI encodes a string, refer: http://docs.oracle.com/javase/6/docs/api/java/net/URLEncoder.html.
-     *
-     * @param input       The string to be URI encoded.
-     * @param charsetName The character set to use when URI encoding the string.
-     * @return The string after being URI encoded.
-     */
-    public static String encode(String input, String charsetName) {
-        return encode(input, CharsetHelper.normalize(charsetName, DEFAULT_CHARSET));
-    }
-
-    /**
-     * URI encodes a string, refer: http://docs.oracle.com/javase/6/docs/api/java/net/URLEncoder.html.
-     *
-     * @param input   The string to be URI encoded.
-     * @param charset The character set to use when URI encoding the string.
-     * @return The string after being URI encoded.
-     */
-    public static String encode(String input, Charset charset) {
+    public static URI fromString(String input) throws URISyntaxException {
         if (input == null) return null;
 
-        String output;
+        // treat Windows UNC file URIs as server-based rather than path-based
+        if (input.toLowerCase().startsWith("file:////")) {
+            input = "file://" + input.substring(9, input.length());
+        }
 
-        try {
-            output = URLEncoder.encode(input, CharsetHelper.normalize(charset, DEFAULT_CHARSET).name()).replace("+", "%20");
-        } catch (UnsupportedEncodingException ex) {
-            throw new IllegalArgumentException(ex); // this should never happen
+        return new URI(input);
+    }
+
+    /**
+     * Emits a URI given as an IData document as a string.
+     *
+     * @param uri                   A URI object to be serialized.
+     * @return                      The serialized URI.
+     */
+    public static String toString(URI uri) {
+        if (uri == null) return null;
+
+        String output = uri.toASCIIString();
+
+        // support Windows UNC file URIs, and work-around java bug with
+        // file URIs where scheme is followed by ':/' rather than '://'
+        if (output.startsWith("file:") && uri.getHost() == null) {
+            output = "file://" + output.substring(5, output.length());
         }
 
         return output;
-    }
-
-    /**
-     * URI encodes a string list, refer: http://docs.oracle.com/javase/6/docs/api/java/net/URLEncoder.html.
-     *
-     * @param input A list of strings to be URI encoded.
-     * @return The new copy of the list of strings after being URI encoded.
-     */
-    public static String[] encode(String[] input) {
-        return encode(input, DEFAULT_CHARSET);
-    }
-
-    /**
-     * URI encodes a string list, refer: http://docs.oracle.com/javase/6/docs/api/java/net/URLEncoder.html.
-     *
-     * @param input       A list of strings to be URI encoded.
-     * @param charsetName The character set to use when URI encoding the strings.
-     * @return The new copy of the list of strings after being URI encoded.
-     */
-    public static String[] encode(String[] input, String charsetName) {
-        return encode(input, CharsetHelper.normalize(charsetName, DEFAULT_CHARSET));
-    }
-
-    /**
-     * URI encodes a string list, refer: http://docs.oracle.com/javase/6/docs/api/java/net/URLEncoder.html.
-     *
-     * @param input   A list of strings to be URI encoded.
-     * @param charset The character set to use when URI encoding the strings.
-     * @return The new copy of the list of strings after being URI encoded.
-     */
-    public static String[] encode(String[] input, Charset charset) {
-        if (input == null) return null;
-
-        String[] output = new String[input.length];
-
-        for (int i = 0; i < input.length; i++) {
-            output[i] = encode(input[i], charset);
-        }
-
-        return output;
-    }
-
-    /**
-     * URI decodes a string, refer: http://docs.oracle.com/javase/6/docs/api/java/net/URLDecoder.html.
-     *
-     * @param input The string to be URI decoded.
-     * @return The string after being URI decoded.
-     */
-    public static String decode(String input) {
-        return decode(input, DEFAULT_CHARSET);
-    }
-
-    /**
-     * URI decodes a string, refer: http://docs.oracle.com/javase/6/docs/api/java/net/URLDecoder.html.
-     *
-     * @param input       The string to be URI decoded.
-     * @param charsetName The character set to use when URI decoding the string.
-     * @return The string after it has been URI decoded.
-     */
-    public static String decode(String input, String charsetName) {
-        return decode(input, CharsetHelper.normalize(charsetName, DEFAULT_CHARSET));
-    }
-
-    /**
-     * URI decodes a string, refer: http://docs.oracle.com/javase/6/docs/api/java/net/URLDecoder.html.
-     *
-     * @param input   The string to be URI decoded.
-     * @param charset The character set to use when URI decoding the string.
-     * @return The string after it has been URI decoded.
-     */
-    public static String decode(String input, Charset charset) {
-        if (input == null) return null;
-
-        String output;
-
-        try {
-            output = URLDecoder.decode(input, CharsetHelper.normalize(charset, DEFAULT_CHARSET).name());
-        } catch (UnsupportedEncodingException ex) {
-            throw new IllegalArgumentException(ex); // this should never happen
-        }
-
-        return output;
-    }
-
-    /**
-     * URI decodes a string list, refer: http://docs.oracle.com/javase/6/docs/api/java/net/URLDecoder.html.
-     *
-     * @param input The list of strings to be URI decoded.
-     * @return A new copy of the list of strings after being URI decoded.
-     */
-    public static String[] decode(String[] input) {
-        return decode(input, DEFAULT_CHARSET);
-    }
-
-    /**
-     * URI decodes a string list, refer: http://docs.oracle.com/javase/6/docs/api/java/net/URLDecoder.html.
-     *
-     * @param input       The list of strings to be URI decoded.
-     * @param charsetName The character set to use when URI decoding the strings.
-     * @return A new copy of the list of strings after being URI decoded.
-     */
-    public static String[] decode(String[] input, String charsetName) {
-        return decode(input, CharsetHelper.normalize(charsetName, DEFAULT_CHARSET));
-    }
-
-
-    /**
-     * URI decodes a string list, refer: http://docs.oracle.com/javase/6/docs/api/java/net/URLDecoder.html.
-     *
-     * @param input   The list of strings to be URI decoded.
-     * @param charset The character set to use when URI decoding the strings.
-     * @return A new copy of the list of strings after being URI decoded.
-     */
-    public static String[] decode(String[] input, Charset charset) {
-        if (input == null) return null;
-
-        String[] output = new String[input.length];
-
-        for (int i = 0; i < input.length; i++) {
-            output[i] = decode(input[i], charset);
-        }
-
-        return output;
-    }
-
-    /**
-     * Performs variable substitution on the components of the given URI string.
-     *
-     * @param uri                   The URI string to perform variable substitution on.
-     * @param scope                 The scope variables are resolved against.
-     * @return                      The resulting URI string after variable substitution.
-     * @throws ServiceException     If an error occurs during substitution.
-     * @throws URISyntaxException   If the given string is not a valid URI.
-     */
-    public static String substitute(String uri, IData scope) throws ServiceException, URISyntaxException {
-        return emit(SubstitutionHelper.substitute(parse(uri), true, scope));
     }
 }
