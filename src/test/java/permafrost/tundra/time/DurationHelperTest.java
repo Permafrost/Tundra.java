@@ -56,8 +56,8 @@ public class DurationHelperTest {
 
     @Test
     public void testParseFractionalMilliseconds() throws Exception {
-        BigDecimal milliseconds = new BigDecimal("654.321");
+        BigDecimal milliseconds = new BigDecimal("987.654");
         Duration duration = DurationHelper.parse(milliseconds.toString(), "milliseconds");
-        assertEquals(milliseconds.divide(new BigDecimal("1000"), 6, BigDecimal.ROUND_UNNECESSARY), duration.getField(DatatypeConstants.SECONDS));
+        assertEquals(milliseconds.divide(new BigDecimal("1000"), 3, BigDecimal.ROUND_HALF_UP), duration.getField(DatatypeConstants.SECONDS));
     }
 }
