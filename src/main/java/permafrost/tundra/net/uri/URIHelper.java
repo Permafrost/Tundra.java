@@ -29,6 +29,7 @@ import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
 import com.wm.data.IDataUtil;
+import permafrost.tundra.data.IDataHelper;
 import permafrost.tundra.flow.variable.SubstitutionHelper;
 import permafrost.tundra.lang.ArrayHelper;
 import permafrost.tundra.lang.CharsetHelper;
@@ -51,6 +52,18 @@ public final class URIHelper {
      * The default character set name used for URI strings.
      */
     public static final String DEFAULT_CHARSET_NAME = DEFAULT_CHARSET.name();
+    /**
+     * The character used to delimit the items in a URI's path.
+     */
+    public static final String URI_PATH_DELIMITER = "/";
+    /**
+     * The character used to delimit the start of a URI's query string.
+     */
+    public static final String URI_QUERY_DELIMITER = "?";
+    /**
+     * The character used to delimit the user from the password in a URI's authority section.
+     */
+    public static final String URI_USER_PASSWORD_DELIMITER = ":";
 
     /**
      * Disallow instantiation of this class.
@@ -66,7 +79,8 @@ public final class URIHelper {
      */
     public static IData parse(String input) throws URISyntaxException {
         if (input == null) return null;
-        return toIData(fromString(input));
+        URI uri = fromString(input);
+        return toIData(uri);
     }
 
     /**
@@ -308,81 +322,90 @@ public final class URIHelper {
             String scheme = uri.getScheme();
             // schemes are case-insensitive, according to RFC 2396
             if (scheme != null) scheme = scheme.toLowerCase();
-            if (scheme != null) IDataUtil.put(cursor, "scheme", scheme);
+            IDataHelper.put(cursor, "scheme", scheme, false);
 
             IData query = null;
-            String ssp = uri.getRawSchemeSpecificPart();
 
             if (uri.isOpaque()) {
-                if (ssp != null) {
-                    if (ssp.contains("?")) {
-                        query = URIQueryHelper.parse(ssp.substring(ssp.indexOf("?") + 1, ssp.length()), true);
-                        ssp = ssp.substring(0, ssp.indexOf("?"));
+                String schemeSpecificPart = uri.getRawSchemeSpecificPart();
+                if (schemeSpecificPart != null) {
+                    if (schemeSpecificPart.contains(URI_QUERY_DELIMITER)) {
+                        query = URIQueryHelper.parse(schemeSpecificPart.substring(schemeSpecificPart.indexOf(URI_QUERY_DELIMITER) + 1, schemeSpecificPart.length()), true);
+                        schemeSpecificPart = schemeSpecificPart.substring(0, schemeSpecificPart.indexOf(URI_QUERY_DELIMITER));
                     }
-                    IDataUtil.put(cursor, "body", decode(ssp));
+                    IDataHelper.put(cursor, "body", decode(schemeSpecificPart));
                 }
             } else {
                 String authority = uri.getAuthority();
+
                 if (authority != null) {
-                    IData server = IDataFactory.create();
-                    IDataCursor sc = server.getCursor();
-
-                    // parse user-info component according to the format user:[password]
-                    String user = uri.getUserInfo();
-                    String password = null;
-                    String userInfoSeparator = ":";
-                    if (user != null && user.contains(userInfoSeparator)) {
-                        password = user.substring(user.indexOf(userInfoSeparator) + 1, user.length());
-                        user = user.substring(0, user.indexOf(userInfoSeparator));
-                    }
-                    if (user != null) IDataUtil.put(sc, "user", user);
-                    if (password != null) IDataUtil.put(sc, "password", password);
-
                     // hosts are case-insensitive, according to RFC 2396, but we will preserve the case to be safe
                     String host = uri.getHost();
-                    if (host != null) IDataUtil.put(sc, "host", host);
 
-                    // if port is -1, then it wasn't specified in the URI
-                    int port = uri.getPort();
-                    if (port >= 0) IDataUtil.put(sc, "port", "" + uri.getPort());
-
-                    sc.destroy();
-
-                    // if host is null, then this URI must be registry-based
                     IData authorityDocument = IDataFactory.create();
                     IDataCursor ac = authorityDocument.getCursor();
-                    if (host == null) {
-                        IDataUtil.put(ac, "registry", authority);
-                    } else {
-                        IDataUtil.put(ac, "server", server);
-                    }
-                    ac.destroy();
 
-                    IDataUtil.put(cursor, "authority", authorityDocument);
+                    try {
+                        if (host == null) {
+                            // if host is null, then this URI must be registry-based
+                            IDataHelper.put(ac, "registry", authority);
+                        } else {
+                            IData server = IDataFactory.create();
+                            IDataCursor sc = server.getCursor();
+                            try {
+                                // parse user-info component according to the format user:[password]
+                                String user = uri.getUserInfo();
+                                String password = null;
+                                if (user != null && user.contains(URI_USER_PASSWORD_DELIMITER)) {
+                                    password = user.substring(user.indexOf(URI_USER_PASSWORD_DELIMITER) + 1, user.length());
+                                    user = user.substring(0, user.indexOf(URI_USER_PASSWORD_DELIMITER));
+                                }
+                                IDataHelper.put(sc, "user", user, false);
+                                IDataHelper.put(sc, "password", password, false);
+
+
+                                IDataHelper.put(sc, "host", host, false);
+
+                                // if port is -1, then it wasn't specified in the URI
+                                int port = uri.getPort();
+                                if (port >= 0) IDataHelper.put(sc, "port", port, String.class);
+                            } finally {
+                                sc.destroy();
+                            }
+
+                            IDataHelper.put(ac, "server", server);
+                        }
+
+                        IDataUtil.put(cursor, "authority", authorityDocument);
+                    } finally {
+                        ac.destroy();
+                    }
                 }
 
                 String path = uri.getPath();
-                String[] paths = URIPathHelper.parse(path);
+                if (path != null && !path.equals("")) {
+                    String[] paths = URIPathHelper.parse(path);
 
-                String file = null;
-                if (!path.endsWith("/")) {
-                    file = ArrayHelper.get(paths, -1);
-                    paths = ArrayHelper.drop(paths, -1);
+                    if (paths != null && paths.length > 0) {
+                        String file = null;
+                        if (!path.endsWith(URI_PATH_DELIMITER)) {
+                            file = ArrayHelper.get(paths, -1);
+                            paths = ArrayHelper.drop(paths, -1);
+                        }
+
+                        IDataHelper.put(cursor, "path", paths, false);
+                        IDataHelper.put(cursor, "path.absolute?", path.startsWith(URI_PATH_DELIMITER), String.class);
+                        IDataHelper.put(cursor, "file", file, false);
+                    }
                 }
-
-                if (paths != null && paths.length > 0) IDataUtil.put(cursor, "path", paths);
-                if (file != null && !file.equals("")) IDataUtil.put(cursor, "file", file);
 
                 query = URIQueryHelper.parse(uri.getRawQuery(), true);
             }
 
-            if (query != null) IDataUtil.put(cursor, "query", query);
-
-            String fragment = uri.getFragment();
-            if (fragment != null) IDataUtil.put(cursor, "fragment", fragment);
-
-            IDataUtil.put(cursor, "absolute?", "" + uri.isAbsolute());
-            IDataUtil.put(cursor, "opaque?", "" + uri.isOpaque());
+            IDataHelper.put(cursor, "query", query, false);
+            IDataHelper.put(cursor, "fragment", uri.getFragment(), false);
+            IDataHelper.put(cursor, "absolute?", uri.isAbsolute(), String.class);
+            IDataHelper.put(cursor, "opaque?", uri.isOpaque(), String.class);
         } finally {
             cursor.destroy();
         }
@@ -408,50 +431,67 @@ public final class URIHelper {
             // schemes are case-insensitive, according to RFC 2396
             if (scheme != null) scheme = scheme.toLowerCase();
 
-            String fragment = IDataUtil.getString(cursor, "fragment");
-            IData queryDocument = IDataUtil.getIData(cursor, "query");
+            String fragment = IDataHelper.get(cursor, "fragment", String.class);
+            IData queryDocument = IDataHelper.get(cursor, "query", IData.class);
             String query = URIQueryHelper.emit(queryDocument, false);
 
-            String body = IDataUtil.getString(cursor, "body");
-            IData authority = IDataUtil.getIData(cursor, "authority");
-            String[] paths = IDataUtil.getStringArray(cursor, "path");
-            String file = IDataUtil.getString(cursor, "file");
+            String body = IDataHelper.get(cursor, "body", String.class);
+            IData authority = IDataHelper.get(cursor, "authority", IData.class);
+            String[] paths = IDataHelper.get(cursor, "path", String[].class);
+            boolean absolutePath = IDataHelper.getOrDefault(cursor, "path.absolute?", Boolean.class, true);
+            String file = IDataHelper.get(cursor, "file", String.class);
 
             if (body == null && !(authority == null && paths == null && file == null)) {
                 // create an hierarchical URI
-                String path = "";
-                if (paths != null) {
-                    path = "/" + ArrayHelper.join(paths, "/");
+                String path;
+
+                if ((paths != null || file != null) && (absolutePath || authority != null)) {
+                    path = URI_PATH_DELIMITER;
+                } else {
+                    path = null;
                 }
-                path = path + "/";
-                if (file != null) {
-                    path = path + file;
+
+                if (paths != null && paths.length > 0) {
+                    path = (path == null ? "" : path) + ArrayHelper.join(paths, URI_PATH_DELIMITER);
+                }
+
+                if (file == null) {
+                    if (path != null && !path.equals(URI_PATH_DELIMITER)) {
+                        path = path + URI_PATH_DELIMITER;
+                    }
+                } else {
+                    if (path == null) {
+                        path = file;
+                    } else if (path.equals(URI_PATH_DELIMITER)) {
+                        path = path + file;
+                    } else {
+                        path = path + URI_PATH_DELIMITER + file;
+                    }
                 }
 
                 if (authority == null) {
-                    uri = new URI(scheme, null, path, null, null);
+                    uri = new URI(scheme, null, path, query, fragment);
                 } else {
                     IDataCursor ac = authority.getCursor();
-                    String registry = IDataUtil.getString(ac, "registry");
-                    IData server = IDataUtil.getIData(ac, "server");
+                    String registry = IDataHelper.get(ac, "registry", String.class);
+                    IData server = IDataHelper.get(ac, "server", IData.class);
                     ac.destroy();
 
                     if (registry == null) {
                         IDataCursor sc = server.getCursor();
 
                         // hosts are case-insensitive, according to RFC 2396, but we will preserve the case to be safe
-                        String host = IDataUtil.getString(sc, "host");
+                        String host = IDataHelper.get(sc, "host", String.class);
+                        int port = IDataHelper.getOrDefault(sc, "port", Integer.class, -1);
 
-                        String portString = IDataUtil.getString(sc, "port");
-                        int port = -1;
-                        if (portString != null) port = Integer.parseInt(portString);
-
-                        String userinfo = IDataUtil.getString(sc, "user");
-                        if (userinfo != null && !(userinfo.equals(""))) {
-                            String password = IDataUtil.getString(sc, "password");
-                            if (password != null && !(password.equals(""))) userinfo = userinfo + ":" + password;
-                        } else {
-                            userinfo = null; // ignore empty strings
+                        String userinfo = IDataHelper.get(sc, "user", String.class);
+                        if (userinfo != null) {
+                            if (userinfo.equals("")) {
+                                userinfo = null; // ignore empty strings
+                            } else {
+                                String password = IDataHelper.get(sc, "password", String.class);
+                                if (password != null && !(password.equals(""))) userinfo = userinfo + ":" + password;
+                            }
                         }
 
                         sc.destroy();
@@ -461,7 +501,9 @@ public final class URIHelper {
                     }
                 }
             } else if (query != null) {
-                uri = new URI(scheme, body + "?" + query, fragment);
+                uri = new URI(scheme, (body == null ? "" : body) + URI_QUERY_DELIMITER + query, fragment);
+            } else {
+                uri = new URI("");
             }
         } finally {
             cursor.destroy();
@@ -498,7 +540,7 @@ public final class URIHelper {
 
         String output = uri.toASCIIString();
 
-        // support Windows UNC file URIs, and work-around java bug with
+        // support Windows UNC file URIs, and work-around Java bug with
         // file URIs where scheme is followed by ':/' rather than '://'
         if (output.startsWith("file:") && uri.getHost() == null) {
             output = "file://" + output.substring(5, output.length());

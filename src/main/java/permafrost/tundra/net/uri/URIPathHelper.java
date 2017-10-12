@@ -26,12 +26,19 @@ package permafrost.tundra.net.uri;
 
 import permafrost.tundra.flow.variable.SubstitutionHelper;
 import permafrost.tundra.lang.ArrayHelper;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * A collection of convenience methods for working with URI paths.
  */
 public final class URIPathHelper {
-    private static final java.util.regex.Pattern PATH_PATTERN = java.util.regex.Pattern.compile("/+");
+    /**
+     * A regular expression pattern for matching items in a URI path.
+     */
+    private static final Pattern PATH_PATTERN = Pattern.compile(Pattern.quote(URIHelper.URI_PATH_DELIMITER) + "+");
 
     /**
      * Disallow instantiation of this class.
@@ -45,12 +52,12 @@ public final class URIPathHelper {
      * @return A list of the individual path components.
      */
     public static String[] parse(String input) {
-        if (input == null || input.equals("") || input.equals("/")) return null;
-        if (input.startsWith("/")) input = input.substring(1, input.length());
-        if (input.endsWith("/")) input = input.substring(0, input.length() - 1);
+        if (input == null) return null;
+        if (input.startsWith(URIHelper.URI_PATH_DELIMITER)) input = input.substring(1, input.length());
+        if (input.endsWith(URIHelper.URI_PATH_DELIMITER)) input = input.substring(0, input.length() - 1);
 
-        java.util.List<String> list = new java.util.ArrayList<String>();
-        java.util.regex.Matcher substitutionMatcher = SubstitutionHelper.matcher(input);
+        List<String> list = new ArrayList<String>();
+        Matcher substitutionMatcher = SubstitutionHelper.matcher(input);
 
         int index = 0;
         while (substitutionMatcher.find()) {
@@ -73,7 +80,7 @@ public final class URIPathHelper {
      * @param item The item to be appended.
      * @param list The list to append the item to.
      */
-    private static void append(String item, java.util.List<String> list) {
+    private static void append(String item, List<String> list) {
         int i = list.size() - 1;
         if (i < 0) {
             list.add(item);
@@ -88,8 +95,8 @@ public final class URIPathHelper {
      * @param input The path string to split.
      * @param list  The list to append path components to.
      */
-    private static void split(String input, java.util.List<String> list) {
-        java.util.regex.Matcher matcher = PATH_PATTERN.matcher(input);
+    private static void split(String input, List<String> list) {
+        Matcher matcher = PATH_PATTERN.matcher(input);
 
         int index = 0;
         while (matcher.find()) {

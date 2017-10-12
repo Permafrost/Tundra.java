@@ -36,12 +36,14 @@ public class URIPathHelperTest {
 
     @Test
     public void testParseWithEmptyString() throws Exception {
-        assertNull(URIPathHelper.parse(""));
+        String[] expected = { "" };
+        assertArrayEquals(expected, URIPathHelper.parse(""));
     }
 
     @Test
     public void testParseWithForwardSlash() throws Exception {
-        assertNull(URIPathHelper.parse("/"));
+        String[] expected = { "" };
+        assertArrayEquals(expected, URIPathHelper.parse("/"));
     }
 
     @Test
