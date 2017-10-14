@@ -42,23 +42,13 @@ public class Stringifier extends Transformer<Object, String> {
     }
 
     /**
-     * Transforms the given key.
-     *
-     * @param key   The key to be transformed.
-     * @param value The value associated with the key being transformed.
-     * @return      The transformed key.
-     */
-    protected String transformKey(String key, Object value) {
-        return key;
-    }
-
-    /**
      * Transforms the given value.
      *
      * @param key   The key associated with the value being transformed.
      * @param value The value to be transformed.
      * @return      The transformed value.
      */
+    @Override
     protected String transformValue(String key, Object value) {
         String output;
 

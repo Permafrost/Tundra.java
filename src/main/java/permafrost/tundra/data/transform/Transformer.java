@@ -230,7 +230,9 @@ public abstract class Transformer<V, T> {
      * @param value The value associated with the key being transformed.
      * @return      The transformed key.
      */
-    protected abstract String transformKey(String key, Object value);
+    protected String transformKey(String key, Object value) {
+        return key;
+    }
 
     /**
      * Transforms a value.

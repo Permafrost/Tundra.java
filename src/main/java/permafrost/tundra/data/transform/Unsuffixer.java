@@ -52,6 +52,7 @@ public class Unsuffixer extends Transformer<String, String> {
      * @param value The value associated with the key being transformed.
      * @return      The transformed key.
      */
+    @Override
     protected String transformKey(String key, Object value) {
         return removeSuffix(key);
     }
@@ -63,6 +64,7 @@ public class Unsuffixer extends Transformer<String, String> {
      * @param value The value to be transformed.
      * @return      The transformed value.
      */
+    @Override
     protected String transformValue(String key, String value) {
         return removeSuffix(value);
     }

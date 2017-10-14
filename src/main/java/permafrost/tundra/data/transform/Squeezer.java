@@ -48,6 +48,7 @@ public class Squeezer extends Transformer<Object, Object> {
      * @param value The value associated with the key being transformed.
      * @return      The transformed key.
      */
+    @Override
     protected String transformKey(String key, Object value) {
         return StringHelper.squeeze(key, false);
     }
@@ -59,6 +60,7 @@ public class Squeezer extends Transformer<Object, Object> {
      * @param value The value to be transformed.
      * @return      The transformed value.
      */
+    @Override
     protected Object transformValue(String key, Object value) {
         if (value instanceof String) {
             value = StringHelper.squeeze((String)value, false);
