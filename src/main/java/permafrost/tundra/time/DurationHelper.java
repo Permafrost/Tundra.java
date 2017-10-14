@@ -24,6 +24,9 @@
 
 package permafrost.tundra.time;
 
+import com.wm.data.IData;
+import permafrost.tundra.data.IDataHelper;
+import permafrost.tundra.data.transform.time.DurationFormatter;
 import permafrost.tundra.lang.ArrayHelper;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -346,6 +349,36 @@ public final class DurationHelper {
      */
     public static String[] format(String[] durations, DurationPattern inPattern, DurationPattern outPattern, Date instant) {
         return emit(parse(durations, inPattern), outPattern, instant);
+    }
+
+    /**
+     * Formats the duration strings in the given IData document to the desired pattern.
+     *
+     * @param document      The IData document containing the duration strings to be formatted.
+     * @param inPattern     The pattern the duration strings adhere to.
+     * @param outPattern    The pattern the duration will be reformatted to.
+     * @param instant       A java.util.Date used as a starting instant to resolve indeterminate values (such as the
+     *                      number of days in a month).
+     * @param recurse       Whether to recursively transform child IData documents and IData[] document lists.
+     * @return              The duration strings reformatted according to the outPattern.
+     */
+    public static IData format(IData document, DurationPattern inPattern, DurationPattern outPattern, Date instant, boolean recurse) {
+        return IDataHelper.transform(document, new DurationFormatter(inPattern, outPattern, instant, recurse));
+    }
+
+    /**
+     * Formats the duration strings in the given IData document to the desired pattern.
+     *
+     * @param document      The IData document containing the duration strings to be formatted.
+     * @param inPatterns    A list of possible patterns the duration string adheres to.
+     * @param outPattern    The pattern the duration will be reformatted to.
+     * @param instant       A java.util.Date used as a starting instant to resolve indeterminate values (such as the
+     *                      number of days in a month).
+     * @param recurse       Whether to recursively transform child IData documents and IData[] document lists.
+     * @return              The duration strings reformatted according to the outPattern.
+     */
+    public static IData format(IData document, DurationPattern[] inPatterns, DurationPattern outPattern, Date instant, boolean recurse) {
+        return IDataHelper.transform(document, new DurationFormatter(inPatterns, outPattern, instant, recurse));
     }
 
     /**

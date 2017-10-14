@@ -24,6 +24,9 @@
 
 package permafrost.tundra.time;
 
+import com.wm.data.IData;
+import permafrost.tundra.data.IDataHelper;
+import permafrost.tundra.data.transform.time.DateTimeFormatter;
 import permafrost.tundra.lang.ArrayHelper;
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -1170,6 +1173,34 @@ public final class DateTimeHelper {
             outputs[i] = format(inputs[i], inPatterns, inTimeZone, outPattern, outTimeZone);
         }
         return outputs;
+    }
+
+    /**
+     * Reformats the datetime strings in the given IData document according to the desired pattern.
+     *
+     * @param document      The IData document containing strings to be reformatted.
+     * @param inPattern     The pattern the given input datetime strings adhere to.
+     * @param inTimeZone    The time zone the given datetime string should be parsed in.
+     * @param outPattern    The pattern the datetime string should be reformatted as.
+     * @param outTimeZone   The time zone the returned datetime string should be in.
+     * @return              The given datetime strings reformatted according to the given outPattern.
+     */
+    public static IData format(IData document, String inPattern, TimeZone inTimeZone, String outPattern, TimeZone outTimeZone, boolean recurse) {
+        return IDataHelper.transform(document, new DateTimeFormatter(inPattern, inTimeZone, outPattern, outTimeZone, recurse));
+    }
+
+    /**
+     * Reformats the datetime strings in the given IData document according to the desired pattern.
+     *
+     * @param document      The IData document containing strings to be reformatted.
+     * @param inPatterns    The list of patterns the given input datetime string might adhere to.
+     * @param inTimeZone    The time zone the given datetime string should be parsed in.
+     * @param outPattern    The pattern the datetime string should be reformatted as.
+     * @param outTimeZone   The time zone the returned datetime string should be in.
+     * @return              The given datetime strings reformatted according to the given outPattern.
+     */
+    public static IData format(IData document, String[] inPatterns, TimeZone inTimeZone, String outPattern, TimeZone outTimeZone, boolean recurse) {
+        return IDataHelper.transform(document, new DateTimeFormatter(inPatterns, inTimeZone, outPattern, outTimeZone, recurse));
     }
 
     /**
