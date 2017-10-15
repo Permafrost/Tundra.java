@@ -25,6 +25,9 @@
 package permafrost.tundra.math;
 
 import com.wm.app.b2b.server.ServiceException;
+import com.wm.data.IData;
+import permafrost.tundra.data.IDataHelper;
+import permafrost.tundra.data.transform.math.BigDecimalFormatter;
 import permafrost.tundra.lang.ArrayHelper;
 import permafrost.tundra.lang.ExceptionHelper;
 import permafrost.tundra.lang.LocaleHelper;
@@ -377,25 +380,73 @@ public final class BigDecimalHelper {
     /**
      * Formats the given decimal string according to the given pattern.
      *
-     * @param input         The decimal string
-     * @param inputPattern  The pattern the input string adheres to.
-     * @param outputPattern The pattern the input string is reformatted to.
-     * @return              The given input string reformatted to the desired pattern.
+     * @param input      The decimal string to be formatted.
+     * @param inPattern  The pattern the input string adheres to.
+     * @param outPattern The pattern the input string is reformatted to.
+     * @return           The given input string reformatted to the desired pattern.
      */
-    public static String format(String input, String inputPattern, String outputPattern) {
-        return emit(parse(input, inputPattern), outputPattern);
+    public static String format(String input, String inPattern, String outPattern) {
+        return emit(parse(input, inPattern), outPattern);
     }
 
     /**
      * Formats the given decimal string according to the given pattern.
      *
-     * @param input         The decimal string
-     * @param inputPatterns A list of patterns one of which the input string adheres to.
-     * @param outputPattern The pattern the input string is reformatted to.
-     * @return              The given input string reformatted to the desired pattern.
+     * @param input      The decimal string to be formatted.
+     * @param inPatterns A list of patterns one of which the input string adheres to.
+     * @param outPattern The pattern the input string is reformatted to.
+     * @return           The given input string reformatted to the desired pattern.
      */
-    public static String format(String input, String[] inputPatterns, String outputPattern) {
-        return emit(parse(input, inputPatterns), outputPattern);
+    public static String format(String input, String[] inPatterns, String outPattern) {
+        return emit(parse(input, inPatterns), outPattern);
+    }
+
+    /**
+     * Formats the given decimal strings according to the given pattern.
+     *
+     * @param input      The decimal strings to be formatted.
+     * @param inPattern  The pattern the input strings adhere to.
+     * @param outPattern The pattern the input strings are reformatted to.
+     * @return           The given input strings reformatted to the desired pattern.
+     */
+    public static String[] format(String[] input, String inPattern, String outPattern) {
+        return emit(parse(input, inPattern), outPattern);
+    }
+
+    /**
+     * Formats the given decimal strings according to the given pattern.
+     *
+     * @param input      The decimal strings to be formatted.
+     * @param inPatterns A list of patterns one of which the input strings adhere to.
+     * @param outPattern The pattern the input strings are reformatted to.
+     * @return           The given input strings reformatted to the desired pattern.
+     */
+    public static String[] format(String[] input, String[] inPatterns, String outPattern) {
+        return emit(parse(input, inPatterns), outPattern);
+    }
+
+    /**
+     * Formats decimal strings in the given IData document according to the given pattern.
+     *
+     * @param document   The IData document containing decimal strings to be formatted.
+     * @param inPattern  The pattern the input strings adhere to.
+     * @param outPattern The pattern the input strings are reformatted to.
+     * @return           The reformatted decimal strings.
+     */
+    public static IData format(IData document, String inPattern, String outPattern) {
+        return IDataHelper.transform(document, new BigDecimalFormatter(inPattern, outPattern, true));
+    }
+
+    /**
+     * Formats decimal strings in the given IData document according to the given pattern.
+     *
+     * @param document   The IData document containing decimal strings to be formatted.
+     * @param inPatterns A list of patterns one of which the input strings adhere to.
+     * @param outPattern The pattern the input strings are reformatted to.
+     * @return           The reformatted decimal strings.
+     */
+    public static IData format(IData document, String[] inPatterns, String outPattern) {
+        return IDataHelper.transform(document, new BigDecimalFormatter(inPatterns, outPattern, true));
     }
 
     /**
