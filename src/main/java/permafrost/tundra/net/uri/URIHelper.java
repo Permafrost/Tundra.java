@@ -30,6 +30,8 @@ import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
 import com.wm.data.IDataUtil;
 import permafrost.tundra.data.IDataHelper;
+import permafrost.tundra.data.transform.net.uri.Decoder;
+import permafrost.tundra.data.transform.net.uri.Encoder;
 import permafrost.tundra.flow.variable.SubstitutionHelper;
 import permafrost.tundra.lang.ArrayHelper;
 import permafrost.tundra.lang.CharsetHelper;
@@ -211,6 +213,17 @@ public final class URIHelper {
     }
 
     /**
+     * URI encodes an IData document, refer: http://docs.oracle.com/javase/6/docs/api/java/net/URLDecoder.html.
+     *
+     * @param document  The IData document to be encoded.
+     * @param charset   The character set to use when URI encoding the strings.
+     * @return          The encoded IData document.
+     */
+    public static IData encode(IData document, Charset charset) {
+        return IDataHelper.transform(document, new Encoder(charset));
+    }
+
+    /**
      * URI decodes a string, refer: http://docs.oracle.com/javase/6/docs/api/java/net/URLDecoder.html.
      *
      * @param input The string to be URI decoded.
@@ -291,6 +304,17 @@ public final class URIHelper {
         }
 
         return output;
+    }
+
+    /**
+     * URI decodes an IData document, refer: http://docs.oracle.com/javase/6/docs/api/java/net/URLDecoder.html.
+     *
+     * @param document  The IData document to be decoded.
+     * @param charset   The character set to use when URI decoding the strings.
+     * @return          The decoded IData document.
+     */
+    public static IData decode(IData document, Charset charset) {
+        return IDataHelper.transform(document, new Decoder(charset));
     }
 
     /**
