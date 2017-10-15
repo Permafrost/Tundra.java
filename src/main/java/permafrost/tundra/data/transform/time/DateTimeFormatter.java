@@ -45,10 +45,34 @@ public class DateTimeFormatter extends Transformer<String, String> {
      * @param inTimeZone    The time zone the given datetime string should be parsed in.
      * @param outPattern    The pattern the datetime string should be reformatted as.
      * @param outTimeZone   The time zone the returned datetime string should be in.
+     */
+    public DateTimeFormatter(String inPattern, TimeZone inTimeZone, String outPattern, TimeZone outTimeZone) {
+        this(inPattern, inTimeZone, outPattern, outTimeZone, true);
+    }
+
+    /**
+     * Creates a new DateTimeFormatter object.
+     *
+     * @param inPattern     The pattern the given input datetime string adheres to.
+     * @param inTimeZone    The time zone the given datetime string should be parsed in.
+     * @param outPattern    The pattern the datetime string should be reformatted as.
+     * @param outTimeZone   The time zone the returned datetime string should be in.
      * @param recurse       Whether to recursively transform child IData documents and IData[] document lists.
      */
     public DateTimeFormatter(String inPattern, TimeZone inTimeZone, String outPattern, TimeZone outTimeZone, boolean recurse) {
         this(ArrayHelper.arrayify(inPattern), inTimeZone, outPattern, outTimeZone, recurse);
+    }
+
+    /**
+     * Creates a new DateTimeFormatter object.
+     *
+     * @param inPatterns    The list of patterns the given input datetime string might adhere to.
+     * @param inTimeZone    The time zone ID identifying the time zone the given datetime string should be parsed in.
+     * @param outPattern    The pattern the datetime string should be reformatted as.
+     * @param outTimeZone   The time zone ID identifying the time zone the returned datetime string should be in.
+     */
+    public DateTimeFormatter(String[] inPatterns, TimeZone inTimeZone, String outPattern, TimeZone outTimeZone) {
+        this(inPatterns, inTimeZone, outPattern, outTimeZone, true);
     }
 
     /**

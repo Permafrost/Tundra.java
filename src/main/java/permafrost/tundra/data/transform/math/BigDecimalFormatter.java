@@ -26,6 +26,7 @@ package permafrost.tundra.data.transform.math;
 
 import permafrost.tundra.data.transform.Transformer;
 import permafrost.tundra.data.transform.TransformerMode;
+import permafrost.tundra.lang.ArrayHelper;
 import permafrost.tundra.math.BigDecimalHelper;
 
 /**
@@ -38,21 +39,42 @@ public class BigDecimalFormatter extends Transformer<String, String> {
     /**
      * Creates a new BigDecimalFormatter object.
      *
+     * @param inPattern     The pattern the input strings adhere to.
      * @param outPattern    The pattern the input strings are reformatted to.
-     * @param inPatterns    A list of patterns one of which the input strings adhere to.
      */
-    public BigDecimalFormatter(String outPattern, String... inPatterns) {
-        this(true, outPattern, inPatterns);
+    public BigDecimalFormatter(String inPattern, String outPattern) {
+        this(inPattern, outPattern, true);
     }
 
     /**
      * Creates a new BigDecimalFormatter object.
      *
-     * @param recurse       Whether to recursively transform child IData documents and IData[] document lists.
+     * @param inPattern     The pattern the input strings adhere to.
      * @param outPattern    The pattern the input strings are reformatted to.
-     * @param inPatterns    A list of patterns one of which the input strings adhere to.
+     * @param recurse       Whether to recursively transform child IData documents and IData[] document lists.
      */
-    public BigDecimalFormatter(boolean recurse, String outPattern, String... inPatterns) {
+    public BigDecimalFormatter(String inPattern, String outPattern, boolean recurse) {
+        this(ArrayHelper.arrayify(inPattern), outPattern, recurse);
+    }
+
+    /**
+     * Creates a new BigDecimalFormatter object.
+     *
+     * @param inPatterns    A list of patterns one of which the input strings adhere to.
+     * @param outPattern    The pattern the input strings are reformatted to.
+     */
+    public BigDecimalFormatter(String[] inPatterns, String outPattern) {
+        this(inPatterns, outPattern, true);
+    }
+
+    /**
+     * Creates a new BigDecimalFormatter object.
+     *
+     * @param inPatterns    A list of patterns one of which the input strings adhere to.
+     * @param outPattern    The pattern the input strings are reformatted to.
+     * @param recurse       Whether to recursively transform child IData documents and IData[] document lists.
+     */
+    public BigDecimalFormatter(String[] inPatterns, String outPattern, boolean recurse) {
         super(String.class, String.class, TransformerMode.VALUES, recurse, true, true, true);
         this.inPatterns = inPatterns;
         this.outPattern = outPattern;
@@ -67,6 +89,6 @@ public class BigDecimalFormatter extends Transformer<String, String> {
      */
     @Override
     protected String transformValue(String key, String value) {
-        return BigDecimalHelper.format(value, outPattern, inPatterns);
+        return BigDecimalHelper.format(value, inPatterns, outPattern);
     }
 }

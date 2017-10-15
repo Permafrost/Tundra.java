@@ -1180,13 +1180,13 @@ public final class DateTimeHelper {
      *
      * @param document      The IData document containing strings to be reformatted.
      * @param inPattern     The pattern the given input datetime strings adhere to.
+     * @param outTimeZone   The time zone the returned datetime string should be in.
      * @param inTimeZone    The time zone the given datetime string should be parsed in.
      * @param outPattern    The pattern the datetime string should be reformatted as.
-     * @param outTimeZone   The time zone the returned datetime string should be in.
      * @return              The given datetime strings reformatted according to the given outPattern.
      */
-    public static IData format(IData document, String inPattern, TimeZone inTimeZone, String outPattern, TimeZone outTimeZone, boolean recurse) {
-        return IDataHelper.transform(document, new DateTimeFormatter(inPattern, inTimeZone, outPattern, outTimeZone, recurse));
+    public static IData format(IData document, String inPattern, TimeZone inTimeZone, String outPattern, TimeZone outTimeZone) {
+        return IDataHelper.transform(document, new DateTimeFormatter(inPattern, inTimeZone, outPattern, outTimeZone));
     }
 
     /**
@@ -1194,13 +1194,13 @@ public final class DateTimeHelper {
      *
      * @param document      The IData document containing strings to be reformatted.
      * @param inPatterns    The list of patterns the given input datetime string might adhere to.
+     * @param outTimeZone   The time zone the returned datetime string should be in.
      * @param inTimeZone    The time zone the given datetime string should be parsed in.
      * @param outPattern    The pattern the datetime string should be reformatted as.
-     * @param outTimeZone   The time zone the returned datetime string should be in.
      * @return              The given datetime strings reformatted according to the given outPattern.
      */
-    public static IData format(IData document, String[] inPatterns, TimeZone inTimeZone, String outPattern, TimeZone outTimeZone, boolean recurse) {
-        return IDataHelper.transform(document, new DateTimeFormatter(inPatterns, inTimeZone, outPattern, outTimeZone, recurse));
+    public static IData format(IData document, String[] inPatterns, TimeZone inTimeZone, String outPattern, TimeZone outTimeZone) {
+        return IDataHelper.transform(document, new DateTimeFormatter(inPatterns, inTimeZone, outPattern, outTimeZone));
     }
 
     /**

@@ -44,11 +44,53 @@ public class DurationFormatter extends Transformer<String, String> {
      *
      * @param inPattern     The pattern the given input duration string adheres to.
      * @param outPattern    The pattern the duration string should be reformatted as.
+     */
+    public DurationFormatter(DurationPattern inPattern, DurationPattern outPattern) {
+        this(inPattern, outPattern, null);
+    }
+
+    /**
+     * Creates a new DateTimeFormatter object.
+     *
+     * @param inPattern     The pattern the given input duration string adheres to.
+     * @param outPattern    The pattern the duration string should be reformatted as.
+     * @param instant       Used as a starting instant to resolve indeterminate values.
+     */
+    public DurationFormatter(DurationPattern inPattern, DurationPattern outPattern, Date instant) {
+        this(inPattern, outPattern, instant, true);
+    }
+
+    /**
+     * Creates a new DateTimeFormatter object.
+     *
+     * @param inPattern     The pattern the given input duration string adheres to.
+     * @param outPattern    The pattern the duration string should be reformatted as.
      * @param instant       Used as a starting instant to resolve indeterminate values.
      * @param recurse       Whether to recursively transform child IData documents and IData[] document lists.
      */
     public DurationFormatter(DurationPattern inPattern, DurationPattern outPattern, Date instant, boolean recurse) {
         this(ArrayHelper.arrayify(inPattern), outPattern, instant, recurse);
+    }
+
+    /**
+     * Creates a new DateTimeFormatter object.
+     *
+     * @param inPatterns    The patterns the given input duration string adheres to.
+     * @param outPattern    The pattern the duration string should be reformatted as.
+     */
+    public DurationFormatter(DurationPattern[] inPatterns, DurationPattern outPattern) {
+        this(inPatterns, outPattern, null);
+    }
+
+    /**
+     * Creates a new DateTimeFormatter object.
+     *
+     * @param inPatterns    The patterns the given input duration string adheres to.
+     * @param outPattern    The pattern the duration string should be reformatted as.
+     * @param instant       Used as a starting instant to resolve indeterminate values.
+     */
+    public DurationFormatter(DurationPattern[] inPatterns, DurationPattern outPattern, Date instant) {
+        this(inPatterns, outPattern, instant, true);
     }
 
     /**
