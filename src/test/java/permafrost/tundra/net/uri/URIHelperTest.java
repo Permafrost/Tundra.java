@@ -27,6 +27,7 @@ package permafrost.tundra.net.uri;
 import static org.junit.Assert.assertEquals;
 import com.wm.data.IData;
 import org.junit.Test;
+import permafrost.tundra.data.IDataMap;
 
 public class URIHelperTest {
     @Test
@@ -79,6 +80,15 @@ public class URIHelperTest {
         String string = "sap+idoc:sap_r3?user=aladdin&password=opensesame&client=200&language=en&queue=x:yz";
         String result = URIHelper.emit(URIHelper.parse(string));
         assertEquals(string, result);
+    }
+
+    @Test
+    public void testSubstituteOpaqueWithQuery() throws Exception {
+        String string = "sap+idoc:sap_r3%25a%25";
+        IDataMap map = new IDataMap();
+        map.put("a", "1");
+        String result = URIHelper.substitute(string, map);
+        assertEquals("sap+idoc:sap_r31", result);
     }
 
     @Test

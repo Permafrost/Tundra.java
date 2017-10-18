@@ -81,8 +81,7 @@ public final class URIHelper {
      */
     public static IData parse(String input) throws URISyntaxException {
         if (input == null) return null;
-        URI uri = fromString(input);
-        return toIData(uri);
+        return toIData(fromString(input));
     }
 
     /**
@@ -526,6 +525,8 @@ public final class URIHelper {
                 }
             } else if (query != null) {
                 uri = new URI(scheme, (body == null ? "" : body) + URI_QUERY_DELIMITER + query, fragment);
+            } else if (body != null) {
+                uri = new URI(scheme, body, fragment);
             } else {
                 uri = new URI("");
             }
