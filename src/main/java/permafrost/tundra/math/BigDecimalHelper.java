@@ -35,6 +35,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.text.MessageFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Locale;
@@ -104,7 +105,7 @@ public final class BigDecimalHelper {
                     // try parsing with the number format for the default locale
                     result = new BigDecimal(NumberFormat.getInstance(LocaleHelper.normalize(locale)).parse(decimalString).doubleValue());
                 } catch(ParseException pe) {
-                    throw new IllegalArgumentException(pe);
+                    throw new IllegalArgumentException(MessageFormat.format("Unparseable number: \"{0}\" does not conform to the java.math.BigDecimal grammar",  decimalString), pe);
                 }
             }
         } else {
@@ -113,7 +114,8 @@ public final class BigDecimalHelper {
             try {
                 result = (BigDecimal)parser.parse(decimalString);
             } catch (ParseException ex) {
-                throw new IllegalArgumentException("Unparseable decimal: '" + decimalString + "' does not conform to pattern '" + decimalPattern + "'", ex);
+                throw new IllegalArgumentException(MessageFormat.format("Unparseable number: \"{0}\" does not conform to the specified pattern \"{1}\"",  decimalString, decimalPattern), ex);
+
             }
         }
 
@@ -150,17 +152,18 @@ public final class BigDecimalHelper {
             result = parse(decimalString, (String)null, locale);
         } else {
             boolean parsed = false;
+            Throwable exception = null;
             for (String decimalPattern : decimalPatterns) {
                 try {
                     result = parse(decimalString, decimalPattern, locale);
                     parsed = true;
                     break;
                 } catch (IllegalArgumentException ex) {
-                    // ignore
+                    exception = ex;
                 }
             }
             if (!parsed) {
-                throw new IllegalArgumentException("Unparseable decimal: '" + decimalString + "' does not conform to patterns [" + ArrayHelper.join(decimalPatterns, ", ") + "]");
+                throw new IllegalArgumentException(MessageFormat.format("Unparseable number: \"{0}\" does not conform to any of the specified patterns [\"{1}\"]",  decimalString, ArrayHelper.join(decimalPatterns, "\", \"")), exception);
             }
         }
 
