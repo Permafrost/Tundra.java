@@ -26,7 +26,6 @@ package permafrost.tundra.data.transform.time;
 
 import permafrost.tundra.data.transform.Transformer;
 import permafrost.tundra.data.transform.TransformerMode;
-import permafrost.tundra.lang.ArrayHelper;
 import permafrost.tundra.time.DateTimeHelper;
 import java.util.TimeZone;
 
@@ -34,6 +33,7 @@ import java.util.TimeZone;
  * Reformats datetime strings in IData documents and IData[] document lists.
  */
 public class DateTimeFormatter extends Transformer<String, String> {
+    protected String inPattern;
     protected String[] inPatterns;
     protected String outPattern;
     protected TimeZone inTimeZone, outTimeZone;
@@ -60,7 +60,7 @@ public class DateTimeFormatter extends Transformer<String, String> {
      * @param recurse       Whether to recursively transform child IData documents and IData[] document lists.
      */
     public DateTimeFormatter(String inPattern, TimeZone inTimeZone, String outPattern, TimeZone outTimeZone, boolean recurse) {
-        this(ArrayHelper.arrayify(inPattern), inTimeZone, outPattern, outTimeZone, recurse);
+        this(inPattern, null, inTimeZone, outPattern, outTimeZone, recurse);
     }
 
     /**
@@ -85,7 +85,21 @@ public class DateTimeFormatter extends Transformer<String, String> {
      * @param recurse       Whether to recursively transform child IData documents and IData[] document lists.
      */
     public DateTimeFormatter(String[] inPatterns, TimeZone inTimeZone, String outPattern, TimeZone outTimeZone, boolean recurse) {
+        this(null, inPatterns, inTimeZone, outPattern, outTimeZone, recurse);
+    }
+
+    /**
+     * Creates a new DateTimeFormatter object.
+     *
+     * @param inPatterns    The list of patterns the given input datetime string might adhere to.
+     * @param inTimeZone    The time zone ID identifying the time zone the given datetime string should be parsed in.
+     * @param outPattern    The pattern the datetime string should be reformatted as.
+     * @param outTimeZone   The time zone ID identifying the time zone the returned datetime string should be in.
+     * @param recurse       Whether to recursively transform child IData documents and IData[] document lists.
+     */
+    protected DateTimeFormatter(String inPattern, String[] inPatterns, TimeZone inTimeZone, String outPattern, TimeZone outTimeZone, boolean recurse) {
         super(String.class, String.class, TransformerMode.VALUES, recurse, true, true, true);
+        this.inPattern = inPattern;
         this.inPatterns = inPatterns;
         this.outPattern = outPattern;
         this.inTimeZone = inTimeZone;
@@ -101,6 +115,12 @@ public class DateTimeFormatter extends Transformer<String, String> {
      */
     @Override
     protected String transformValue(String key, String value) {
-        return DateTimeHelper.format(value, inPatterns, inTimeZone, outPattern, outTimeZone);
+        String result;
+        if (inPatterns == null) {
+            result = DateTimeHelper.format(value, inPattern, inTimeZone, outPattern, outTimeZone);
+        } else {
+            result = DateTimeHelper.format(value, inPatterns, inTimeZone, outPattern, outTimeZone);
+        }
+        return result;
     }
 }

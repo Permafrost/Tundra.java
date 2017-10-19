@@ -559,7 +559,7 @@ public final class DateTimeHelper {
 
             if (timezone != null) output = TimeZoneHelper.replace(output, timezone);
         } catch(Exception ex) {
-            throw new IllegalArgumentException(MessageFormat.format("Unparseable datetime: \"{0}\" does not conform to pattern \"{1}\"", input, pattern), ex);
+            throw new IllegalArgumentException(MessageFormat.format("Unparseable datetime: \"{0}\" does not conform to the specified pattern \"{1}\"", input, pattern), ex);
         }
 
         return output;
@@ -602,6 +602,7 @@ public final class DateTimeHelper {
 
         Calendar output = null;
         boolean parsed = false;
+        Throwable exception = null;
 
         for (String pattern : patterns) {
             try {
@@ -609,12 +610,12 @@ public final class DateTimeHelper {
                 parsed = true;
                 break;
             } catch (IllegalArgumentException ex) {
-                // ignore and continue on to try the next pattern
+                exception = ex;
             }
         }
 
         if (!parsed) {
-            throw new IllegalArgumentException(MessageFormat.format("Unparseable datetime: \"{0}\" does not conform to pattern \"{1}\"", input, ArrayHelper.stringify(patterns)));
+            throw new IllegalArgumentException(MessageFormat.format("Unparseable datetime: \"{0}\" does not conform to any of the specified patterns [\"{1}\"]", input, ArrayHelper.join(patterns, "\", \"")), exception);
         }
 
         return output;
