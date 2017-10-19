@@ -26,7 +26,6 @@ package permafrost.tundra.data.transform.time;
 
 import permafrost.tundra.data.transform.Transformer;
 import permafrost.tundra.data.transform.TransformerMode;
-import permafrost.tundra.lang.ArrayHelper;
 import permafrost.tundra.time.DurationHelper;
 import permafrost.tundra.time.DurationPattern;
 import java.util.Date;
@@ -35,6 +34,7 @@ import java.util.Date;
  * Reformats duration strings in IData documents and IData[] document lists.
  */
 public class DurationFormatter extends Transformer<String, String> {
+    protected DurationPattern inPattern;
     protected DurationPattern[] inPatterns;
     protected DurationPattern outPattern;
     protected Date instant;
@@ -69,7 +69,7 @@ public class DurationFormatter extends Transformer<String, String> {
      * @param recurse       Whether to recursively transform child IData documents and IData[] document lists.
      */
     public DurationFormatter(DurationPattern inPattern, DurationPattern outPattern, Date instant, boolean recurse) {
-        this(ArrayHelper.arrayify(inPattern), outPattern, instant, recurse);
+        this(inPattern, null, outPattern, instant, recurse);
     }
 
     /**
@@ -102,7 +102,21 @@ public class DurationFormatter extends Transformer<String, String> {
      * @param recurse       Whether to recursively transform child IData documents and IData[] document lists.
      */
     public DurationFormatter(DurationPattern[] inPatterns, DurationPattern outPattern, Date instant, boolean recurse) {
+        this(null, inPatterns, outPattern, instant, recurse);
+    }
+
+    /**
+     * Creates a new DateTimeFormatter object.
+     *
+     * @param inPattern     The pattern the given input duration string adheres to.
+     * @param inPatterns    The patterns the given input duration string adheres to.
+     * @param outPattern    The pattern the duration string should be reformatted as.
+     * @param instant       Used as a starting instant to resolve indeterminate values.
+     * @param recurse       Whether to recursively transform child IData documents and IData[] document lists.
+     */
+    protected DurationFormatter(DurationPattern inPattern, DurationPattern[] inPatterns, DurationPattern outPattern, Date instant, boolean recurse) {
         super(String.class, String.class, TransformerMode.VALUES, recurse, true, true, true);
+        this.inPattern = inPattern;
         this.inPatterns = inPatterns;
         this.outPattern = outPattern;
         this.instant = instant;
@@ -117,6 +131,12 @@ public class DurationFormatter extends Transformer<String, String> {
      */
     @Override
     protected String transformValue(String key, String value) {
-        return DurationHelper.format(value, inPatterns, outPattern, instant);
+        String result;
+        if (inPatterns == null) {
+            result = DurationHelper.format(value, inPattern, outPattern, instant);
+        } else {
+            result = DurationHelper.format(value, inPatterns, outPattern, instant);
+        }
+        return result;
     }
 }

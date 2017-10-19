@@ -485,7 +485,7 @@ public final class DurationHelper {
                 }
             }
         } catch (IllegalArgumentException ex) {
-            throw new IllegalArgumentException("Unparseable duration: '" + input + "' does not conform to pattern '" + pattern.toString() + "'", ex);
+            throw new IllegalArgumentException(MessageFormat.format("Unparseable duration: \"{0}\" does not conform to the specified pattern \"{1}\"", input, pattern), ex);
         }
 
         return output;
@@ -527,7 +527,7 @@ public final class DurationHelper {
         }
 
         if (!parsed) {
-            throw new IllegalArgumentException(MessageFormat.format("Unparseable duration: \"{0}\" does not conform to pattern \"{1}\"", input, ArrayHelper.stringify(patterns)));
+            throw new IllegalArgumentException(MessageFormat.format("Unparseable duration: \"{0}\" does not conform to any of the specified patterns [\"{1}\"]", input, ArrayHelper.join(patterns, "\", \"")));
         }
 
         return output;
