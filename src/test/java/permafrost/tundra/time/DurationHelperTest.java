@@ -32,17 +32,16 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.Duration;
 
 public class DurationHelperTest {
-
     @Test
     public void testParse() throws Exception {
-        Duration duration = DurationHelper.parse("P1Y2M3DT4H5M6.007S");
+        Duration duration = DurationHelper.parse("P1Y2M3DT4H5M6.123456789S");
         assertEquals(1, duration.getYears());
         assertEquals(2, duration.getMonths());
         assertEquals(3, duration.getDays());
         assertEquals(4, duration.getHours());
         assertEquals(5, duration.getMinutes());
         assertEquals(6, duration.getSeconds());
-        assertEquals(new BigDecimal("6.007"), duration.getField(DatatypeConstants.SECONDS));
+        assertEquals(new BigDecimal("6.123456789"), duration.getField(DatatypeConstants.SECONDS));
         assertEquals(1, duration.getSign());
     }
 
@@ -52,12 +51,21 @@ public class DurationHelperTest {
         assertEquals("1", DurationHelper.emit(duration, DurationPattern.MINUTES));
         assertEquals("60", DurationHelper.emit(duration, DurationPattern.SECONDS));
         assertEquals("60000", DurationHelper.emit(duration, DurationPattern.MILLISECONDS));
+        assertEquals("60000000000", DurationHelper.emit(duration, DurationPattern.NANOSECONDS));
+
     }
 
     @Test
     public void testParseFractionalMilliseconds() throws Exception {
-        BigDecimal milliseconds = new BigDecimal("987.654");
-        Duration duration = DurationHelper.parse(milliseconds.toString(), "milliseconds");
-        assertEquals(milliseconds.divide(new BigDecimal("1000"), 3, BigDecimal.ROUND_HALF_UP), duration.getField(DatatypeConstants.SECONDS));
+        BigDecimal milliseconds = new BigDecimal("987.654321");
+        Duration duration = DurationHelper.parse(milliseconds.toString(), DurationPattern.MILLISECONDS);
+        assertEquals(milliseconds.divide(new BigDecimal("1000")), duration.getField(DatatypeConstants.SECONDS));
+    }
+
+    @Test
+    public void testParseFractionalSeconds() throws Exception {
+        BigDecimal seconds = new BigDecimal("1.123456789");
+        Duration duration = DurationHelper.parse(seconds);
+        assertEquals(seconds, duration.getField(DatatypeConstants.SECONDS));
     }
 }

@@ -43,16 +43,25 @@ import javax.xml.datatype.Duration;
  * A collection of convenience methods for working with durations.
  */
 public final class DurationHelper {
+    public static final long SECONDS_PER_MINUTE = 60;
+    public static final long MINUTES_PER_HOUR = 60;
+    public static final long HOURS_PER_DAY = 24;
+    public static final long DAYS_PER_WEEK = 7;
+    public static final long NANOSECONDS_PER_SECOND = 1000000000;
+    public static final long NANOSECONDS_PER_MINUTE = SECONDS_PER_MINUTE * NANOSECONDS_PER_SECOND;
     public static final long MILLISECONDS_PER_SECOND = 1000;
-    public static final long MILLISECONDS_PER_MINUTE = 60 * MILLISECONDS_PER_SECOND;
-    public static final long MILLISECONDS_PER_HOUR = 60 * MILLISECONDS_PER_MINUTE;
-    public static final long MILLISECONDS_PER_DAY = 24 * MILLISECONDS_PER_HOUR;
-    public static final long MILLISECONDS_PER_WEEK = 7 * MILLISECONDS_PER_DAY;
+    public static final long MILLISECONDS_PER_MINUTE = SECONDS_PER_MINUTE * MILLISECONDS_PER_SECOND;
+    public static final long MILLISECONDS_PER_HOUR = MINUTES_PER_HOUR * MILLISECONDS_PER_MINUTE;
+    public static final long MILLISECONDS_PER_DAY = HOURS_PER_DAY * MILLISECONDS_PER_HOUR;
+    public static final long MILLISECONDS_PER_WEEK = DAYS_PER_WEEK * MILLISECONDS_PER_DAY;
 
-    private static final BigDecimal DECIMAL_ONE_THOUSAND = new BigDecimal(1000);
-    private static final BigInteger INTEGER_SEVEN = new BigInteger("7");
+    private static final BigInteger DAYS_PER_WEEK_BIG_INTEGER = BigInteger.valueOf(DAYS_PER_WEEK);
+    private static final BigDecimal NANOSECONDS_PER_SECOND_BIG_DECIMAL = BigDecimal.valueOf(NANOSECONDS_PER_SECOND);
+    private static final BigInteger NANOSECONDS_PER_MINUTE_BIG_INTEGER = BigInteger.valueOf(NANOSECONDS_PER_MINUTE);
+    private static final BigDecimal MILLISECONDS_PER_SECOND_BIG_DECIMAL = BigDecimal.valueOf(MILLISECONDS_PER_SECOND);
+    private static final BigInteger MILLISECONDS_PER_MINUTE_BIG_INTEGER = BigInteger.valueOf(MILLISECONDS_PER_MINUTE);
 
-    private static DatatypeFactory DATATYPE_FACTORY = null;
+    private static DatatypeFactory DATATYPE_FACTORY;
 
     static {
         try {
@@ -123,6 +132,17 @@ public final class DurationHelper {
      */
     public static String format(double seconds, int precision, DurationPattern pattern) {
         return emit(parse(seconds, precision), pattern);
+    }
+
+    /**
+     * Formats a duration in fractional seconds to the desired pattern.
+     *
+     * @param seconds   The duration to be formatted, specified as fractional seconds.
+     * @param pattern   The pattern the duration will be reformatted to.
+     * @return          The duration reformatted according to the given pattern.
+     */
+    public static String format(BigDecimal seconds, DurationPattern pattern) {
+        return emit(parse(seconds), pattern);
     }
 
     /**
@@ -396,7 +416,7 @@ public final class DurationHelper {
      * @return          A Duration object representing the duration in fractional seconds.
      */
     public static Duration parse(double seconds) {
-        return DATATYPE_FACTORY.newDuration(seconds >= 0.0, null, null, null, null, null, new BigDecimal(seconds).abs());
+        return parse(seconds, 9);
     }
 
     /**
@@ -408,6 +428,16 @@ public final class DurationHelper {
      */
     public static Duration parse(double seconds, int precision) {
         return DATATYPE_FACTORY.newDuration(seconds >= 0.0, null, null, null, null, null, (new BigDecimal(seconds)).abs().setScale(precision, RoundingMode.HALF_UP));
+    }
+
+    /**
+     * Returns a new Duration given a duration in fractional seconds.
+     *
+     * @param seconds   The duration in fractional seconds.
+     * @return          A Duration object representing the duration in fractional seconds.
+     */
+    public static Duration parse(BigDecimal seconds) {
+        return DATATYPE_FACTORY.newDuration(seconds.signum() >= 0, null, null, null, null, null, seconds);
     }
 
     /**
@@ -452,33 +482,38 @@ public final class DurationHelper {
                 BigInteger integerValue = decimalValue.toBigInteger();
 
                 switch (pattern) {
+                    case NANOSECONDS:
+                        // convert nanoseconds to fractional seconds
+                        decimalValue = decimalValue.divide(NANOSECONDS_PER_SECOND_BIG_DECIMAL);
+                        output = DATATYPE_FACTORY.newDuration(decimalValue.signum() >= 0, null, null, null, null, null, decimalValue.abs());
+                        break;
                     case MILLISECONDS:
                         // convert milliseconds to fractional seconds
-                        decimalValue = decimalValue.divide(DECIMAL_ONE_THOUSAND, RoundingMode.HALF_UP);
-                        output = DATATYPE_FACTORY.newDuration(decimalValue.compareTo(BigDecimal.ZERO) >= 0, null, null, null, null, null, decimalValue.abs());
+                        decimalValue = decimalValue.divide(MILLISECONDS_PER_SECOND_BIG_DECIMAL);
+                        output = DATATYPE_FACTORY.newDuration(decimalValue.signum() >= 0, null, null, null, null, null, decimalValue.abs());
                         break;
                     case SECONDS:
-                        output = DATATYPE_FACTORY.newDuration(decimalValue.compareTo(BigDecimal.ZERO) >= 0, null, null, null, null, null, decimalValue.abs());
+                        output = DATATYPE_FACTORY.newDuration(decimalValue.signum() >= 0, null, null, null, null, null, decimalValue.abs());
                         break;
                     case MINUTES:
-                        output = DATATYPE_FACTORY.newDuration(integerValue.compareTo(BigInteger.ZERO) >= 0, null, null, null, null, integerValue.abs(), null);
+                        output = DATATYPE_FACTORY.newDuration(integerValue.signum() >= 0, null, null, null, null, integerValue.abs(), null);
                         break;
                     case HOURS:
-                        output = DATATYPE_FACTORY.newDuration(integerValue.compareTo(BigInteger.ZERO) >= 0, null, null, null, integerValue.abs(), null, null);
+                        output = DATATYPE_FACTORY.newDuration(integerValue.signum() >= 0, null, null, null, integerValue.abs(), null, null);
                         break;
                     case DAYS:
-                        output = DATATYPE_FACTORY.newDuration(integerValue.compareTo(BigInteger.ZERO) >= 0, null, null, integerValue.abs(), null, null, null);
+                        output = DATATYPE_FACTORY.newDuration(integerValue.signum() >= 0, null, null, integerValue.abs(), null, null, null);
                         break;
                     case WEEKS:
                         // convert weeks to days by multiplying by 7
-                        integerValue = integerValue.multiply(INTEGER_SEVEN);
-                        output = DATATYPE_FACTORY.newDuration(integerValue.compareTo(BigInteger.ZERO) >= 0, null, null, integerValue.abs(), null, null, null);
+                        integerValue = integerValue.multiply(DAYS_PER_WEEK_BIG_INTEGER);
+                        output = DATATYPE_FACTORY.newDuration(integerValue.signum() >= 0, null, null, integerValue.abs(), null, null, null);
                         break;
                     case MONTHS:
-                        output = DATATYPE_FACTORY.newDuration(integerValue.compareTo(BigInteger.ZERO) >= 0, null, integerValue.abs(), null, null, null, null);
+                        output = DATATYPE_FACTORY.newDuration(integerValue.signum() >= 0, null, integerValue.abs(), null, null, null, null);
                         break;
                     case YEARS:
-                        output = DATATYPE_FACTORY.newDuration(integerValue.compareTo(BigInteger.ZERO) >= 0, integerValue.abs(), null, null, null, null, null);
+                        output = DATATYPE_FACTORY.newDuration(integerValue.signum() >= 0, integerValue.abs(), null, null, null, null, null);
                         break;
                     default:
                         throw new IllegalArgumentException("Unsupported duration pattern: " + pattern);
@@ -677,23 +712,33 @@ public final class DurationHelper {
         String output = null;
 
         switch (pattern) {
+            case NANOSECONDS:
+                BigInteger value = BigInteger.valueOf(input.getTimeInMillis(instant)).divide(MILLISECONDS_PER_MINUTE_BIG_INTEGER).multiply(NANOSECONDS_PER_MINUTE_BIG_INTEGER);
+                Number seconds = input.getField(DatatypeConstants.SECONDS);
+                if (seconds instanceof BigDecimal) {
+                    value = ((BigDecimal)seconds).multiply(NANOSECONDS_PER_SECOND_BIG_DECIMAL).toBigInteger().add(value);
+                } else if (seconds != null) {
+                    value = value.add(BigInteger.valueOf(seconds.longValue() * NANOSECONDS_PER_SECOND));
+                }
+                output = value.toString();
+                break;
             case MILLISECONDS:
-                output = "" + input.getTimeInMillis(instant);
+                output = Long.toString(input.getTimeInMillis(instant));
                 break;
             case SECONDS:
-                output = "" + (input.getTimeInMillis(instant) / MILLISECONDS_PER_SECOND);
+                output = Long.toString(input.getTimeInMillis(instant) / MILLISECONDS_PER_SECOND);
                 break;
             case MINUTES:
-                output = "" + (input.getTimeInMillis(instant) / MILLISECONDS_PER_MINUTE);
+                output = Long.toString(input.getTimeInMillis(instant) / MILLISECONDS_PER_MINUTE);
                 break;
             case HOURS:
-                output = "" + (input.getTimeInMillis(instant) / MILLISECONDS_PER_HOUR);
+                output = Long.toString(input.getTimeInMillis(instant) / MILLISECONDS_PER_HOUR);
                 break;
             case DAYS:
-                output = "" + (input.getTimeInMillis(instant) / MILLISECONDS_PER_DAY);
+                output = Long.toString(input.getTimeInMillis(instant) / MILLISECONDS_PER_DAY);
                 break;
             case WEEKS:
-                output = "" + (input.getTimeInMillis(instant) / MILLISECONDS_PER_WEEK);
+                output = Long.toString(input.getTimeInMillis(instant) / MILLISECONDS_PER_WEEK);
                 break;
             case XML:
                 output = input.toString();
