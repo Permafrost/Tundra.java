@@ -153,7 +153,7 @@ public final class PackageHelper {
     }
 
     /**
-     * Returns the list of elements referenced by given the services in the given package.
+     * Returns the list of elements referenced by the services in the given package.
      *
      * @param pkg           The package to get references for.
      * @return              The list of references for the given package.
