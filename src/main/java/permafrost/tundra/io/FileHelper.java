@@ -996,7 +996,18 @@ public final class FileHelper {
      * @return     The filename extension for the given file.
      */
     public static String getExtension(File file) {
-        return file == null ? null : MimeTypes.getExtensionFromName(file.getName());
+        if (file == null) return null;
+
+        String extension;
+
+        String[] parts = getNameParts(file);
+        if (parts.length > 1) {
+            extension = parts[parts.length - 1];
+        } else {
+            extension = null;
+        }
+
+        return extension;
     }
 
     /**
