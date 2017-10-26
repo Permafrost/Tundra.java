@@ -635,12 +635,12 @@ public final class ServiceHelper {
         for (int i = 0; i < count; i++) {
             IData scope = IDataUtil.clone(pipeline);
 
-            long start = System.currentTimeMillis();
+            long start = System.nanoTime();
             try {
                 invoke(service, scope, raise, false);
             } finally {
-                long end = System.currentTimeMillis();
-                estimator.add(end - start);
+                long end = System.nanoTime();
+                estimator.add((end - start)/1000000L);
             }
         }
 
