@@ -6,12 +6,13 @@ import com.wm.app.b2b.server.invoke.InvokeManager;
 import com.wm.app.b2b.server.invoke.ServiceStatus;
 import com.wm.data.IData;
 import com.wm.util.ServerException;
+import permafrost.tundra.lang.Startable;
 import java.util.Iterator;
 
 /**
  * An abstract base class for invoke chain processors.
  */
-public abstract class AbstractInvokeChainProcessor implements InvokeChainProcessor {
+public abstract class AbstractInvokeChainProcessor implements InvokeChainProcessor, Startable {
     /**
      * Whether the processor is started or not.
      */
