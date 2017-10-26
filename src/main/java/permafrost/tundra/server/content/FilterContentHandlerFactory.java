@@ -44,6 +44,7 @@ public abstract class FilterContentHandlerFactory extends ContentHandlerFactory 
     /**
      * Starts logging content.
      */
+    @Override
     public synchronized void start() {
         started = true;
     }
@@ -51,6 +52,7 @@ public abstract class FilterContentHandlerFactory extends ContentHandlerFactory 
     /**
      * Stops logging content.
      */
+    @Override
     public synchronized void stop() {
         started = false;
     }
@@ -60,6 +62,7 @@ public abstract class FilterContentHandlerFactory extends ContentHandlerFactory 
      *
      * @return True if content logging is started.
      */
+    @Override
     public boolean isStarted() {
         return started;
     }
