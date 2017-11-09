@@ -178,6 +178,43 @@ public final class IDataHelper {
     }
 
     /**
+     * Returns the first key associated with the given value.
+     *
+     * @param document  An IData document.
+     * @param value     The value whose first associated key is to be returned.
+     * @return          The first key associated with the given value, or null if no association exists.
+     */
+    public static String getKey(IData document, Object value) {
+        if (document == null) return null;
+        IDataCursor cursor = document.getCursor();
+        try {
+            return getKey(cursor, value);
+        } finally {
+            cursor.destroy();
+        }
+    }
+
+    /**
+     * Returns the first key associated with the given value.
+     *
+     * @param cursor    An IDataCursor object.
+     * @param value     The value whose first associated key is to be returned.
+     * @return          The first key associated with the given value, or null if no association exists.
+     */
+    public static String getKey(IDataCursor cursor, Object value) {
+        if (cursor != null) {
+            while (cursor.next()) {
+                String key = cursor.getKey();
+                if (ObjectHelper.equal(value, cursor.getValue())) {
+                    return key;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Returns all the top-level values that are instances of the given class from the given document.
      *
      * @param document   An IData document.
