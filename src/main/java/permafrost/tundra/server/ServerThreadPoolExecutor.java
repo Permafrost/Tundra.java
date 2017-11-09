@@ -51,6 +51,21 @@ public class ServerThreadPoolExecutor extends ThreadPoolExecutor {
      * @param threadNamePrefix The prefix to use on all created thread names.
      * @param threadNameSuffix The suffix used on all created thread names.
      * @param threadPriority   The priority used for each thread created.
+     * @param workQueue        The queue to use for storing submitted jobs prior to their execution by a thread.
+     * @param handler          The policy used to handle when a submitted job is rejected due to resource exhaustion.
+     * @param threadPriority   The priority each created thread will have.
+     */
+    public ServerThreadPoolExecutor(int threadPoolSize, String threadNamePrefix, String threadNameSuffix, int threadPriority, BlockingQueue<Runnable> workQueue, RejectedExecutionHandler handler) {
+        this(threadPoolSize, threadNamePrefix, threadNameSuffix, threadPriority, false, InvokeState.getCurrentState(), workQueue, handler);
+    }
+
+    /**
+     * Creates a new ServerThreadPoolExecutor.
+     *
+     * @param threadPoolSize   The number of threads to allocate to the pool.
+     * @param threadNamePrefix The prefix to use on all created thread names.
+     * @param threadNameSuffix The suffix used on all created thread names.
+     * @param threadPriority   The priority used for each thread created.
      * @param threadDaemon     Whether the created threads should be daemons.
      * @param invokeState      The invoke state to clone for each thread created.
      * @param workQueue        The queue to use for storing submitted jobs prior to their execution by a thread.
