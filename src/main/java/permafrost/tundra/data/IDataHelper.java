@@ -24,6 +24,7 @@
 
 package permafrost.tundra.data;
 
+import com.wm.app.b2b.server.ServerAPI;
 import com.wm.app.b2b.server.ServiceException;
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;
@@ -205,7 +206,8 @@ public final class IDataHelper {
         if (cursor != null) {
             while (cursor.next()) {
                 String key = cursor.getKey();
-                if (ObjectHelper.equal(value, cursor.getValue())) {
+                Object val = cursor.getValue();
+                if ((value instanceof Object[] && val instanceof Object[] && ArrayHelper.equal((Object[])value, (Object[])val)) || ObjectHelper.equal(value, cursor.getValue())) {
                     return key;
                 }
             }
