@@ -24,14 +24,17 @@
 
 package permafrost.tundra.server;
 
+/**
+ * The different permissions that can be granted for an Integration Server namespace node.
+ */
 public enum NodePermission {
     LIST, READ, WRITE, EXECUTE;
 
     /**
      * Returns the NodePermission representing the given String.
      *
-     * @param permission The permission to be normalized as a String.
-     * @return The NodePermission representing the given String.
+     * @param permission    The permission to be normalized.
+     * @return              The NodePermission representing the given string.
      */
     public static NodePermission normalize(String permission) {
         if (permission == null) return null;
