@@ -24,12 +24,12 @@
 
 package permafrost.tundra.server;
 
-import com.wm.app.b2b.server.ServiceException;
 import com.wm.app.b2b.server.scheduler.ScheduleManager;
-import permafrost.tundra.lang.ExceptionHelper;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 /**
- * A collection of methods for working with Integration Server user scheduled tasks.
+ * A collection of methods for working with the Integration Server user task scheduler.
  */
 public final class SchedulerHelper {
     /**
@@ -38,14 +38,64 @@ public final class SchedulerHelper {
     private SchedulerHelper() {}
 
     /**
-     * Starts the Integration Server user task scheduler.
-     * @throws ServiceException If an error occurs when starting the scheduler.
+     * @return the current status of the Integration Server user task scheduler.
      */
-    public static void start() throws ServiceException {
+    public static SchedulerStatus status() {
+        return SchedulerStatus.normalize(isRunning(), isPaused());
+    }
+
+    /**
+     * @return true if the Integration Server user task scheduler is paused.
+     */
+    @SuppressWarnings("unchecked")
+    public static boolean isPaused() {
+        boolean isPaused;
+
+        try {
+            Method isPausedMethod = ScheduleManager.class.getDeclaredMethod("isPaused");
+            isPaused = (Boolean)isPausedMethod.invoke(null);
+        } catch(NoSuchMethodException ex) {
+            isPaused = false;
+        } catch(Exception ex) {
+            throw new RuntimeException(ex);
+        }
+
+        return isPaused;
+    }
+
+    /**
+     * @return true if the Integration Server user task scheduler is running.
+     */
+    @SuppressWarnings("unchecked")
+    public static boolean isRunning() {
+        boolean isRunning;
+
+        try {
+            Method isRunningMethod = ScheduleManager.class.getDeclaredMethod("isRunning");
+            isRunning = (Boolean)isRunningMethod.invoke(null);
+        } catch(NoSuchMethodException ex) {
+            try {
+                Field gRunning = ScheduleManager.class.getDeclaredField("gRunning");
+                gRunning.setAccessible(true);
+                isRunning = gRunning.getBoolean(null);
+            } catch(Exception exception) {
+                throw new RuntimeException(exception);
+            }
+        } catch(Exception ex) {
+            throw new RuntimeException(ex);
+        }
+
+        return isRunning;
+    }
+
+    /**
+     * Starts the Integration Server user task scheduler.
+     */
+    public static void start() {
         try {
             ScheduleManager.init();
         } catch(Exception ex) {
-            ExceptionHelper.raise(ex);
+            throw new RuntimeException(ex);
         }
     }
 
@@ -58,25 +108,51 @@ public final class SchedulerHelper {
 
     /**
      * Restarts the Integration Server user task scheduler.
-     * @throws ServiceException If an error occurs when restarting the scheduler.
      */
-    public static void restart() throws ServiceException {
+    public static void restart() {
         stop();
         start();
     }
 
     /**
-     * Returns the name of this Integration Server task scheduler node.
-     *
-     * @return The name of this Integration Server task scheduler node.
-     * @throws ServiceException If an error occurs retrieving the name.
+     * Pauses the Integration Server user task scheduler. When run on Integration Server 7.1,
+     * stops the scheduler instead as the pause function is not supported on that version.
      */
-    public static String self() throws ServiceException {
+    public static void pause() {
+        try {
+            Method pause = ScheduleManager.class.getDeclaredMethod("pause");
+            pause.invoke(null);
+        } catch(NoSuchMethodException ex) {
+            stop();
+        } catch(Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    /**
+     * Resumes the Integration Server user task scheduler. When run on Integration Server 7.1,
+     * starts the scheduler instead as the resume function is not supported on that version.
+     */
+    public static void resume() {
+        try {
+            Method resume = ScheduleManager.class.getDeclaredMethod("resume");
+            resume.invoke(null);
+        } catch(NoSuchMethodException ex) {
+            start();
+        } catch(Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    /**
+     * @return the name of this Integration Server task scheduler node.
+     */
+    public static String self() {
         String name = null;
         try {
             name = ScheduleManager.getNodeName();
         } catch(Exception ex) {
-            ExceptionHelper.raise(ex);
+            throw new RuntimeException(ex);
         }
         return name;
     }
