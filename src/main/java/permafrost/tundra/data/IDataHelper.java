@@ -35,6 +35,7 @@ import com.wm.util.Table;
 import com.wm.util.coder.IDataCodable;
 import com.wm.util.coder.ValuesCodable;
 import org.w3c.dom.Node;
+import permafrost.tundra.collection.CollectionHelper;
 import permafrost.tundra.collection.ListHelper;
 import permafrost.tundra.collection.SetHelper;
 import permafrost.tundra.data.transform.Blankifier;
@@ -179,41 +180,53 @@ public final class IDataHelper {
     }
 
     /**
-     * Returns the first key associated with the given value.
+     * Returns all keys associated with the given value.
      *
      * @param document  An IData document.
      * @param value     The value whose first associated key is to be returned.
-     * @return          The first key associated with the given value, or null if no association exists.
+     * @return          All keys associated with the given value.
      */
-    public static String getKey(IData document, Object value) {
-        if (document == null) return null;
-        IDataCursor cursor = document.getCursor();
-        try {
-            return getKey(cursor, value);
-        } finally {
-            cursor.destroy();
+    public static String[] getKeys(IData document, Object value) {
+        String[] keys;
+
+        if (document == null) {
+            keys = new String[0];
+        } else {
+            IDataCursor cursor = document.getCursor();
+            try {
+                keys = getKeys(cursor, value);
+            } finally {
+                cursor.destroy();
+            }
         }
+
+        return keys;
     }
 
     /**
-     * Returns the first key associated with the given value.
+     * Returns the all keys associated with the given value.
      *
      * @param cursor    An IDataCursor object.
      * @param value     The value whose first associated key is to be returned.
-     * @return          The first key associated with the given value, or null if no association exists.
+     * @return          All keys associated with the given value, or null if no association exists.
      */
-    public static String getKey(IDataCursor cursor, Object value) {
+    private static String[] getKeys(IDataCursor cursor, Object value) {
+        List<String> keys;
+
         if (cursor != null) {
+            keys = new ArrayList<String>();
             while (cursor.next()) {
                 String key = cursor.getKey();
                 Object val = cursor.getValue();
                 if ((value instanceof Object[] && val instanceof Object[] && ArrayHelper.equal((Object[])value, (Object[])val)) || ObjectHelper.equal(value, cursor.getValue())) {
-                    return key;
+                    keys.add(key);
                 }
             }
+        } else {
+            keys = Collections.emptyList();
         }
 
-        return null;
+        return CollectionHelper.arrayify(keys, String.class);
     }
 
     /**
