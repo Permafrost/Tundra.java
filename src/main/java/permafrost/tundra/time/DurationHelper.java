@@ -709,7 +709,7 @@ public final class DurationHelper {
         if (instant == null) instant = new Date();
 
         pattern = DurationPattern.normalize(pattern);
-        String output = null;
+        String output;
 
         switch (pattern) {
             case NANOSECONDS:
