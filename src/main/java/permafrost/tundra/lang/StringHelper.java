@@ -887,7 +887,7 @@ public final class StringHelper {
      * @return                   The string array with replaced string elements.
      */
     public static String[] replace(String[] array, String pattern, boolean literalPattern, String replacement, boolean literalReplacement, boolean firstOnly) {
-        return replace(array, pattern == null ? null : Pattern.compile(literalPattern ? Matcher.quoteReplacement(pattern) : pattern), replacement != null && literalReplacement ? Matcher.quoteReplacement(replacement) : null, firstOnly);
+        return replace(array, pattern == null ? null : Pattern.compile(literalPattern ? Matcher.quoteReplacement(pattern) : pattern), replacement != null && literalReplacement ? Matcher.quoteReplacement(replacement) : replacement, firstOnly);
     }
 
     /**
@@ -940,7 +940,7 @@ public final class StringHelper {
      * @return                   The string table with replaced string elements
      */
     public static String[][] replace(String[][] table, String pattern, boolean literalPattern, String replacement, boolean literalReplacement, boolean firstOnly) {
-        return replace(table, pattern == null ? null : Pattern.compile(literalPattern ? Matcher.quoteReplacement(pattern) : pattern), replacement != null && literalReplacement ? Matcher.quoteReplacement(replacement) : null, firstOnly);
+        return replace(table, pattern == null ? null : Pattern.compile(literalPattern ? Matcher.quoteReplacement(pattern) : pattern), replacement != null && literalReplacement ? Matcher.quoteReplacement(replacement) : replacement, firstOnly);
     }
 
     /**
