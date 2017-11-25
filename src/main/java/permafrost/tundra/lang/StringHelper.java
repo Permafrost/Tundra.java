@@ -817,7 +817,23 @@ public final class StringHelper {
      * @return            The replaced string.
      */
     public static String replace(String string, String pattern, String replacement, boolean literal, boolean firstOnly) {
-        return replace(string, pattern == null ? null : Pattern.compile(pattern), replacement != null && literal ? Matcher.quoteReplacement(replacement) : replacement, firstOnly);
+        return replace(string, pattern, false, replacement, literal, firstOnly);
+    }
+
+    /**
+     * Replaces either the first or all occurrences of the given regular expression in the given string with the given
+     * replacement.
+     *
+     * @param string             The string to be replaced.
+     * @param pattern            The regular expression pattern.
+     * @param literalPattern     Whether the pattern string is literal and therefore requires quoting.
+     * @param replacement        The replacement string.
+     * @param literalReplacement Whether the replacement string is literal and therefore requires quoting.
+     * @param firstOnly          If true, only the first occurrence is replaced, otherwise all occurrences are replaced.
+     * @return                   The replaced string.
+     */
+    public static String replace(String string, String pattern, boolean literalPattern, String replacement, boolean literalReplacement, boolean firstOnly) {
+        return replace(string, pattern == null ? null : Pattern.compile(literalPattern ? Matcher.quoteReplacement(pattern) : pattern), replacement != null && literalReplacement ? Matcher.quoteReplacement(replacement) : replacement, firstOnly);
     }
 
     /**
@@ -850,11 +866,28 @@ public final class StringHelper {
      * @param array       The string array whose elements are to be replaced.
      * @param pattern     The regular expression pattern.
      * @param replacement The replacement string.
+     * @param literal     Whether the replacement string is literal and therefore requires quoting.
      * @param firstOnly   If true, only the first occurrence is replaced, otherwise all occurrences are replaced.
      * @return            The string array with replaced string elements.
      */
     public static String[] replace(String[] array, String pattern, String replacement, boolean literal, boolean firstOnly) {
-        return replace(array, pattern == null ? null : Pattern.compile(pattern), replacement != null && literal ? Matcher.quoteReplacement(replacement) : null, firstOnly);
+        return replace(array, pattern, false, replacement, literal, firstOnly);
+    }
+
+    /**
+     * Replaces either the first or all occurrences of the given regular expression in the given string array elements
+     * with the given replacement.
+     *
+     * @param array              The string array whose elements are to be replaced.
+     * @param pattern            The regular expression pattern.
+     * @param literalPattern     Whether the pattern string is literal and therefore requires quoting.
+     * @param replacement        The replacement string.
+     * @param literalReplacement Whether the replacement string is literal and therefore requires quoting.
+     * @param firstOnly          If true, only the first occurrence is replaced, otherwise all occurrences are replaced.
+     * @return                   The string array with replaced string elements.
+     */
+    public static String[] replace(String[] array, String pattern, boolean literalPattern, String replacement, boolean literalReplacement, boolean firstOnly) {
+        return replace(array, pattern == null ? null : Pattern.compile(literalPattern ? Matcher.quoteReplacement(pattern) : pattern), replacement != null && literalReplacement ? Matcher.quoteReplacement(replacement) : null, firstOnly);
     }
 
     /**
@@ -886,11 +919,28 @@ public final class StringHelper {
      * @param table       The string table whose elements are to be replaced.
      * @param pattern     The regular expression pattern.
      * @param replacement The replacement string.
+     * @param literal     Whether the replacement string is literal and therefore requires quoting.
      * @param firstOnly   If true, only the first occurrence is replaced, otherwise all occurrences are replaced.
      * @return            The string table with replaced string elements
      */
     public static String[][] replace(String[][] table, String pattern, String replacement, boolean literal, boolean firstOnly) {
-        return replace(table, pattern == null ? null : Pattern.compile(pattern), replacement != null && literal ? Matcher.quoteReplacement(replacement) : null, firstOnly);
+        return replace(table, pattern, false, replacement, literal, firstOnly);
+    }
+
+    /**
+     * Replaces either the first or all occurrences of the given regular expression in the given string table elements
+     * with the given replacement.
+     *
+     * @param table              The string table whose elements are to be replaced.
+     * @param pattern            The regular expression pattern.
+     * @param literalPattern     Whether the pattern string is literal and therefore requires quoting.
+     * @param replacement        The replacement string.
+     * @param literalReplacement Whether the replacement string is literal and therefore requires quoting.
+     * @param firstOnly          If true, only the first occurrence is replaced, otherwise all occurrences are replaced.
+     * @return                   The string table with replaced string elements
+     */
+    public static String[][] replace(String[][] table, String pattern, boolean literalPattern, String replacement, boolean literalReplacement, boolean firstOnly) {
+        return replace(table, pattern == null ? null : Pattern.compile(literalPattern ? Matcher.quoteReplacement(pattern) : pattern), replacement != null && literalReplacement ? Matcher.quoteReplacement(replacement) : null, firstOnly);
     }
 
     /**
