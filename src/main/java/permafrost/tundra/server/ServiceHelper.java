@@ -85,8 +85,11 @@ public final class ServiceHelper {
     @SuppressWarnings("unchecked")
     public static List<NSService> getCallStack() {
         List<NSService> stack = (List<NSService>)InvokeState.getCurrentState().getCallStack();
-        if (stack == null) stack = Collections.emptyList();
-        return new ArrayList<NSService>(stack);
+        if (stack == null) {
+            return Collections.emptyList();
+        } else {
+            return new ArrayList<NSService>(stack);
+        }
     }
 
     /**
