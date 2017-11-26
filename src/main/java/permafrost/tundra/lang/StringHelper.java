@@ -421,7 +421,7 @@ public final class StringHelper {
                 } else {
                     input = "…" + slice(input, -1, length + 1);
                 }
-            } else if (length < 0){
+            } else if (length < 0) {
                 input = slice(input, -1, length);
             } else {
                 input = slice(input, 0, length);
