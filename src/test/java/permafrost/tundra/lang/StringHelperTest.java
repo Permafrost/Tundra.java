@@ -42,7 +42,7 @@ public class StringHelperTest {
 
     @Test
     public void testSqueezeWithNull() throws Exception {
-        assertEquals(null, StringHelper.squeeze(null));
+        assertEquals(null, StringHelper.squeeze((String)null));
     }
 
     @Test
