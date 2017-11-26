@@ -38,10 +38,6 @@ import permafrost.tundra.io.InputStreamHelper;
 import permafrost.tundra.io.ReaderHelper;
 import permafrost.tundra.math.BigDecimalHelper;
 import permafrost.tundra.math.BigIntegerHelper;
-import permafrost.tundra.math.DoubleHelper;
-import permafrost.tundra.math.FloatHelper;
-import permafrost.tundra.math.IntegerHelper;
-import permafrost.tundra.math.LongHelper;
 import permafrost.tundra.math.NumberHelper;
 import permafrost.tundra.time.DateTimeHelper;
 import java.io.IOException;
@@ -53,7 +49,6 @@ import java.io.Writer;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -193,6 +188,166 @@ public final class StringHelper {
      */
     public static String[] normalize(Object[] array, String charsetName) throws IOException {
         return normalize(array, CharsetHelper.normalize(charsetName));
+    }
+
+    /**
+     * Returns the given string in lower case.
+     *
+     * @param input     The string to be converted.
+     * @return          The given string in lower case.
+     */
+    public static String lowercase(String input) {
+        return lowercase(input, null);
+    }
+
+    /**
+     * Returns the given string in lower case.
+     *
+     * @param input     The string to be converted.
+     * @param locale    The locale to be used.
+     * @return          The given string in lower case.
+     */
+    public static String lowercase(String input, Locale locale) {
+        if (input == null) return null;
+        return input.toLowerCase(LocaleHelper.normalize(locale));
+    }
+
+    /**
+     * Returns the given string list in lower case.
+     *
+     * @param array     The string list to be converted.
+     * @return          The given string list in lower case.
+     */
+    public static String[] lowercase(String[] array) {
+        return lowercase(array, null);
+    }
+
+    /**
+     * Returns the given string list in lower case.
+     *
+     * @param array     The string list to be converted.
+     * @param locale    The locale to be used.
+     * @return          The given string list in lower case.
+     */
+    public static String[] lowercase(String[] array, Locale locale) {
+        if (array == null) return null;
+
+        String[] output = new String[array.length];
+
+        for (int i = 0; i < array.length; i++) {
+            output[i] = lowercase(array[i], locale);
+        }
+
+        return output;
+    }
+
+    /**
+     * Returns the given string table in lower case.
+     *
+     * @param table     The string table to be converted.
+     * @return          The given string list in lower case.
+     */
+    public static String[][] lowercase(String[][] table) {
+        return lowercase(table, null);
+    }
+
+    /**
+     * Returns the given string table in lower case.
+     *
+     * @param table     The string table to be converted.
+     * @param locale    The locale to be used.
+     * @return          The given string list in lower case.
+     */
+    public static String[][] lowercase(String[][] table, Locale locale) {
+        if (table == null) return null;
+
+        String[][] output = new String[table.length][];
+
+        for (int i = 0; i < table.length; i++) {
+            output[i] = lowercase(table[i], locale);
+        }
+
+        return output;
+    }
+
+    /**
+     * Returns the given string in upper case.
+     *
+     * @param input     The string to be converted.
+     * @return          The given string in upper case.
+     */
+    public static String uppercase(String input) {
+        return uppercase(input, null);
+    }
+
+    /**
+     * Returns the given string in upper case.
+     *
+     * @param input     The string to be converted.
+     * @param locale    The locale to be used.
+     * @return          The given string in upper case.
+     */
+    public static String uppercase(String input, Locale locale) {
+        if (input == null) return null;
+        return input.toUpperCase(LocaleHelper.normalize(locale));
+    }
+
+    /**
+     * Returns the given string list in upper case.
+     *
+     * @param array     The string list to be converted.
+     * @return          The given string list in upper case.
+     */
+    public static String[] uppercase(String[] array) {
+        return uppercase(array, null);
+    }
+
+    /**
+     * Returns the given string list in upper case.
+     *
+     * @param array     The string list to be converted.
+     * @param locale    The locale to be used.
+     * @return          The given string list in upper case.
+     */
+    public static String[] uppercase(String[] array, Locale locale) {
+        if (array == null) return null;
+
+        String[] output = new String[array.length];
+
+        for (int i = 0; i < array.length; i++) {
+            output[i] = uppercase(array[i], locale);
+        }
+
+        return output;
+    }
+
+    /**
+     * Returns the given string table in upper case.
+     *
+     * @param table     The string table to be converted.
+     * @return          The given string list in upper case.
+     */
+    public static String[][] uppercase(String[][] table) {
+        return uppercase(table, null);
+    }
+
+    /**
+     * Returns the given string table in upper case.
+     *
+     * @param table     The string table to be converted.
+     * @param locale    The locale to be used.
+     * @return          The given string list in upper case.
+     */
+    public static String[][] uppercase(String[][] table, Locale locale) {
+        if (table == null) return null;
+
+        String[][] output = new String[table.length][];
+
+        for (int i = 0; i < table.length; i++) {
+            output[i] = uppercase(table[i], locale);
+        }
+
+        return output;
     }
 
     /**
@@ -815,7 +970,7 @@ public final class StringHelper {
     public static String[] remove(String[] array, String pattern, boolean literal, boolean firstOnly) {
         return remove(array, pattern == null ? null : Pattern.compile(literal ? Matcher.quoteReplacement(pattern) : pattern), firstOnly);
     }
-    
+
     /**
      * Removes either the first or all occurrences of the given regular expression in the given string list.
      *
