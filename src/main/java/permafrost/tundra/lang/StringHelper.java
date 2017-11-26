@@ -788,8 +788,52 @@ public final class StringHelper {
      * @return          The given string with either the first or all occurrences of the given pattern removed.
      */
     public static String remove(String string, String pattern, boolean literal, boolean firstOnly) {
-        if (pattern != null && literal) pattern = Matcher.quoteReplacement(pattern);
-        return replace(string, pattern == null ? null : Pattern.compile(pattern), "", firstOnly);
+        return remove(string, pattern == null ? null : Pattern.compile(literal ? Matcher.quoteReplacement(pattern) : pattern), firstOnly);
+    }
+
+    /**
+     * Removes either the first or all occurrences of the given regular expression in the given string list.
+     *
+     * @param string    The string to remove the pattern from.
+     * @param pattern   The regular expression pattern to be removed.
+     * @param firstOnly If true, only the first occurrence is removed, otherwise all occurrences are removed.
+     * @return          The given string list with either the first or all occurrences of the given pattern removed.
+     */
+    public static String remove(String string, Pattern pattern, boolean firstOnly) {
+        return replace(string, pattern, "", firstOnly);
+    }
+
+    /**
+     * Removes either the first or all occurrences of the given regular expression in the given string.
+     *
+     * @param array     The string list to remove the pattern from.
+     * @param pattern   The regular expression pattern to be removed.
+     * @param literal   Whether the replacement string is literal and therefore requires quoting.
+     * @param firstOnly If true, only the first occurrence is removed, otherwise all occurrences are removed.
+     * @return          The given string with either the first or all occurrences of the given pattern removed.
+     */
+    public static String[] remove(String[] array, String pattern, boolean literal, boolean firstOnly) {
+        return remove(array, pattern == null ? null : Pattern.compile(literal ? Matcher.quoteReplacement(pattern) : pattern), firstOnly);
+    }
+    
+    /**
+     * Removes either the first or all occurrences of the given regular expression in the given string list.
+     *
+     * @param array     The string list to remove the pattern from.
+     * @param pattern   The regular expression pattern to be removed.
+     * @param firstOnly If true, only the first occurrence is removed, otherwise all occurrences are removed.
+     * @return          The given string list with either the first or all occurrences of the given pattern removed.
+     */
+    public static String[] remove(String[] array, Pattern pattern, boolean firstOnly) {
+        if (array == null || pattern == null) return array;
+
+        String[] output = new String[array.length];
+
+        for (int i = 0; i < array.length; i++) {
+            output[i] = remove(array[i], pattern, firstOnly);
+        }
+
+        return output;
     }
 
     /**
