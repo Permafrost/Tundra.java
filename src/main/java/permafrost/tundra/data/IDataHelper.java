@@ -60,6 +60,8 @@ import permafrost.tundra.lang.ArrayHelper;
 import permafrost.tundra.lang.Sanitization;
 import permafrost.tundra.lang.ObjectHelper;
 import permafrost.tundra.lang.TableHelper;
+import permafrost.tundra.util.regex.PatternHelper;
+import permafrost.tundra.util.regex.ReplacementHelper;
 import permafrost.tundra.xml.dom.NodeHelper;
 import permafrost.tundra.xml.dom.Nodes;
 import permafrost.tundra.xml.xpath.XPathHelper;
@@ -112,7 +114,7 @@ public final class IDataHelper {
      * @return              The list of keys present in the given IData document that match the given regular expression pattern.
      */
     public static String[] getKeys(IData document, String patternString) {
-        return getKeys(document, patternString == null ? null : Pattern.compile(patternString));
+        return getKeys(document, PatternHelper.compile(patternString));
     }
 
     /**
@@ -1714,7 +1716,7 @@ public final class IDataHelper {
      * @return                      The document with replaced string values.
      */
     public static IData replace(IData document, String pattern, boolean literalPattern, String replacement, boolean literalReplacement, boolean firstOnly, TransformerMode mode, boolean recurse) {
-        return replace(document, pattern == null ? null : Pattern.compile(literalPattern ? Matcher.quoteReplacement(pattern) : pattern), replacement != null && literalReplacement ? Matcher.quoteReplacement(replacement) : replacement, firstOnly, mode, recurse);
+        return replace(document, PatternHelper.compile(pattern, literalPattern), ReplacementHelper.quote(replacement, literalReplacement), firstOnly, mode, recurse);
     }
 
     /**
@@ -1749,7 +1751,7 @@ public final class IDataHelper {
      * @return                      The document list with replaced string values.
      */
     public static IData[] replace(IData[] array, String pattern, boolean literalPattern, String replacement, boolean literalReplacement, boolean firstOnly, TransformerMode mode, boolean recurse) {
-        return replace(array, pattern == null ? null : Pattern.compile(literalPattern ? Matcher.quoteReplacement(pattern) : pattern), replacement != null && literalReplacement ? Matcher.quoteReplacement(replacement) : replacement, firstOnly, mode, recurse);
+        return replace(array, PatternHelper.compile(pattern, literalPattern), ReplacementHelper.quote(replacement, literalReplacement), firstOnly, mode, recurse);
     }
 
     /**
@@ -1782,7 +1784,7 @@ public final class IDataHelper {
      * @return                      The document with the given pattern removed from string values.
      */
     public static IData remove(IData document, String pattern, boolean literalPattern, boolean firstOnly, TransformerMode mode, boolean recurse) {
-        return remove(document, pattern == null ? null : Pattern.compile(literalPattern ? Matcher.quoteReplacement(pattern) : pattern), firstOnly, mode, recurse);
+        return remove(document, PatternHelper.compile(pattern, literalPattern), firstOnly, mode, recurse);
     }
 
     /**
@@ -1813,7 +1815,7 @@ public final class IDataHelper {
      * @return                      The document list with the given pattern removed from string values.
      */
     public static IData[] remove(IData[] array, String pattern, boolean literalPattern, boolean firstOnly, TransformerMode mode, boolean recurse) {
-        return remove(array, pattern == null ? null : Pattern.compile(literalPattern ? Matcher.quoteReplacement(pattern) : pattern), firstOnly, mode, recurse);
+        return remove(array, PatternHelper.compile(pattern, literalPattern), firstOnly, mode, recurse);
     }
 
     /**
@@ -4120,7 +4122,7 @@ public final class IDataHelper {
      * @return              The union set of keys from the given IData[].
      */
     public static String[] getKeys(IData[] array, String patternString) {
-        return getKeys(array, patternString == null ? null : Pattern.compile(patternString));
+        return getKeys(array, PatternHelper.compile(patternString));
     }
 
     /**

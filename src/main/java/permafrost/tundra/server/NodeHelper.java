@@ -33,6 +33,7 @@ import com.wm.lang.ns.NSInterface;
 import com.wm.lang.ns.NSName;
 import com.wm.lang.ns.NSNode;
 import com.wm.lang.ns.NSType;
+import permafrost.tundra.util.regex.PatternHelper;
 import java.util.Collections;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -151,7 +152,7 @@ public final class NodeHelper {
      * @return A sorted set of child nodes.
      */
     public static SortedSet<String> listRoot(String pattern, String type, boolean recurse) {
-        return listRoot(pattern == null ? null : Pattern.compile(pattern), type, recurse);
+        return listRoot(PatternHelper.compile(pattern), type, recurse);
     }
 
     /**
@@ -206,7 +207,7 @@ public final class NodeHelper {
      * @return A sorted set of child nodes.
      */
     public static SortedSet<String> list(NSInterface parent, String pattern, String type, boolean recurse) {
-        return list(parent, pattern == null ? null : Pattern.compile(pattern), type, recurse);
+        return list(parent, PatternHelper.compile(pattern), type, recurse);
     }
 
     /**

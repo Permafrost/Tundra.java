@@ -29,8 +29,6 @@ import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
 import com.wm.data.IDataUtil;
 import permafrost.tundra.data.IDataHelper;
-import permafrost.tundra.data.transform.TransformerMode;
-import permafrost.tundra.data.transform.Truncator;
 import permafrost.tundra.io.InputOutputHelper;
 import permafrost.tundra.io.InputStreamHelper;
 import permafrost.tundra.io.ReaderHelper;
@@ -38,6 +36,8 @@ import permafrost.tundra.math.BigDecimalHelper;
 import permafrost.tundra.math.BigIntegerHelper;
 import permafrost.tundra.math.NumberHelper;
 import permafrost.tundra.time.DateTimeHelper;
+import permafrost.tundra.util.regex.PatternHelper;
+import permafrost.tundra.util.regex.ReplacementHelper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -726,28 +726,48 @@ public final class StringHelper {
     /**
      * Returns the length or number of characters of the string.
      *
-     * @param string The string to be measured.
-     * @return The length of the given string.
+     * @param string    The string to be measured.
+     * @return          The length of the given string.
      */
     public static int length(String string) {
-        int length = 0;
-        if (string != null) length = string.length();
-        return length;
+        return string == null ? 0 : string.length();
     }
 
     /**
      * Returns all the groups captured by the given regular expression pattern in the given string.
      *
-     * @param string  The string to match against the regular expression.
-     * @param pattern The regular expression pattern.
-     * @return The capture groups from the regular expression pattern match against the string.
+     * @param string    The string to match against the regular expression.
+     * @param pattern   The regular expression pattern.
+     * @return          The capture groups from the regular expression pattern match against the string.
      */
     public static IData[] capture(String string, String pattern) {
+        return capture(string, pattern, false);
+    }
+
+    /**
+     * Returns all the groups captured by the given regular expression pattern in the given string.
+     *
+     * @param string    The string to match against the regular expression.
+     * @param pattern   The regular expression pattern.
+     * @param literal   Whether the pattern is a literal pattern or a regular expression.
+     * @return          The capture groups from the regular expression pattern match against the string.
+     */
+    public static IData[] capture(String string, String pattern, boolean literal) {
+        return capture(string, PatternHelper.compile(pattern, literal));
+    }
+
+    /**
+     * Returns all the groups captured by the given regular expression pattern in the given string.
+     *
+     * @param string    The string to match against the regular expression.
+     * @param pattern   The regular expression pattern.
+     * @return          The capture groups from the regular expression pattern match against the string.
+     */
+    public static IData[] capture(String string, Pattern pattern) {
         if (string == null || pattern == null) return null;
 
         List<IData> captures = new ArrayList<IData>();
-        Pattern regex = Pattern.compile(pattern);
-        Matcher matcher = regex.matcher(string);
+        Matcher matcher = pattern.matcher(string);
 
         while (matcher.find()) {
             int count = matcher.groupCount();
@@ -784,9 +804,9 @@ public final class StringHelper {
     /**
      * Returns true if the given regular expression pattern is found anywhere in the given string.
      *
-     * @param string  The string to match against the regular expression.
-     * @param pattern The regular expression pattern.
-     * @return True if the regular expression pattern was found anywhere in the given string.
+     * @param string    The string to match against the regular expression.
+     * @param pattern   The regular expression pattern.
+     * @return          True if the regular expression pattern was found anywhere in the given string.
      */
     public static boolean find(String string, String pattern) {
         return find(string, pattern, false);
@@ -795,31 +815,32 @@ public final class StringHelper {
     /**
      * /** Returns true if the given pattern is found anywhere in the given string.
      *
-     * @param string  The string to match against the regular expression.
-     * @param pattern The literal of regular expression pattern.
-     * @param literal Whether the pattern is a literal pattern or a regular expression.
-     * @return True if the  pattern was found anywhere in the given string.
+     * @param string    The string to match against the regular expression.
+     * @param pattern   The literal of regular expression pattern.
+     * @param literal   Whether the pattern is a literal pattern or a regular expression.
+     * @return          True if the  pattern was found anywhere in the given string.
      */
     public static boolean find(String string, String pattern, boolean literal) {
-        boolean found = false;
-        if (string != null && pattern != null) {
-            if (literal) {
-                found = string.contains(pattern);
-            } else {
-                Pattern regex = Pattern.compile(pattern);
-                Matcher matcher = regex.matcher(string);
-                found = matcher.find();
-            }
-        }
-        return found;
+        return find(string, PatternHelper.compile(pattern, literal));
+    }
+
+    /**
+     * /** Returns true if the given pattern is found anywhere in the given string.
+     *
+     * @param string    The string to match against the regular expression.
+     * @param pattern   The regular expression pattern.
+     * @return          True if the  pattern was found anywhere in the given string.
+     */
+    public static boolean find(String string, Pattern pattern) {
+        return string != null && pattern != null && pattern.matcher(string).find();
     }
 
     /**
      * Returns true if the given regular expression pattern matches the entirety of the given string.
      *
-     * @param string  The string to match against the regular expression.
-     * @param pattern The regular expression pattern.
-     * @return True if the regular expression matches the entirety of the given string.
+     * @param string    The string to match against the regular expression.
+     * @param pattern   The regular expression pattern.
+     * @return          True if the regular expression matches the entirety of the given string.
      */
     public static boolean match(String string, String pattern) {
         return match(string, pattern, false);
@@ -828,21 +849,24 @@ public final class StringHelper {
     /**
      * Returns true if the pattern matches the entirety of the given string.
      *
-     * @param string  The string to match against the regular expression.
-     * @param pattern The literal or regular expression pattern.
-     * @param literal Whether the pattern is a literal pattern or a regular expression.
-     * @return True if the pattern matches the entirety of the given string.
+     * @param string    The string to match against the regular expression.
+     * @param pattern   The literal or regular expression pattern.
+     * @param literal   Whether the pattern is a literal pattern or a regular expression.
+     * @return          True if the pattern matches the entirety of the given string.
      */
     public static boolean match(String string, String pattern, boolean literal) {
-        boolean match = false;
-        if (string != null && pattern != null) {
-            if (literal) {
-                match = string.equals(pattern);
-            } else {
-                match = string.matches(pattern);
-            }
-        }
-        return match;
+        return match(string, PatternHelper.compile(pattern, literal));
+    }
+
+    /**
+     * Returns true if the pattern matches the entirety of the given string.
+     *
+     * @param string    The string to match against the regular expression.
+     * @param pattern   The regular expression pattern.
+     * @return          True if the pattern matches the entirety of the given string.
+     */
+    public static boolean match(String string, Pattern pattern) {
+        return string != null && pattern != null && pattern.matcher(string).matches();
     }
 
     /**
@@ -865,7 +889,7 @@ public final class StringHelper {
      * @return          The given string with either the first or all occurrences of the given pattern removed.
      */
     public static String remove(String string, String pattern, boolean literal) {
-        return replace(string, pattern, "", literal, false);
+        return remove(string, pattern, literal, false);
     }
 
     /**
@@ -878,7 +902,7 @@ public final class StringHelper {
      * @return          The given string with either the first or all occurrences of the given pattern removed.
      */
     public static String remove(String string, String pattern, boolean literal, boolean firstOnly) {
-        return remove(string, pattern == null ? null : Pattern.compile(literal ? Matcher.quoteReplacement(pattern) : pattern), firstOnly);
+        return remove(string, PatternHelper.compile(pattern, literal), firstOnly);
     }
 
     /**
@@ -903,7 +927,7 @@ public final class StringHelper {
      * @return          The given string with either the first or all occurrences of the given pattern removed.
      */
     public static String[] remove(String[] array, String pattern, boolean literal, boolean firstOnly) {
-        return remove(array, pattern == null ? null : Pattern.compile(literal ? Matcher.quoteReplacement(pattern) : pattern), firstOnly);
+        return remove(array, PatternHelper.compile(pattern, literal), firstOnly);
     }
 
     /**
@@ -967,7 +991,7 @@ public final class StringHelper {
      * @return                   The replaced string.
      */
     public static String replace(String string, String pattern, boolean literalPattern, String replacement, boolean literalReplacement, boolean firstOnly) {
-        return replace(string, pattern == null ? null : Pattern.compile(literalPattern ? Matcher.quoteReplacement(pattern) : pattern), replacement != null && literalReplacement ? Matcher.quoteReplacement(replacement) : replacement, firstOnly);
+        return replace(string, PatternHelper.compile(pattern, literalPattern), ReplacementHelper.quote(replacement, literalReplacement), firstOnly);
     }
 
     /**
@@ -1021,7 +1045,7 @@ public final class StringHelper {
      * @return                   The string array with replaced string elements.
      */
     public static String[] replace(String[] array, String pattern, boolean literalPattern, String replacement, boolean literalReplacement, boolean firstOnly) {
-        return replace(array, pattern == null ? null : Pattern.compile(literalPattern ? Matcher.quoteReplacement(pattern) : pattern), replacement != null && literalReplacement ? Matcher.quoteReplacement(replacement) : replacement, firstOnly);
+        return replace(array, PatternHelper.compile(pattern, literalPattern), ReplacementHelper.quote(replacement, literalReplacement), firstOnly);
     }
 
     /**
@@ -1074,7 +1098,7 @@ public final class StringHelper {
      * @return                   The string table with replaced string elements
      */
     public static String[][] replace(String[][] table, String pattern, boolean literalPattern, String replacement, boolean literalReplacement, boolean firstOnly) {
-        return replace(table, pattern == null ? null : Pattern.compile(literalPattern ? Matcher.quoteReplacement(pattern) : pattern), replacement != null && literalReplacement ? Matcher.quoteReplacement(replacement) : replacement, firstOnly);
+        return replace(table, PatternHelper.compile(pattern, literalPattern), ReplacementHelper.quote(replacement, literalReplacement), firstOnly);
     }
 
     /**
@@ -1102,9 +1126,9 @@ public final class StringHelper {
     /**
      * Splits a string around each match of the given regular expression pattern.
      *
-     * @param string  The string to be split.
-     * @param pattern The regular expression pattern to split around.
-     * @return The array of strings computed by splitting the given string around matches of this pattern.
+     * @param string    The string to be split.
+     * @param pattern   The regular expression pattern to split around.
+     * @return          The array of strings computed by splitting the given string around matches of this pattern.
      */
     public static String[] split(String string, String pattern) {
         return split(string, pattern, false);
@@ -1113,16 +1137,26 @@ public final class StringHelper {
     /**
      * Splits a string around each match of the given pattern.
      *
-     * @param string  The string to be split.
-     * @param pattern The literal or regular expression pattern to split around.
-     * @param literal Whether the pattern is a literal pattern or a regular expression.
-     * @return The array of strings computed by splitting the given string around matches of this pattern.
+     * @param string    The string to be split.
+     * @param pattern   The literal or regular expression pattern to split around.
+     * @param literal   Whether the pattern is a literal pattern or a regular expression.
+     * @return          The array of strings computed by splitting the given string around matches of this pattern.
      */
     public static String[] split(String string, String pattern, boolean literal) {
+        return split(string, PatternHelper.compile(pattern, literal));
+    }
+
+    /**
+     * Splits a string around each match of the given pattern.
+     *
+     * @param string    The string to be split.
+     * @param pattern   The literal or regular expression pattern to split around.
+     * @return          The array of strings computed by splitting the given string around matches of this pattern.
+     */
+    public static String[] split(String string, Pattern pattern) {
         String[] output = null;
         if (string != null && pattern != null) {
-            if (literal) pattern = quote(pattern);
-            output = Pattern.compile(pattern).split(string);
+            output = pattern.split(string);
         } else if (string != null) {
             output = new String[1];
             output[0] = string;
@@ -1228,38 +1262,6 @@ public final class StringHelper {
         }
 
         return output;
-    }
-
-    /**
-     * Returns a literal regular expression pattern for the given string.
-     *
-     * @param string The string to quote.
-     * @return A regular expression pattern which literally matches the given string.
-     */
-    public static String quote(String string) {
-        if (string == null) return null;
-        return Pattern.quote(string);
-    }
-
-    /**
-     * Returns a regular expression pattern that matches any of the values in the given string list.
-     *
-     * @param array The list of strings to be matched.
-     * @return A regular expression which literally matches any of the given strings.
-     */
-    public static String quote(String[] array) {
-        if (array == null) return null;
-
-        int last = array.length - 1;
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < array.length; i++) {
-            if (i == 0) builder.append("(");
-            builder.append(quote(array[i]));
-            if (i < last) builder.append("|");
-            if (i == last) builder.append(")");
-        }
-
-        return builder.toString();
     }
 
     /**

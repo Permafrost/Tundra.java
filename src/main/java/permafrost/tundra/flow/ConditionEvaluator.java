@@ -30,6 +30,7 @@ import com.wm.lang.flow.ExpressionEvaluator;
 import com.wm.lang.flow.MalformedExpressionException;
 import org.w3c.dom.Node;
 import permafrost.tundra.data.IDataHelper;
+import permafrost.tundra.util.regex.ReplacementHelper;
 import permafrost.tundra.xml.dom.NodeHelper;
 import permafrost.tundra.xml.dom.Nodes;
 import permafrost.tundra.xml.xpath.XPathHelper;
@@ -134,9 +135,9 @@ public class ConditionEvaluator {
                             try {
                                 Nodes nodes = XPathHelper.get(node, expression);
                                 if (nodes != null && nodes.size() > 0) {
-                                    matcher.appendReplacement(buffer, Matcher.quoteReplacement("\"" + NodeHelper.getValue(nodes.get(0)) + "\""));
+                                    matcher.appendReplacement(buffer, ReplacementHelper.quote("\"" + NodeHelper.getValue(nodes.get(0)) + "\""));
                                 } else {
-                                    matcher.appendReplacement(buffer, Matcher.quoteReplacement("$null"));
+                                    matcher.appendReplacement(buffer, ReplacementHelper.quote("$null"));
                                 }
                             } catch (XPathExpressionException ex) {
                                 throw new RuntimeException(ex);

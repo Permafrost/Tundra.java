@@ -34,6 +34,7 @@ import com.wm.util.Table;
 import com.wm.util.coder.IDataCodable;
 import com.wm.util.coder.ValuesCodable;
 import permafrost.tundra.data.IDataHelper;
+import permafrost.tundra.util.regex.ReplacementHelper;
 import java.util.EnumSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -150,11 +151,11 @@ public final class SubstitutionHelper {
             }
 
             if (value != null) {
-                matcher.appendReplacement(output, Matcher.quoteReplacement(value));
+                matcher.appendReplacement(output, ReplacementHelper.quote(value));
             } else if (defaultValue != null) {
-                matcher.appendReplacement(output, Matcher.quoteReplacement(defaultValue));
+                matcher.appendReplacement(output, ReplacementHelper.quote(defaultValue));
             } else {
-                matcher.appendReplacement(output, Matcher.quoteReplacement(matcher.group(0)));
+                matcher.appendReplacement(output, ReplacementHelper.quote(matcher.group(0)));
             }
         }
 

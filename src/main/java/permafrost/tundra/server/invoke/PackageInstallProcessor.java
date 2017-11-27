@@ -13,6 +13,7 @@ import com.wm.lang.ns.NSName;
 import com.wm.util.ServerException;
 import permafrost.tundra.data.IDataHelper;
 import permafrost.tundra.lang.IterableEnumeration;
+import permafrost.tundra.util.regex.PatternHelper;
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
@@ -106,7 +107,7 @@ public class PackageInstallProcessor extends AbstractInvokeChainProcessor {
      * @param installServicePattern     The pattern used to find install services in a package.
      */
     public void setInstallServicePattern(String installServicePattern) {
-        setInstallServicePattern(installServicePattern == null ? null : Pattern.compile(installServicePattern));
+        setInstallServicePattern(PatternHelper.compile(installServicePattern));
     }
 
     /**
@@ -124,7 +125,7 @@ public class PackageInstallProcessor extends AbstractInvokeChainProcessor {
      * @param uninstallServicePattern   The pattern used to find uninstall services in a package.
      */
     public void setUninstallServicePattern(String uninstallServicePattern) {
-        setUninstallServicePattern(uninstallServicePattern == null ? null : Pattern.compile(uninstallServicePattern));
+        setUninstallServicePattern(PatternHelper.compile(uninstallServicePattern));
     }
 
     /**

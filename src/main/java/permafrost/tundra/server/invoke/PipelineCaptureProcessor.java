@@ -35,6 +35,7 @@ import permafrost.tundra.data.IDataMap;
 import permafrost.tundra.io.FileHelper;
 import permafrost.tundra.lang.BooleanHelper;
 import permafrost.tundra.time.DateTimeHelper;
+import permafrost.tundra.util.regex.PatternHelper;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -275,7 +276,7 @@ public class PipelineCaptureProcessor extends AbstractInvokeChainProcessor imple
         String pattern = (String)map.get("pattern");
         String directory = (String)map.get("directory");
 
-        setServicePattern(Pattern.compile(pattern));
+        setServicePattern(PatternHelper.compile(pattern));
         setDirectory(FileHelper.construct(directory));
     }
 

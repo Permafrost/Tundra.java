@@ -25,6 +25,7 @@
 package permafrost.tundra.io.filter;
 
 import permafrost.tundra.io.FileHelper;
+import permafrost.tundra.util.regex.PatternHelper;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.regex.Pattern;
@@ -41,7 +42,7 @@ public class RegularExpressionFilenameFilter implements FilenameFilter {
      * @param pattern A regular expression pattern to be used to filter files.
      */
     public RegularExpressionFilenameFilter(String pattern) {
-        this(pattern == null ? null : Pattern.compile(pattern));
+        this(PatternHelper.compile(pattern));
     }
 
     /**

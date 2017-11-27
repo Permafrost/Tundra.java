@@ -80,25 +80,6 @@ public class StringHelperTest {
     }
 
     @Test
-    public void testQuoteWithNull() throws Exception {
-        assertEquals(null, StringHelper.quote((String)null));
-        assertEquals(null, StringHelper.quote((String[])null));
-    }
-
-    @Test
-    public void testQuoteWithReservedCharacters() throws Exception {
-        assertTrue(StringHelper.match("$1.00", StringHelper.quote("$1.00")));
-    }
-
-    @Test
-    public void testQuoteWithArray() throws Exception {
-        String[] strings = { "$1.00", "$2.00" };
-        assertTrue(StringHelper.match("$1.00", StringHelper.quote(strings)));
-        assertTrue(StringHelper.match("$2.00", StringHelper.quote(strings)));
-        assertTrue(!StringHelper.match("$3.00", StringHelper.quote(strings)));
-    }
-
-    @Test
     public void testLinesWithNull() throws Exception {
         assertArrayEquals(null, StringHelper.lines(null));
     }
@@ -115,9 +96,9 @@ public class StringHelperTest {
 
     @Test
     public void testSplitWithNull() throws Exception {
-        assertArrayEquals(null, StringHelper.split(null, null));
+        assertArrayEquals(null, StringHelper.split(null, (String)null));
         assertArrayEquals(null, StringHelper.split(null, "a"));
-        assertArrayEquals(new String[] { "a" }, StringHelper.split("a", null));
+        assertArrayEquals(new String[] { "a" }, StringHelper.split("a", (String)null));
     }
 
     @Test
