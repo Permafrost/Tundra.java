@@ -25,6 +25,7 @@ It is also dependent on the following open source libraries, which
 are required to be included on the project's classpath:
 
 * `jakarta-oro-2.0.8.jar` - http://archive.apache.org/dist/jakarta/oro/
+* `log4j-1.2.17.jar` - https://logging.apache.org/log4j/1.2/
 * `unbescape-1.1.3.RELEASE.jar` - http://www.unbescape.org/
 
 [JUnit] 4 is required for the unit tests in the project. The
