@@ -27,12 +27,10 @@ package permafrost.tundra.lang;
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
-import com.wm.data.IDataPortable;
 import com.wm.data.IDataUtil;
-import com.wm.util.Table;
-import com.wm.util.coder.IDataCodable;
-import com.wm.util.coder.ValuesCodable;
 import permafrost.tundra.data.IDataHelper;
+import permafrost.tundra.data.transform.TransformerMode;
+import permafrost.tundra.data.transform.Truncator;
 import permafrost.tundra.io.InputOutputHelper;
 import permafrost.tundra.io.InputStreamHelper;
 import permafrost.tundra.io.ReaderHelper;
@@ -470,72 +468,6 @@ public final class StringHelper {
         String output[][] = new String[input.length][];
 
         for(int i = 0; i < input.length; i++) {
-            output[i] = truncate(input[i], length, ellipsis);
-        }
-
-        return output;
-    }
-
-    /**
-     * Recursively truncates all strings in the given IData document to the given length. If a string's length is less
-     * than or equal to the desired length it is returned unmodified, otherwise it is truncated to the desired length.
-     *
-     * @param input     The IData document containing strings to be truncated.
-     * @param length    The length to truncate the strings to.
-     * @param ellipsis  If true, the returned strings are suffixed with an ellipsis character when truncated.
-     * @return          A new IData document containing the truncated strings.
-     */
-    public static IData truncate(IData input, int length, boolean ellipsis) {
-        if (input == null) return null;
-
-        IData output = IDataFactory.create();
-
-        IDataCursor inputCursor = input.getCursor();
-        IDataCursor outputCursor = output.getCursor();
-
-        try {
-            while(inputCursor.next()) {
-                String key = inputCursor.getKey();
-                Object value = inputCursor.getValue();
-
-                if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
-                    value = truncate(IDataHelper.toIDataArray(value), length, ellipsis);
-                } else if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
-                    value = truncate(IDataHelper.toIData(value), length, ellipsis);
-                } else if (value instanceof String) {
-                    value = truncate((String)value, length, ellipsis);
-                } else if (value instanceof String[]) {
-                    value = truncate((String[])value, length, ellipsis);
-                } else if (value instanceof String[][]) {
-                    value = truncate((String[][])value, length, ellipsis);
-                }
-
-                outputCursor.insertAfter(key, value);
-            }
-        } finally {
-            inputCursor.destroy();
-            outputCursor.destroy();
-        }
-
-        return output;
-    }
-
-    /**
-     * Recursively truncates all strings in the given IData[] document list to the given length. If a string's length
-     * is less than or equal to the desired length it is returned unmodified, otherwise it is truncated to the desired
-     * length.
-     *
-     * @param input     The IData[] document list containing strings to be truncated.
-     * @param length    The length to truncate the strings to.
-     * @param ellipsis  If true, the returned strings are suffixed with an ellipsis character when truncated.
-     * @return          A new IData[] document list containing the truncated strings.
-     */
-    public static IData[] truncate(IData[] input, int length, boolean ellipsis) {
-        if (input == null) return null;
-
-        IData[] output = new IData[input.length];
-
-        for (int i = 0; i < input.length; i++) {
             output[i] = truncate(input[i], length, ellipsis);
         }
 

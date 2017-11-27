@@ -50,6 +50,7 @@ import permafrost.tundra.data.transform.TransformerMode;
 import permafrost.tundra.data.transform.Squeezer;
 import permafrost.tundra.data.transform.Transformer;
 import permafrost.tundra.data.transform.Trimmer;
+import permafrost.tundra.data.transform.Truncator;
 import permafrost.tundra.data.transform.Unprefixer;
 import permafrost.tundra.data.transform.Unsuffixer;
 import permafrost.tundra.data.transform.Uppercaser;
@@ -1976,6 +1977,33 @@ public final class IDataHelper {
      */
     public static IData[] stringify(IData[] array, boolean recurse) {
         return transform(array, new Stringifier(recurse));
+    }
+
+    /**
+     * Recursively truncates all strings in the given IData document to the given length. If a string's length is less
+     * than or equal to the desired length it is returned unmodified, otherwise it is truncated to the desired length.
+     *
+     * @param input     The IData document containing strings to be truncated.
+     * @param length    The length to truncate the strings to.
+     * @param ellipsis  If true, the returned strings are suffixed with an ellipsis character when truncated.
+     * @return          A new IData document containing the truncated strings.
+     */
+    public static IData truncate(IData input, int length, boolean ellipsis) {
+        return IDataHelper.transform(input, new Truncator(TransformerMode.VALUES, length, ellipsis, true));
+    }
+
+    /**
+     * Recursively truncates all strings in the given IData[] document list to the given length. If a string's length
+     * is less than or equal to the desired length it is returned unmodified, otherwise it is truncated to the desired
+     * length.
+     *
+     * @param input     The IData[] document list containing strings to be truncated.
+     * @param length    The length to truncate the strings to.
+     * @param ellipsis  If true, the returned strings are suffixed with an ellipsis character when truncated.
+     * @return          A new IData[] document list containing the truncated strings.
+     */
+    public static IData[] truncate(IData[] input, int length, boolean ellipsis) {
+        return IDataHelper.transform(input, new Truncator(TransformerMode.VALUES, length, ellipsis, true));
     }
 
     /**
