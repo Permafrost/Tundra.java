@@ -361,7 +361,6 @@ public final class StringHelper {
     public static String slice(String input, int index, int length) {
         if (input == null || input.equals("")) return input;
 
-        String output = "";
         int inputLength = input.length(), endIndex = 0;
 
         // support reverse length
@@ -380,11 +379,15 @@ public final class StringHelper {
             endIndex = index + length;
         }
 
+        String output;
+
         if (index < inputLength && endIndex > 0) {
             if (index < 0) index = 0;
             if (endIndex > inputLength) endIndex = inputLength;
 
             output = input.substring(index, endIndex);
+        } else {
+            output = "";
         }
 
         return output;
@@ -412,7 +415,7 @@ public final class StringHelper {
      * @return          The truncated string.
      */
     public static String truncate(String input, int length, boolean ellipsis) {
-        if (input == null) return null;
+        if (input == null || input.equals("")) return input;
 
         if (input.length() > Math.abs(length)) {
             if (ellipsis && length != 0) {
