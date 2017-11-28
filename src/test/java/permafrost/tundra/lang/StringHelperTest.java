@@ -57,8 +57,26 @@ public class StringHelperTest {
 
     @Test
     public void testSqueezeWithLeadingTrailingAndInternalWhitespace() throws Exception {
-        assertEquals("a b c", StringHelper.squeeze("  a   b  c  "));
-        assertEquals("a   b  c", StringHelper.squeeze("  a   b  c  ", false));
+        assertEquals("a   b  c", StringHelper.squeeze("  a   b  c  "));
+    }
+    @Test
+    public void testCondenseWithNull() throws Exception {
+        assertEquals(null, StringHelper.condense((String)null));
+    }
+
+    @Test
+    public void testCondenseWithEmptyString() throws Exception {
+        assertEquals("", StringHelper.condense(""));
+    }
+
+    @Test
+    public void testCondenseWithWhitespace() throws Exception {
+        assertEquals("", StringHelper.condense("   "));
+    }
+
+    @Test
+    public void testCondenseWithLeadingTrailingAndInternalWhitespace() throws Exception {
+        assertEquals("a b c", StringHelper.condense("  a   b  c  "));
     }
 
     @Test

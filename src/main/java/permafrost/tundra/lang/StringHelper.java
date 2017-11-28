@@ -58,6 +58,11 @@ import java.util.regex.Pattern;
  */
 public final class StringHelper {
     /**
+     * The pattern used to find runs of one or more whitespace characters in a string.
+     */
+    private static final Pattern WHITESPACE_PATTERN = Pattern.compile("\\s+");
+
+    /**
      * Disallow instantiation of this class.
      */
     private StringHelper() {}
@@ -995,6 +1000,18 @@ public final class StringHelper {
     }
 
     /**
+     * Replaces all occurrences of the given regular expression in the given string with the given replacement.
+     *
+     * @param string      The string to be replaced.
+     * @param pattern     The regular expression pattern.
+     * @param replacement The replacement string.
+     * @return            The replaced string.
+     */
+    public static String replace(String string, Pattern pattern, String replacement) {
+        return replace(string, pattern, replacement, false);
+    }
+
+    /**
      * Replaces either the first or all occurrences of the given regular expression in the given string with the given
      * replacement.
      *
@@ -1175,90 +1192,95 @@ public final class StringHelper {
     }
 
     /**
-     * Trims the given string of leading and trailing whitespace, and replaces runs of whitespace characters with a
-     * single space character.
+     * Replaces runs of whitespace characters with a single space character, then trims leading and trailing whitespace.
      *
-     * @param string The string to be squeezed.
-     * @return The squeezed string.
+     * @param string   The string to be condensed.
+     * @return         The condensed string.
      */
-    public static String squeeze(String string) {
-        return squeeze(string, true);
-    }
-
-    /**
-     * Trims the given string of leading and trailing whitespace, and optionally replaces runs of whitespace characters
-     * with a single space character.
-     *
-     * @param string   The string to be squeezed.
-     * @param internal Whether runs of whitespace characters should be replaced with a single space character.
-     * @return The squeezed string.
-     */
-    public static String squeeze(String string, boolean internal) {
+    public static String condense(String string) {
         if (string == null) return null;
-
-        string = string.trim();
-        if (internal) string = replace(string, "\\s+", " ", true);
-
-        return string.equals("") ? null : string;
+        return replace(string, WHITESPACE_PATTERN, " ").trim();
     }
 
     /**
-     * Trims the given string list of leading and trailing whitespace, and replaces runs of whitespace characters with a
-     * single space character.
+     * Replaces runs of whitespace characters with a single space character, then trims leading and trailing whitespace.
      *
-     * @param array The string list to be squeezed.
-     * @return      The squeezed string list.
+     * @param array    The string array to be condensed.
+     * @return         The condensed string array.
      */
-    public static String[] squeeze(String[] array) {
-        return squeeze(array, true);
-    }
-
-    /**
-     * Trims the given string of leading and trailing whitespace, and optionally replaces runs of whitespace characters
-     * with a single space character.
-     *
-     * @param array     The string list to be squeezed.
-     * @param internal  Whether runs of whitespace characters should be replaced with a single space character.
-     * @return          The squeezed string list.
-     */
-    public static String[] squeeze(String[] array, boolean internal) {
-        if (array == null) return null;
+    public static String[] condense(String[] array) {
+        if (array == null || array.length == 0) return array;
 
         String[] output = new String[array.length];
 
         for (int i = 0; i < array.length; i++) {
-            output[i] = squeeze(array[i], internal);
+            output[i] = condense(array[i]);
         }
 
         return output;
     }
 
     /**
-     * Trims the given string table of leading and trailing whitespace, and replaces runs of whitespace characters with
-     * a single space character.
+     * Replaces runs of whitespace characters with a single space character, then trims leading and trailing whitespace.
      *
-     * @param table The string table to be squeezed.
-     * @return      The squeezed string table.
+     * @param table    The string array to be condensed.
+     * @return         The condensed string array.
      */
-    public static String[][] squeeze(String[][] table) {
-        return squeeze(table, true);
+    public static String[][] condense(String[][] table) {
+        if (table == null || table.length == 0) return table;
+
+        String[][] output = new String[table.length][];
+
+        for (int i = 0; i < table.length; i++) {
+            output[i] = condense(table[i]);
+        }
+
+        return output;
     }
 
     /**
-     * Trims the given string table of leading and trailing whitespace, and optionally replaces runs of whitespace
-     * characters with a single space character.
+     * Trims the given string of leading and trailing whitespace, and converts an empty string to null.
+     *
+     * @param string    The string to be squeezed.
+     * @return          The squeezed string.
+     */
+    public static String squeeze(String string) {
+        if (string == null) return null;
+        string = string.trim();
+        return string.equals("") ? null : string;
+    }
+
+    /**
+     * Trims the given string of leading and trailing whitespace, and converts empty strings to null.
+     *
+     * @param array     The string list to be squeezed.
+     * @return          The squeezed string list.
+     */
+    public static String[] squeeze(String[] array) {
+        if (array == null) return null;
+
+        String[] output = new String[array.length];
+
+        for (int i = 0; i < array.length; i++) {
+            output[i] = squeeze(array[i]);
+        }
+
+        return output;
+    }
+
+    /**
+     * Trims the given string table of leading and trailing whitespace, and converts empty strings to null.
      *
      * @param table     The string table to be squeezed.
-     * @param internal  Whether runs of whitespace characters should be replaced with a single space character.
      * @return          The squeezed string table.
      */
-    public static String[][] squeeze(String[][] table, boolean internal) {
+    public static String[][] squeeze(String[][] table) {
         if (table == null) return null;
 
         String[][] output = new String[table.length][];
 
         for (int i = 0; i < table.length; i++) {
-            output[i] = squeeze(table[i], internal);
+            output[i] = squeeze(table[i]);
         }
 
         return output;

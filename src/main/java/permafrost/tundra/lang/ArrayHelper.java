@@ -1157,7 +1157,7 @@ public final class ArrayHelper {
 
         for (T item : array) {
             if (item instanceof String) {
-                item = (T)StringHelper.squeeze((String)item, false);
+                item = (T)StringHelper.squeeze((String)item);
             }
 
             if (item != null) {
