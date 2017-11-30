@@ -90,7 +90,7 @@ public class PipelineCaptureProcessor extends AbstractInvokeChainProcessor imple
     /**
      * The datetime format used in the saved pipeline file names.
      */
-    protected static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+    protected static final String DATE_PATTERN = "yyyy-MM-dd'T'HH.mm.ss.SSS";
 
     /**
      * Creates a new pipeline capture processor using default settings.
@@ -215,7 +215,7 @@ public class PipelineCaptureProcessor extends AbstractInvokeChainProcessor imple
 
         if (matches) {
             sanitizedServiceName = sanitize(serviceName);
-            startDateTime = DATE_FORMATTER.format(new Date());
+            startDateTime = new SimpleDateFormat(DATE_PATTERN).format(new Date());
             id = count.incrementAndGet();
         }
 
