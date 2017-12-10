@@ -661,22 +661,96 @@ public final class StringHelper {
      */
     public static String concatenate(String separator, boolean includeNulls, String ...strings) {
         if (strings == null || strings.length == 0) return includeNulls ? null : "";
+        return build(null, separator, includeNulls, strings).toString();
+    }
 
-        StringBuilder builder = new StringBuilder();
-        boolean separatorRequired = false;
+    /**
+     * Appends the strings in the given IData to the given StringBuilder.
+     *
+     * @param builder       The StringBuilder to append to. If null, a new StringBuilder is created.
+     * @param operands      An IData object containing strings.
+     * @return              The StringBuilder appended to.
+     */
+    public static StringBuilder build(StringBuilder builder, IData operands) {
+        return build(builder, operands, null);
+    }
 
-        for (String string : strings) {
-            boolean includeItem = includeNulls || string != null;
+    /**
+     * Appends the strings in the given IData to the given StringBuilder.
+     *
+     * @param builder       The StringBuilder to append to. If null, a new StringBuilder is created.
+     * @param operands      An IData object containing strings.
+     * @param separator     Optional separator to be used between each string.
+     * @return              The StringBuilder appended to.
+     */
+    public static StringBuilder build(StringBuilder builder, IData operands, String separator) {
+        return build(builder, operands, separator, false);
+    }
 
-            if (separator != null && separatorRequired && includeItem) builder.append(separator);
+    /**
+     * Appends the strings in the given IData to the given StringBuilder.
+     *
+     * @param builder       The StringBuilder to append to. If null, a new StringBuilder is created.
+     * @param operands      An IData object containing strings.
+     * @param separator     Optional separator to be used between each string.
+     * @param includeNulls  Whether nulls should be appended.
+     * @return              The StringBuilder appended to.
+     */
+    public static StringBuilder build(StringBuilder builder, IData operands, String separator, boolean includeNulls) {
+        return build(builder, separator, includeNulls, IDataHelper.getLeaves(operands, String.class));
+    }
 
-            if (includeItem) {
-                builder.append(string);
-                separatorRequired = true;
+    /**
+     * Appends the given strings to the given StringBuilder.
+     *
+     * @param builder       The StringBuilder to append to. If null, a new StringBuilder is created.
+     * @param strings       The strings to be appended.
+     * @return              The StringBuilder appended to.
+     */
+    public static StringBuilder build(StringBuilder builder, String ...strings) {
+        return build(builder, null, strings);
+    }
+
+    /**
+     * Appends the given strings to the given StringBuilder.
+     *
+     * @param builder       The StringBuilder to append to. If null, a new StringBuilder is created.
+     * @param separator     Optional separator to be used between each string.
+     * @param strings       The strings to be appended.
+     * @return              The StringBuilder appended to.
+     */
+    public static StringBuilder build(StringBuilder builder, String separator, String ...strings) {
+        return build(builder, separator, false, strings);
+    }
+
+    /**
+     * Appends the given strings to the given StringBuilder.
+     *
+     * @param builder       The StringBuilder to append to. If null, a new StringBuilder is created.
+     * @param separator     Optional separator to be used between each string.
+     * @param includeNulls  Whether nulls should be appended.
+     * @param strings       The strings to be appended.
+     * @return              The StringBuilder appended to.
+     */
+    public static StringBuilder build(StringBuilder builder, String separator, boolean includeNulls, String ...strings) {
+        if (builder == null) builder = new StringBuilder();
+
+        if (strings != null && strings.length > 0) {
+            boolean separatorRequired = false;
+
+            for (String string : strings) {
+                boolean includeItem = includeNulls || string != null;
+
+                if (separator != null && separatorRequired && includeItem) builder.append(separator);
+
+                if (includeItem) {
+                    builder.append(string);
+                    separatorRequired = true;
+                }
             }
         }
 
-        return builder.toString();
+        return builder;
     }
 
     /**
