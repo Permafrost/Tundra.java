@@ -30,23 +30,23 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- * Wraps a given ConcurrentMap object in a ConcurrentMap and IData compatible interface.
+ * Wraps a ConcurrentMap object in a ConcurrentMap and IData compatible interface.
  *
  * @param <K>   The class of keys held by this Map.
  * @param <V>   The class of values held by this Map.
  */
-public abstract class ConcurrentMapEnvelope<K, V> extends AbstractIData implements ConcurrentMap<K, V> {
+public abstract class AbstractConcurrentMap<K, V> extends AbstractIData implements ConcurrentMap<K, V> {
     /**
      * The wrapped map object.
      */
     protected ConcurrentMap<K, V> map;
 
     /**
-     * Constructs a new ConcurrentMapEnvelope.
+     * Constructs a new AbstractConcurrentMap.
      *
      * @param map   The map to be wrapped.
      */
-    public ConcurrentMapEnvelope(ConcurrentMap<K, V> map) {
+    public AbstractConcurrentMap(ConcurrentMap<K, V> map) {
         if (map == null) throw new NullPointerException("map must not be null");
         this.map = map;
     }
