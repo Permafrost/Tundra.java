@@ -212,6 +212,17 @@ public final class DateTimeHelper {
     /**
      * Returns the duration of time between two given Calendar objects.
      *
+     * @param startDate The starting instant in time.
+     * @param endDate   The ending instant in time.
+     * @return          The duration of time from the start instant to the end instant.
+     */
+    public static Duration duration(Date startDate, Date endDate) {
+        return duration(toCalendar(startDate), toCalendar(endDate));
+    }
+
+    /**
+     * Returns the duration of time between two given Calendar objects.
+     *
      * @param startCalendar The starting instant in time.
      * @param endCalendar   The ending instant in time.
      * @return              The duration of time from the start instant to the end instant.
