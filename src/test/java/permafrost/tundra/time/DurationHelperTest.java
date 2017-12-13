@@ -25,6 +25,7 @@
 package permafrost.tundra.time;
 
 import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 import java.math.BigDecimal;
 import javax.xml.datatype.DatatypeConstants;

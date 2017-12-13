@@ -29,6 +29,8 @@ import permafrost.tundra.data.IDataHelper;
 import permafrost.tundra.data.transform.time.DurationFormatter;
 import permafrost.tundra.lang.ArrayHelper;
 import permafrost.tundra.math.BigDecimalHelper;
+import permafrost.tundra.math.BigIntegerHelper;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
@@ -825,13 +827,75 @@ public final class DurationHelper {
                 output = toWeeks(input, instant).toString();
                 break;
             case XML:
-                output = input.toString();
+                output = toString(input);
                 break;
             default:
                 throw new IllegalArgumentException("Unsupported duration pattern: " + pattern);
         }
 
         return output;
+    }
+
+    /**
+     * Returns a XML duration string representing the given Duration object.
+     *
+     * @param duration The duration to convert to an XML duration string.
+     * @return         An XML duration string representing the given Duration object.
+     */
+    private static String toString(Duration duration) {
+        BigInteger years = BigIntegerHelper.normalize(duration.getField(DatatypeConstants.YEARS));
+        if (years == null) years = BigInteger.ZERO;
+
+        BigInteger months = BigIntegerHelper.normalize(duration.getField(DatatypeConstants.MONTHS));
+        if (months == null) months = BigInteger.ZERO;
+
+        BigInteger days = BigIntegerHelper.normalize(duration.getField(DatatypeConstants.DAYS));
+        if (days == null) days = BigInteger.ZERO;
+
+        BigInteger hours = BigIntegerHelper.normalize(duration.getField(DatatypeConstants.HOURS));
+        if (hours == null) hours = BigInteger.ZERO;
+
+        BigInteger minutes = BigIntegerHelper.normalize(duration.getField(DatatypeConstants.MINUTES));
+        if (minutes == null) minutes = BigInteger.ZERO;
+
+        BigDecimal seconds = BigDecimalHelper.normalize(duration.getField(DatatypeConstants.SECONDS));
+        if (seconds == null) seconds = BigDecimal.ZERO;
+
+        StringBuilder builder = new StringBuilder();
+        if (duration.getSign() < 0) {
+            builder.append('-');
+        }
+        builder.append('P');
+
+        boolean hasDate = false;
+
+        if (!years.equals(BigInteger.ZERO) || !months.equals(BigInteger.ZERO) || !days.equals(BigInteger.ZERO)) {
+            if (!years.equals(BigInteger.ZERO)) {
+                builder.append(years).append('Y');
+            }
+            if (!months.equals(BigInteger.ZERO)) {
+                builder.append(months).append('M');
+            }
+            if (!days.equals(BigInteger.ZERO)) {
+                builder.append(days).append('D');
+            }
+            hasDate = true;
+        }
+
+        if (!hasDate || !hours.equals(BigInteger.ZERO) || !minutes.equals(BigInteger.ZERO) || !seconds.equals(BigDecimal.ZERO)) {
+            builder.append('T');
+            if (!hours.equals(BigInteger.ZERO)) {
+                builder.append(hours).append('H');
+            }
+            if (!minutes.equals(BigInteger.ZERO)) {
+                builder.append(minutes).append('M');
+            }
+            if (!seconds.equals(BigDecimal.ZERO) || (!hasDate && hours.equals(BigInteger.ZERO) && minutes.equals(BigInteger.ZERO))) {
+                builder.append(seconds).append('S');
+            }
+        }
+
+        return builder.toString();
     }
 
     /**
@@ -856,8 +920,12 @@ public final class DurationHelper {
         BigDecimal sign = BigDecimal.valueOf(duration.getSign());
 
         BigDecimal years = BigDecimalHelper.normalize(duration.getField(DatatypeConstants.YEARS));
-        BigDecimal months = BigDecimalHelper.normalize(duration.getField(DatatypeConstants.MONTHS));
+        if (years == null) years = BigDecimal.ZERO;
 
+        BigDecimal months = BigDecimalHelper.normalize(duration.getField(DatatypeConstants.MONTHS));
+        if (months == null) months = BigDecimal.ZERO;
+
+        // if the duration contains indeterminate components, i.e. years or months, then normalize it
         if (!years.equals(BigDecimal.ZERO) || !months.equals(BigDecimal.ZERO)) duration = duration.normalizeWith(instant);
 
         BigDecimal days = BigDecimalHelper.normalize(duration.getField(DatatypeConstants.DAYS));
