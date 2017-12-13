@@ -104,6 +104,12 @@ public class DurationHelperTest {
     }
 
     @Test
+    public void testFormatFractionalWeek() throws Exception {
+        assertEquals("P3DT12H", DurationHelper.format("0.5", DurationPattern.WEEKS, DurationPattern.XML));
+        assertEquals("P10DT12H", DurationHelper.format("1.5", DurationPattern.WEEKS, DurationPattern.XML));
+    }
+
+    @Test
     public void testParseFractionalMilliseconds() throws Exception {
         BigDecimal milliseconds = new BigDecimal("987.654321");
         Duration duration = DurationHelper.parse(milliseconds.toString(), DurationPattern.MILLISECONDS);

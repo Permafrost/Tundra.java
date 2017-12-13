@@ -803,6 +803,7 @@ public final class DurationHelper {
 
         String output;
 
+        // TODO: support MONTHS and YEARS as output types using the given instant for normalization.
         switch (pattern) {
             case NANOSECONDS:
                 output = toNanoseconds(input, instant).toString();
@@ -826,7 +827,7 @@ public final class DurationHelper {
                 output = toWeeks(input, instant).toString();
                 break;
             case XML:
-                output = toString(input);
+                output = toISO8601(input);
                 break;
             default:
                 throw new IllegalArgumentException("Unsupported duration pattern: " + pattern);
@@ -841,7 +842,7 @@ public final class DurationHelper {
      * @param duration The duration to convert to an XML duration string.
      * @return         An XML duration string representing the given Duration object.
      */
-    private static String toString(Duration duration) {
+    private static String toISO8601(Duration duration) {
         BigInteger years = BigIntegerHelper.normalize(duration.getField(DatatypeConstants.YEARS));
         if (years == null) years = BigInteger.ZERO;
 
@@ -858,7 +859,11 @@ public final class DurationHelper {
         if (minutes == null) minutes = BigInteger.ZERO;
 
         BigDecimal seconds = BigDecimalHelper.normalize(duration.getField(DatatypeConstants.SECONDS));
-        if (seconds == null) seconds = BigDecimal.ZERO;
+        if (seconds == null) {
+            seconds = BigDecimal.ZERO;
+        } else {
+            seconds = seconds.stripTrailingZeros();
+        }
 
         StringBuilder builder = new StringBuilder();
         if (duration.getSign() < 0) {
@@ -866,31 +871,36 @@ public final class DurationHelper {
         }
         builder.append('P');
 
-        boolean hasDate = false;
+        boolean isYearsZero = years.equals(BigInteger.ZERO),
+                isMonthsZero = months.equals(BigInteger.ZERO), isDaysZero = days.equals(BigInteger.ZERO),
+                isHoursZero = hours.equals(BigInteger.ZERO), isMinutesZero = minutes.equals(BigInteger.ZERO),
+                isSecondsZero = BigDecimalHelper.isZero(seconds), hasDate = (!isYearsZero || !isMonthsZero || !isDaysZero);
 
-        if (!years.equals(BigInteger.ZERO) || !months.equals(BigInteger.ZERO) || !days.equals(BigInteger.ZERO)) {
-            if (!years.equals(BigInteger.ZERO)) {
-                builder.append(years).append('Y');
-            }
-            if (!months.equals(BigInteger.ZERO)) {
-                builder.append(months).append('M');
-            }
-            if (!days.equals(BigInteger.ZERO)) {
-                builder.append(days).append('D');
-            }
-            hasDate = true;
+        if (!isYearsZero) {
+            builder.append(years).append('Y');
+        }
+        if (!isMonthsZero) {
+            builder.append(months).append('M');
+        }
+        if (!isDaysZero) {
+            builder.append(days).append('D');
         }
 
-        if (!hasDate || !hours.equals(BigInteger.ZERO) || !minutes.equals(BigInteger.ZERO) || !seconds.equals(BigDecimal.ZERO)) {
+        if (!hasDate || !isHoursZero || !isMinutesZero || !isSecondsZero) {
             builder.append('T');
-            if (!hours.equals(BigInteger.ZERO)) {
+            if (!isHoursZero) {
                 builder.append(hours).append('H');
             }
-            if (!minutes.equals(BigInteger.ZERO)) {
+            if (!isMinutesZero) {
                 builder.append(minutes).append('M');
             }
-            if (!seconds.equals(BigDecimal.ZERO) || (!hasDate && hours.equals(BigInteger.ZERO) && minutes.equals(BigInteger.ZERO))) {
-                builder.append(seconds.stripTrailingZeros()).append('S');
+            if (!isSecondsZero || (!hasDate && isHoursZero && isMinutesZero)) {
+                if (isSecondsZero) {
+                    builder.append(0);
+                } else {
+                    builder.append(seconds);
+                }
+                builder.append('S');
             }
         }
 
@@ -925,7 +935,7 @@ public final class DurationHelper {
         if (months == null) months = BigDecimal.ZERO;
 
         // if the duration contains indeterminate components, i.e. years or months, then normalize it
-        if (!years.equals(BigDecimal.ZERO) || !months.equals(BigDecimal.ZERO)) duration = duration.normalizeWith(instant);
+        if (!BigDecimalHelper.isZero(years) || !BigDecimalHelper.isZero(months)) duration = duration.normalizeWith(instant);
 
         BigDecimal days = BigDecimalHelper.normalize(duration.getField(DatatypeConstants.DAYS));
         if (days == null) days = BigDecimal.ZERO;
