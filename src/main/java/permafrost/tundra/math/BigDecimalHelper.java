@@ -864,4 +864,33 @@ public final class BigDecimalHelper {
         }
         return valid;
     }
+
+    /**
+     * Returns true if all given decimals are equal, ignoring scale.
+     *
+     * @param decimals  The decimals to compare.
+     * @return          True if all given decimals are equal, ignoring scale.
+     */
+    public static boolean equals(BigDecimal... decimals) {
+        if (decimals == null || decimals.length <= 1) return true;
+
+        boolean result = false;
+
+        for (int i = 0; i < decimals.length - 1; i++) {
+            result = decimals[i].compareTo(decimals[i + 1]) == 0;
+            if (!result) break;
+        }
+
+        return result;
+    }
+
+    /**
+     * Returns true if the given decimal is equal to zero, ignoring scale.
+     *
+     * @param decimal   The decimal to compare to zero.
+     * @return          True if the given decimal is equal to zero, ignoring scale.
+     */
+    public static boolean isZero(BigDecimal decimal) {
+        return equals(decimal, BigDecimal.ZERO);
+    }
 }
