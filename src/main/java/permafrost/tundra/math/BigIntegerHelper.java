@@ -304,6 +304,26 @@ public final class BigIntegerHelper {
     }
 
     /**
+     * Adds the given operands to each item in the given list.
+     *
+     * @param list      The list of items to add the operands to.
+     * @param operands  The integer numbers to be added.
+     * @return          A new list where each item is equal to its respective given item plus the given operands.
+     */
+    public static BigInteger[] add(BigInteger[] list, BigInteger... operands) {
+        if (list == null) return null;
+
+        BigInteger[] results = new BigInteger[list.length];
+        BigInteger operand = add(operands);
+
+        for (int i = 0; i < list.length; i++) {
+            results[i] = add(list[i], operand);
+        }
+
+        return results;
+    }
+
+    /**
      * Increments the given integer by one.
      *
      * @param integer   The integer to be incremented.
@@ -341,9 +361,28 @@ public final class BigIntegerHelper {
     }
 
     /**
+     * Subtracts an integer from each item in the given list.
+     *
+     * @param minuends      A list of integers to subtracted from.
+     * @param subtrahend    The integer to be subtracted.
+     * @return              A new list where each item is the respective given item minus the subtrahend.
+     */
+    public static BigInteger[] subtract(BigInteger[] minuends, BigInteger subtrahend) {
+        if (minuends == null) return null;
+
+        BigInteger[] results = new BigInteger[minuends.length];
+
+        for (int i = 0; i < minuends.length; i++) {
+            results[i] = subtract(minuends[i], subtrahend);
+        }
+
+        return results;
+    }
+
+    /**
      * Returns the multiplication of all the given integers.
      *
-     * @param operands  The integer numbers to be summed.
+     * @param operands  The integer numbers to be multiplied.
      * @return          The multiplication of all the given integer numbers.
      */
     public static BigInteger multiply(BigInteger... operands) {
@@ -362,6 +401,26 @@ public final class BigIntegerHelper {
         }
 
         return result;
+    }
+
+    /**
+     * Multiplies each item in the given list by the given operands.
+     *
+     * @param list      The list to multiply each item in.
+     * @param operands  The integer numbers to be multiplied to the given items.
+     * @return          A new list where each item is the respective given item multiplied to the given operands.
+     */
+    public static BigInteger[] multiply(BigInteger[] list, BigInteger... operands) {
+        if (list == null) return null;
+
+        BigInteger[] results = new BigInteger[list.length];
+        BigInteger operand = multiply(operands);
+
+        for (int i = 0; i < list.length; i++) {
+            results[i] = multiply(list[i], operand);
+        }
+
+        return results;
     }
 
     /**
@@ -399,6 +458,25 @@ public final class BigIntegerHelper {
     }
 
     /**
+     * Divides the given dividends by the divisor.
+     *
+     * @param dividends The integers to be divided.
+     * @param divisor   The integer to divide by.
+     * @return          The result of dividing the dividends by the divisor.
+     */
+    public static BigInteger[] divide(BigInteger[] dividends, BigInteger divisor) {
+        if (dividends == null) return null;
+
+        BigInteger[] results = new BigInteger[dividends.length];
+
+        for (int i = 0; i < dividends.length; i++) {
+            results[i] = divide(dividends[i], divisor);
+        }
+
+        return results;
+    }
+
+    /**
      * Returns the remainder from dividing the given dividend by the divisor.
      *
      * @param dividend  The integer to be divided.
@@ -413,6 +491,25 @@ public final class BigIntegerHelper {
         }
 
         return result;
+    }
+
+    /**
+     * Returns the remainder from dividing the given dividends by the divisor.
+     *
+     * @param dividends The integers to be divided.
+     * @param divisor   The integer to divide by.
+     * @return          The remainders from dividing the dividends by the divisor.
+     */
+    public static BigInteger[] remainder(BigInteger[] dividends, BigInteger divisor) {
+        if (dividends == null) return null;
+
+        BigInteger[] results = new BigInteger[dividends.length];
+
+        for (int i = 0; i < dividends.length; i++) {
+            results[i] = remainder(dividends[i], divisor);
+        }
+
+        return results;
     }
 
     /**
