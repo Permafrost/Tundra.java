@@ -56,13 +56,13 @@ public final class DurationHelper {
     public static final long MILLISECONDS_PER_MINUTE = SECONDS_PER_MINUTE * MILLISECONDS_PER_SECOND;
     public static final long MILLISECONDS_PER_HOUR = MINUTES_PER_HOUR * MILLISECONDS_PER_MINUTE;
     public static final long MILLISECONDS_PER_DAY = HOURS_PER_DAY * MILLISECONDS_PER_HOUR;
-    private static final BigInteger DAYS_PER_WEEK_BIG_INTEGER = BigInteger.valueOf(DAYS_PER_WEEK);
     private static final BigInteger SECONDS_PER_MINUTE_BIG_INTEGER = BigInteger.valueOf(SECONDS_PER_MINUTE);
     private static final BigInteger SECONDS_PER_HOUR_BIG_INTEGER = BigInteger.valueOf(SECONDS_PER_HOUR);
     private static final BigDecimal SECONDS_PER_HOUR_BIG_DECIMAL = BigDecimal.valueOf(SECONDS_PER_HOUR);
     private static final BigInteger SECONDS_PER_DAY_BIG_INTEGER = BigInteger.valueOf(SECONDS_PER_DAY);
     private static final BigDecimal SECONDS_PER_DAY_BIG_DECIMAL = BigDecimal.valueOf(SECONDS_PER_DAY);
     private static final BigInteger SECONDS_PER_WEEK_BIG_INTEGER = BigInteger.valueOf(SECONDS_PER_WEEK);
+    private static final BigDecimal SECONDS_PER_WEEK_BIG_DECIMAL = BigDecimal.valueOf(SECONDS_PER_WEEK);
     private static final BigDecimal NANOSECONDS_PER_SECOND_BIG_DECIMAL = BigDecimal.valueOf(NANOSECONDS_PER_SECOND);
     private static final BigDecimal SECONDS_PER_MINUTE_BIG_DECIMAL = BigDecimal.valueOf(SECONDS_PER_MINUTE);
     private static final BigDecimal MILLISECONDS_PER_SECOND_BIG_DECIMAL = BigDecimal.valueOf(MILLISECONDS_PER_SECOND);
@@ -412,7 +412,7 @@ public final class DurationHelper {
      * @return              A Duration object representing the duration in milliseconds.
      */
     public static Duration parse(long milliseconds) {
-        return DATATYPE_FACTORY.newDuration(milliseconds);
+        return fromMilliseconds(BigDecimal.valueOf(milliseconds));
     }
 
     /**
@@ -433,7 +433,7 @@ public final class DurationHelper {
      * @return          A Duration object representing the duration in fractional seconds.
      */
     public static Duration parse(double seconds, int precision) {
-        return parse((new BigDecimal(seconds)).abs().setScale(precision, RoundingMode.HALF_UP));
+        return parse((new BigDecimal(seconds)).setScale(precision, RoundingMode.HALF_UP));
     }
 
     /**
@@ -443,8 +443,7 @@ public final class DurationHelper {
      * @return          A Duration object representing the duration in fractional seconds.
      */
     public static Duration parse(BigDecimal seconds) {
-        // TODO: normalize into weeks, days, hours, minutes, seconds, and then use this method to implement the string parse for non-XML patterns
-        return DATATYPE_FACTORY.newDuration(seconds.signum() >= 0, null, null, null, null, null, seconds);
+        return fromFractionalSeconds(seconds);
     }
 
     /**
@@ -486,44 +485,36 @@ public final class DurationHelper {
                 output = DATATYPE_FACTORY.newDuration(input);
             } else {
                 BigDecimal decimalValue = new BigDecimal(input);
-                BigInteger integerValue = decimalValue.toBigInteger();
+                BigInteger integerValue;
 
                 switch (pattern) {
                     case NANOSECONDS:
-                        // convert nanoseconds to fractional seconds
-                        decimalValue = decimalValue.divide(NANOSECONDS_PER_SECOND_BIG_DECIMAL);
-                        output = DATATYPE_FACTORY.newDuration(decimalValue.signum() >= 0, null, null, null, null, null, decimalValue.abs());
+                        output = fromNanoseconds(decimalValue);
                         break;
                     case MILLISECONDS:
-                        // convert milliseconds to fractional seconds
-                        decimalValue = decimalValue.divide(MILLISECONDS_PER_SECOND_BIG_DECIMAL);
-                        output = DATATYPE_FACTORY.newDuration(decimalValue.signum() >= 0, null, null, null, null, null, decimalValue.abs());
+                        output = fromMilliseconds(decimalValue);
                         break;
                     case SECONDS:
-                        output = DATATYPE_FACTORY.newDuration(decimalValue.signum() >= 0, null, null, null, null, null, decimalValue.abs());
+                        output = fromFractionalSeconds(decimalValue);
                         break;
                     case MINUTES:
-                        // TODO: handle decimal minutes
-                        output = DATATYPE_FACTORY.newDuration(integerValue.signum() >= 0, null, null, null, null, integerValue.abs(), null);
+                        output = fromMinutes(decimalValue);
                         break;
                     case HOURS:
-                        // TODO: handle decimal hours
-                        output = DATATYPE_FACTORY.newDuration(integerValue.signum() >= 0, null, null, null, integerValue.abs(), null, null);
+                        output = fromHours(decimalValue);
                         break;
                     case DAYS:
-                        // TODO: handle decimal days
-                        output = DATATYPE_FACTORY.newDuration(integerValue.signum() >= 0, null, null, integerValue.abs(), null, null, null);
+                        output = fromDays(decimalValue);
                         break;
                     case WEEKS:
-                        // TODO: handle decimal weeks
-                        // convert weeks to days by multiplying by 7
-                        integerValue = integerValue.multiply(DAYS_PER_WEEK_BIG_INTEGER);
-                        output = DATATYPE_FACTORY.newDuration(integerValue.signum() >= 0, null, null, integerValue.abs(), null, null, null);
+                        output = fromWeeks(decimalValue);
                         break;
                     case MONTHS:
+                        integerValue = decimalValue.toBigInteger();
                         output = DATATYPE_FACTORY.newDuration(integerValue.signum() >= 0, null, integerValue.abs(), null, null, null, null);
                         break;
                     case YEARS:
+                        integerValue = decimalValue.toBigInteger();
                         output = DATATYPE_FACTORY.newDuration(integerValue.signum() >= 0, integerValue.abs(), null, null, null, null, null);
                         break;
                     default:
@@ -620,6 +611,95 @@ public final class DurationHelper {
     }
 
     /**
+     * Converts the given fractional seconds to a Duration.
+     *
+     * @param fractionalSeconds The fractional seconds to convert to a Duration.
+     * @return                  The resulting Duration.
+     */
+    private static Duration fromFractionalSeconds(BigDecimal fractionalSeconds) {
+        BigInteger seconds = fractionalSeconds.toBigInteger().abs();
+        BigDecimal fraction = fractionalSeconds.subtract(new BigDecimal(seconds)).abs();
+
+        BigInteger[] results;
+
+        results = seconds.divideAndRemainder(SECONDS_PER_DAY_BIG_INTEGER);
+        BigInteger days = results[0];
+        seconds = results[1];
+
+        results = seconds.divideAndRemainder(SECONDS_PER_HOUR_BIG_INTEGER);
+        BigInteger hours = results[0];
+        seconds = results[1];
+
+        results = seconds.divideAndRemainder(SECONDS_PER_MINUTE_BIG_INTEGER);
+        BigInteger minutes = results[0];
+        seconds = results[1];
+
+        fraction = fraction.add(new BigDecimal(seconds));
+
+        return DATATYPE_FACTORY.newDuration(fractionalSeconds.signum() >= 0, BigInteger.ZERO, BigInteger.ZERO, days, hours, minutes, fraction);
+    }
+
+    /**
+     * Converts the given nanoseconds to a Duration.
+     *
+     * @param nanoseconds   The nanoseconds to convert to a Duration.
+     * @return              The resulting Duration.
+     */
+    private static Duration fromNanoseconds(BigDecimal nanoseconds) {
+        return fromFractionalSeconds(nanoseconds.divide(NANOSECONDS_PER_SECOND_BIG_DECIMAL, 9, RoundingMode.HALF_UP));
+    }
+
+    /**
+     * Converts the given milliseconds to a Duration.
+     *
+     * @param milliseconds  The milliseconds to convert to a Duration.
+     * @return              The resulting Duration.
+     */
+    private static Duration fromMilliseconds(BigDecimal milliseconds) {
+        return fromFractionalSeconds(milliseconds.divide(MILLISECONDS_PER_SECOND_BIG_DECIMAL, 9, RoundingMode.HALF_UP));
+    }
+
+    /**
+     * Converts the given minutes to a Duration.
+     *
+     * @param minutes   The minutes to convert to a Duration.
+     * @return          The resulting Duration.
+     */
+    private static Duration fromMinutes(BigDecimal minutes) {
+        return fromFractionalSeconds(minutes.multiply(SECONDS_PER_MINUTE_BIG_DECIMAL));
+    }
+
+    /**
+     * Converts the given hours to a Duration.
+     *
+     * @param hours     The hours to convert to a Duration.
+     * @return          The resulting Duration.
+     */
+    private static Duration fromHours(BigDecimal hours) {
+        return fromFractionalSeconds(hours.multiply(SECONDS_PER_HOUR_BIG_DECIMAL));
+    }
+
+    /**
+     * Converts the given days to a Duration.
+     *
+     * @param days      The days to convert to a Duration.
+     * @return          The resulting Duration.
+     */
+    private static Duration fromDays(BigDecimal days) {
+        return fromFractionalSeconds(days.multiply(SECONDS_PER_DAY_BIG_DECIMAL));
+    }
+
+    /**
+     * Converts the given weeks to a Duration.
+     *
+     * @param weeks     The weeks to convert to a Duration.
+     * @return          The resulting Duration.
+     */
+    private static Duration fromWeeks(BigDecimal weeks) {
+        return fromFractionalSeconds(weeks.multiply(SECONDS_PER_WEEK_BIG_DECIMAL));
+    }
+
+    /**
      * Returns the given duration as an XML duration string.
      *
      * @param input The duration to be serialized.
@@ -705,7 +785,6 @@ public final class DurationHelper {
         return emit(input, pattern, instant == null ? null : instant.getTime());
     }
 
-
     /**
      * Returns the given duration as a duration string formatted to the desired pattern.
      *
@@ -776,7 +855,10 @@ public final class DurationHelper {
     private static BigDecimal toFractionalSeconds(Duration duration, Calendar instant) {
         BigDecimal sign = BigDecimal.valueOf(duration.getSign());
 
-        duration = duration.normalizeWith(instant);
+        BigDecimal years = BigDecimalHelper.normalize(duration.getField(DatatypeConstants.YEARS));
+        BigDecimal months = BigDecimalHelper.normalize(duration.getField(DatatypeConstants.MONTHS));
+
+        if (!years.equals(BigDecimal.ZERO) || !months.equals(BigDecimal.ZERO)) duration = duration.normalizeWith(instant);
 
         BigDecimal days = BigDecimalHelper.normalize(duration.getField(DatatypeConstants.DAYS));
         if (days == null) days = BigDecimal.ZERO;
