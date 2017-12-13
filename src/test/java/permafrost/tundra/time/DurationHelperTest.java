@@ -93,10 +93,14 @@ public class DurationHelperTest {
     @Test
     public void testEmitZero() throws Exception {
         Duration duration = DatatypeFactory.newInstance().newDuration(0);
-        assertEquals("0", DurationHelper.emit(duration, DurationPattern.MINUTES));
-        assertEquals("0", DurationHelper.emit(duration, DurationPattern.SECONDS));
-        assertEquals("0", DurationHelper.emit(duration, DurationPattern.MILLISECONDS));
+        assertEquals("PT0S", DurationHelper.emit(duration, DurationPattern.XML));
         assertEquals("0", DurationHelper.emit(duration, DurationPattern.NANOSECONDS));
+        assertEquals("0", DurationHelper.emit(duration, DurationPattern.MILLISECONDS));
+        assertEquals("0", DurationHelper.emit(duration, DurationPattern.SECONDS));
+        assertEquals("0", DurationHelper.emit(duration, DurationPattern.MINUTES));
+        assertEquals("0", DurationHelper.emit(duration, DurationPattern.HOURS));
+        assertEquals("0", DurationHelper.emit(duration, DurationPattern.DAYS));
+        assertEquals("0", DurationHelper.emit(duration, DurationPattern.WEEKS));
     }
 
     @Test

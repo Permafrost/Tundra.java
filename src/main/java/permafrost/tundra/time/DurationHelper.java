@@ -30,7 +30,6 @@ import permafrost.tundra.data.transform.time.DurationFormatter;
 import permafrost.tundra.lang.ArrayHelper;
 import permafrost.tundra.math.BigDecimalHelper;
 import permafrost.tundra.math.BigIntegerHelper;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
@@ -891,7 +890,7 @@ public final class DurationHelper {
                 builder.append(minutes).append('M');
             }
             if (!seconds.equals(BigDecimal.ZERO) || (!hasDate && hours.equals(BigInteger.ZERO) && minutes.equals(BigInteger.ZERO))) {
-                builder.append(seconds).append('S');
+                builder.append(seconds.stripTrailingZeros()).append('S');
             }
         }
 
