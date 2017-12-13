@@ -647,7 +647,7 @@ public final class DurationHelper {
      * @return              The resulting Duration.
      */
     private static Duration fromNanoseconds(BigDecimal nanoseconds) {
-        return fromFractionalSeconds(nanoseconds.divide(NANOSECONDS_PER_SECOND_BIG_DECIMAL, 9, RoundingMode.HALF_UP));
+        return fromFractionalSeconds(nanoseconds.divide(NANOSECONDS_PER_SECOND_BIG_DECIMAL));
     }
 
     /**
@@ -657,7 +657,7 @@ public final class DurationHelper {
      * @return              The resulting Duration.
      */
     private static Duration fromMilliseconds(BigDecimal milliseconds) {
-        return fromFractionalSeconds(milliseconds.divide(MILLISECONDS_PER_SECOND_BIG_DECIMAL, 9, RoundingMode.HALF_UP));
+        return fromFractionalSeconds(milliseconds.divide(MILLISECONDS_PER_SECOND_BIG_DECIMAL));
     }
 
     /**
