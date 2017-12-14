@@ -103,10 +103,38 @@ public class DurationHelperTest {
         assertEquals("0", DurationHelper.emit(duration, DurationPattern.WEEKS));
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testFormatFractionalYears() throws Exception {
+        assertEquals("P183D", DurationHelper.format("0.5", DurationPattern.YEARS, DurationPattern.XML, "2001-01-01", "date"));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testFormatFractionalMonths() throws Exception {
+        assertEquals("P15DT12H", DurationHelper.format("0.5", DurationPattern.MONTHS, DurationPattern.XML, "2001-01-01", "date"));
+    }
+
     @Test
-    public void testFormatFractionalWeek() throws Exception {
+    public void testFormatFractionalWeeks() throws Exception {
         assertEquals("P3DT12H", DurationHelper.format("0.5", DurationPattern.WEEKS, DurationPattern.XML));
         assertEquals("P10DT12H", DurationHelper.format("1.5", DurationPattern.WEEKS, DurationPattern.XML));
+    }
+
+    @Test
+    public void testFormatFractionalDays() throws Exception {
+        assertEquals("PT12H", DurationHelper.format("0.5", DurationPattern.DAYS, DurationPattern.XML));
+        assertEquals("P1DT12H", DurationHelper.format("1.5", DurationPattern.DAYS, DurationPattern.XML));
+    }
+
+    @Test
+    public void testFormatFractionalHours() throws Exception {
+        assertEquals("PT30M", DurationHelper.format("0.5", DurationPattern.HOURS, DurationPattern.XML));
+        assertEquals("PT1H30M", DurationHelper.format("1.5", DurationPattern.HOURS, DurationPattern.XML));
+    }
+
+    @Test
+    public void testFormatFractionalMinutes() throws Exception {
+        assertEquals("PT30S", DurationHelper.format("0.5", DurationPattern.MINUTES, DurationPattern.XML));
+        assertEquals("PT1M30S", DurationHelper.format("1.5", DurationPattern.MINUTES, DurationPattern.XML));
     }
 
     @Test

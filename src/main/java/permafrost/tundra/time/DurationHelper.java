@@ -511,19 +511,27 @@ public final class DurationHelper {
                         output = fromWeeks(decimalValue);
                         break;
                     case MONTHS:
-                        integerValue = decimalValue.toBigInteger();
-                        output = DATATYPE_FACTORY.newDuration(integerValue.signum() >= 0, null, integerValue.abs(), null, null, null, null);
+                        try {
+                            integerValue = decimalValue.toBigIntegerExact();
+                            output = DATATYPE_FACTORY.newDuration(integerValue.signum() >= 0, null, integerValue.abs(), null, null, null, null);
+                        } catch(ArithmeticException ex) {
+                            throw new IllegalArgumentException(MessageFormat.format("Unsupported decimal precision in specified duration: {0}", input), ex);
+                        }
                         break;
                     case YEARS:
-                        integerValue = decimalValue.toBigInteger();
-                        output = DATATYPE_FACTORY.newDuration(integerValue.signum() >= 0, integerValue.abs(), null, null, null, null, null);
+                        try {
+                            integerValue = decimalValue.toBigIntegerExact();
+                            output = DATATYPE_FACTORY.newDuration(integerValue.signum() >= 0, integerValue.abs(), null, null, null, null, null);
+                        } catch(ArithmeticException ex) {
+                            throw new IllegalArgumentException(MessageFormat.format("Unsupported decimal precision in specified duration: {0}", input), ex);
+                        }
                         break;
                     default:
-                        throw new IllegalArgumentException("Unsupported duration pattern: " + pattern);
+                        throw new IllegalArgumentException(MessageFormat.format("Unsupported duration pattern: {0}", pattern));
                 }
             }
         } catch (IllegalArgumentException ex) {
-            throw new IllegalArgumentException(MessageFormat.format("Unparseable duration: \"{0}\" does not conform to the specified pattern \"{1}\"", input, pattern), ex);
+            throw new IllegalArgumentException(MessageFormat.format("Unparseable duration does not conform to the specified pattern {0}: {1}", pattern, input), ex);
         }
 
         return output;
@@ -565,7 +573,7 @@ public final class DurationHelper {
         }
 
         if (!parsed) {
-            throw new IllegalArgumentException(MessageFormat.format("Unparseable duration: \"{0}\" does not conform to any of the specified patterns [\"{1}\"]", input, ArrayHelper.join(patterns, "\", \"")));
+            throw new IllegalArgumentException(MessageFormat.format("Unparseable duration does not conform to any of the specified patterns [{0}]: {1}", ArrayHelper.join(patterns, ", ", input)));
         }
 
         return output;
@@ -830,7 +838,7 @@ public final class DurationHelper {
                 output = toISO8601(input);
                 break;
             default:
-                throw new IllegalArgumentException("Unsupported duration pattern: " + pattern);
+                throw new IllegalArgumentException(MessageFormat.format("Unsupported duration pattern: {0}", pattern));
         }
 
         return output;
@@ -898,7 +906,7 @@ public final class DurationHelper {
                 if (isSecondsZero) {
                     builder.append(0);
                 } else {
-                    builder.append(seconds);
+                    builder.append(seconds.toPlainString());
                 }
                 builder.append('S');
             }
