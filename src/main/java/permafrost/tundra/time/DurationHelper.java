@@ -407,6 +407,110 @@ public final class DurationHelper {
     }
 
     /**
+     * Formats a duration to the desired pattern.
+     *
+     * @param duration   The duration to be formatted.
+     * @param inPattern  The pattern the duration string adheres to.
+     * @param outPattern The pattern the duration will be reformatted to.
+     * @return           The duration string reformatted according to the outPattern.
+     */
+    public static String format(BigDecimal duration, DurationPattern inPattern, DurationPattern outPattern) {
+        return format(duration, inPattern, outPattern, null);
+    }
+
+    /**
+     * Formats a duration to the desired pattern.
+     *
+     * @param duration   The duration to be formatted.
+     * @param inPattern  The pattern the duration string adheres to.
+     * @param outPattern The pattern the duration will be reformatted to.
+     * @param instant    A java.util.Date used as a starting instant to resolve indeterminate values (such as the number
+     *                   of days in a month).
+     * @return           The duration string reformatted according to the outPattern.
+     */
+    public static String format(BigDecimal duration, DurationPattern inPattern, DurationPattern outPattern, Date instant) {
+        return emit(parse(duration, inPattern), outPattern, instant);
+    }
+
+    /**
+     * Formats a duration to the desired pattern.
+     *
+     * @param duration   The duration to be formatted.
+     * @param inPattern  The pattern the duration string adheres to.
+     * @param outPattern The pattern the duration will be reformatted to.
+     * @return           The duration string reformatted according to the outPattern.
+     */
+    public static String format(BigInteger duration, DurationPattern inPattern, DurationPattern outPattern) {
+        return format(duration, inPattern, outPattern, null);
+    }
+
+    /**
+     * Formats a duration to the desired pattern.
+     *
+     * @param duration   The duration to be formatted.
+     * @param inPattern  The pattern the duration string adheres to.
+     * @param outPattern The pattern the duration will be reformatted to.
+     * @param instant    A java.util.Date used as a starting instant to resolve indeterminate values (such as the number
+     *                   of days in a month).
+     * @return           The duration string reformatted according to the outPattern.
+     */
+    public static String format(BigInteger duration, DurationPattern inPattern, DurationPattern outPattern, Date instant) {
+        return emit(parse(duration, inPattern), outPattern, instant);
+    }
+
+    /**
+     * Formats a duration to the desired pattern.
+     *
+     * @param duration   The duration to be formatted.
+     * @param inPattern  The pattern the duration string adheres to.
+     * @param outPattern The pattern the duration will be reformatted to.
+     * @return           The duration string reformatted according to the outPattern.
+     */
+    public static String format(long duration, DurationPattern inPattern, DurationPattern outPattern) {
+        return format(duration, inPattern, outPattern, null);
+    }
+
+    /**
+     * Formats a duration to the desired pattern.
+     *
+     * @param duration   The duration to be formatted.
+     * @param inPattern  The pattern the duration string adheres to.
+     * @param outPattern The pattern the duration will be reformatted to.
+     * @param instant    A java.util.Date used as a starting instant to resolve indeterminate values (such as the number
+     *                   of days in a month).
+     * @return           The duration string reformatted according to the outPattern.
+     */
+    public static String format(long duration, DurationPattern inPattern, DurationPattern outPattern, Date instant) {
+        return emit(parse(duration, inPattern), outPattern, instant);
+    }
+
+    /**
+     * Formats a duration to the desired pattern.
+     *
+     * @param duration   The duration to be formatted.
+     * @param inPattern  The pattern the duration string adheres to.
+     * @param outPattern The pattern the duration will be reformatted to.
+     * @return           The duration string reformatted according to the outPattern.
+     */
+    public static String format(double duration, DurationPattern inPattern, DurationPattern outPattern) {
+        return format(duration, inPattern, outPattern, null);
+    }
+
+    /**
+     * Formats a duration to the desired pattern.
+     *
+     * @param duration   The duration to be formatted.
+     * @param inPattern  The pattern the duration string adheres to.
+     * @param outPattern The pattern the duration will be reformatted to.
+     * @param instant    A java.util.Date used as a starting instant to resolve indeterminate values (such as the number
+     *                   of days in a month).
+     * @return           The duration string reformatted according to the outPattern.
+     */
+    public static String format(double duration, DurationPattern inPattern, DurationPattern outPattern, Date instant) {
+        return emit(parse(duration, inPattern), outPattern, instant);
+    }
+
+    /**
      * Returns a new Duration given a duration in milliseconds.
      *
      * @param milliseconds  The duration in milliseconds.
@@ -481,71 +585,13 @@ public final class DurationHelper {
         pattern = DurationPattern.normalize(pattern);
         Duration output;
 
-        try {
-            if (pattern == DurationPattern.XML) {
-                output = DATATYPE_FACTORY.newDuration(input);
-            } else {
-                BigDecimal decimalValue = new BigDecimal(input);
-                BigInteger integerValue;
-
-                switch (pattern) {
-                    case NANOSECONDS:
-                        output = fromNanoseconds(decimalValue);
-                        break;
-                    case MILLISECONDS:
-                        output = fromMilliseconds(decimalValue);
-                        break;
-                    case SECONDS:
-                        output = fromFractionalSeconds(decimalValue);
-                        break;
-                    case MINUTES:
-                        output = fromMinutes(decimalValue);
-                        break;
-                    case HOURS:
-                        output = fromHours(decimalValue);
-                        break;
-                    case DAYS:
-                        output = fromDays(decimalValue);
-                        break;
-                    case WEEKS:
-                        output = fromWeeks(decimalValue);
-                        break;
-                    case MONTHS:
-                        try {
-                            integerValue = decimalValue.toBigIntegerExact();
-                            output = DATATYPE_FACTORY.newDuration(integerValue.signum() >= 0, null, integerValue.abs(), null, null, null, null);
-                        } catch(ArithmeticException ex) {
-                            throw new IllegalArgumentException(MessageFormat.format("Unsupported decimal precision in specified duration: {0}", input), ex);
-                        }
-                        break;
-                    case YEARS:
-                        try {
-                            integerValue = decimalValue.toBigIntegerExact();
-                            output = DATATYPE_FACTORY.newDuration(integerValue.signum() >= 0, integerValue.abs(), null, null, null, null, null);
-                        } catch(ArithmeticException ex) {
-                            throw new IllegalArgumentException(MessageFormat.format("Unsupported decimal precision in specified duration: {0}", input), ex);
-                        }
-                        break;
-                    default:
-                        throw new IllegalArgumentException(MessageFormat.format("Unsupported duration pattern: {0}", pattern));
-                }
-            }
-        } catch (IllegalArgumentException ex) {
-            throw new IllegalArgumentException(MessageFormat.format("Unparseable duration does not conform to the specified pattern {0}: {1}", pattern, input), ex);
+        if (pattern == DurationPattern.XML) {
+            output = DATATYPE_FACTORY.newDuration(input);
+        } else {
+            output = parse(new BigDecimal(input), pattern);
         }
 
         return output;
-    }
-
-    /**
-     * Parses the given duration string to a Duration object.
-     *
-     * @param input     The duration string to be parsed.
-     * @param patterns  A list of possible patterns the duration string adheres to.
-     * @return          A Duration object which represents the given duration string.
-     */
-    public static Duration parse(String input, String[] patterns) {
-        return parse(input, DurationPattern.normalize(patterns));
     }
 
     /**
@@ -577,6 +623,114 @@ public final class DurationHelper {
         }
 
         return output;
+    }
+
+    /**
+     * Parses the given duration string to a Duration object.
+     *
+     * @param input     The duration string to be parsed.
+     * @param patterns  A list of possible patterns the duration string adheres to.
+     * @return          A Duration object which represents the given duration string.
+     */
+    public static Duration parse(String input, String[] patterns) {
+        return parse(input, DurationPattern.normalize(patterns));
+    }
+
+    /**
+     * Parses the given duration to a Duration object.
+     *
+     * @param duration  The duration to be parsed.
+     * @param pattern   The pattern the duration adheres to.
+     * @return          A Duration object which represents the given input duration.
+     */
+    public static Duration parse(BigDecimal duration, DurationPattern pattern) {
+        if (duration == null) return null;
+
+        pattern = DurationPattern.normalize(pattern);
+        Duration output;
+
+        try {
+            BigInteger integerValue;
+
+            switch (pattern) {
+                case NANOSECONDS:
+                    output = fromNanoseconds(duration);
+                    break;
+                case MILLISECONDS:
+                    output = fromMilliseconds(duration);
+                    break;
+                case SECONDS:
+                    output = fromFractionalSeconds(duration);
+                    break;
+                case MINUTES:
+                    output = fromMinutes(duration);
+                    break;
+                case HOURS:
+                    output = fromHours(duration);
+                    break;
+                case DAYS:
+                    output = fromDays(duration);
+                    break;
+                case WEEKS:
+                    output = fromWeeks(duration);
+                    break;
+                case MONTHS:
+                    try {
+                        integerValue = duration.toBigIntegerExact();
+                        output = DATATYPE_FACTORY.newDuration(integerValue.signum() >= 0, null, integerValue.abs(), null, null, null, null);
+                    } catch(ArithmeticException ex) {
+                        throw new IllegalArgumentException(MessageFormat.format("Unsupported decimal precision in specified duration: {0}", duration), ex);
+                    }
+                    break;
+                case YEARS:
+                    try {
+                        integerValue = duration.toBigIntegerExact();
+                        output = DATATYPE_FACTORY.newDuration(integerValue.signum() >= 0, integerValue.abs(), null, null, null, null, null);
+                    } catch(ArithmeticException ex) {
+                        throw new IllegalArgumentException(MessageFormat.format("Unsupported decimal precision in specified duration: {0}", duration), ex);
+                    }
+                    break;
+                default:
+                    throw new IllegalArgumentException(MessageFormat.format("Unsupported duration pattern: {0}", pattern));
+            }
+        } catch (IllegalArgumentException ex) {
+            throw new IllegalArgumentException(MessageFormat.format("Unparseable duration does not conform to the specified pattern {0}: {1}", pattern, duration), ex);
+        }
+
+        return output;
+    }
+
+    /**
+     * Parses the given duration to a Duration object.
+     *
+     * @param duration  The duration to be parsed.
+     * @param pattern   The pattern the duration adheres to.
+     * @return          A Duration object which represents the given input duration.
+     */
+    public static Duration parse(BigInteger duration, DurationPattern pattern) {
+        return duration == null ? null : parse(new BigDecimal(duration), pattern);
+    }
+
+    /**
+     * Parses the given duration to a Duration object.
+     *
+     * @param duration  The duration to be parsed.
+     * @param pattern   The pattern the duration adheres to.
+     * @return          A Duration object which represents the given input duration.
+     */
+    public static Duration parse(long duration, DurationPattern pattern) {
+        return parse(BigDecimal.valueOf(duration), pattern);
+    }
+
+    /**
+     * Parses the given duration to a Duration object.
+     *
+     * @param duration  The duration to be parsed.
+     * @param pattern   The pattern the duration adheres to.
+     * @return          A Duration object which represents the given input duration.
+     */
+    public static Duration parse(double duration, DurationPattern pattern) {
+        return parse(BigDecimal.valueOf(duration), pattern);
     }
 
     /**
