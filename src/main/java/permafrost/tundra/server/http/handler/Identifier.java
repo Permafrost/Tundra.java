@@ -26,7 +26,7 @@ package permafrost.tundra.server.http.handler;
 
 import com.wm.app.b2b.server.AccessException;
 import com.wm.app.b2b.server.ProtocolState;
-import permafrost.tundra.id.ULID;
+import permafrost.tundra.id.UUIDHelper;
 import java.io.IOException;
 import java.util.Iterator;
 
@@ -51,7 +51,7 @@ public class Identifier extends Handler {
     @Override
     public boolean handle(ProtocolState context, Iterator<Handler> handlers) throws IOException, AccessException {
         String requestID = context.getRequestFieldValue("X-Request-ID");
-        if (requestID == null) requestID = ULID.generate();
+        if (requestID == null) requestID = UUIDHelper.generate();
         context.setResponseFieldValue("X-Request-ID", requestID);
 
         return next(context, handlers);
