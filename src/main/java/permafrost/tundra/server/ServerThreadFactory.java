@@ -26,7 +26,7 @@ package permafrost.tundra.server;
 
 import com.wm.app.b2b.server.InvokeState;
 import com.wm.app.b2b.server.ServerThread;
-import permafrost.tundra.id.ULID;
+import permafrost.tundra.id.UUIDHelper;
 import permafrost.tundra.lang.ThreadHelper;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicLong;
@@ -133,7 +133,7 @@ public class ServerThreadFactory implements ThreadFactory {
     @Override
     public Thread newThread(Runnable runnable) {
         ServerThread thread = new ServerThread(runnable);
-        String threadContext = ULID.generate();
+        String threadContext = UUIDHelper.generate();
         long threadCount = count.getAndIncrement();
 
         if (threadNameSuffix != null) {
