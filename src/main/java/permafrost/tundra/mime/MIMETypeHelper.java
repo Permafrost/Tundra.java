@@ -89,6 +89,35 @@ public final class MIMETypeHelper {
     }
 
     /**
+     * Classifies the given mime type into one of the following classifications: xml, json, yaml, csv, tsv, psv.
+     *
+     * @param type  The MIME type to classify.
+     * @return      The classification of the MIME type, or null if unclassifiable.
+     */
+    public static String classify(MimeType type) {
+        if (type == null) return null;
+
+        String subType = type.getSubType();
+        String classification = null;
+
+        if (subType.equals("xml") || subType.endsWith("+xml")) {
+            classification = "xml";
+        } else if (subType.equals("json") || subType.endsWith("+json")) {
+            classification = "json";
+        } else if (subType.equals("csv") || subType.endsWith("+csv") || subType.equals("comma-separated-values") || subType.endsWith("+comma-separated-values")) {
+            classification = "csv";
+        } else if (subType.equals("yaml") || subType.endsWith("+yaml") || subType.equals("x-yaml") || subType.endsWith("+x-yaml")) {
+            classification = "yaml";
+        } else if (subType.equals("tsv") || subType.endsWith("+tsv") || subType.equals("tab-separated-values") || subType.endsWith("+tab-separated-values")) {
+            classification = "tsv";
+        } else if (subType.equals("psv") || subType.endsWith("+psv") || subType.equals("pipe-separated-values") || subType.endsWith("+pipe-separated-values")) {
+            classification = "psv";
+        }
+
+        return classification;
+    }
+
+    /**
      * Returns the MIME type associated with the given filename extension.
      *
      * @param extension The filename extension.
