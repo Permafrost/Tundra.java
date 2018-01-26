@@ -447,24 +447,37 @@ public final class DateTimeHelper {
     }
 
     /**
-     * Parses a milliseconds since epoch value into a Calendar object.
+     * Emits the given milliseconds as a datetime string formatted according to the given pattern.
      *
-     * @param milliseconds  The milliseconds since epoch value.
-     * @return              A Calendar object representing the parsed value.
+     * @param milliseconds  The milliseconds since epoch value to emit.
+     * @param pattern       The datetime string pattern to format the resulting string with.
+     * @param timezone      The timezone the returned datetime string should be in.
+     * @return              The given milliseconds formatted as a datetime string.
      */
-    public static Calendar parse(long milliseconds) {
-        return parse(milliseconds, (TimeZone)null);
+    public static String emit(Number milliseconds, String pattern, TimeZone timezone) {
+        return emit(parse(milliseconds), pattern, timezone);
+    }
+
+    /**
+     * Emits the given milliseconds as a datetime string formatted according to the given pattern.
+     *
+     * @param milliseconds  The milliseconds since epoch value to emit.
+     * @param pattern       The datetime string pattern to format the resulting string with.
+     * @param timezone      The timezone the returned datetime string should be in.
+     * @return              The given milliseconds formatted as a datetime string.
+     */
+    public static String emit(long milliseconds, String pattern, TimeZone timezone) {
+        return emit(parse(milliseconds), pattern, timezone);
     }
 
     /**
      * Parses a milliseconds since epoch value into a Calendar object.
      *
      * @param milliseconds  The milliseconds since epoch value.
-     * @param timezone      The time zone ID identifying the time zone into which the parsed string will be forced.
      * @return              A Calendar object representing the parsed value.
      */
-    public static Calendar parse(long milliseconds, String timezone) {
-        return parse(milliseconds, TimeZoneHelper.get(timezone));
+    public static Calendar parse(long milliseconds) {
+        return parse(milliseconds, null);
     }
 
     /**
@@ -478,6 +491,28 @@ public final class DateTimeHelper {
         Calendar output = Calendar.getInstance();
         output.setTimeInMillis(milliseconds);
         return TimeZoneHelper.convert(output, timezone);
+    }
+
+    /**
+     * Parses a milliseconds since epoch value into a Calendar object.
+     *
+     * @param milliseconds  The milliseconds since epoch value.
+     * @return              A Calendar object representing the parsed value.
+     */
+    public static Calendar parse(Number milliseconds) {
+        return parse(milliseconds, null);
+    }
+
+    /**
+     * Parses a milliseconds since epoch value into a Calendar object.
+     *
+     * @param milliseconds  The milliseconds since epoch value.
+     * @param timezone      The time zone into which the parsed string will be forced.
+     * @return              A Calendar object representing the parsed value.
+     */
+    public static Calendar parse(Number milliseconds, TimeZone timezone) {
+        if (milliseconds == null) return null;
+        return parse(milliseconds.longValue(), timezone);
     }
 
     /**
@@ -1387,7 +1422,7 @@ public final class DateTimeHelper {
         } else if (object instanceof Date) {
             calendar = TimeZoneHelper.convert(toCalendar((Date)object), timezone);
         } else if (object instanceof Number) {
-            calendar = parse(((Number)object).longValue(), timezone);
+            calendar = parse((Number)object, timezone);
         } else {
             calendar = parse(object.toString(), pattern, timezone);
         }
