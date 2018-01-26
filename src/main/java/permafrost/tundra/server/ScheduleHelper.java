@@ -25,6 +25,7 @@
 package permafrost.tundra.server;
 
 import com.wm.app.b2b.server.ServiceException;
+import com.wm.app.b2b.server.scheduler.ScheduleManager;
 import com.wm.app.b2b.server.scheduler.ScheduledTask;
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;
@@ -38,6 +39,7 @@ import permafrost.tundra.math.LongHelper;
 import permafrost.tundra.time.DateTimeHelper;
 import permafrost.tundra.time.DurationHelper;
 import permafrost.tundra.time.DurationPattern;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -274,6 +276,31 @@ public final class ScheduleHelper {
     }
 
     /**
+     * Invokes the scheduled task service with the stored scheduled task inputs immediately
+     * under the context of the invoking user. This method does not interact with or update the
+     * scheduled task, and instead is intended for use by support to manually invoke a
+     * scheduled task outside of its schedule when required.
+     *
+     * @param identity          The ID of the scheduled task whose service is to be invoked.
+     * @return                  The output pipeline from invoking the scheduled task's service.
+     * @throws ServiceException If an error occurs.
+     */
+    public static IData invoke(String identity) throws ServiceException {
+        if (identity == null) throw new NullPointerException("Scheduled task identity must not be null");
+
+        IData pipeline = null;
+
+        try {
+            ScheduledTask task = ScheduleManager.getTask(identity);
+            pipeline = ServiceHelper.invoke(task.getService(), task.getInputs());
+        } catch(SQLException ex) {
+            ExceptionHelper.raise(ex);
+        }
+
+        return pipeline;
+    }
+
+    /**
      * Returns all scheduled tasks matching the given filter condition.
      *
      * @param filter            An optional filter condition which when true will include the matching task in the
@@ -285,7 +312,6 @@ public final class ScheduleHelper {
     public static IData[] list(String filter, IData pipeline) throws ServiceException {
         return list(null, filter, pipeline);
     }
-
 
     /**
      * Returns all scheduled tasks matching the given service, and filter condition.
