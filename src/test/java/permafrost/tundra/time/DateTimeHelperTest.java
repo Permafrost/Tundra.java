@@ -79,7 +79,7 @@ public class DateTimeHelperTest {
         String timestamp = "2015-09-18-18.59.31.123456";
         String expected = "2015-09-18T18:59:31.123Z";
 
-        String actual = DateTimeHelper.format(timestamp, "datetime.db2", "Z", "datetime", "Z");
+        String actual = DateTimeHelper.format(timestamp, "datetime.db2", TimeZoneHelper.get("Z"), "datetime", TimeZoneHelper.get("Z"));
 
         assertEquals(expected, actual);
     }
@@ -87,7 +87,7 @@ public class DateTimeHelperTest {
     @Test(expected=IllegalArgumentException.class)
     public void testInvalidDB2TimestampParse() throws Exception {
         String timestamp = "2015-13-32-25.62.64.123456";
-        DateTimeHelper.format(timestamp, "datetime.db2", "Z", "datetime", "Z");
+        DateTimeHelper.format(timestamp, "datetime.db2", TimeZoneHelper.get("Z"), "datetime", TimeZoneHelper.get("Z"));
     }
 
     @Test
@@ -95,7 +95,7 @@ public class DateTimeHelperTest {
         String datetime = "2015-09-18T18:59:31.123Z";
         String expected = "2015-09-18-18.59.31.123000";
 
-        String actual = DateTimeHelper.format(datetime, "datetime", "Z", "datetime.db2", "Z");
+        String actual = DateTimeHelper.format(datetime, "datetime", TimeZoneHelper.get("Z"), "datetime.db2", TimeZoneHelper.get("Z"));
 
         assertEquals(expected, actual);
     }

@@ -250,19 +250,7 @@ public final class DateTimeHelper {
      * @return          The given datetime serialized to a string using the given pattern.
      */
     public static String emit(Date input, String pattern) {
-        return emit(input, pattern, (TimeZone)null);
-    }
-
-    /**
-     * Serializes the given datetime to a string using the given pattern.
-     *
-     * @param input     The datetime to be serialized to a string.
-     * @param pattern   The serialization pattern to use.
-     * @param timezone  The timezone ID identifying the desired timezone the datetime string should use.
-     * @return          The given datetime serialized to a string using the given pattern.
-     */
-    public static String emit(Date input, String pattern, String timezone) {
-        return emit(input, pattern, TimeZoneHelper.get(timezone));
+        return emit(input, pattern, null);
     }
 
     /**
@@ -296,19 +284,7 @@ public final class DateTimeHelper {
      * @return          The given datetime serialized to a string using the given pattern.
      */
     public static String emit(Calendar input, String pattern) {
-        return emit(input, pattern, (TimeZone)null);
-    }
-
-    /**
-     * Serializes the given datetime to a string using the given pattern.
-     *
-     * @param input     The datetime to be serialized to a string.
-     * @param pattern   The serialization pattern to use.
-     * @param timezone  The timezone ID identifying the desired timezone the datetime string should use.
-     * @return          The given datetime serialized to a string using the given pattern.
-     */
-    public static String emit(Calendar input, String pattern, String timezone) {
-        return emit(input, pattern, TimeZoneHelper.get(timezone));
+        return emit(input, pattern, null);
     }
 
     /**
@@ -360,19 +336,7 @@ public final class DateTimeHelper {
      * @return          The given datetimes serialized to strings using the given pattern.
      */
     public static String[] emit(Date[] inputs, String pattern) {
-        return emit(inputs, pattern, (TimeZone)null);
-    }
-
-    /**
-     * Serializes the given datetimes to strings using the given pattern.
-     *
-     * @param inputs    The datetimes to be serialized to strings.
-     * @param pattern   The serialization pattern to use.
-     * @param timezone  The timezone ID identifying the desired timezone the datetime strings should use.
-     * @return          The given datetimes serialized to strings using the given pattern.
-     */
-    public static String[] emit(Date[] inputs, String pattern, String timezone) {
-        return emit(inputs, pattern, TimeZoneHelper.get(timezone));
+        return emit(inputs, pattern, null);
     }
 
     /**
@@ -412,19 +376,7 @@ public final class DateTimeHelper {
      * @return          The given datetimes serialized to strings using the given pattern.
      */
     public static String[] emit(Calendar[] inputs, String pattern) {
-        return emit(inputs, pattern, (TimeZone)null);
-    }
-
-    /**
-     * Serializes the given datetimes to strings using the given pattern.
-     *
-     * @param inputs    The datetimes to be serialized to strings.
-     * @param pattern   The serialization pattern to use.
-     * @param timezone  The timezone ID identifying the desired timezone the datetime strings should use.
-     * @return          The given datetimes serialized to strings using the given pattern.
-     */
-    public static String[] emit(Calendar[] inputs, String pattern, String timezone) {
-        return emit(inputs, pattern, TimeZoneHelper.get(timezone));
+        return emit(inputs, pattern, null);
     }
 
     /**
@@ -541,18 +493,6 @@ public final class DateTimeHelper {
      *
      * @param input     The datetime string to be parsed.
      * @param pattern   The datetime pattern the given string adheres to.
-     * @param timezone  The time zone ID identifying the time zone into which the parsed string will be forced.
-     * @return          A Calendar object representing the parsed datetime string.
-     */
-    public static Calendar parse(String input, String pattern, String timezone) {
-        return parse(input, pattern, TimeZoneHelper.get(timezone));
-    }
-
-    /**
-     * Parses a datetime string that adheres to the given pattern and returns a Calendar object.
-     *
-     * @param input     The datetime string to be parsed.
-     * @param pattern   The datetime pattern the given string adheres to.
      * @param timezone  The time zone into which the parsed string will be forced.
      * @return          A Calendar object representing the parsed datetime string.
      */
@@ -619,19 +559,7 @@ public final class DateTimeHelper {
      * @return          A Calendar object representing the parsed datetime string.
      */
     public static Calendar parse(String input, String[] patterns) {
-        return parse(input, patterns, (String)null);
-    }
-
-    /**
-     * Parses a datetime string that adheres to one of the given patterns and returns a Calendar object.
-     *
-     * @param input     The datetime string to be parsed.
-     * @param patterns  A list of datetime patterns the given string might adhere to.
-     * @param timezone  The time zone ID identifying the time zone into which the parsed string will be forced.
-     * @return          A Calendar object representing the parsed datetime string.
-     */
-    public static Calendar parse(String input, String[] patterns, String timezone) {
-        return parse(input, patterns, TimeZoneHelper.get(timezone));
+        return parse(input, patterns, null);
     }
 
     /**
@@ -685,19 +613,7 @@ public final class DateTimeHelper {
      * @return          A list of Calendar objects representing the parsed datetime strings.
      */
     public static Calendar[] parse(String[] inputs, String pattern) {
-        return parse(inputs, pattern, (TimeZone)null);
-    }
-
-    /**
-     * Parses a list of datetime strings that adhere to the given pattern and returns a list of Calendar objects.
-     *
-     * @param inputs    The list of datetime strings to be parsed.
-     * @param pattern   The datetime pattern the given string adheres to.
-     * @param timezone  The time zone ID identifying the time zone into which the parsed string will be forced.
-     * @return          A list of Calendar objects representing the parsed datetime strings.
-     */
-    public static Calendar[] parse(String[] inputs, String pattern, String timezone) {
-        return parse(inputs, pattern, TimeZoneHelper.get(timezone));
+        return parse(inputs, pattern, null);
     }
 
     /**
@@ -747,20 +663,7 @@ public final class DateTimeHelper {
      * @return          A list of Calendar objects representing the parsed datetime strings.
      */
     public static Calendar[] parse(String[] inputs, String[] patterns) {
-        return parse(inputs, patterns, (TimeZone)null);
-    }
-
-    /**
-     * Parses a list of datetime strings that adhere to one of patterns in the given the list and returns a list of
-     * Calendar objects.
-     *
-     * @param inputs    The list of datetime strings to be parsed.
-     * @param patterns  The list of datetime patterns the given strings might adhere to.
-     * @param timezone  The time zone ID identifying the time zone into which the parsed string will be forced.
-     * @return          A list of Calendar objects representing the parsed datetime strings.
-     */
-    public static Calendar[] parse(String[] inputs, String[] patterns, String timezone) {
-        return parse(inputs, patterns, TimeZoneHelper.get(timezone));
+        return parse(inputs, patterns, null);
     }
 
     /**
@@ -800,18 +703,7 @@ public final class DateTimeHelper {
      * @return          The current datetime as a string formatted according to the given pattern.
      */
     public static String now(String pattern) {
-        return now(pattern, (TimeZone)null);
-    }
-
-    /**
-     * Returns the current datetime as a string formatted according to the given pattern.
-     *
-     * @param pattern   The serialization pattern to use.
-     * @param timezone  The time zone ID identifying the time zone the datetime should be returned in.
-     * @return          The current datetime as a string formatted according to the given pattern.
-     */
-    public static String now(String pattern, String timezone) {
-        return now(pattern, TimeZoneHelper.get(timezone));
+        return now(pattern, null);
     }
 
     /**
@@ -847,18 +739,7 @@ public final class DateTimeHelper {
      * @return          The current date as a string formatted according to the given pattern.
      */
     public static String today(String pattern) {
-        return today(pattern, (TimeZone)null);
-    }
-
-    /**
-     * Returns the current date as a string formatted according to the given pattern.
-     *
-     * @param pattern   The serialization pattern to use.
-     * @param timezone  The time zone ID identifying the time zone the datetime should be returned in.
-     * @return          The current date as a string formatted according to the given pattern.
-     */
-    public static String today(String pattern, String timezone) {
-        return today(pattern, TimeZoneHelper.get(timezone));
+        return today(pattern, null);
     }
 
     /**
@@ -888,18 +769,7 @@ public final class DateTimeHelper {
      * @return          The current date plus 1 day as a string formatted according to the given pattern.
      */
     public static String tomorrow(String pattern) {
-        return tomorrow(pattern, (TimeZone)null);
-    }
-
-    /**
-     * Returns the current date plus 1 day as a string formatted according to the given pattern.
-     *
-     * @param pattern   The serialization pattern to use.
-     * @param timezone  The time zone ID identifying the time zone the datetime should be returned in.
-     * @return          The current date plus 1 day as a string formatted according to the given pattern.
-     */
-    public static String tomorrow(String pattern, String timezone) {
-        return tomorrow(pattern, TimeZoneHelper.get(timezone));
+        return tomorrow(pattern, null);
     }
 
     /**
@@ -929,18 +799,7 @@ public final class DateTimeHelper {
      * @return          The current date minus 1 day as a string formatted according to the given pattern.
      */
     public static String yesterday(String pattern) {
-        return yesterday(pattern, (TimeZone)null);
-    }
-
-    /**
-     * Returns the current date minus 1 day as a string formatted according to the given pattern.
-     *
-     * @param pattern   The serialization pattern to use.
-     * @param timezone  The time zone ID identifying the time zone the datetime should be returned in.
-     * @return          The current date minus 1 day as a string formatted according to the given pattern.
-     */
-    public static String yesterday(String pattern, String timezone) {
-        return yesterday(pattern, TimeZoneHelper.get(timezone));
+        return yesterday(pattern, null);
     }
 
     /**
@@ -972,19 +831,7 @@ public final class DateTimeHelper {
      * @return              The given milliseconds since epoch value formatted according to the given pattern.
      */
     public static String format(long milliseconds, String pattern) {
-        return format(milliseconds, pattern, (TimeZone)null);
-    }
-
-    /**
-     * Reformats the given milliseconds since epoch value according to the desired pattern.
-     *
-     * @param milliseconds  The milliseconds since epoch value to be formatted.
-     * @param pattern       The pattern the resulting datetime string should be formatted as.
-     * @param timezone      The time zone ID identifying the time zone the returned datetime string should be in.
-     * @return              The given milliseconds since epoch value formatted according to the given pattern.
-     */
-    public static String format(long milliseconds, String pattern, String timezone) {
-        return format(milliseconds, pattern, TimeZoneHelper.get(timezone));
+        return format(milliseconds, pattern, null);
     }
 
     /**
@@ -1008,21 +855,7 @@ public final class DateTimeHelper {
      * @return              The given datetime string reformatted according to the given outPattern.
      */
     public static String format(String input, String inPattern, String outPattern) {
-        return format(input, inPattern, (TimeZone)null, outPattern, (TimeZone)null);
-    }
-
-    /**
-     * Reformats the given datetime string according to the desired pattern.
-     *
-     * @param input         The datetime string to be reformatted.
-     * @param inPattern     The pattern the given input datetime string adheres to.
-     * @param inTimeZone    The time zone ID identifying the time zone the given datetime string should be parsed in.
-     * @param outPattern    The pattern the datetime string should be reformatted as.
-     * @param outTimeZone   The time zone ID identifying the time zone the returned datetime string should be in.
-     * @return              The given datetime string reformatted according to the given outPattern.
-     */
-    public static String format(String input, String inPattern, String inTimeZone, String outPattern, String outTimeZone) {
-        return format(input, inPattern, TimeZoneHelper.get(inTimeZone), outPattern, TimeZoneHelper.get(outTimeZone));
+        return format(input, inPattern, null, outPattern, null);
     }
 
     /**
@@ -1048,21 +881,7 @@ public final class DateTimeHelper {
      * @return              The given datetime string reformatted according to the given outPattern.
      */
     public static String format(String input, String[] inPatterns, String outPattern) {
-        return format(input, inPatterns, (TimeZone)null, outPattern, (TimeZone)null);
-    }
-
-    /**
-     * Reformats the given datetime string according to the desired pattern.
-     *
-     * @param input         The datetime string to be reformatted.
-     * @param inPatterns    The list of patterns the given input datetime string might adhere to.
-     * @param inTimeZone    The time zone ID identifying the time zone the given datetime string should be parsed in.
-     * @param outPattern    The pattern the datetime string should be reformatted as.
-     * @param outTimeZone   The time zone ID identifying the time zone the returned datetime string should be in.
-     * @return              The given datetime string reformatted according to the given outPattern.
-     */
-    public static String format(String input, String[] inPatterns, String inTimeZone, String outPattern, String outTimeZone) {
-        return format(input, inPatterns, TimeZoneHelper.get(inTimeZone), outPattern, TimeZoneHelper.get(outTimeZone));
+        return format(input, inPatterns, null, outPattern, null);
     }
 
     /**
@@ -1139,21 +958,7 @@ public final class DateTimeHelper {
      * @return              The given datetime strings reformatted according to the given outPattern.
      */
     public static String[] format(String[] inputs, String inPattern, String outPattern) {
-        return format(inputs, inPattern, (TimeZone)null, outPattern, (TimeZone)null);
-    }
-
-    /**
-     * Reformats the given list of datetime strings according to the desired pattern.
-     *
-     * @param inputs        The list of datetime strings to be reformatted.
-     * @param inPattern     The pattern the given input datetime strings adhere to.
-     * @param inTimeZone    The time zone ID identifying the time zone the given datetime string should be parsed in.
-     * @param outPattern    The pattern the datetime strings should be reformatted as.
-     * @param outTimeZone   The time zone ID identifying the time zone the returned datetime string should be in.
-     * @return              The given datetime strings reformatted according to the given outPattern.
-     */
-    public static String[] format(String[] inputs, String inPattern, String inTimeZone, String outPattern, String outTimeZone) {
-        return format(inputs, inPattern, TimeZoneHelper.get(inTimeZone), outPattern, TimeZoneHelper.get(outTimeZone));
+        return format(inputs, inPattern, null, outPattern, null);
     }
 
     /**
@@ -1185,21 +990,7 @@ public final class DateTimeHelper {
      * @return              The given datetime string reformatted according to the given outPattern.
      */
     public static String[] format(String[] inputs, String[] inPatterns, String outPattern) {
-        return format(inputs, inPatterns, (TimeZone)null, outPattern, (TimeZone)null);
-    }
-
-    /**
-     * Reformats the given datetime string according to the desired pattern.
-     *
-     * @param inputs        The list of datetime strings to be reformatted.
-     * @param inPatterns    The list of patterns the given input datetime string might adhere to.
-     * @param inTimeZone    The time zone ID identifying the time zone the given datetime string should be parsed in.
-     * @param outPattern    The pattern the datetime string should be reformatted as.
-     * @param outTimeZone   The time zone ID identifying the time zone the returned datetime string should be in.
-     * @return              The given datetime string reformatted according to the given outPattern.
-     */
-    public static String[] format(String[] inputs, String[] inPatterns, String inTimeZone, String outPattern, String outTimeZone) {
-        return format(inputs, inPatterns, TimeZoneHelper.get(inTimeZone), outPattern, TimeZoneHelper.get(outTimeZone));
+        return format(inputs, inPatterns, null, outPattern, null);
     }
 
     /**
@@ -1383,22 +1174,7 @@ public final class DateTimeHelper {
      * @return          A Calendar object representing the given Object.
      */
     public static Calendar normalize(Object object, String pattern) {
-        return normalize(object, pattern, (TimeZone)null);
-    }
-
-    /**
-     * Normalizes the given Object to a Calendar: if it's already a Calendar, it is returned;
-     * if it's a Date, it is converted to a Calendar; if it's a Number, it is treated as
-     * a milliseconds since epoch value to create a new Calendar; otherwise it is parsed as
-     * a datetime string.
-     *
-     * @param object    The Object to be normalized to a Calendar.
-     * @param pattern   An optional datetime pattern the given Object adheres to, if it's a String.
-     * @param timezone  The time zone ID identifying the time zone which the parsed string will be forced.
-     * @return          A Calendar object representing the given Object.
-     */
-    public static Calendar normalize(Object object, String pattern, String timezone) {
-        return normalize(object, pattern, TimeZoneHelper.get(timezone));
+        return normalize(object, pattern, null);
     }
 
     /**
