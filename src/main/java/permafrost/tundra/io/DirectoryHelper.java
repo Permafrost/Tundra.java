@@ -124,11 +124,14 @@ public final class DirectoryHelper {
     public static void remove(File directory, boolean recurse) throws IOException {
         if (exists(directory)) {
             if (recurse) {
-                for (File item : directory.listFiles()) {
-                    if (item.isFile()) {
-                        FileHelper.remove(item);
-                    } else {
-                        remove(item, recurse);
+                File[] files = directory.listFiles();
+                if (files != null) {
+                    for (File item : files) {
+                        if (item.isFile()) {
+                            FileHelper.remove(item);
+                        } else {
+                            remove(item, recurse);
+                        }
                     }
                 }
             }
@@ -390,11 +393,13 @@ public final class DirectoryHelper {
         BigInteger totalSize = BigInteger.ZERO;
         File[] children = directory.listFiles();
 
-        for (File child : children) {
-            if (FileHelper.exists(child)) {
-                totalSize = totalSize.add(BigInteger.valueOf(child.length()));
-            } else if (recurse && exists(child)) {
-                totalSize = totalSize.add(size(child, recurse));
+        if (children != null) {
+            for (File child : children) {
+                if (FileHelper.exists(child)) {
+                    totalSize = totalSize.add(BigInteger.valueOf(child.length()));
+                } else if (recurse && exists(child)) {
+                    totalSize = totalSize.add(size(child, recurse));
+                }
             }
         }
 
