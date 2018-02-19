@@ -306,7 +306,7 @@ public final class BigDecimalHelper {
 
         if (decimalPattern == null) {
             if (locale == null) {
-                output = decimal.toString();
+                output = decimal.toPlainString();
             } else {
                 output = NumberFormat.getInstance(locale).format(decimal);
             }

@@ -47,9 +47,7 @@ import java.io.Writer;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -144,8 +142,14 @@ public final class StringHelper {
             value = (String)object;
         } else if (object instanceof Boolean) {
             value = BooleanHelper.emit((Boolean)object);
+        } else if (object instanceof BigDecimal) {
+            value = BigDecimalHelper.emit((BigDecimal)object);
         } else if (object instanceof Number) {
-            value = NumberHelper.emit((Number)object);
+            value = NumberHelper.emit((Number) object);
+        } else if (object instanceof Date) {
+            value = DateTimeHelper.emit((Date) object);
+        } else if (object instanceof Calendar) {
+            value = DateTimeHelper.emit((Calendar)object);
         } else if (object instanceof InputStream) {
             value = normalize((InputStream)object, charset);
         } else if (object instanceof byte[]) {
