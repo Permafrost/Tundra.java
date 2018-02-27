@@ -780,8 +780,11 @@ public final class DurationHelper {
      * @return                  The resulting Duration.
      */
     private static Duration fromFractionalSeconds(BigDecimal fractionalSeconds) {
-        BigInteger seconds = fractionalSeconds.toBigInteger().abs();
-        BigDecimal fraction = fractionalSeconds.subtract(new BigDecimal(seconds)).abs();
+        int signum = fractionalSeconds.signum();
+        fractionalSeconds = fractionalSeconds.abs();
+
+        BigInteger seconds = fractionalSeconds.toBigInteger();
+        BigDecimal fraction = fractionalSeconds.subtract(new BigDecimal(seconds));
 
         BigInteger[] results;
 
@@ -799,7 +802,7 @@ public final class DurationHelper {
 
         fraction = fraction.add(new BigDecimal(seconds));
 
-        return DATATYPE_FACTORY.newDuration(fractionalSeconds.signum() >= 0, BigInteger.ZERO, BigInteger.ZERO, days, hours, minutes, fraction);
+        return DATATYPE_FACTORY.newDuration(signum >= 0, BigInteger.ZERO, BigInteger.ZERO, days, hours, minutes, fraction);
     }
 
     /**

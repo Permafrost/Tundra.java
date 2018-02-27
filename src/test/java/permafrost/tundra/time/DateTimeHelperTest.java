@@ -32,6 +32,18 @@ import java.util.Calendar;
 public class DateTimeHelperTest {
 
     @Test
+    public void testAddNegativeDuration() throws Exception {
+        String result = DateTimeHelper.emit(DateTimeHelper.add(DateTimeHelper.parse("2001-09-05", "date"), DurationHelper.parse("-1", "days")), "date");
+        assertEquals("2001-09-04", result);
+    }
+
+    @Test
+    public void testSubtractNegativeDuration() throws Exception {
+        String result = DateTimeHelper.emit(DateTimeHelper.subtract(DateTimeHelper.parse("2001-09-05", "date"), DurationHelper.parse("-1", "days")), "date");
+        assertEquals("2001-09-06", result);
+    }
+
+    @Test
     public void testConcatenateNullDate() throws Exception {
         Calendar datetime = DateTimeHelper.concatenate(null, Calendar.getInstance());
         assertNull(datetime);
