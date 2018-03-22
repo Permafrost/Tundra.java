@@ -1722,4 +1722,31 @@ public final class StringHelper {
 
         return output.toString();
     }
+
+    /**
+     * Wraps the given string at the given character width, returning an array of strings containing each line.
+     *
+     * @param input     The string to be wrapped.
+     * @param length    The number of characters allowed per line.
+     * @return          An array of strings containing each resulting line.
+     */
+    public static String[] wrap(String input, int length) {
+        if (length < 1) throw new IllegalArgumentException("length must be >= 1");
+        if (input == null) return null;
+
+        if (!input.endsWith("\n")) input = input + "\n";
+
+        Pattern pattern = Pattern.compile("(?m)(.{1," + length + "})\\s|(.{" + length + "})|(.*)$");
+        Matcher matcher = pattern.matcher(input);
+
+        List<String> output = new ArrayList<String>();
+
+        while(matcher.find()) {
+            output.add(matcher.group(0).trim());
+        }
+
+        if (output.size() > 0) output.remove(output.size() - 1);
+
+        return output.toArray(new String[output.size()]);
+    }
 }
