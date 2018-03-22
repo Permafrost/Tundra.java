@@ -27,22 +27,15 @@ package permafrost.tundra.time;
 import com.wm.data.IData;
 import permafrost.tundra.data.IDataMap;
 import java.text.DecimalFormat;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.SortedSet;
 import java.util.TimeZone;
-import java.util.TreeSet;
 import java.util.regex.Pattern;
 
 /**
  * A collection of convenience methods for working with time zones.
  */
 public final class TimeZoneHelper {
-    /**
-     * A sorted set of all time zone IDs known to the JVM.
-     */
-    protected static final SortedSet<String> ZONES = new TreeSet<String>(Arrays.asList(TimeZone.getAvailableIDs()));
     /**
      * Regular expression pattern for matching a time zone offset specified as HH:mm (hours and minutes).
      */
@@ -113,7 +106,7 @@ public final class TimeZoneHelper {
                             } catch (NumberFormatException ex) {
                                 // ignore
                             }
-                        } else if (ZONES.contains(id)) {
+                        } else {
                             timezone = TimeZone.getTimeZone(id);
                         }
                     }
@@ -121,7 +114,9 @@ public final class TimeZoneHelper {
             }
         }
 
-        if (timezone == null) throw new IllegalArgumentException("Unknown time zone specified: '" + id + "'");
+        // TimeZone.getTimeZone(String) returns GMT when it doesn't recognize the given ID, so to detect this we need
+        // to check if GMT was returned for an ID != GMT
+        if (timezone == null || (timezone.getID().equals("GMT") && !id.equals("GMT"))) throw new IllegalArgumentException("Unknown time zone specified: " + id);
 
         return timezone;
     }
