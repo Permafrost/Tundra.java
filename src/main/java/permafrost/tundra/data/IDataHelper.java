@@ -4737,15 +4737,16 @@ public final class IDataHelper {
 
             IData document = IDataFactory.create();
             IDataCursor cursor = document.getCursor();
-            IDataUtil.put(cursor, "by", IDataFactory.create());
-            IDataUtil.put(cursor, "items", array);
+            put(cursor, "by", IDataFactory.create());
+            put(cursor, "items", array);
+            put(cursor, "items.length", array.length, String.class);
             cursor.destroy();
 
             result.add(document);
         } else {
             IDataCursor criteriaCursor = criteria.getCursor();
-            IData[] by = IDataUtil.getIDataArray(criteriaCursor, "by");
-            IData then = IDataUtil.getIData(criteriaCursor, "then");
+            IData[] by = get(criteriaCursor, "by", IData[].class);
+            IData then = get(criteriaCursor, "then", IData.class);
             criteriaCursor.destroy();
 
             Map<CompoundKey, List<IData>> groups = group(array, IDataComparisonCriterion.of(by));
@@ -4758,9 +4759,16 @@ public final class IDataHelper {
 
                 IData group = IDataFactory.create();
                 IDataCursor cursor = group.getCursor();
-                IDataUtil.put(cursor, "by", key.getIData());
-                IDataUtil.put(cursor, "items", items);
-                if (then != null) IDataUtil.put(cursor, "then", group(items, then));
+                put(cursor, "by", key.getIData());
+                put(cursor, "items", items);
+                put(cursor, "items.length", items.length, String.class);
+                if (then != null) {
+                    IData[] thenGroup = group(items, then);
+                    put(cursor, "then", thenGroup);
+                    put(cursor, "then.length", thenGroup.length, String.class);
+                } else {
+                    put(cursor, "then.length", 0, String.class);
+                }
 
                 cursor.destroy();
 
