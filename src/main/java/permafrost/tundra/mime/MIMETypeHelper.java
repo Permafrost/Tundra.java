@@ -112,6 +112,10 @@ public final class MIMETypeHelper {
             classification = "tsv";
         } else if (subType.equals("psv") || subType.endsWith("+psv") || subType.equals("pipe-separated-values") || subType.endsWith("+pipe-separated-values")) {
             classification = "psv";
+        } else if (subType.equals("vnd.ms-excel")) {
+            classification = "xls";
+        } else if (subType.equals("vnd.openxmlformats-officedocument.spreadsheetml.sheet")) {
+            classification = "xlsx";
         }
 
         return classification;
