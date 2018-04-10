@@ -25,15 +25,13 @@
 package permafrost.tundra.xml;
 
 import com.wm.app.b2b.server.ServiceException;
-import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
+import permafrost.tundra.content.MalformedException;
+import permafrost.tundra.content.ValidationException;
 import permafrost.tundra.io.CloseableHelper;
-import permafrost.tundra.lang.BaseException;
-import permafrost.tundra.lang.CharsetHelper;
 import permafrost.tundra.lang.ExceptionHelper;
-import permafrost.tundra.xml.dom.DocumentHelper;
 import permafrost.tundra.xml.sax.InputSourceHelper;
 import permafrost.tundra.xml.stream.StreamSourceHelper;
 import java.io.IOException;
@@ -102,7 +100,12 @@ public final class XMLHelper {
         }
 
         if (raise && errors.size() > 0) {
-            throw new BaseException(errors);
+            if (schema == null) {
+                throw new MalformedException(errors);
+            } else {
+                throw new ValidationException(errors);
+            }
+
         }
 
         return errors.size() == 0 ? null : ExceptionHelper.getMessages(errors.toArray(new Throwable[errors.size()]));
