@@ -130,7 +130,7 @@ public final class SystemHelper {
      */
     private static IData getProperties() {
         // sort keys in natural ascending order via a TreeMap
-        Map<String, String> properties = new TreeMap<String, String>();
+        Map<String, Object> properties = new TreeMap<String, Object>();
 
         Properties systemProperties = System.getProperties();
         if (systemProperties != null) {
@@ -143,20 +143,19 @@ public final class SystemHelper {
                 Object value = entry.getValue();
 
                 if (key instanceof String) {
-                    if (value instanceof String && !value.equals("")) {
-                        properties.put(key.toString(), value.toString());
+                    if (value != null && !value.equals("")) {
+                        properties.put(key.toString(), value);
                     }
                 }
             }
         }
 
         // default the mail.from property if not set
-        String mailFrom = properties.get("mail.from");
-        if (mailFrom == null || mailFrom.equals("")) {
+        if (!properties.containsKey("mail.from")) {
             properties.put("mail.from", getDefaultFromEmailAddress());
         }
         
-        return new MapIData<String, String>(properties);
+        return new MapIData<String, Object>(properties);
     }
 
     /**
