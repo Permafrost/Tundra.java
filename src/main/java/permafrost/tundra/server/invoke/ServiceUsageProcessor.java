@@ -54,7 +54,7 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * An invocation chain processor which provides visibility into currently executing services.
  */
-public class ServiceUsageProcessor extends AbstractInvokeChainProcessor {
+public class ServiceUsageProcessor extends AbstractInvokeChainProcessor implements IDataCodable {
     /**
      * The time this processor was started.
      */
@@ -153,6 +153,7 @@ public class ServiceUsageProcessor extends AbstractInvokeChainProcessor {
      *
      * @return The current invocation context of the server as an IData document.
      */
+    @Override
     public IData getIData() {
         IData output = IDataFactory.create();
         IDataCursor cursor = output.getCursor();
@@ -191,6 +192,7 @@ public class ServiceUsageProcessor extends AbstractInvokeChainProcessor {
      * @param input                             Not used.
      * @throws UnsupportedOperationException    This exception is always thrown.
      */
+    @Override
     public void setIData(IData input) {
         throw new UnsupportedOperationException("setIData not implemented");
     }
@@ -357,6 +359,7 @@ public class ServiceUsageProcessor extends AbstractInvokeChainProcessor {
          *
          * @return An IData representation of this object.
          */
+        @Override
         public IData getIData() {
             IData output = IDataFactory.create();
             IDataCursor cursor = output.getCursor();
@@ -380,6 +383,7 @@ public class ServiceUsageProcessor extends AbstractInvokeChainProcessor {
          * @param input                             Not used.
          * @throws UnsupportedOperationException    This exception is always thrown.
          */
+        @Override
         public void setIData(IData input) {
             throw new UnsupportedOperationException("setIData not implemented");
         }
@@ -443,6 +447,7 @@ public class ServiceUsageProcessor extends AbstractInvokeChainProcessor {
          *
          * @return An IData representation of this object.
          */
+        @Override
         public IData getIData() {
             IData output = IDataFactory.create();
             IDataCursor cursor = output.getCursor();
@@ -471,6 +476,7 @@ public class ServiceUsageProcessor extends AbstractInvokeChainProcessor {
          * @param input                             Not used.
          * @throws UnsupportedOperationException    This exception is always thrown.
          */
+        @Override
         public void setIData(IData input) {
             throw new UnsupportedOperationException("setIData not implemented");
         }
