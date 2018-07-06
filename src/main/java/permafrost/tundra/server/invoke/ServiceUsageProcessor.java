@@ -168,7 +168,13 @@ public class ServiceUsageProcessor extends AbstractInvokeChainProcessor {
 
         List<IData> currentInvocations = new ArrayList<IData>(invocations.size());
         for (Map.Entry<Thread, Invocation> entry : invocations.entrySet()) {
-            currentInvocations.add(entry.getValue().getIData());
+            if (entry.getValue().size() == 0) {
+                // remove any entries that don't have any current invocations - this shouldn't happen, but for some
+                // reason Event Manager threads sometimes fall into this category
+                invocations.remove(entry.getKey());
+            } else {
+                currentInvocations.add(entry.getValue().getIData());
+            }
         }
 
         IDataUtil.put(cursor, "invocations.current", currentInvocations.toArray(new IData[currentInvocations.size()]));
