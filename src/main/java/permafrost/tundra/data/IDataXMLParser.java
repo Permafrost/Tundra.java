@@ -32,7 +32,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import permafrost.tundra.io.CloseableHelper;
 import permafrost.tundra.io.InputStreamHelper;
-import permafrost.tundra.lang.BytesHelper;
 import permafrost.tundra.lang.CharsetHelper;
 import permafrost.tundra.xml.dom.DocumentHelper;
 import permafrost.tundra.xml.dom.NodeHelper;
@@ -44,7 +43,7 @@ import java.nio.charset.Charset;
 /**
  * Deserializes and serializes IData objects from and to XML.
  */
-public class IDataXMLParser extends IDataTextParser {
+public final class IDataXMLParser extends IDataParser {
     /**
      * The root node name that identifies a Values-encoded XML file.
      */
@@ -56,36 +55,10 @@ public class IDataXMLParser extends IDataTextParser {
     private static final String IDATA_XML_ROOT_NODE_NAME = "IDataXMLCoder";
 
     /**
-     * Initialization on demand holder idiom.
+     * Construct a new IDataXMLParser.
      */
-    private static class Holder {
-        /**
-         * The singleton instance of the class.
-         */
-        private static final IDataXMLParser INSTANCE = new IDataXMLParser();
-    }
-
-    /**
-     * Disallow instantiation of this class.
-     */
-    private IDataXMLParser() {}
-
-    /**
-     * Returns the singleton instance of this class.
-     *
-     * @return The singleton instance of this class.
-     */
-    public static IDataXMLParser getInstance() {
-        return Holder.INSTANCE;
-    }
-
-    /**
-     * Returns the MIME type this parser handles.
-     *
-     * @return The MIME type this parser handles.
-     */
-    public String getContentType() {
-        return "text/xml";
+    public IDataXMLParser() {
+        super("text/xml");
     }
 
     /**
@@ -96,9 +69,10 @@ public class IDataXMLParser extends IDataTextParser {
      * @return              An IData representation of the given input stream data.
      * @throws IOException  If there is a problem reading from the stream.
      */
-    public IData decode(InputStream inputStream, Charset charset) throws IOException {
+    @Override
+    public IData parse(InputStream inputStream, Charset charset) throws IOException {
         // convert inputStream to resettable ByteArrayInputStream
-        inputStream = InputStreamHelper.normalize(BytesHelper.normalize(inputStream));
+        inputStream = InputStreamHelper.memoize(inputStream);
         IData output = null;
 
         try {
@@ -140,7 +114,8 @@ public class IDataXMLParser extends IDataTextParser {
      * @param charset      The character set to use.
      * @throws IOException If there is a problem writing to the stream.
      */
-    public void encode(OutputStream outputStream, IData document, Charset charset) throws IOException {
+    @Override
+    public void emit(OutputStream outputStream, IData document, Charset charset) throws IOException {
         IDataXMLCoder parser = new IDataXMLCoder(CharsetHelper.normalize(charset).displayName());
         parser.encode(outputStream, document);
     }

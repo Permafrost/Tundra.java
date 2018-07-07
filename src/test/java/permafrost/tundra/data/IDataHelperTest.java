@@ -738,7 +738,7 @@ public class IDataHelperTest {
                 "  </record>\n" +
                 "</IDataXMLCoder>\n";
 
-        IDataMap map = new IDataMap(IDataXMLParser.getInstance().parse(InputStreamHelper.normalize(xml)));
+        IDataMap map = new IDataMap(new IDataXMLParser().parse(InputStreamHelper.normalize(xml)));
         IData[] array = (IData[])map.get("array");
 
         IDataComparisonCriterion c1 = new IDataComparisonCriterion("string", "string", false);
