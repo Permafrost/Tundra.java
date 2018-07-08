@@ -99,7 +99,7 @@ public class NormalDistributionEstimator {
      * @param sample The sample to be added.
      * @return The estimator object itself, to support method chaining.
      */
-    public synchronized final NormalDistributionEstimator add(double sample) {
+    public synchronized NormalDistributionEstimator add(double sample) {
         count++;
         if (count == 1) {
             mean = minimum = maximum = sample;
@@ -121,7 +121,7 @@ public class NormalDistributionEstimator {
      * @param samples One or more samples to be added.
      * @return The estimator object itself, to support method chaining.
      */
-    public final NormalDistributionEstimator add(double... samples) {
+    public NormalDistributionEstimator add(double... samples) {
         for (double sample : samples) {
             add(sample);
         }
@@ -134,7 +134,7 @@ public class NormalDistributionEstimator {
      * @param samples A collection of samples to be added.
      * @return The estimator object itself, to support method chaining.
      */
-    public final NormalDistributionEstimator add(Collection<Double> samples) {
+    public NormalDistributionEstimator add(Collection<Double> samples) {
         for (double sample : samples) {
             add(sample);
         }
@@ -156,18 +156,29 @@ public class NormalDistributionEstimator {
     }
 
     /**
+     * Ensure all calculations are up to date.
+     */
+    protected void quiesce() {}
+
+    /**
      * Returns the number of samples seen by this estimator.
      *
      * @return The number of samples seen by this estimator.
      */
-    public synchronized long getCount() { return count; }
+    public synchronized long getCount() {
+        quiesce();
+        return count;
+    }
 
     /**
      * Returns the mean of the samples.
      *
      * @return The mean of the samples.
      */
-    public synchronized double getMean() { return mean; }
+    public synchronized double getMean() {
+        quiesce();
+        return mean;
+    }
 
     /**
      * Returns the minimum of the samples.
@@ -175,6 +186,8 @@ public class NormalDistributionEstimator {
      * @return The minimum of the samples.
      */
     public synchronized double getMinimum() {
+        quiesce();
+
         if (count == 0) throw new IllegalStateException("minimum value is not available when sample count is zero");
         return minimum;
     }
@@ -185,6 +198,8 @@ public class NormalDistributionEstimator {
      * @return The maximum of the samples.
      */
     public synchronized double getMaximum() {
+        quiesce();
+
         if (count == 0) throw new IllegalStateException("maximum value is not available when sample count is zero");
         return maximum;
     }
@@ -195,6 +210,7 @@ public class NormalDistributionEstimator {
      * @return The variance estimate.
      */
     public synchronized double getVariance() {
+        quiesce();
         return count > 1 ? sq / (count - 1) : 0.0;
     }
 
@@ -204,6 +220,7 @@ public class NormalDistributionEstimator {
      * @return The standard deviation estimate.
      */
     public double getStandardDeviation() {
+        quiesce();
         return Math.sqrt(getVariance());
     }
 
