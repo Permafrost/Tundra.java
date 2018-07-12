@@ -1968,11 +1968,31 @@ public final class IDataHelper {
      * Converts all null values to empty strings.
      *
      * @param document  The IData document to blankify.
+     * @return          The blankified IData.
+     */
+    public static IData blankify(IData document) {
+        return blankify(document, true);
+    }
+
+    /**
+     * Converts all null values to empty strings.
+     *
+     * @param document  The IData document to blankify.
      * @param recurse   Whether embedded IData and IData[] objects should be recursively blankified.
      * @return          The blankified IData.
      */
     public static IData blankify(IData document, boolean recurse) {
         return transform(document, new Blankifier(recurse));
+    }
+
+    /**
+     * Converts all null values to empty strings.
+     *
+     * @param array     The IData[] to blankify.
+     * @return          The blankified IData[].
+     */
+    public static IData[] blankify(IData[] array) {
+        return blankify(array, true);
     }
 
     /**
@@ -2274,6 +2294,8 @@ public final class IDataHelper {
                 document = compact(document);
             } else if (sanitization == Sanitization.REMOVE_NULLS_AND_BLANKS) {
                 document = squeeze(document);
+            } else if (sanitization == Sanitization.CONVERT_NULLS_TO_BLANKS) {
+                document = blankify(document);
             }
         }
 
@@ -2343,6 +2365,8 @@ public final class IDataHelper {
                 array = compact(array);
             } else if (sanitization == Sanitization.REMOVE_NULLS_AND_BLANKS) {
                 array = squeeze(array);
+            } else if (sanitization == Sanitization.CONVERT_NULLS_TO_BLANKS) {
+                array = blankify(array);
             }
         }
 

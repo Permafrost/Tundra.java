@@ -276,12 +276,14 @@ public final class TableHelper {
      * @param <T>           The class of item stored in the array.
      * @return              The resulting compacted table.
      */
-    private static <T> T[][] sanitize(T[][] table, Sanitization sanitization) {
+    public static <T> T[][] sanitize(T[][] table, Sanitization sanitization) {
         if (table != null && sanitization != null) {
             if (sanitization == Sanitization.REMOVE_NULLS) {
                 table = compact(table);
             } else if (sanitization == Sanitization.REMOVE_NULLS_AND_BLANKS) {
                 table = squeeze(table);
+            } else if (sanitization == Sanitization.CONVERT_NULLS_TO_BLANKS) {
+                table = blankify(table);
             }
         }
 
@@ -295,7 +297,7 @@ public final class TableHelper {
      * @param <T>   The type of item in the table.
      * @return A new table that is the given table squeezed.
      */
-    private static <T> T[][] squeeze(T[][] table) {
+    public static <T> T[][] squeeze(T[][] table) {
         if (table == null || table.length == 0) return null;
 
         List<T[]> list = new ArrayList<T[]>(table.length);
@@ -317,7 +319,7 @@ public final class TableHelper {
      * @param <T>       The nullified table.
      * @return
      */
-    private static <T> T[][] nullify(T[][] table) {
+    public static <T> T[][] nullify(T[][] table) {
         if (table == null || table.length == 0) return null;
 
         List<T[]> list = new ArrayList<T[]>(table.length);
@@ -330,6 +332,32 @@ public final class TableHelper {
         table = list.toArray(Arrays.copyOf(table, list.size()));
 
         return table.length == 0 ? null : table;
+    }
+
+    /**
+     * Replaces nulls with blank strings in the given table.
+     *
+     * @param table The table to be processed.
+     * @param <T>   The component class of the table.
+     * @return      A new table containing all items in the given table but with nulls replaced with blank strings.
+     * @throws IllegalArgumentException If given table is not an instance of String[][].
+     */
+    public static <T> T[][] blankify(T[][] table) {
+        if (table == null || table.length == 0) return null;
+
+        if (table instanceof String[][]) {
+            List<T[]> list = new ArrayList<T[]>(table.length);
+
+            for (T[] row : table) {
+                list.add(ArrayHelper.blankify(row));
+            }
+
+            table = list.toArray(Arrays.copyOf(table, list.size()));
+
+            return table.length == 0 ? null : table;
+        } else {
+            throw new IllegalArgumentException("table must be an instance of class String[][]; class provided: " + table.getClass().getName());
+        }
     }
 
     /**

@@ -28,7 +28,7 @@ package permafrost.tundra.lang;
  * The different compaction modes supported by ArrayHelper and TableHelper join and squeeze methods.
  */
 public enum Sanitization {
-    REMOVE_NULLS, REMOVE_NULLS_AND_BLANKS;
+    REMOVE_NULLS, REMOVE_NULLS_AND_BLANKS, CONVERT_NULLS_TO_BLANKS;
 
     /**
      * Returns an CompactionMode for the given string value.

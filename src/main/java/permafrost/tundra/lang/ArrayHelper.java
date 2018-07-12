@@ -845,16 +845,38 @@ public final class ArrayHelper {
      * @param <T>           The class of item stored in the array.
      * @return              The resulting sanitized array.
      */
+    @SuppressWarnings("unchecked")
     public static <T> T[] sanitize(T[] array, Sanitization sanitization) {
         if (array != null && sanitization != null) {
             if (sanitization == Sanitization.REMOVE_NULLS) {
                 array = compact(array);
             } else if (sanitization == Sanitization.REMOVE_NULLS_AND_BLANKS) {
                 array = squeeze(array);
+            } else if (sanitization == Sanitization.CONVERT_NULLS_TO_BLANKS) {
+                array = blankify(array);
             }
         }
 
         return array;
+    }
+
+    /**
+     * Replaces nulls to blank strings in the given array.
+     *
+     * @param array The array to process.
+     * @param <T>   The component class of the array.
+     * @return      A new array containing all items of the given array, but with nulls replaced with blank strings.
+     * @throws IllegalArgumentException If given array is not an instanceof String[].
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T[] blankify(T[] array) {
+        if (array == null || array.length == 0) return null;
+
+        if (array instanceof String[]) {
+            return (T[])StringHelper.blankify((String[])array);
+        } else {
+            throw new IllegalArgumentException("array must be an instance of class String[]; class provided: " + array.getClass().getName());
+        }
     }
 
     /**
