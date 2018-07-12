@@ -24,6 +24,7 @@
 
 package permafrost.tundra.io;
 
+import permafrost.tundra.lang.ArrayHelper;
 import permafrost.tundra.time.DateTimeHelper;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -203,7 +204,7 @@ public final class DirectoryHelper {
         if (!exists(directory) || (listing = directory.list()) == null) {
             throw new FileNotFoundException("Unable to list directory as it either does not exist, access is denied, or an IO error occurred: " + FileHelper.normalize(directory));
         }
-        return listing;
+        return ArrayHelper.sort(listing);
     }
 
     /**
