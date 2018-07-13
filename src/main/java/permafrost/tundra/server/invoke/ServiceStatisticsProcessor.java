@@ -36,6 +36,7 @@ import permafrost.tundra.math.NormalDistributionEstimator;
 import permafrost.tundra.time.DateTimeHelper;
 import permafrost.tundra.time.DurationHelper;
 import permafrost.tundra.time.DurationPattern;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.Iterator;
@@ -131,10 +132,10 @@ public class ServiceStatisticsProcessor extends AbstractInvokeChainProcessor imp
             }
         }
 
-        IDataUtil.put(cursor, "collection.started?", started);
+        IDataUtil.put(cursor, "sampling.started?", started);
         if (started) {
-            IDataUtil.put(cursor, "collection.start", DateTimeHelper.format(startTime));
-            IDataUtil.put(cursor, "collection.duration", DurationHelper.format(System.currentTimeMillis() - startTime, DurationPattern.XML));
+            IDataUtil.put(cursor, "sampling.start", DateTimeHelper.format(startTime));
+            IDataUtil.put(cursor, "sampling.duration", DurationHelper.format(System.currentTimeMillis() - startTime, DurationPattern.XML));
         }
 
         cursor.insertAfter("statistics", services.toArray(new IData[services.size()]));
@@ -184,6 +185,14 @@ public class ServiceStatisticsProcessor extends AbstractInvokeChainProcessor imp
      * Service statistics collection class.
      */
     private static class ServiceStatistics extends NormalDistributionEstimator implements IDataCodable {
+        /**
+         * The pattern used to format decimals for display.
+         */
+        private static final String DECIMAL_PATTERN = "###,##0.000000";
+        /**
+         * The pattern used to format integers for display.
+         */
+        private static final String INTEGER_PATTERN = "###,##0";
         /**
          * Use a sample queue to reduce thread synchronization required by estimator.
          */
@@ -249,15 +258,32 @@ public class ServiceStatisticsProcessor extends AbstractInvokeChainProcessor imp
          */
         @Override
         public IData getIData() {
+            DecimalFormat decimalFormat = new DecimalFormat(DECIMAL_PATTERN);
+            DecimalFormat integerFormat = new DecimalFormat(INTEGER_PATTERN);
+
             IData output = IDataFactory.create();
             IDataCursor cursor = output.getCursor();
 
+            double mean = getMean();
+            double standardDeviation = getStandardDeviation();
+            double minimum = getMinimum();
+            double maximum = getMaximum();
+            double cumulative = getCumulative();
+            long count = getCount();
+
             cursor.insertAfter("service", getService());
-            cursor.insertAfter("mean", getMean());
-            cursor.insertAfter("stdev", getStandardDeviation());
-            cursor.insertAfter("minimum", getMinimum());
-            cursor.insertAfter("maximum", getMaximum());
-            cursor.insertAfter("count", getCount());
+            cursor.insertAfter("minimum", minimum);
+            cursor.insertAfter("minimum.formatted", decimalFormat.format(minimum));
+            cursor.insertAfter("average", mean);
+            cursor.insertAfter("average.formatted", decimalFormat.format(mean));
+            cursor.insertAfter("deviation.standard", standardDeviation);
+            cursor.insertAfter("deviation.standard.formatted", decimalFormat.format(standardDeviation));
+            cursor.insertAfter("maximum", maximum);
+            cursor.insertAfter("maximum.formatted", decimalFormat.format(maximum));
+            cursor.insertAfter("cumulative", cumulative);
+            cursor.insertAfter("cumulative.formatted", decimalFormat.format(cumulative));
+            cursor.insertAfter("count", count);
+            cursor.insertAfter("count.formatted", integerFormat.format(count));
 
             cursor.destroy();
 

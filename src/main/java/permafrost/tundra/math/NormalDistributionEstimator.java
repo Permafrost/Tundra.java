@@ -31,7 +31,7 @@ import java.util.Collection;
  */
 public class NormalDistributionEstimator {
     protected long count;
-    protected double mean, sq, minimum, maximum;
+    protected double mean, sq, minimum, maximum, cumulative;
     protected String unit = "";
 
     /**
@@ -101,6 +101,7 @@ public class NormalDistributionEstimator {
      */
     public synchronized NormalDistributionEstimator add(double sample) {
         count++;
+        cumulative = cumulative + sample;
         if (count == 1) {
             mean = minimum = maximum = sample;
             sq = 0.0;
@@ -152,6 +153,7 @@ public class NormalDistributionEstimator {
         sq = 0.0;
         minimum = 0.0;
         maximum = 0.0;
+        cumulative = 0.0;
         return this;
     }
 
@@ -202,6 +204,16 @@ public class NormalDistributionEstimator {
 
         if (count == 0) throw new IllegalStateException("maximum value is not available when sample count is zero");
         return maximum;
+    }
+
+    /**
+     * Returns the cumulative total of all samples seen by this estimator.
+     *
+     * @return The cumulative total of all samples seen by this estimator.
+     */
+    public synchronized double getCumulative() {
+        quiesce();
+        return cumulative;
     }
 
     /**
