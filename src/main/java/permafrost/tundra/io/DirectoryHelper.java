@@ -25,16 +25,26 @@
 package permafrost.tundra.io;
 
 import permafrost.tundra.lang.ArrayHelper;
+import permafrost.tundra.lang.IterableHelper;
 import permafrost.tundra.time.DateTimeHelper;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigInteger;
+import java.util.ArrayDeque;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Deque;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 import javax.xml.datatype.Duration;
 
 /**
@@ -286,6 +296,64 @@ public final class DirectoryHelper {
      */
     public static long purge(String directory, Calendar olderThan, FilenameFilter filter, boolean recurse) throws FileNotFoundException {
         return purge(FileHelper.construct(directory), olderThan, filter, recurse);
+    }
+
+    /**
+     * Compresses the files in the given directory into a zip archive.
+     *
+     * @param directory             The directory to be compressed.
+     * @param filter                An optional filter to determine which files to include in the archive.
+     * @param recurse               Whether to also recursively archive subdirectories.
+     * @param includeParentInPath   Whether the parent directory should be included in the filename paths.
+     * @return                      An input stream from which the resulting zip archive can be read.
+     * @throws IOException          If an IO error occurs.
+     */
+    public static InputStream zip(File directory, FilenameFilter filter, boolean recurse, boolean includeParentInPath) throws IOException {
+        File temporaryFile = FileHelper.create();
+        ZipOutputStream zipOutputStream = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(temporaryFile), InputOutputHelper.DEFAULT_BUFFER_SIZE));
+
+        Deque<String> path = new ArrayDeque<String>();
+        if (includeParentInPath) path.add(directory.getName() + "/");
+
+        try {
+            zip(zipOutputStream, path, directory, filter, recurse);
+        } finally {
+            CloseableHelper.close(zipOutputStream);
+        }
+
+        return new BufferedInputStream(new DeleteOnCloseFileInputStream(temporaryFile), InputOutputHelper.DEFAULT_BUFFER_SIZE);
+    }
+
+    /**
+     * Compresses the files in the given directory into a zip archive.
+     *
+     * @param zipOutputStream       The zip stream to write the directory's contents to.
+     * @param path                  The path prefix for all file names.
+     * @param directory             The directory to compress.
+     * @param filter                An optional filter to determine which files to include in the archive.
+     * @param recurse               Whether to also recursively archive subdirectories.
+     * @throws IOException          If an IO error occurs.
+     */
+    private static void zip(ZipOutputStream zipOutputStream, Deque<String> path, File directory, FilenameFilter filter, boolean recurse) throws IOException {
+        if (zipOutputStream == null || directory == null) return;
+
+        for (String item : list(directory)) {
+            File child = new File(directory, item);
+            if (child.isFile() && (filter == null || filter.accept(directory, item))) {
+                zipOutputStream.putNextEntry(new ZipEntry(IterableHelper.join(path, null, false) + item));
+                InputStream childInputStream = new BufferedInputStream(new FileInputStream(child), InputOutputHelper.DEFAULT_BUFFER_SIZE);
+                try {
+                    InputOutputHelper.copy(childInputStream, zipOutputStream, false);
+                } finally {
+                    CloseableHelper.close(childInputStream);
+                    zipOutputStream.closeEntry();
+                }
+            } else if (recurse && child.isDirectory()) {
+                path.add(child.getName() + "/");
+                zip(zipOutputStream, path, child, filter, recurse);
+                path.removeLast();
+            }
+        }
     }
 
     /**
