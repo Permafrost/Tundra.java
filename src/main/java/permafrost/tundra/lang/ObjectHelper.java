@@ -33,6 +33,7 @@ import com.wm.util.coder.IDataCodable;
 import com.wm.util.coder.ValuesCodable;
 import permafrost.tundra.collection.ListHelper;
 import permafrost.tundra.data.IDataHelper;
+import permafrost.tundra.io.FileHelper;
 import permafrost.tundra.io.InputStreamHelper;
 import permafrost.tundra.math.BigDecimalHelper;
 import permafrost.tundra.math.BigIntegerHelper;
@@ -49,6 +50,7 @@ import permafrost.tundra.time.DateTimeHelper;
 import permafrost.tundra.time.DurationHelper;
 import permafrost.tundra.time.TimeZoneHelper;
 import permafrost.tundra.xml.namespace.IDataNamespaceContext;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Array;
@@ -516,6 +518,8 @@ public final class ObjectHelper {
                 value = (T)MessageDigestHelper.normalize((String)object);
             } else if (klass.isAssignableFrom(TimeZone.class) && object instanceof String) {
                 value = (T)TimeZoneHelper.get((String)object);
+            } else if (klass.isAssignableFrom(File.class) && object instanceof String) {
+                value = (T)FileHelper.construct((String)object);
             }
         } catch (IOException ex) {
             throw new RuntimeException(ex);
