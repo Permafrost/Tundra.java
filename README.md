@@ -24,6 +24,7 @@ required to be included on the project's classpath:
 It is also dependent on the following open source libraries, which
 are required to be included on the project's classpath:
 
+* `commons-compress-1.12.jar` - https://commons.apache.org/proper/commons-compress/
 * `jakarta-oro-2.0.8.jar` - http://archive.apache.org/dist/jakarta/oro/
 * `log4j-1.2.17.jar` - https://logging.apache.org/log4j/1.2/
 * `unbescape-1.1.3.RELEASE.jar` - http://www.unbescape.org/

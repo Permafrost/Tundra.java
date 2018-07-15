@@ -24,6 +24,8 @@
 
 package permafrost.tundra.io;
 
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
+import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import permafrost.tundra.lang.ArrayHelper;
 import permafrost.tundra.lang.IterableHelper;
 import permafrost.tundra.time.DateTimeHelper;
@@ -36,6 +38,7 @@ import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.math.BigInteger;
 import java.util.ArrayDeque;
 import java.util.Calendar;
@@ -43,6 +46,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Deque;
 import java.util.List;
+import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import javax.xml.datatype.Duration;
@@ -351,6 +355,70 @@ public final class DirectoryHelper {
             } else if (recurse && child.isDirectory()) {
                 path.add(child.getName() + "/");
                 zip(zipOutputStream, path, child, filter, recurse);
+                path.removeLast();
+            }
+        }
+    }
+
+    /**
+     * Adds the files in the given directory to a tar archive.
+     *
+     * @param directory             The directory to be archived.
+     * @param filter                An optional filter to determine which files to include in the archive.
+     * @param recurse               Whether to also recursively archive subdirectories.
+     * @param includeParentInPath   Whether the parent directory should be included in the filename paths.
+     * @param gzip                  Whether to gzip the resulting tar archive.
+     * @return                      An input stream from which the resulting tar archive can be read.
+     * @throws IOException          If an IO error occurs.
+     */
+    public static InputStream tar(File directory, FilenameFilter filter, boolean recurse, boolean includeParentInPath, boolean gzip) throws IOException {
+        File temporaryFile = FileHelper.create();
+
+        OutputStream outputStream = new FileOutputStream(temporaryFile);
+        if (gzip) outputStream = new GZIPOutputStream(outputStream);
+        TarArchiveOutputStream tarOutputStream = new TarArchiveOutputStream(new BufferedOutputStream(outputStream, InputOutputHelper.DEFAULT_BUFFER_SIZE));
+
+        tarOutputStream.setBigNumberMode(TarArchiveOutputStream.BIGNUMBER_STAR);
+        tarOutputStream.setLongFileMode(TarArchiveOutputStream.LONGFILE_GNU);
+
+        Deque<String> path = new ArrayDeque<String>();
+        if (includeParentInPath) path.add(directory.getName() + "/");
+
+        try {
+            tar(tarOutputStream, path, directory, filter, recurse);
+        } finally {
+            CloseableHelper.close(tarOutputStream);
+        }
+
+        return new BufferedInputStream(new DeleteOnCloseFileInputStream(temporaryFile), InputOutputHelper.DEFAULT_BUFFER_SIZE);
+    }
+
+    /**
+     * Adds the files in the given directory into a tar archive.
+     *
+     * @param tarOutputStream       The tar stream to write the directory's contents to.
+     * @param path                  The path prefix for all file names.
+     * @param directory             The directory to compress.
+     * @param filter                An optional filter to determine which files to include in the archive.
+     * @param recurse               Whether to also recursively archive subdirectories.
+     * @throws IOException          If an IO error occurs.
+     */
+    private static void tar(TarArchiveOutputStream tarOutputStream, Deque<String> path, File directory, FilenameFilter filter, boolean recurse) throws IOException {
+        if (tarOutputStream == null || directory == null) return;
+
+        for (String item : list(directory)) {
+            File child = new File(directory, item);
+            if (child.isFile() && (filter == null || filter.accept(directory, item))) {
+                TarArchiveEntry tarArchiveEntry = new TarArchiveEntry(child, IterableHelper.join(path, null, false) + item);
+                tarOutputStream.putArchiveEntry(tarArchiveEntry);
+                try {
+                    tarOutputStream.write(InputStreamHelper.read(new FileInputStream(child)));
+                } finally {
+                    tarOutputStream.closeArchiveEntry();
+                }
+            } else if (recurse && child.isDirectory()) {
+                path.add(child.getName() + "/");
+                tar(tarOutputStream, path, child, filter, recurse);
                 path.removeLast();
             }
         }
