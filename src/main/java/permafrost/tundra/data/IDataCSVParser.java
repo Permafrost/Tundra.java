@@ -1,0 +1,260 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2015 Lachlan Dowding
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+package permafrost.tundra.data;
+
+import com.wm.data.IData;
+import com.wm.data.IDataCursor;
+import com.wm.data.IDataFactory;
+import com.wm.data.IDataUtil;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVPrinter;
+import org.apache.commons.csv.CSVRecord;
+import permafrost.tundra.io.CloseableHelper;
+import permafrost.tundra.io.InputOutputHelper;
+import permafrost.tundra.lang.CharsetHelper;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.io.Reader;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Deserializes and serializes IData objects from and to CSV.
+ */
+public class IDataCSVParser extends IDataParser {
+    /**
+     * The default MIME media type for CSV content.
+     */
+    public static final String DEFAULT_CONTENT_TYPE = "text/csv";
+    /**
+     * The default delimiter character used by the parser.
+     */
+    public static final char DEFAULT_DELIMITER = ',';
+    /**
+     * The delimiter used by the parser.
+     */
+    protected char delimiter;
+    /**
+     * The column names to use when parsing.
+     */
+    protected String[] columns;
+    /**
+     * Whether the parsed and emitted CSVs have header rows.
+     */
+    protected boolean hasHeader;
+
+    /**
+     * Construct a new IDataCSVCoder, using the default delimiter ',' and default content type "text/csv".
+     */
+    public IDataCSVParser() {
+        this(DEFAULT_DELIMITER);
+    }
+
+    /**
+     * Construct a new IDataCSVCoder.
+     *
+     * @param delimiter   The delimiter character to use.
+     */
+    public IDataCSVParser(char delimiter) {
+        this(delimiter, DEFAULT_CONTENT_TYPE, true);
+    }
+
+    /**
+     * Construct a new IDataCSVCoder.
+     *
+     * @param delimiter   The delimiter character to use.
+     * @param contentType The content type to use.
+     * @param hasHeader   Whether to use a header row.
+     * @param columns     The column names to use.
+     */
+    public IDataCSVParser(char delimiter, String contentType, boolean hasHeader, String... columns) {
+        super(contentType);
+        this.delimiter = delimiter;
+        this.hasHeader = hasHeader;
+        this.columns = columns;
+    }
+
+    /**
+     * Construct a new IDataCSVCoder.
+     *
+     * @param delimiter   The delimiter character to use.
+     */
+    public IDataCSVParser(String delimiter) {
+        this(delimiter, DEFAULT_CONTENT_TYPE, true);
+    }
+
+    /**
+     * Construct a new IDataCSVCoder.
+     *
+     * @param delimiter   The delimiter character to use.
+     * @param contentType The content type to use.
+     * @param hasHeader   Whether to use a header row.
+     * @param columns     The column names to use.
+     */
+    public IDataCSVParser(String delimiter, String contentType, boolean hasHeader, String... columns) {
+        this(toDelimiter(delimiter), contentType, hasHeader, columns);
+    }
+
+    /**
+     * Returns an IData representation of the CSV data in the given input stream.
+     *
+     * @param inputStream   The input stream to be decoded.
+     * @param charset       The character set to use.
+     * @return              An IData representation of the given input stream data.
+     * @throws IOException  If there is a problem reading from the stream.
+     */
+    @Override
+    public IData parse(InputStream inputStream, Charset charset) throws IOException {
+        if (inputStream == null) return null;
+
+        String[] columns = this.columns;
+        if (!hasHeader) columns = null;
+        IData output = IDataFactory.create();
+        IDataCursor outputCursor = output.getCursor();
+        Reader reader = new InputStreamReader(inputStream, CharsetHelper.normalize(charset));
+
+        try {
+            CSVParser parser = formatter(columns).parse(reader);
+
+            Map<Integer, String> keys = flip(parser.getHeaderMap());
+            List<IData> list = new ArrayList<IData>();
+
+            for (CSVRecord record : parser) {
+                IData document = IDataFactory.create();
+                IDataCursor cursor = document.getCursor();
+
+                try {
+                    for (int i = 0; i < record.size(); i++) {
+                        String value = record.get(i);
+                        String key;
+
+                        if (keys != null) {
+                            key = keys.get(i);
+                            if (key == null) key = "";
+                        } else {
+                            key = Integer.toString(i + 1);
+                        }
+                        cursor.insertAfter(key, value);
+                    }
+                } finally {
+                    cursor.destroy();
+                }
+
+                list.add(document);
+            }
+
+            IDataUtil.put(outputCursor, "recordWithNoID", list.toArray(new IData[list.size()]));
+        } finally {
+            CloseableHelper.close(reader);
+            outputCursor.destroy();
+        }
+
+        return output;
+    }
+
+    /**
+     * Encodes the given IData document as CSV to the given output stream.
+     *
+     * @param outputStream The stream to write the encoded IData to.
+     * @param document     The IData document to be encoded.
+     * @param charset      The character set to use.
+     * @throws IOException If there is a problem writing to the stream.
+     */
+    @Override
+    public void emit(OutputStream outputStream, IData document, Charset charset) throws IOException {
+        PrintStream printStream = new PrintStream(new BufferedOutputStream(outputStream, InputOutputHelper.DEFAULT_BUFFER_SIZE), false, CharsetHelper.normalize(charset).displayName());
+
+        try {
+            IDataCursor cursor = document.getCursor();
+            IData[] records = IDataUtil.getIDataArray(cursor, "recordWithNoID");
+            cursor.destroy();
+
+            if (records != null) {
+                String[] columns = this.columns;
+                if (columns == null || columns.length == 0) columns = IDataHelper.getKeys(records);
+
+                CSVPrinter printer = new CSVPrinter(printStream, formatter(columns));
+
+                for (IData record : records) {
+                    if (record != null) printer.printRecord(IDataHelper.getValues(record));
+                }
+            }
+        } finally {
+            CloseableHelper.close(printStream);
+        }
+    }
+
+    /**
+     * Flips the given map.
+     *
+     * @param map  The map to flip.
+     * @return      The flipped map.
+     */
+    protected static <K, V> Map<V, K> flip(Map<K, V> map) {
+        if (map == null) return null;
+
+        Map<V, K> output = new HashMap<V, K>();
+        for (Map.Entry<K, V> entry : map.entrySet()) {
+            output.put(entry.getValue(), entry.getKey());
+        }
+        return output;
+    }
+
+    /**
+     * @return A new CSV formatter configured with this parser's settings.
+     */
+    protected CSVFormat formatter() {
+        return formatter(columns);
+    }
+
+    /**
+     * Returns a new CSV formatter configured with this parser's settings.
+     *
+     * @param columns   The column names to use.
+     * @return          A new CSV formatter configured with this parser's settings.
+     */
+    protected CSVFormat formatter(String[] columns) {
+        return CSVFormat.DEFAULT.withHeader(columns).withSkipHeaderRecord(!hasHeader).withDelimiter(delimiter).withNullString("").withAllowMissingColumnNames();
+    }
+
+    /**
+     * Returns the first character of the given String.
+     *
+     * @param delimiter The String to retrieve the delimiter character from.
+     * @return          The first character of the given String.
+     */
+    protected static char toDelimiter(String delimiter) {
+        if (delimiter == null || delimiter.length() == 0) return DEFAULT_DELIMITER;
+        return delimiter.charAt(0);
+    }
+}
