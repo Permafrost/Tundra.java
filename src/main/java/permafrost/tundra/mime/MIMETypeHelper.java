@@ -32,7 +32,13 @@ import com.wm.data.IDataUtil;
 import permafrost.tundra.data.IDataHelper;
 import permafrost.tundra.data.IDataMap;
 import permafrost.tundra.lang.ExceptionHelper;
+import java.lang.reflect.Field;
+import java.util.Collections;
 import java.util.Enumeration;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import javax.activation.MimeType;
 import javax.activation.MimeTypeParameterList;
 import javax.activation.MimeTypeParseException;
@@ -47,6 +53,52 @@ public final class MIMETypeHelper {
      * The default MIME media type for arbitrary content as a string.
      */
     public static final String DEFAULT_MIME_TYPE_STRING = System.getProperty("watt.server.content.type.default", "application/octet-stream");
+
+    /**
+     * A Map of file extensions to MIME type.
+     */
+    private static final Map<String, Set<String>> FILE_EXTENSIONS_BY_MIME_TYPE = getFileExtensionsByMimeType();
+
+    /**
+     * Returns a Map whose keys are the registered MIME types and values are a set of associated file extensions.
+     *
+     * @return a Map whose keys are the registered MIME types and values are a set of associated file extensions.
+     */
+    @SuppressWarnings("unchecked")
+    private static Map<String, Set<String>> getFileExtensionsByMimeType() {
+        Map<String, Set<String>> fileExtensionsByMimeType = new TreeMap<String, Set<String>>();
+
+        try {
+            Field mimeTypeField = MimeTypes.class.getDeclaredField("mimeType");
+            mimeTypeField.setAccessible(true);
+            Map<String, String> mimeType = (Map<String, String>)mimeTypeField.get(null);
+
+            for (Map.Entry<String, String> entry : mimeType.entrySet()) {
+                String key = entry.getKey();
+                String value = entry.getValue();
+
+                if (key != null && value != null) {
+                    key = key.toLowerCase();
+                    value = value.toLowerCase();
+
+                    Set<String> extensions = fileExtensionsByMimeType.get(value);
+                    if (extensions == null) extensions = new TreeSet<String>();
+                    extensions.add(key);
+                    fileExtensionsByMimeType.put(value, extensions);
+                }
+            }
+
+            for (Map.Entry<String, Set<String>> entry : fileExtensionsByMimeType.entrySet()) {
+                fileExtensionsByMimeType.put(entry.getKey(), Collections.unmodifiableSet(entry.getValue()));
+            }
+        } catch(IllegalAccessException ex) {
+            throw new RuntimeException(ex);
+        } catch(NoSuchFieldException ex) {
+            throw new RuntimeException(ex);
+        }
+
+        return fileExtensionsByMimeType;
+    }
 
     /**
      * Returns a new MimeType object given a MIME media type string.
@@ -139,6 +191,27 @@ public final class MIMETypeHelper {
      */
     public static MimeType fromFilename(String filename) {
         return normalize(of(MimeTypes.getTypeFromName(filename)));
+    }
+
+    /**
+     * Returns the file extensions associated with the given MIME type.
+     *
+     * @param mimeType  The MIME type whose associated file extensions are to be returned.
+     * @return          The file extensions associated with the given MIME type.
+     */
+    public static Set<String> getFileExtensions(String mimeType) {
+        return getFileExtensions(of(mimeType));
+    }
+
+    /**
+     * Returns the file extensions associated with the given MIME type.
+     *
+     * @param mimeType  The MIME type whose associated file extensions are to be returned.
+     * @return          The file extensions associated with the given MIME type.
+     */
+    public static Set<String> getFileExtensions(MimeType mimeType) {
+        if (mimeType == null) return null;
+        return FILE_EXTENSIONS_BY_MIME_TYPE.get(mimeType.getBaseType().toLowerCase());
     }
 
     /**
