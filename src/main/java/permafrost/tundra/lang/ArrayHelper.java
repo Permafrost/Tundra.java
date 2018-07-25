@@ -136,6 +136,39 @@ public final class ArrayHelper {
     }
 
     /**
+     * Compares two Object[] objects.
+     *
+     * @param array1    The first Object[] to be compared.
+     * @param array2    The second Object[] to be compared.
+     * @return          A value less than zero if the first Object[] comes before the second Object[], a value of zero
+     *                  if they are equal, or a value of greater than zero if the first Object[] comes after the second
+     *                  Object[] according to the comparison of all the keys and values in each document.
+     */
+    public static int compare(Object[] array1, Object[] array2) {
+        int result = 0;
+
+        if (array1 == null || array2 == null) {
+            if (array1 != null) {
+                result = 1;
+            } else if (array2 != null) {
+                result = -1;
+            }
+        } else {
+            if (array1.length < array2.length) {
+                result = -1;
+            } else if (array1.length > array2.length) {
+                result = 1;
+            } else {
+                for (int i = 0; i < array1.length; i++) {
+                    result = ObjectHelper.compare(array1[i], array2[i]);
+                    if (result != 0) break;
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
      * Returns a new array which contains all the items from the given arrays in the sequence provided.
      *
      * @param operands          An IData document containing the arrays to be concatenated.

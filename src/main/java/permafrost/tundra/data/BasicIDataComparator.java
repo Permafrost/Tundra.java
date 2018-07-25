@@ -25,120 +25,41 @@
 package permafrost.tundra.data;
 
 import com.wm.data.IData;
-import com.wm.data.IDataCursor;
-import com.wm.data.IDataPortable;
-import com.wm.util.Table;
-import com.wm.util.coder.IDataCodable;
-import com.wm.util.coder.ValuesCodable;
-import permafrost.tundra.lang.BasicArrayComparator;
-import permafrost.tundra.lang.BasicObjectComparator;
 
 /**
  * Compares two IData objects using all the keys and values in each document.
  */
 public class BasicIDataComparator implements IDataComparator {
     /**
-     * Initialization on demand holder idiom.
+     * Whether key order is treated as significant, such that two documents with the same keys and values specified
+     * in differing orders are not considered equivalent.
      */
-    private static class Holder {
-        /**
-         * The singleton instance of the class.
-         */
-        private static final BasicIDataComparator INSTANCE = new BasicIDataComparator();
-    }
+    protected boolean isKeyOrderSignificant = true;
 
     /**
-     * Disallow instantiation of this class;
+     * Construct a new BasicIDataComparator.
      */
-    private BasicIDataComparator() {}
+    public BasicIDataComparator() {}
 
     /**
-     * Returns the singleton instance of this class.
+     * Construct a new BasicIDataComparator.
      *
-     * @return The singleton instance of this class.
+     * @param isKeyOrderSignificant Whether the ordering of keys is considered significant when comparing documents.
      */
-    public static BasicIDataComparator getInstance() {
-        return Holder.INSTANCE;
+    public BasicIDataComparator(boolean isKeyOrderSignificant) {
+        this.isKeyOrderSignificant = isKeyOrderSignificant;
     }
 
     /**
      * Compares two IData documents.
      *
-     * @param document1 The first IData document to be compared.
-     * @param document2 The second IData document to be compared.
-     * @return A value less than zero if the first document comes before the second document, a value of zero if they
-     * are equal, or a value of greater than zero if the first document comes after the second document according to the
-     * comparison of all the keys and values in each document.
+     * @param document1     The first IData document to be compared.
+     * @param document2     The second IData document to be compared.
+     * @return              A value less than zero if the first document comes before the second document, a value of
+     *                      zero if they are equal, or a value of greater than zero if the first document comes after
+     *                      the second document according to the comparison of all the keys and values in each document.
      */
     public int compare(IData document1, IData document2) {
-        int result = 0;
-
-        if (document1 == null || document2 == null) {
-            if (document1 != null) {
-                result = 1;
-            } else if (document2 != null) {
-                result = -1;
-            }
-        } else {
-            int size1 = IDataHelper.size(document1);
-            int size2 = IDataHelper.size(document2);
-
-            if (size1 < size2) {
-                result = -1;
-            } else if (size2 > size1) {
-                result = 1;
-            } else {
-                // compare all keys and values in order
-                IDataCursor cursor1 = document1.getCursor();
-                IDataCursor cursor2 = document2.getCursor();
-
-                boolean next1 = cursor1.next(), next2 = cursor2.next();
-
-                while (next1 && next2) {
-                    String key1 = cursor1.getKey();
-                    String key2 = cursor2.getKey();
-
-                    result = key1.compareTo(key2);
-
-                    if (result == 0) {
-                        Object value1 = cursor1.getValue();
-                        Object value2 = cursor2.getValue();
-
-                        if (value1 == null || value2 == null) {
-                            if (value1 != null) {
-                                result = 1;
-                            } else if (value2 != null) {
-                                result = -1;
-                            }
-                        } else if ((value1 instanceof IData[] || value1 instanceof Table || value1 instanceof IDataCodable[] || value1 instanceof IDataPortable[] || value1 instanceof ValuesCodable[]) &&
-                                   (value2 instanceof IData[] || value2 instanceof Table || value2 instanceof IDataCodable[] || value2 instanceof IDataPortable[] || value2 instanceof ValuesCodable[])) {
-                            result = BasicIDataArrayComparator.getInstance().compare(IDataHelper.toIDataArray(value1), IDataHelper.toIDataArray(value2));
-                        } else if ((value1 instanceof IData || value1 instanceof IDataCodable || value1 instanceof IDataPortable || value1 instanceof ValuesCodable) &&
-                                   (value2 instanceof IData || value2 instanceof IDataCodable || value2 instanceof IDataPortable || value2 instanceof ValuesCodable)) {
-                            result = compare(IDataHelper.toIData(value1), IDataHelper.toIData(value2));
-                        } else if (value1 instanceof Object[] && value2 instanceof Object[]) {
-                            result = BasicArrayComparator.getInstance().compare((Object[])value1, (Object[])value2);
-                        } else {
-                            result = BasicObjectComparator.getInstance().compare(value1, value2);
-                        }
-                    }
-
-                    if (result != 0) {
-                        break;
-                    }
-
-                    next1 = cursor1.next();
-                    next2 = cursor2.next();
-                }
-
-                if (next1 && !next2) {
-                    result = 1;
-                } else if (!next1 && next2) {
-                    result = -1;
-                }
-            }
-        }
-
-        return result;
+        return IDataHelper.compare(document1, document2, isKeyOrderSignificant);
     }
 }

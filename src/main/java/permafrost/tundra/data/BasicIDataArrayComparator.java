@@ -31,27 +31,23 @@ import com.wm.data.IData;
  */
 public class BasicIDataArrayComparator implements IDataArrayComparator {
     /**
-     * Initialization on demand holder idiom.
+     * Whether key order is treated as significant, such that two documents with the same keys and values specified
+     * in differing orders are not considered equivalent.
      */
-    private static class Holder {
-        /**
-         * The singleton instance of the class.
-         */
-        private static final BasicIDataArrayComparator INSTANCE = new BasicIDataArrayComparator();
-    }
+    protected boolean isKeyOrderSignificant = true;
 
     /**
-     * Disallow instantiation of this class.
+     * Construct a new BasicIDataComparator.
      */
-    private BasicIDataArrayComparator() {}
+    public BasicIDataArrayComparator() {}
 
     /**
-     * Returns the singleton instance of this class.
+     * Construct a new BasicIDataComparator.
      *
-     * @return The singleton instance of this class.
+     * @param isKeyOrderSignificant Whether the ordering of keys is considered significant when comparing documents.
      */
-    public static BasicIDataArrayComparator getInstance() {
-        return Holder.INSTANCE;
+    public BasicIDataArrayComparator(boolean isKeyOrderSignificant) {
+        this.isKeyOrderSignificant = isKeyOrderSignificant;
     }
 
     /**
@@ -64,26 +60,6 @@ public class BasicIDataArrayComparator implements IDataArrayComparator {
      * comparison of each item.
      */
     public int compare(IData[] array1, IData[] array2) {
-        int result = 0;
-
-        if (array1 == null || array2 == null) {
-            if (array1 != null) {
-                result = 1;
-            } else if (array2 != null) {
-                result = -1;
-            }
-        } else {
-            if (array1.length < array2.length) {
-                result = -1;
-            } else if (array2.length > array1.length) {
-                result = 1;
-            } else {
-                for (int i = 0; i < array1.length; i++) {
-                    result = BasicIDataComparator.getInstance().compare(array1[i], array2[i]);
-                    if (result != 0) break;
-                }
-            }
-        }
-        return result;
+        return IDataHelper.compare(array1, array2);
     }
 }

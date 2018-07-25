@@ -44,12 +44,7 @@ import java.util.Set;
  */
 public class IDataMap extends IDataAdapter implements Iterable<Map.Entry<String, Object>>, Comparable<IData>, Map<String, Object>, Cloneable, Serializable {
     private static final long serialVersionUID = 1;
-
-    /**
-     * The default comparator used when no other comparator or comparison criteria is specified.
-     */
-    public static final IDataComparator DEFAULT_COMPARATOR = BasicIDataComparator.getInstance();
-    protected IDataComparator comparator = DEFAULT_COMPARATOR;
+    protected IDataComparator comparator;
 
     /**
      * Construct a new IDataMap object.
@@ -64,7 +59,7 @@ public class IDataMap extends IDataAdapter implements Iterable<Map.Entry<String,
      * @param document The IData document to be wrapped.
      */
     public IDataMap(IData document) {
-        super(document);
+        this(document, null);
     }
 
     /**
@@ -74,7 +69,7 @@ public class IDataMap extends IDataAdapter implements Iterable<Map.Entry<String,
      * @param comparator The IDataComparator to be used to compare IData objects.
      */
     public IDataMap(IData document, IDataComparator comparator) {
-        this(document);
+        super(document);
         setComparator(comparator);
     }
 
@@ -84,7 +79,7 @@ public class IDataMap extends IDataAdapter implements Iterable<Map.Entry<String,
      * @param codable The IDataCodable object to be wrapped.
      */
     public IDataMap(IDataCodable codable) {
-        super(codable);
+        this(codable, null);
     }
 
     /**
@@ -94,7 +89,7 @@ public class IDataMap extends IDataAdapter implements Iterable<Map.Entry<String,
      * @param comparator The IDataComparator to be used to compare IData objects.
      */
     public IDataMap(IDataCodable codable, IDataComparator comparator) {
-        this(codable);
+        super(codable);
         setComparator(comparator);
     }
 
@@ -104,7 +99,7 @@ public class IDataMap extends IDataAdapter implements Iterable<Map.Entry<String,
      * @param portable The IDataPortable object to be wrapped.
      */
     public IDataMap(IDataPortable portable) {
-        super(portable);
+        this(portable, null);
     }
 
     /**
@@ -114,7 +109,7 @@ public class IDataMap extends IDataAdapter implements Iterable<Map.Entry<String,
      * @param comparator The IDataComparator to be used to compare IData objects.
      */
     public IDataMap(IDataPortable portable, IDataComparator comparator) {
-        this(portable);
+        super(portable);
         setComparator(comparator);
     }
 
@@ -124,7 +119,7 @@ public class IDataMap extends IDataAdapter implements Iterable<Map.Entry<String,
      * @param codable The ValuesCodable object to be wrapped.
      */
     public IDataMap(ValuesCodable codable) {
-        super(codable);
+        this(codable, null);
     }
 
     /**
@@ -134,7 +129,7 @@ public class IDataMap extends IDataAdapter implements Iterable<Map.Entry<String,
      * @param comparator The IDataComparator to be used to compare IData objects.
      */
     public IDataMap(ValuesCodable codable, IDataComparator comparator) {
-        this(codable);
+        super(codable);
         setComparator(comparator);
     }
 
@@ -426,7 +421,7 @@ public class IDataMap extends IDataAdapter implements Iterable<Map.Entry<String,
     @Override
     public boolean equals(Object other) {
         if (!(other instanceof IData)) return false;
-        return this == other || DEFAULT_COMPARATOR.compare(document, (IData)other) == 0;
+        return this == other || comparator.compare(document, (IData)other) == 0;
     }
 
     /**
@@ -444,8 +439,11 @@ public class IDataMap extends IDataAdapter implements Iterable<Map.Entry<String,
      * @param comparator The IDataComparator to be used when comparing IData objects.
      */
     public void setComparator(IDataComparator comparator) {
-        if (comparator == null) throw new IllegalArgumentException("comparator must not be null");
-        this.comparator = comparator;
+        if (comparator == null) {
+            this.comparator = new BasicIDataComparator();
+        } else {
+            this.comparator = comparator;
+        }
     }
 
     /**

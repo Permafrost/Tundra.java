@@ -29,30 +29,6 @@ package permafrost.tundra.lang;
  */
 public class BasicArrayComparator implements ArrayComparator {
     /**
-     * Initialization on demand holder idiom.
-     */
-    private static class Holder {
-        /**
-         * The singleton instance of the class.
-         */
-        private static final BasicArrayComparator INSTANCE = new BasicArrayComparator();
-    }
-
-    /**
-     * Disallow instantiation of this class.
-     */
-    private BasicArrayComparator() {}
-
-    /**
-     * Returns the singleton instance of this class.
-     *
-     * @return The singleton instance of this class.
-     */
-    public static BasicArrayComparator getInstance() {
-        return Holder.INSTANCE;
-    }
-
-    /**
      * Compares two Object[] objects.
      *
      * @param array1 The first Object[] to be compared.
@@ -62,26 +38,6 @@ public class BasicArrayComparator implements ArrayComparator {
      * comparison of all the keys and values in each document.
      */
     public int compare(Object[] array1, Object[] array2) {
-        int result = 0;
-
-        if (array1 == null || array2 == null) {
-            if (array1 != null) {
-                result = 1;
-            } else if (array2 != null) {
-                result = -1;
-            }
-        } else {
-            if (array1.length < array2.length) {
-                result = -1;
-            } else if (array2.length > array1.length) {
-                result = 1;
-            } else {
-                for (int i = 0; i < array1.length; i++) {
-                    result = BasicObjectComparator.getInstance().compare(array1[i], array2[i]);
-                    if (result != 0) break;
-                }
-            }
-        }
-        return result;
+        return ArrayHelper.compare(array1, array2);
     }
 }

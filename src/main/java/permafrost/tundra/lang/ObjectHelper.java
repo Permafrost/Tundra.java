@@ -137,6 +137,39 @@ public final class ObjectHelper {
     }
 
     /**
+     * Compares two Objects.
+     *
+     * @param object1   The first Object to be compared.
+     * @param object2   The second Object to be compared.
+     * @return          A value less than zero if the first object comes before the second object, a value of zero if
+     *                  they are equal, or a value of greater than zero if the first object comes after the second
+     *                  object according to the comparison of all the keys and values in each document.
+     */
+    @SuppressWarnings("unchecked")
+    public static int compare(Object object1, Object object2) {
+        int result = 0;
+
+        if (object1 == null || object2 == null) {
+            if (object1 != null) {
+                result = 1;
+            } else if (object2 != null) {
+                result = -1;
+            }
+        } else {
+            if (object1 instanceof Comparable && object1.getClass().isAssignableFrom(object2.getClass())) {
+                result = ((Comparable)object1).compareTo(object2);
+            } else if (object2 instanceof Comparable && object2.getClass().isAssignableFrom(object1.getClass())) {
+                result = ((Comparable)object2).compareTo(object1) * -1;
+            } else if (object1 != object2) {
+                // last ditch effort: compare two incomparable objects using their hash codes
+                result = Integer.valueOf(object1.hashCode()).compareTo(object2.hashCode());
+            }
+        }
+
+        return result;
+    }
+
+    /**
      * Returns true if the given object is considered empty.
      *
      * @param object The object to check the emptiness of.

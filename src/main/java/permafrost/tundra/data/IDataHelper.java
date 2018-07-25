@@ -1022,6 +1022,156 @@ public final class IDataHelper {
     }
 
     /**
+     * Compares two IData documents.
+     *
+     * @param document1             The first IData document to be compared.
+     * @param document2             The second IData document to be compared.
+     * @return                      A value less than zero if the first document comes before the second document, a
+     *                              value of zero if they are equal, or a value of greater than zero if the first
+     *                              document comes after the second document according to the comparison of all the
+     *                              keys and values in each document.
+     */
+    public static int compare(IData document1, IData document2) {
+        return compare(document1, document2, true);
+    }
+
+    /**
+     * Compares two IData documents.
+     *
+     * @param document1             The first IData document to be compared.
+     * @param document2             The second IData document to be compared.
+     * @param isKeyOrderSignificant Whether the ordering of keys is considered significant when comparing documents.
+     * @return                      A value less than zero if the first document comes before the second document, a
+     *                              value of zero if they are equal, or a value of greater than zero if the first
+     *                              document comes after the second document according to the comparison of all the
+     *                              keys and values in each document.
+     */
+    public static int compare(IData document1, IData document2, boolean isKeyOrderSignificant) {
+        int result = 0;
+
+        if (document1 == null || document2 == null) {
+            if (document1 != null) {
+                result = 1;
+            } else if (document2 != null) {
+                result = -1;
+            }
+        } else {
+            int size1 = IDataHelper.size(document1);
+            int size2 = IDataHelper.size(document2);
+
+            if (size1 < size2) {
+                result = -1;
+            } else if (size1 > size2) {
+                result = 1;
+            } else {
+                if (!isKeyOrderSignificant) {
+                    document1 = IDataHelper.sort(document1, true);
+                    document2 = IDataHelper.sort(document2, true);
+                }
+
+                // compare all keys and values in order
+                IDataCursor cursor1 = document1.getCursor();
+                IDataCursor cursor2 = document2.getCursor();
+
+                boolean next1 = cursor1.next(), next2 = cursor2.next();
+
+                while (next1 && next2) {
+                    String key1 = cursor1.getKey();
+                    String key2 = cursor2.getKey();
+
+                    result = key1.compareTo(key2);
+
+                    if (result == 0) {
+                        Object value1 = cursor1.getValue();
+                        Object value2 = cursor2.getValue();
+
+                        if (value1 == null || value2 == null) {
+                            if (value1 != null) {
+                                result = 1;
+                            } else if (value2 != null) {
+                                result = -1;
+                            }
+                        } else if ((value1 instanceof IData[] || value1 instanceof Table || value1 instanceof IDataCodable[] || value1 instanceof IDataPortable[] || value1 instanceof ValuesCodable[]) &&
+                                (value2 instanceof IData[] || value2 instanceof Table || value2 instanceof IDataCodable[] || value2 instanceof IDataPortable[] || value2 instanceof ValuesCodable[])) {
+                            result = compare(IDataHelper.toIDataArray(value1), IDataHelper.toIDataArray(value2), isKeyOrderSignificant);
+                        } else if ((value1 instanceof IData || value1 instanceof IDataCodable || value1 instanceof IDataPortable || value1 instanceof ValuesCodable) &&
+                                (value2 instanceof IData || value2 instanceof IDataCodable || value2 instanceof IDataPortable || value2 instanceof ValuesCodable)) {
+                            result = compare(IDataHelper.toIData(value1), IDataHelper.toIData(value2), isKeyOrderSignificant);
+                        } else if (value1 instanceof Object[] && value2 instanceof Object[]) {
+                            result = ArrayHelper.compare((Object[])value1, (Object[])value2);
+                        } else {
+                            result = ObjectHelper.compare(value1, value2);
+                        }
+                    }
+
+                    if (result != 0) {
+                        break;
+                    }
+
+                    next1 = cursor1.next();
+                    next2 = cursor2.next();
+                }
+
+                if (next1 && !next2) {
+                    result = 1;
+                } else if (!next1 && next2) {
+                    result = -1;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Compares two IData[] objects.
+     *
+     * @param array1                The first IData[] to be compared.
+     * @param array2                The second IData[] to be compared.
+     * @return                      A value less than zero if the first array comes before the second array, a value of
+     *                              zero if they are equal, or a value of greater than zero if the first array comes
+     *                              after the second array according to the comparison of each item.
+     */
+    public static int compare(IData[] array1, IData[] array2) {
+        return compare(array1, array2, true);
+    }
+
+    /**
+     * Compares two IData[] objects.
+     *
+     * @param array1                The first IData[] to be compared.
+     * @param array2                The second IData[] to be compared.
+     * @param isKeyOrderSignificant Whether the ordering of keys is considered significant when comparing documents.
+     * @return                      A value less than zero if the first array comes before the second array, a value of
+     *                              zero if they are equal, or a value of greater than zero if the first array comes
+     *                              after the second array according to the comparison of each item.
+     */
+    public static int compare(IData[] array1, IData[] array2, boolean isKeyOrderSignificant) {
+        int result = 0;
+
+        if (array1 == null || array2 == null) {
+            if (array1 != null) {
+                result = 1;
+            } else if (array2 != null) {
+                result = -1;
+            }
+        } else {
+            if (array1.length < array2.length) {
+                result = -1;
+            } else if (array1.length > array2.length) {
+                result = 1;
+            } else {
+                for (int i = 0; i < array1.length; i++) {
+                    result = compare(array1[i], array2[i], isKeyOrderSignificant);
+                    if (result != 0) break;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    /**
      * Flips the given IData document so the keys become the values and the values become the keys.
      *
      * @param document  The IData document to be flipped.
