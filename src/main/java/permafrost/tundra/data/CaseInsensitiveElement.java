@@ -208,12 +208,12 @@ public class CaseInsensitiveElement<V> extends KeyAliasElement<String, V> implem
      */
     @SuppressWarnings("unchecked")
     public static <V> Element<String, V> normalize(Element<String, V> element, Locale locale) {
-        CaseInsensitiveElement<V> output = null;
+        CaseInsensitiveElement<V> output;
 
         if (element instanceof CaseInsensitiveElement) {
             locale = LocaleHelper.normalize(locale);
             if (!locale.equals(((CaseInsensitiveElement)element).getLocale())) {
-                output = new CaseInsensitiveElement<V>((CaseInsensitiveElement)element, locale);
+                output = new CaseInsensitiveElement<V>(element, locale);
             } else {
                 output = (CaseInsensitiveElement)element;
             }
