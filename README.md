@@ -18,8 +18,8 @@ Networks] 7.1 and higher respectively.
 following [webMethods Integration Server] [JAR] libraries, which are
 required to be included on the project's classpath:
 
-* `wm-isclient.jar`
-* `wm-isserver.jar`
+* `./common/lib/wm-isclient.jar`
+* `./IntegrationServer/lib/wm-isserver.jar`
 
 It is also dependent on the following open source libraries, which
 are required to be included on the project's classpath:
@@ -27,18 +27,16 @@ are required to be included on the project's classpath:
 * `commons-collections4-4.1.jar` - https://commons.apache.org/proper/commons-collections/
 * `commons-compress-1.12.jar` - https://commons.apache.org/proper/commons-compress/
 * `commons-csv-1.4.jar` - https://commons.apache.org/proper/commons-csv/
-* `hjson-1.1.4.jar` - https://github.com/Permafrost/hjson-java
+* `hjson-2.1.1.jar` - https://github.com/Permafrost/hjson-java
 * `htmlcompressor-1.5.3.jar` - https://code.google.com/p/htmlcompressor
 * `jakarta-oro-2.0.8.jar` - http://archive.apache.org/dist/jakarta/oro/
-* `javax.json-1.0.4.jar` - https://jsonp.java.net
-* `jscience.jar` - http://jscience.org
+* `javax.json-1.0.jar` - https://jsonp.java.net
+* `jscience-4.3.1.jar` - http://jscience.org
 * `log4j-1.2.17.jar` - https://logging.apache.org/log4j/1.2/
 * `poi-3.17.jar` - https://poi.apache.org/
 * `poi-ooxml-3.17.jar` - https://poi.apache.org/
 * `poi-ooxml-schemas-3.17.jar` - https://poi.apache.org/
-* `sapidoc3.jar` - https://www.sap.com
-* `sapjco3.jar` - https://www.sap.com
-* `snakeyaml-1.15.jar` - http://www.snakeyaml.org
+* `snakeyaml-1.18.jar` - http://www.snakeyaml.org
 * `unbescape-1.1.3.RELEASE.jar` - http://www.unbescape.org/
 * `xmlsec-1.5.8.jar` - http://santuario.apache.org
 
