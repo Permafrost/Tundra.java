@@ -24,10 +24,18 @@
 
 package permafrost.tundra.lang;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * A collection of convenience methods for working with Iterable objects.
  */
 public final class IterableHelper {
+    /**
+     * Disallow instantiation of this class.
+     */
+    private IterableHelper() {}
+
     /**
      * Returns a string created by concatenating each element of the given iterable, separated by the given separator
      * string.
@@ -71,5 +79,22 @@ public final class IterableHelper {
         }
 
         return builder.toString();
+    }
+
+    /**
+     * Converts an Iterable object to a String[].
+     *
+     * @param iterable  The object to convert.
+     * @return          The String[] representation of the object.
+     */
+    public static String[] stringify(Iterable iterable) {
+        if (iterable == null) return new String[0];
+
+        List<String> output = new ArrayList<String>();
+        for (Object item : iterable) {
+            output.add(item == null ? null : ObjectHelper.stringify(item));
+        }
+
+        return output.toArray(new String[output.size()]);
     }
 }
