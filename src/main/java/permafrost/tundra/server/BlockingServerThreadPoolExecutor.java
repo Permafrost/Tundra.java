@@ -36,6 +36,61 @@ public class BlockingServerThreadPoolExecutor extends ServerThreadPoolExecutor {
      * Creates a new BlockingServerThreadPoolExecutor.
      *
      * @param threadPoolSize   The number of threads to allocate to the pool.
+     */
+    public BlockingServerThreadPoolExecutor(int threadPoolSize) {
+        this(threadPoolSize, "Tundra");
+    }
+
+    /**
+     * Creates a new BlockingServerThreadPoolExecutor.
+     *
+     * @param threadPoolSize   The number of threads to allocate to the pool.
+     * @param threadNamePrefix The prefix to use on all created thread names.
+     */
+    public BlockingServerThreadPoolExecutor(int threadPoolSize, String threadNamePrefix) {
+        this(threadPoolSize, threadNamePrefix, Thread.NORM_PRIORITY);
+    }
+
+    /**
+     * Creates a new BlockingServerThreadPoolExecutor.
+     *
+     * @param threadPoolSize   The number of threads to allocate to the pool.
+     * @param threadNamePrefix The prefix to use on all created thread names.
+     * @param threadPriority   The priority each created thread will have.
+     */
+    public BlockingServerThreadPoolExecutor(int threadPoolSize, String threadNamePrefix, int threadPriority) {
+        this(threadPoolSize, threadNamePrefix, threadPriority, false);
+    }
+
+    /**
+     * Creates a new BlockingServerThreadPoolExecutor.
+     *
+     * @param threadPoolSize   The number of threads to allocate to the pool.
+     * @param threadNamePrefix The prefix to use on all created thread names.
+     * @param threadPriority   The priority each created thread will have.
+     * @param threadDaemon     Whether the created threads should be daemons.
+     */
+    public BlockingServerThreadPoolExecutor(int threadPoolSize, String threadNamePrefix, int threadPriority, boolean threadDaemon) {
+        this(threadPoolSize, threadNamePrefix, null, threadPriority, threadDaemon);
+    }
+
+    /**
+     * Creates a new BlockingServerThreadPoolExecutor.
+     *
+     * @param threadPoolSize   The number of threads to allocate to the pool.
+     * @param threadNamePrefix The prefix to use on all created thread names.
+     * @param threadNameSuffix The suffix used on all created thread names.
+     * @param threadPriority   The priority each created thread will have.
+     * @param threadDaemon     Whether the created threads should be daemons.
+     */
+    public BlockingServerThreadPoolExecutor(int threadPoolSize, String threadNamePrefix, String threadNameSuffix, int threadPriority, boolean threadDaemon) {
+        this(threadPoolSize, threadNamePrefix, threadNameSuffix, threadPriority, threadDaemon, InvokeState.getCurrentState());
+    }
+
+    /**
+     * Creates a new BlockingServerThreadPoolExecutor.
+     *
+     * @param threadPoolSize   The number of threads to allocate to the pool.
      * @param threadNamePrefix The prefix to use on all created thread names.
      * @param threadNameSuffix The suffix used on all created thread names.
      * @param threadPriority   The priority each created thread will have.
