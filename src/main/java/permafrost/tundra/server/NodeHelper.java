@@ -81,6 +81,35 @@ public final class NodeHelper {
     }
 
     /**
+     * Returns true if other is a sibling of self.
+     *
+     * @param self      The name to test.
+     * @param sibling   The other name that is potentially a sibling.
+     * @return          True if other is a sibling of self.
+     */
+    public static boolean isSibling(NSName self, NSName sibling) {
+        if (self == null || sibling == null || self.equals(sibling)) return false;
+
+        NSName selfParent;
+
+        if (!self.isInterface()) {
+            selfParent = self.getInterfaceNSName();
+        } else {
+            selfParent = self.getParent();
+        }
+
+        NSName siblingParent;
+
+        if (!sibling.isInterface()) {
+            siblingParent = sibling.getInterfaceNSName();
+        } else {
+            siblingParent = sibling.getParent();
+        }
+
+        return selfParent != null && selfParent.equals(siblingParent);
+    }
+
+    /**
      * Returns the webMethods Integration Server namespace node with the given name.
      *
      * @param name The name to return the corresponding node for.
