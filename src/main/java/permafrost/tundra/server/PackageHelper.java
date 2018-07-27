@@ -42,7 +42,8 @@ import com.wm.lang.ns.NSService;
 import permafrost.tundra.data.IDataMap;
 import permafrost.tundra.io.FileHelper;
 import permafrost.tundra.lang.BooleanHelper;
-import permafrost.tundra.lang.IterableEnumeration;
+import permafrost.tundra.lang.EnumerationHelper;
+import permafrost.tundra.lang.IterableHelper;
 import permafrost.tundra.math.IntegerHelper;
 import java.util.ArrayList;
 import java.util.List;
@@ -159,7 +160,7 @@ public final class PackageHelper {
      * @return              The list of references for the given package.
      */
     public static IData getReferences(Package pkg) {
-        String[] services = toStringArray(IterableEnumeration.of(pkg.getLoaded()));
+        String[] services = EnumerationHelper.stringify(pkg.getLoaded());
 
         DependencyManager manager = NSDependencyManager.current();
         Namespace namespace = Namespace.current();
@@ -241,7 +242,7 @@ public final class PackageHelper {
      * @return              The list of dependents for the given package.
      */
     private static IData getDependents(Package pkg) {
-        String[] services = toStringArray(IterableEnumeration.of(pkg.getLoaded()));
+        String[] services = EnumerationHelper.stringify(pkg.getLoaded());
 
         DependencyManager manager = NSDependencyManager.current();
         Namespace namespace = Namespace.current();
@@ -361,23 +362,6 @@ public final class PackageHelper {
     }
 
     /**
-     * Converts an Iterable object to a String[] by calling toString on each object returned by the iterator.
-     *
-     * @param iterable  The object to convert.
-     * @return          The String[] representation of the object.
-     */
-    private static String[] toStringArray(Iterable iterable) {
-        if (iterable == null) return new String[0];
-
-        List<String> output = new ArrayList<String>();
-        for (Object item : iterable) {
-            output.add(item == null ? null : item.toString());
-        }
-
-        return output.toArray(new String[output.size()]);
-    }
-
-    /**
      * Converts the given Manifest object to an IData document representation.
      *
      * @param manifest  The object to be converted.
@@ -398,15 +382,15 @@ public final class PackageHelper {
         map.put("dependencies.length", "" + packageDependencies.length);
 
         IDataMap services = new IDataMap();
-        String[] startupServices = toStringArray(manifest.getStartupServices());
+        String[] startupServices = IterableHelper.stringify(manifest.getStartupServices());
         services.put("startup", startupServices);
         services.put("startup.length", "" + startupServices.length);
 
-        String[] shutdownServices = toStringArray(manifest.getShutdownServices());
+        String[] shutdownServices = IterableHelper.stringify(manifest.getShutdownServices());
         services.put("shutdown", shutdownServices);
         services.put("shutdown.length", "" + shutdownServices.length);
 
-        String[] replicationServices = toStringArray(manifest.getReplicationServices());
+        String[] replicationServices = IterableHelper.stringify(manifest.getReplicationServices());
         services.put("replication", replicationServices);
         services.put("replication.length", "" + replicationServices.length);
 
@@ -446,7 +430,7 @@ public final class PackageHelper {
 
         IDataMap map = new IDataMap();
 
-        String[] loadedServices = toStringArray(IterableEnumeration.of(packageState.getLoaded()));
+        String[] loadedServices = EnumerationHelper.stringify(packageState.getLoaded());
         map.put("loaded", loadedServices);
         map.put("loaded.length", IntegerHelper.emit(loadedServices.length));
 
