@@ -25,11 +25,16 @@
 package permafrost.tundra.xml;
 
 import com.wm.app.b2b.server.ServiceException;
+import com.wm.data.IData;
+import org.unbescape.xml.XmlEscape;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 import permafrost.tundra.content.MalformedException;
 import permafrost.tundra.content.ValidationException;
+import permafrost.tundra.data.IDataHelper;
+import permafrost.tundra.data.transform.xml.Decoder;
+import permafrost.tundra.data.transform.xml.Encoder;
 import permafrost.tundra.io.CloseableHelper;
 import permafrost.tundra.lang.ExceptionHelper;
 import permafrost.tundra.xml.sax.InputSourceHelper;
@@ -54,6 +59,92 @@ public final class XMLHelper {
      * Disallow instantiation of this class.
      */
     private XMLHelper() {}
+
+    /**
+     * Returns the given input string with XML entities escaped.
+     *
+     * @param input         The input string to process.
+     * @param isAttribute   Whether the string is an XML attribute's value.
+     * @return              The escaped string.
+     */
+    public static String encode(String input, boolean isAttribute) {
+        if (input == null) return null;
+
+        String output;
+        if (isAttribute) {
+            output = XmlEscape.escapeXml11Attribute(input);
+        } else {
+            output = XmlEscape.escapeXml11(input);
+        }
+        return output;
+    }
+
+    /**
+     * Returns the given string array with XML entities escaped.
+     *
+     * @param input         The input array to process.
+     * @param isAttribute   Whether the string is an XML attribute's value.
+     * @return              A new output array containing the escaped strings.
+     */
+    public static String[] encode(String[] input, boolean isAttribute) {
+        if (input == null) return null;
+
+        String[] output = new String[input.length];
+
+        for (int i = 0; i < input.length; i++) {
+            output[i] = encode(input[i], isAttribute);
+        }
+
+        return output;
+    }
+
+    /**
+     * XML decodes string values in the given IData document.
+     *
+     * @param document  The IData document to encode.
+     * @return          A new IData document with string values encoded.
+     */
+    public static IData encode(IData document) {
+        return IDataHelper.transform(document, new Encoder());
+    }
+
+    /**
+     * Returns the given string with XML entities unescaped.
+     *
+     * @param input The input string to process.
+     * @return      The unescaped string.
+     */
+    public static String decode(String input) {
+        return XmlEscape.unescapeXml(input);
+    }
+
+    /**
+     * Returns the given string array with XML entities unescaped.
+     *
+     * @param input The input array to process.
+     * @return      A new output array containing the unescaped strings.
+     */
+    public static String[] decode(String[] input) {
+        if (input == null) return null;
+
+        String[] output = new String[input.length];
+
+        for (int i = 0; i < input.length; i++) {
+            output[i] = decode(input[i]);
+        }
+
+        return output;
+    }
+
+    /**
+     * XML decodes string values in the given IData document.
+     *
+     * @param document  The IData document to decode.
+     * @return          A new IData document with string values decoded.
+     */
+    public static IData decode(IData document) {
+        return IDataHelper.transform(document, new Decoder());
+    }
 
     /**
      * Validates the given content as XML, optionally against the given XML schema (XSD); throws an exception if the

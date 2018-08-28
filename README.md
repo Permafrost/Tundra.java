@@ -37,7 +37,7 @@ are required to be included on the project's classpath:
 * `poi-ooxml-3.17.jar` - https://poi.apache.org/
 * `poi-ooxml-schemas-3.17.jar` - https://poi.apache.org/
 * `snakeyaml-1.18.jar` - http://www.snakeyaml.org
-* `unbescape-1.1.3.RELEASE.jar` - http://www.unbescape.org/
+* `unbescape-1.1.6.RELEASE.jar` - http://www.unbescape.org/
 * `xmlsec-1.5.8.jar` - http://santuario.apache.org
 
 [JUnit] 4 is required for the unit tests in the project. The
