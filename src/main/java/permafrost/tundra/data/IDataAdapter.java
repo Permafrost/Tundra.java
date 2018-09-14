@@ -51,14 +51,14 @@ public class IDataAdapter extends ISMemDataImpl implements IData, IDataCodable, 
     protected volatile IData document;
 
     /**
-     * Constructs a new empty IDataEnvelope document.
+     * Constructs a new empty IDataAdapter document.
      */
     public IDataAdapter() {
         setIData(null);
     }
 
     /**
-     * Constructs a new IDataEnvelope wrapping the given IData document.
+     * Constructs a new IDataAdapter wrapping the given IData document.
      *
      * @param document The IData document to be wrapped.
      */
@@ -67,7 +67,7 @@ public class IDataAdapter extends ISMemDataImpl implements IData, IDataCodable, 
     }
 
     /**
-     * Constructs a new IDataEnvelope wrapping the given IDataCodable object.
+     * Constructs a new IDataAdapter wrapping the given IDataCodable object.
      *
      * @param codable The IDataCodable object to be wrapped.
      */
@@ -76,7 +76,7 @@ public class IDataAdapter extends ISMemDataImpl implements IData, IDataCodable, 
     }
 
     /**
-     * Constructs a new IDataEnvelope wrapping the given IDataPortable object.
+     * Constructs a new IDataAdapter wrapping the given IDataPortable object.
      *
      * @param portable The IDataPortable object to be wrapped.
      */
@@ -85,7 +85,7 @@ public class IDataAdapter extends ISMemDataImpl implements IData, IDataCodable, 
     }
 
     /**
-     * Constructs a new IDataEnvelope wrapping the given ValuesCodable object.
+     * Constructs a new IDataAdapter wrapping the given ValuesCodable object.
      *
      * @param codable The ValuesCodable object to be wrapped.
      */
@@ -256,20 +256,20 @@ public class IDataAdapter extends ISMemDataImpl implements IData, IDataCodable, 
     }
 
     /**
-     * Returns a new IDataEnvelope wrapping the given IData document.
+     * Returns a new IDataAdapter wrapping the given IData document.
      *
      * @param document  The document to be wrapped.
-     * @return          A new IDataEnvelope wrapping the given IData document.
+     * @return          A new IDataAdapter wrapping the given IData document.
      */
     public static IDataAdapter of(IData document) {
         return new IDataAdapter(document);
     }
 
     /**
-     * Returns a new IDataEnvelope[] representation of the given IData[] document list.
+     * Returns a new IDataAdapter[] representation of the given IData[] document list.
      *
      * @param array An IData[] document list.
-     * @return      A new IDataEnvelope[] representation of the given IData[] document list.
+     * @return      A new IDataAdapter[] representation of the given IData[] document list.
      */
     public static IDataAdapter[] of(IData[] array) {
         IDataAdapter[] output = null;
