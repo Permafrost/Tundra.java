@@ -33,10 +33,24 @@ import permafrost.tundra.xml.XMLHelper;
  */
 public class Encoder extends Transformer<String, String> {
     /**
+     * The prefix used to denote XML attributes in a parsed IData document.
+     */
+    protected String attributePrefix;
+
+    /**
      * Creates a new Encoder object.
      */
     public Encoder() {
-        this(true);
+        this(null);
+    }
+
+    /**
+     * Creates a new Encoder object.
+     *
+     * @param attributePrefix   The prefix used to denote XML attributes in a parsed IData document.
+     */
+    public Encoder(String attributePrefix) {
+        this(attributePrefix, true);
     }
 
     /**
@@ -45,7 +59,18 @@ public class Encoder extends Transformer<String, String> {
      * @param recurse   Whether to recursively transform child IData documents and IData[] document lists.
      */
     public Encoder(boolean recurse) {
+        this(null, recurse);
+    }
+
+    /**
+     * Creates a new Encoder object.
+     *
+     * @param attributePrefix   The prefix used to denote XML attributes in a parsed IData document.
+     * @param recurse           Whether to recursively transform child IData documents and IData[] document lists.
+     */
+    public Encoder(String attributePrefix, boolean recurse) {
         super(String.class, String.class, TransformerMode.VALUES, recurse, true, true, true);
+        this.attributePrefix = attributePrefix == null ? XMLHelper.DEFAULT_ATTRIBUTE_PREFIX : attributePrefix;
     }
 
     /**
@@ -56,6 +81,6 @@ public class Encoder extends Transformer<String, String> {
      * @return      The transformed value.
      */
     protected String transformValue(String key, String value) {
-        return XMLHelper.encode(value, key.startsWith("@"));
+        return XMLHelper.encode(value, key.startsWith(attributePrefix));
     }
 }

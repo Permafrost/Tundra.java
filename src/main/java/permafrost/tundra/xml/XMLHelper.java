@@ -56,9 +56,24 @@ import javax.xml.validation.SchemaFactory;
  */
 public final class XMLHelper {
     /**
+     * The default prefix used to denote XML attributes in parsed IData documents.
+     */
+    public static final String DEFAULT_ATTRIBUTE_PREFIX = "@";
+
+    /**
      * Disallow instantiation of this class.
      */
     private XMLHelper() {}
+
+    /**
+     * Returns the given input string with XML entities escaped.
+     *
+     * @param input         The input string to process.
+     * @return              The escaped string.
+     */
+    public static String encode(String input) {
+        return encode(input, false);
+    }
 
     /**
      * Returns the given input string with XML entities escaped.
@@ -105,7 +120,17 @@ public final class XMLHelper {
      * @return          A new IData document with string values encoded.
      */
     public static IData encode(IData document) {
-        return IDataHelper.transform(document, new Encoder());
+        return encode(document, DEFAULT_ATTRIBUTE_PREFIX);
+    }
+
+    /**
+     * XML decodes string values in the given IData document.
+     *
+     * @param document  The IData document to encode.
+     * @return          A new IData document with string values encoded.
+     */
+    public static IData encode(IData document, String attributePrefix) {
+        return IDataHelper.transform(document, new Encoder(attributePrefix));
     }
 
     /**
