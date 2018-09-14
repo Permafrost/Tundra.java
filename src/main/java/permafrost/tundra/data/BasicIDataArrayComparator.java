@@ -60,6 +60,6 @@ public class BasicIDataArrayComparator implements IDataArrayComparator {
      * comparison of each item.
      */
     public int compare(IData[] array1, IData[] array2) {
-        return IDataHelper.compare(array1, array2);
+        return IDataHelper.compare(array1, array2, isKeyOrderSignificant);
     }
 }
