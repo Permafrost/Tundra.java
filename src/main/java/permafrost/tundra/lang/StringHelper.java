@@ -29,6 +29,7 @@ import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
 import com.wm.data.IDataUtil;
 import permafrost.tundra.data.IDataHelper;
+import permafrost.tundra.data.transform.Uncontroller;
 import permafrost.tundra.io.InputOutputHelper;
 import permafrost.tundra.io.InputStreamHelper;
 import permafrost.tundra.io.ReaderHelper;
@@ -1748,5 +1749,53 @@ public final class StringHelper {
         if (output.size() > 0) output.remove(output.size() - 1);
 
         return output.toArray(new String[output.size()]);
+    }
+
+    /**
+     * Removes all ISO control characters from the given string.
+     *
+     * A character is considered to be an ISO control character if its code is in the range '\u0000' through '\u001F'
+     * or in the range '\u007F' through '\u009F'.
+     *
+     * @param input     The string to remove control characters from.
+     * @return          The given string with all control characters removed.
+     */
+    public static String uncontrol(String input) {
+        if (input == null) return null;
+
+        StringBuilder builder = new StringBuilder();
+        for (char c : input.toCharArray()) {
+            if (!Character.isISOControl(c)) {
+                builder.append(c);
+            }
+        }
+
+        return builder.toString();
+    }
+
+    /**
+     * Removes all ISO control characters from all string values in the given IData document.
+     *
+     * A character is considered to be an ISO control character if its code is in the range '\u0000' through '\u001F'
+     * or in the range '\u007F' through '\u009F'.
+     *
+     * @param document  The IData document to process.
+     * @return          A new IData document whose string values contain no control characters.
+     */
+    public static IData uncontrol(IData document) {
+        return IDataHelper.transform(document, new Uncontroller());
+    }
+
+    /**
+     * Removes all ISO control characters from all string values in the given IData document.
+     *
+     * A character is considered to be an ISO control character if its code is in the range '\u0000' through '\u001F'
+     * or in the range '\u007F' through '\u009F'.
+     *
+     * @param array     The IData[] document list to process.
+     * @return          A new IData[] document list whose string values contain no control characters.
+     */
+    public static IData[] uncontrol(IData[] array) {
+        return IDataHelper.transform(array, new Uncontroller());
     }
 }
