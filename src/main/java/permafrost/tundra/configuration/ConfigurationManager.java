@@ -45,6 +45,7 @@ import permafrost.tundra.io.filter.AndFilenameFilter;
 import permafrost.tundra.io.filter.FileFilenameFilter;
 import permafrost.tundra.io.filter.RegularExpressionFilenameFilter;
 import permafrost.tundra.lang.ArrayHelper;
+import permafrost.tundra.lang.ExceptionHelper;
 import permafrost.tundra.server.PackageHelper;
 import permafrost.tundra.server.SystemHelper;
 import java.io.File;
@@ -53,6 +54,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.regex.Pattern;
@@ -85,6 +87,32 @@ public class ConfigurationManager {
      * Disallow instantiation of this class.
      */
     private ConfigurationManager() {}
+
+    /**
+     * Clears all cached configurations from memory.
+     */
+    public static void clear() {
+        CONFIGURATIONS.clear();
+    }
+
+    /**
+     * Refreshes all cached configurations from disk.
+     *
+     * @throws ServiceException If an error occurs while refreshing.
+     */
+    public static void refresh() throws ServiceException {
+        List<Throwable> exceptions = new ArrayList<Throwable>();
+
+        for(Map.Entry<String, IData> entry : CONFIGURATIONS.entrySet()) {
+            try {
+                get(entry.getKey(), true);
+            } catch(Throwable ex) {
+                exceptions.add(ex);
+            }
+        }
+
+        if (exceptions.size() > 0) ExceptionHelper.raise(exceptions);
+    }
 
     /**
      * Returns the configuration settings for the package containing the invoking service.
