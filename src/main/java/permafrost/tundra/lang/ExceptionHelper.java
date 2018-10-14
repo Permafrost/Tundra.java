@@ -89,6 +89,22 @@ public final class ExceptionHelper {
     }
 
     /**
+     * Throws a new RuntimeException constructed with the given cause, unless the cause is already a
+     * an unchecked exception, in which case it is rethrown without modification.
+     *
+     * @param cause The exception which caused this new unchecked exception to be thrown.
+     */
+    public static void raiseUnchecked(Throwable cause) {
+        if (cause instanceof RuntimeException) {
+            throw (RuntimeException)cause;
+        } else if (cause instanceof Error) {
+            throw (Error)cause;
+        } else {
+            throw new RuntimeException(cause);
+        }
+    }
+
+    /**
      * Throws a new ServiceException with the given message.
      *
      * @param message A message describing why this new ServiceException was thrown.

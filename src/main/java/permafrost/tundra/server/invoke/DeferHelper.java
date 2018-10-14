@@ -77,7 +77,7 @@ public final class DeferHelper {
      * @param pipeline  The input pipeline for the service.
      */
     public static void defer(NSName service, IData pipeline) {
-        Holder.DEFER_EXECUTOR.submit(new CallableService(service, Service.getSession(), IDataHelper.duplicate(pipeline)));
+        Holder.DEFER_EXECUTOR.submit(new CallableService(service, IDataHelper.duplicate(pipeline)));
     }
 
     /**

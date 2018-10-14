@@ -643,7 +643,7 @@ public final class ServiceHelper {
                 invoke(service, scope, raise, false);
             } finally {
                 long end = System.nanoTime();
-                estimator.add((end - start)/1000000L);
+                estimator.add((end - start)/1000000.0);
             }
         }
 

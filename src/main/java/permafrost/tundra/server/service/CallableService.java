@@ -25,13 +25,15 @@
 package permafrost.tundra.server.service;
 
 import com.wm.app.b2b.server.Service;
+import com.wm.app.b2b.server.ServiceThread;
 import com.wm.app.b2b.server.Session;
 import com.wm.data.IData;
+import com.wm.data.IDataFactory;
 import com.wm.lang.ns.NSName;
 import java.util.concurrent.Callable;
 
 /**
- * Wraps a call to a webMethods Integration Server service with the Callable interface.
+ * Wraps a call to a webMethods Integration Server service with the Callable and Runnable interface.
  */
 public class CallableService implements Callable<IData> {
     /**
@@ -53,12 +55,21 @@ public class CallableService implements Callable<IData> {
      * Constructs a new CallableService for invoking a webMethods Integration Server service via the Callable
      * interface.
      *
-     * @param service  The fully-qualified service name to be invoked.
-     * @param session  The session to invoke the service under.
+     * @param service  The service to be invoked.
+     */
+    public CallableService(NSName service) {
+        this(service, IDataFactory.create());
+    }
+
+    /**
+     * Constructs a new CallableService for invoking a webMethods Integration Server service via the Callable
+     * interface.
+     *
+     * @param service  The service to be invoked.
      * @param pipeline The input pipeline the service is invoked with.
      */
-    public CallableService(String service, Session session, IData pipeline) {
-        this(service == null ? null : NSName.create(service), session, pipeline);
+    public CallableService(NSName service, IData pipeline) {
+        this(service, Service.getSession(), pipeline);
     }
 
     /**
@@ -83,7 +94,17 @@ public class CallableService implements Callable<IData> {
      * @return The output pipeline returned by the invocation.
      * @throws Exception if the service encounters an error.
      */
+    @Override
     public IData call() throws Exception {
         return Service.doInvoke(service, session, pipeline);
+    }
+
+    /**
+     * Invokes the specified service on a different thread with the provided pipeline and session.
+     *
+     * @return The thread on which the service is invoked.
+     */
+    public ServiceThread fork() {
+        return Service.doThreadInvoke(service, session, pipeline);
     }
 }
