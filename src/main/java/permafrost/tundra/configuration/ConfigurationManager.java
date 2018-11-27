@@ -299,10 +299,11 @@ public class ConfigurationManager {
         for (Package pkg : packages) {
             try {
                 String packageName = pkg.getName();
-
                 IDataMap map = new IDataMap();
                 map.put("package", packageName);
-                map.put("configuration", get(packageName, refresh, updateCache));
+                IData configuration = get(packageName, refresh, updateCache);
+                map.put("configuration", configuration);
+                map.put("configuration.length", IDataHelper.size(configuration));
                 output.add(map);
             } catch(IOException exception) {
                 // ignore unparseable configurations when producing list
