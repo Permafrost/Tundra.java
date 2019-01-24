@@ -32,6 +32,7 @@ import com.wm.data.IDataUtil;
 import com.wm.util.Table;
 import com.wm.util.coder.IDataCodable;
 import com.wm.util.coder.ValuesCodable;
+import org.glassfish.json.JsonProviderImpl;
 import permafrost.tundra.io.InputOutputHelper;
 import permafrost.tundra.io.InputStreamHelper;
 import permafrost.tundra.lang.ArrayHelper;
@@ -48,7 +49,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonNumber;
@@ -61,6 +61,7 @@ import javax.json.JsonStructure;
 import javax.json.JsonValue;
 import javax.json.JsonWriter;
 import javax.json.JsonWriterFactory;
+import javax.json.spi.JsonProvider;
 import javax.json.stream.JsonGenerator;
 
 /**
@@ -75,6 +76,10 @@ public class IDataJSONParser extends IDataParser {
      * Factory for created JSON writers.
      */
     private JsonWriterFactory jsonWriterFactory;
+    /**
+     * Implementation class used for JSON parsing and emitting.
+     */
+    private JsonProvider provider;
 
     /**
      * Construct a new pretty printing IData JSON parser/emitter.
@@ -91,13 +96,17 @@ public class IDataJSONParser extends IDataParser {
     public IDataJSONParser(boolean prettyPrinting) {
         super("application/json");
 
+        // using the org.glassfish.json implementation directly improves performance by avoiding disk access and thread
+        // contention caused by the class loading in the javax.json.spi.JsonProvider.provider() method
+        provider = new JsonProviderImpl();
+
         // create reader factory
-        jsonReaderFactory = Json.createReaderFactory(null);
+        jsonReaderFactory = provider.createReaderFactory(null);
 
         // create pretty printing writer factory
         Map<String, Object> properties = new HashMap<String, Object>(1);
         if (prettyPrinting) properties.put(JsonGenerator.PRETTY_PRINTING, prettyPrinting);
-        jsonWriterFactory = Json.createWriterFactory(properties);
+        jsonWriterFactory = provider.createWriterFactory(properties);
     }
 
     /**
@@ -169,7 +178,7 @@ public class IDataJSONParser extends IDataParser {
      * @param input The JSON value to convert.
      * @return The converted Object.
      */
-    protected static Object fromJsonValue(JsonValue input) {
+    protected Object fromJsonValue(JsonValue input) {
         Object output = null;
 
         if (input != null) {
@@ -201,7 +210,7 @@ public class IDataJSONParser extends IDataParser {
      * @param input The JSON string to convert.
      * @return The converted Object.
      */
-    protected static Object fromJsonString(JsonString input) {
+    protected Object fromJsonString(JsonString input) {
         return input.getString();
     }
 
@@ -211,7 +220,7 @@ public class IDataJSONParser extends IDataParser {
      * @param input The JSON number to convert.
      * @return The converted Object.
      */
-    protected static Object fromJsonNumber(JsonNumber input) {
+    protected Object fromJsonNumber(JsonNumber input) {
         Object output;
         if (input.isIntegral()) {
             output = input.longValue();
@@ -227,7 +236,7 @@ public class IDataJSONParser extends IDataParser {
      * @param input The JSON object to be converted.
      * @return The converted IData document.
      */
-    protected static IData fromJsonObject(JsonObject input) {
+    protected IData fromJsonObject(JsonObject input) {
         if (input == null) return null;
 
         Iterator<String> iterator = input.keySet().iterator();
@@ -252,7 +261,7 @@ public class IDataJSONParser extends IDataParser {
      * @param input The JSON array to convert.
      * @return The converted Object[].
      */
-    protected static Object[] fromJsonArray(JsonArray input) {
+    protected Object[] fromJsonArray(JsonArray input) {
         if (input == null) return null;
 
         List<Object> output = new ArrayList<Object>(input.size());
@@ -271,8 +280,8 @@ public class IDataJSONParser extends IDataParser {
      * @param input An IData document.
      * @return A JSON object.
      */
-    protected static JsonObject toJsonObject(IData input) {
-        JsonObjectBuilder builder = Json.createObjectBuilder();
+    protected JsonObject toJsonObject(IData input) {
+        JsonObjectBuilder builder = provider.createObjectBuilder();
 
         if (input != null) {
             IDataCursor cursor = input.getCursor();
@@ -318,8 +327,8 @@ public class IDataJSONParser extends IDataParser {
      * @param input An Object[] to be converted.
      * @return A JSON array.
      */
-    protected static JsonArray toJsonArray(Object[] input) {
-        JsonArrayBuilder builder = Json.createArrayBuilder();
+    protected JsonArray toJsonArray(Object[] input) {
+        JsonArrayBuilder builder = provider.createArrayBuilder();
 
         if (input != null) {
             for (Object value : input) {
