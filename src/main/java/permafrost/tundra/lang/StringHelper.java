@@ -29,6 +29,8 @@ import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
 import com.wm.data.IDataUtil;
 import permafrost.tundra.data.IDataHelper;
+import permafrost.tundra.data.transform.Capitalizer;
+import permafrost.tundra.data.transform.TransformerMode;
 import permafrost.tundra.data.transform.Uncontroller;
 import permafrost.tundra.io.InputOutputHelper;
 import permafrost.tundra.io.InputStreamHelper;

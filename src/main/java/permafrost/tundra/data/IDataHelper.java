@@ -38,23 +38,7 @@ import org.w3c.dom.Node;
 import permafrost.tundra.collection.CollectionHelper;
 import permafrost.tundra.collection.ListHelper;
 import permafrost.tundra.collection.SetHelper;
-import permafrost.tundra.data.transform.Blankifier;
-import permafrost.tundra.data.transform.Condenser;
-import permafrost.tundra.data.transform.Legalizer;
-import permafrost.tundra.data.transform.Lowercaser;
-import permafrost.tundra.data.transform.Nullifier;
-import permafrost.tundra.data.transform.Prefixer;
-import permafrost.tundra.data.transform.Replacer;
-import permafrost.tundra.data.transform.Stringifier;
-import permafrost.tundra.data.transform.Suffixer;
-import permafrost.tundra.data.transform.TransformerMode;
-import permafrost.tundra.data.transform.Squeezer;
-import permafrost.tundra.data.transform.Transformer;
-import permafrost.tundra.data.transform.Trimmer;
-import permafrost.tundra.data.transform.Truncator;
-import permafrost.tundra.data.transform.Unprefixer;
-import permafrost.tundra.data.transform.Unsuffixer;
-import permafrost.tundra.data.transform.Uppercaser;
+import permafrost.tundra.data.transform.*;
 import permafrost.tundra.flow.ConditionEvaluator;
 import permafrost.tundra.flow.variable.SubstitutionHelper;
 import permafrost.tundra.lang.ArrayHelper;
@@ -1656,13 +1640,39 @@ public final class IDataHelper {
      * Converts all string values in the given IData[] to uppercase.
      *
      * @param input     The IData[] to be uppercased.
-     * @param locale    The locale to use for lowercasing rules.
+     * @param locale    The locale to use for uppercasing rules.
      * @param mode      The transformer mode to use.
      * @param recurse   Whether to recursively convert.
      * @return          A new IData[] containing uppercase versions of the elements in the given input.
      */
     public static IData[] uppercase(IData[] input, Locale locale, TransformerMode mode, boolean recurse) {
         return transform(input, new Uppercaser(locale, mode, recurse, true, true, true));
+    }
+
+    /**
+     * Converts all string values in the given IData to capitals.
+     *
+     * @param document      The IData to be capitalized.
+     * @param firstWordOnly Whether only the first word or all words should be capitalized.
+     * @param mode          The transformer mode to use.
+     * @param recurse       Whether to recursively convert.
+     * @return              A new IData containing capitalized versions of the elements in the given input.
+     */
+    public static IData capitalize(IData document, boolean firstWordOnly, TransformerMode mode, boolean recurse) {
+        return transform(document, new Capitalizer(firstWordOnly, mode, recurse, true, true, true));
+    }
+
+    /**
+     * Converts all string values in the given IData[] to capitalize.
+     *
+     * @param input         The IData[] to be capitalized.
+     * @param firstWordOnly Whether only the first word or all words should be capitalized.
+     * @param mode          The transformer mode to use.
+     * @param recurse       Whether to recursively convert.
+     * @return              A new IData[] containing capitalized versions of the elements in the given input.
+     */
+    public static IData[] capitalize(IData[] input, boolean firstWordOnly, TransformerMode mode, boolean recurse) {
+        return transform(input, new Capitalizer(firstWordOnly, mode, recurse, true, true, true));
     }
 
     /**
