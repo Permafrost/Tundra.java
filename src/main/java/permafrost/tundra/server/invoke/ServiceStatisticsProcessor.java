@@ -104,8 +104,11 @@ public class ServiceStatisticsProcessor extends AbstractInvokeChainProcessor imp
 
                 ServiceStatistics statistics = statisticsByService.get(service);
                 if (statistics == null) {
-                    statistics = new ServiceStatistics(service);
-                    statisticsByService.put(service, statistics);
+                    ServiceStatistics newStatistics = new ServiceStatistics(service);
+                    statistics = statisticsByService.putIfAbsent(service, newStatistics);
+                    if (statistics == null) {
+                        statistics = newStatistics;
+                    }
                 }
 
                 statistics.add((end - start) / 1000000000.0);
