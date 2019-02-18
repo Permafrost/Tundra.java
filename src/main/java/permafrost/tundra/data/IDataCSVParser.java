@@ -144,7 +144,7 @@ public class IDataCSVParser extends IDataParser {
         Reader reader = new InputStreamReader(inputStream, CharsetHelper.normalize(charset));
 
         try {
-            CSVParser parser = formatter(columns).parse(reader);
+            CSVParser parser = getRecordsFormatter(columns).parse(reader);
 
             Map<Integer, String> keys = flip(parser.getHeaderMap());
             List<IData> list = new ArrayList<IData>();
@@ -196,17 +196,35 @@ public class IDataCSVParser extends IDataParser {
 
         try {
             IDataCursor cursor = document.getCursor();
-            IData[] records = IDataUtil.getIDataArray(cursor, "recordWithNoID");
+            Object values = IDataUtil.get(cursor, "recordWithNoID");
             cursor.destroy();
 
-            if (records != null) {
+            if (values instanceof IData[]) {
+                IData[] table = (IData[])values;
+
                 String[] columns = this.columns;
-                if (columns == null || columns.length == 0) columns = IDataHelper.getKeys(records);
+                if (columns == null || columns.length == 0) columns = IDataHelper.getKeys(table);
 
-                CSVPrinter printer = new CSVPrinter(printStream, formatter(columns));
+                CSVPrinter printer = new CSVPrinter(printStream, getRecordsFormatter(columns));
 
-                for (IData record : records) {
-                    if (record != null) printer.printRecord(IDataHelper.getValues(record));
+                for (IData row : table) {
+                    if (row != null) printer.printRecord(IDataHelper.getValues(row));
+                }
+            } else if (values instanceof Object[][]) {
+                Object[][] table = (Object[][])values;
+
+                CSVPrinter printer = new CSVPrinter(printStream, getRecordsFormatter(this.columns));
+
+                for (Object[] row : table) {
+                    if (row != null) printer.printRecord(row);
+                }
+            } else if (values != null) {
+                CSVPrinter printer = new CSVPrinter(printStream, getValuesFormatter());
+
+                if (values instanceof Object[]) {
+                    printer.printRecord((Object[])values);
+                } else {
+                    printer.printRecord(values);
                 }
             }
         } finally {
@@ -231,19 +249,19 @@ public class IDataCSVParser extends IDataParser {
     }
 
     /**
-     * @return A new CSV formatter configured with this parser's settings.
+     * @return A new CSV getRecordsFormatter configured with this parser's settings.
      */
-    protected CSVFormat formatter() {
-        return formatter(columns);
+    protected CSVFormat getValuesFormatter() {
+        return getRecordsFormatter(null).withSkipHeaderRecord().withRecordSeparator("");
     }
 
     /**
-     * Returns a new CSV formatter configured with this parser's settings.
+     * Returns a new CSV getRecordsFormatter configured with this parser's settings.
      *
      * @param columns   The column names to use.
-     * @return          A new CSV formatter configured with this parser's settings.
+     * @return          A new CSV getRecordsFormatter configured with this parser's settings.
      */
-    protected CSVFormat formatter(String[] columns) {
+    protected CSVFormat getRecordsFormatter(String[] columns) {
         return CSVFormat.DEFAULT.withHeader(columns).withSkipHeaderRecord(!hasHeader).withDelimiter(delimiter).withNullString("").withAllowMissingColumnNames();
     }
 
