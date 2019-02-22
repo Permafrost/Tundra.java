@@ -32,18 +32,15 @@ import com.wm.data.IDataFactory;
 import com.wm.data.IDataUtil;
 import com.wm.util.ServerException;
 import com.wm.util.coder.IDataCodable;
-import permafrost.tundra.math.NormalDistributionEstimator;
+import permafrost.tundra.math.gauss.ServiceEstimator;
 import permafrost.tundra.time.DateTimeHelper;
 import permafrost.tundra.time.DurationHelper;
 import permafrost.tundra.time.DurationPattern;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ConcurrentNavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
-import java.util.concurrent.LinkedBlockingDeque;
 
 /**
  * An invocation chain processor which collects service invocation duration statistics.
@@ -56,7 +53,7 @@ public class ServiceStatisticsProcessor extends AbstractInvokeChainProcessor imp
     /**
      * The collected statistics per service.
      */
-    private ConcurrentNavigableMap<String, ServiceStatistics> statisticsByService = new ConcurrentSkipListMap<String, ServiceStatistics>();
+    private ConcurrentNavigableMap<String, ServiceEstimator> statisticsByService = new ConcurrentSkipListMap<String, ServiceEstimator>();
 
     /**
      * Initialization on demand holder idiom.
@@ -94,24 +91,26 @@ public class ServiceStatisticsProcessor extends AbstractInvokeChainProcessor imp
     @Override
     public void process(Iterator iterator, BaseService baseService, IData pipeline, ServiceStatus serviceStatus) throws ServerException {
         long start = System.nanoTime();
+        boolean success = false;
         try {
             super.process(iterator, baseService, pipeline, serviceStatus);
+            success = true;
         } finally {
             if (isStarted()) {
                 long end = System.nanoTime();
 
                 String service = baseService.getNSName().getFullName();
 
-                ServiceStatistics statistics = statisticsByService.get(service);
+                ServiceEstimator statistics = statisticsByService.get(service);
                 if (statistics == null) {
-                    ServiceStatistics newStatistics = new ServiceStatistics(service);
+                    ServiceEstimator newStatistics = new ServiceEstimator(service, "seconds");
                     statistics = statisticsByService.putIfAbsent(service, newStatistics);
                     if (statistics == null) {
                         statistics = newStatistics;
                     }
                 }
 
-                statistics.add((end - start) / 1000000000.0);
+                statistics.add(new ServiceEstimator.Sample(success, (end - start) / 1000000000.0));
             }
         }
     }
@@ -126,12 +125,11 @@ public class ServiceStatisticsProcessor extends AbstractInvokeChainProcessor imp
         IData output = IDataFactory.create();
         IDataCursor cursor = output.getCursor();
 
-
         List<IData> services = new ArrayList<IData>();
         for (String service : statisticsByService.keySet()) {
-            ServiceStatistics statistics = statisticsByService.get(service);
+            ServiceEstimator statistics = statisticsByService.get(service);
             if (statistics != null) {
-                services.add(statistics.getIData());
+                services.add(statistics.getResults().getIData());
             }
         }
 
@@ -141,7 +139,7 @@ public class ServiceStatisticsProcessor extends AbstractInvokeChainProcessor imp
             IDataUtil.put(cursor, "sampling.duration", DurationHelper.format(System.currentTimeMillis() - startTime, DurationPattern.XML));
         }
 
-        cursor.insertAfter("statistics", services.toArray(new IData[services.size()]));
+        cursor.insertAfter("statistics", services.toArray(new IData[0]));
         cursor.insertAfter("statistics.length", services.size());
 
         cursor.destroy();
@@ -181,127 +179,6 @@ public class ServiceStatisticsProcessor extends AbstractInvokeChainProcessor imp
 
             startTime = 0;
             statisticsByService.clear();
-        }
-    }
-
-    /**
-     * Service statistics collection class.
-     */
-    private static class ServiceStatistics extends NormalDistributionEstimator implements IDataCodable {
-        /**
-         * The pattern used to format decimals for display.
-         */
-        private static final String DECIMAL_PATTERN = "###,##0.000000";
-        /**
-         * The pattern used to format integers for display.
-         */
-        private static final String INTEGER_PATTERN = "###,##0";
-        /**
-         * Use a sample queue to reduce thread synchronization required by estimator.
-         */
-        private Deque<Double> samples = new LinkedBlockingDeque<Double>(64);
-        /**
-         * The name of the service the collected statistics relate to.
-         */
-        private String service;
-
-        /**
-         * Constructs a new estimator object.
-         *
-         * @param service   The name of the service the collected statistics relate to.
-         */
-        public ServiceStatistics(String service) {
-            this(service, null);
-        }
-
-        /**
-         * Constructs a new estimator object.
-         *
-         * @param service   The name of the service the collected statistics relate to.
-         * @param unit      The unit of measurement related to the measured samples.
-         */
-        public ServiceStatistics(String service, String unit) {
-            super(unit);
-            this.service = service;
-        }
-
-        @Override
-        public NormalDistributionEstimator add(double sample) {
-            while (!samples.offer(sample)) {
-                quiesce();
-            }
-
-            return this;
-        }
-
-        /**
-         * Returns the name of the service the collected statistics relate to.
-         *
-         * @return the name of the service the collected statistics relate to.
-         */
-        public String getService() {
-            return service;
-        }
-
-        /**
-         * Ensure all calculations are up to date.
-         */
-        @Override
-        protected void quiesce() {
-            Double previousSample;
-            while((previousSample = samples.poll()) != null) {
-                super.add(previousSample);
-            }
-        }
-
-        /**
-         * Returns an IData representation of this object.
-         *
-         * @return An IData representation of this object.
-         */
-        @Override
-        public IData getIData() {
-            DecimalFormat decimalFormat = new DecimalFormat(DECIMAL_PATTERN);
-            DecimalFormat integerFormat = new DecimalFormat(INTEGER_PATTERN);
-
-            IData output = IDataFactory.create();
-            IDataCursor cursor = output.getCursor();
-
-            double mean = getMean();
-            double standardDeviation = getStandardDeviation();
-            double minimum = getMinimum();
-            double maximum = getMaximum();
-            double cumulative = getCumulative();
-            long count = getCount();
-
-            cursor.insertAfter("service", getService());
-            cursor.insertAfter("minimum", minimum);
-            cursor.insertAfter("minimum.formatted", decimalFormat.format(minimum));
-            cursor.insertAfter("average", mean);
-            cursor.insertAfter("average.formatted", decimalFormat.format(mean));
-            cursor.insertAfter("deviation.standard", standardDeviation);
-            cursor.insertAfter("deviation.standard.formatted", decimalFormat.format(standardDeviation));
-            cursor.insertAfter("maximum", maximum);
-            cursor.insertAfter("maximum.formatted", decimalFormat.format(maximum));
-            cursor.insertAfter("cumulative", cumulative);
-            cursor.insertAfter("cumulative.formatted", decimalFormat.format(cumulative));
-            cursor.insertAfter("count", count);
-            cursor.insertAfter("count.formatted", integerFormat.format(count));
-
-            cursor.destroy();
-
-            return output;
-        }
-
-        /**
-         * Sets values from the given IData. This method has not been implemented.
-         *
-         * @param input                             Not used.
-         * @throws UnsupportedOperationException    This exception is always thrown.
-         */
-        @Override
-        public void setIData(IData input) {
-            throw new UnsupportedOperationException("setIData not implemented");
         }
     }
 }

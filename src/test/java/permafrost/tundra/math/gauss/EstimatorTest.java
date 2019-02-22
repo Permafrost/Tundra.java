@@ -22,28 +22,31 @@
  * SOFTWARE.
  */
 
-package permafrost.tundra.math;
+package permafrost.tundra.math.gauss;
 
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
-public class NormalDistributionEstimatorTest {
+public class EstimatorTest {
     @Test
     public void testEstimation() throws Exception {
-        NormalDistributionEstimator estimator = new NormalDistributionEstimator(30.5, 5, 10.2, 8.6, 4.9);
+        Estimator estimator = new Estimator(null, null);
+        estimator.add(30.5, 5, 10.2, 8.6, 4.9);
+        Estimator.Results results = estimator.getResults();
 
-        assertEquals("count", 5L, estimator.getCount());
-        assertEquals("mean", 11.84, estimator.getMean(), 0.1);
-        assertEquals("minimum", 4.9, estimator.getMinimum(), 0.1);
-        assertEquals("maximum", 30.5, estimator.getMaximum(), 0.1);
-        assertEquals("standard deviation", 10.68, estimator.getStandardDeviation(), 0.1);
+        assertEquals("count", 5L, results.getCount());
+        assertEquals("mean", 11.84, results.getMean(), 0.1);
+        assertEquals("minimum", 4.9, results.getMinimum(), 0.1);
+        assertEquals("maximum", 30.5, results.getMaximum(), 0.1);
+        assertEquals("standard deviation", 10.68, results.getStandardDeviation(), 0.1);
 
         estimator.add(6.5);
+        results = estimator.getResults();
 
-        assertEquals("count", 6L, estimator.getCount());
-        assertEquals("mean", 10.95, estimator.getMean(), 0.1);
-        assertEquals("minimum", 4.9, estimator.getMinimum(), 0.1);
-        assertEquals("maximum", 30.5, estimator.getMaximum(), 0.1);
-        assertEquals("standard deviation", 9.799, estimator.getStandardDeviation(), 0.1);
+        assertEquals("count", 6L, results.getCount());
+        assertEquals("mean", 10.95, results.getMean(), 0.1);
+        assertEquals("minimum", 4.9, results.getMinimum(), 0.1);
+        assertEquals("maximum", 30.5, results.getMaximum(), 0.1);
+        assertEquals("standard deviation", 9.799, results.getStandardDeviation(), 0.1);
     }
 }
