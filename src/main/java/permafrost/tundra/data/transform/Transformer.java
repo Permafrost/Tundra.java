@@ -40,6 +40,9 @@ import java.util.List;
 
 /**
  * An abstract class representing a transformer that operates on an IData's elements.
+ *
+ * @param <V>   Input value class.
+ * @param <T>   Output transformed value class.
  */
 public abstract class Transformer<V, T> {
     /**

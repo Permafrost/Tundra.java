@@ -24,7 +24,6 @@
 
 package permafrost.tundra.data;
 
-import com.wm.app.b2b.server.ServerAPI;
 import com.wm.app.b2b.server.ServiceException;
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;
