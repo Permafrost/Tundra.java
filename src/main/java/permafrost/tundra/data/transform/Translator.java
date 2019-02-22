@@ -53,14 +53,19 @@ public class Translator extends Transformer<String, Object> {
         super(String.class, Object.class, TransformerMode.VALUES, true, true, true, true);
         if (translations == null) {
             this.translations = IDataFactory.create();
-        } else if (reverse) {
-            this.translations = IDataHelper.flip(translations);
+            defaultValue = null;
+            nullValue = null;
         } else {
-            this.translations = translations;
-        }
+            translations = IDataHelper.duplicate(translations, true);
+            defaultValue = IDataHelper.remove(translations, "$default");
+            nullValue = IDataHelper.remove(translations, "$null");
 
-        defaultValue = IDataHelper.get(translations, "$default");
-        nullValue = IDataHelper.get(translations, "$null");
+            if (reverse) {
+                this.translations = IDataHelper.flip(translations);
+            } else {
+                this.translations = translations;
+            }
+        }
     }
 
     /**
