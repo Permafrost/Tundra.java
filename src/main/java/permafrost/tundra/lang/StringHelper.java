@@ -667,8 +667,34 @@ public final class StringHelper {
      * @return              All given strings concatenated together.
      */
     public static String concatenate(String separator, boolean includeNulls, String ...strings) {
-        if (strings == null || strings.length == 0) return includeNulls ? null : "";
-        return build(null, separator, includeNulls, strings).toString();
+        if (strings == null || strings.length == 0) return includeNulls ? "" : null;
+
+        if (includeNulls || containsValues(strings)) {
+            return build(null, separator, includeNulls, strings).toString();
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Returns true if any of the given strings is not null.
+     *
+     * @param strings The list of strings to check.
+     * @return        True if any of the given strings are not null.
+     */
+    public static boolean containsValues(String ...strings) {
+        boolean containsValues = false;
+
+        if (strings != null) {
+            for (String string : strings) {
+                if (string != null) {
+                    containsValues = true;
+                    break;
+                }
+            }
+        }
+
+        return containsValues;
     }
 
     /**
