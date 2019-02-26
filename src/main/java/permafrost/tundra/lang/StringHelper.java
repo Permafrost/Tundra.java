@@ -609,7 +609,7 @@ public final class StringHelper {
      * @return              All string leaf values in the IData document concatenated together.
      */
     public static String concatenate(IData operands) {
-        return concatenate(operands, null, false);
+        return concatenate(operands, null);
     }
 
     /**
@@ -621,7 +621,7 @@ public final class StringHelper {
      * @return              All string leaf values in the IData document concatenated together.
      */
     public static String concatenate(IData operands, String separator) {
-        return concatenate(operands, separator, false);
+        return concatenate(operands, separator, Sanitization.REMOVE_NULLS);
     }
 
     /**
@@ -629,12 +629,12 @@ public final class StringHelper {
      *
      * @param operands      An IData document containing strings to be concatenated.
      * @param separator     An optional separator string to be used between items of the array.
-     * @param includeNulls  If true, null values will be included in the output string, otherwise they are ignored.
+     * @param sanitization  How nulls and blank values should be treated.
      * @return              All string leaf values in the IData document concatenated together.
      */
     @SuppressWarnings("unchecked")
-    public static String concatenate(IData operands, String separator, boolean includeNulls) {
-        return concatenate(separator, includeNulls, IDataHelper.getLeaves(operands, String.class));
+    public static String concatenate(IData operands, String separator, Sanitization sanitization) {
+        return concatenate(separator, false, IDataHelper.getLeaves(IDataHelper.sanitize(operands, sanitization), String.class));
     }
 
     /**
