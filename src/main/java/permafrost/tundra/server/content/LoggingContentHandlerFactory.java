@@ -24,9 +24,9 @@
 
 package permafrost.tundra.server.content;
 
-import com.wm.app.b2b.server.LogOutputStream;
-import com.wm.app.b2b.server.ServerAPI;
 import permafrost.tundra.lang.Loggable;
+import permafrost.tundra.server.ConcurrentLogWriter;
+import java.io.IOException;
 
 /**
  * A factory for creating LoggingContentHandler objects.
@@ -35,7 +35,7 @@ public class LoggingContentHandlerFactory extends FilterContentHandlerFactory im
     /**
      * The stream to which content will be logged.
      */
-    protected volatile LogOutputStream logger;
+    protected volatile ConcurrentLogWriter logger;
     /**
      * Initialization on demand holder idiom.
      */
@@ -72,9 +72,10 @@ public class LoggingContentHandlerFactory extends FilterContentHandlerFactory im
     /**
      * Starts logging content.
      */
+    @Override
     public synchronized void start() {
         if (!started) {
-            logger = ServerAPI.getLogStream("content.log");
+            logger = new ConcurrentLogWriter("tundra-content.log");
             super.start();
         }
     }
@@ -82,10 +83,11 @@ public class LoggingContentHandlerFactory extends FilterContentHandlerFactory im
     /**
      * Stops logging content.
      */
+    @Override
     public synchronized void stop() {
         if (started) {
             super.stop();
-            logger.close();
+            logger.stop();
             logger = null;
         }
     }
@@ -93,25 +95,13 @@ public class LoggingContentHandlerFactory extends FilterContentHandlerFactory im
     /**
      * Logs the given message.
      *
-     * @param message The message to be logged.
+     * @param message       The message to be logged.
+     * @throws IOException  If an IO error occurred.
      */
-    public void log(String ...message) {
-        if (message != null && message.length > 0) {
-            try {
-                if (message.length > 1) {
-                    StringBuilder builder = new StringBuilder();
-                    for (String part : message) {
-                        if (part != null) {
-                            builder.append(part);
-                        }
-                    }
-                    logger.write(builder.toString());
-                } else if (message[0] != null){
-                    logger.write(message[0]);
-                }
-            } catch (NullPointerException ex) {
-                // ignore exception, logger was already destroyed
-            }
+    @Override
+    public void log(String ...message) throws IOException {
+        if (started && logger != null) {
+            logger.log(message);
         }
     }
 }

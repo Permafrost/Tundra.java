@@ -34,16 +34,33 @@ import java.util.Iterator;
 /**
  * Adds an HTTP header to the HTTP response with the measured duration of the request processing.
  */
-public class Measurer extends Handler {
+public class Measurer extends StartableHandler {
     /**
      * The HTTP header prefix used for the measured duration header.
      */
     public static final String HTTP_HEADER_PREFIX = "X-Response-Duration";
-
     /**
      * The HTTP header added to the HTTP response for the measured duration.
      */
     protected String header;
+
+    /**
+     * Initialization on demand holder idiom.
+     */
+    private static class Holder {
+        /**
+         * The singleton instance of the class.
+         */
+        private static final Measurer INSTANCE = new Measurer();
+    }
+
+    /**
+     * Returns the singleton instance of this class.
+     * @return the singleton instance of this class.
+     */
+    public static Measurer getInstance() {
+        return Holder.INSTANCE;
+    }
 
     /**
      * Creates a new Measurer.
@@ -73,11 +90,19 @@ public class Measurer extends Handler {
      */
     @Override
     public boolean handle(ProtocolState context, Iterator<Handler> handlers) throws IOException, AccessException {
-        long startTime = System.nanoTime();
-        boolean result = next(context, handlers);
-        long endTime = System.nanoTime();
+        boolean result;
 
-        context.setResponseFieldValue(header, DurationHelper.format((endTime - startTime)/1000000000.0, DurationPattern.XML));
+        if (started) {
+            long startTime = System.nanoTime();
+            try {
+                result = next(context, handlers);
+            } finally {
+                long endTime = System.nanoTime();
+                context.setResponseFieldValue(header, DurationHelper.format((endTime - startTime) / 1000000000.0, DurationPattern.XML));
+            }
+        } else {
+            result = next(context, handlers);
+        }
 
         return result;
     }

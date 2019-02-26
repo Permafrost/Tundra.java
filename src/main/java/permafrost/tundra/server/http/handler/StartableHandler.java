@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Lachlan Dowding
+ * Copyright (c) 2019 Lachlan Dowding
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,18 +22,45 @@
  * SOFTWARE.
  */
 
-package permafrost.tundra.lang;
+package permafrost.tundra.server.http.handler;
 
-import java.io.IOException;
+import permafrost.tundra.lang.Startable;
 
 /**
- * A generic interfaces for objects which support logging.
+ * An HTTP handler which can be started and stopped.
  */
-public interface Loggable {
+public abstract class StartableHandler extends Handler implements Startable {
     /**
-     * Logs the given message.
-     *
-     * @param message The message to be logged.
+     * Is this object started or stopped?
      */
-    void log(String ...message) throws IOException;
+    protected volatile boolean started;
+
+    /**
+     * Starts this object.
+     */
+    @Override
+    public synchronized void start() {
+        if (!started) {
+            started = true;
+        }
+    }
+
+    /**
+     * Stops this object.
+     */
+    @Override
+    public synchronized void stop() {
+        if (started) {
+            started = false;
+        }
+    }
+
+    /**
+     * Returns true if the object is started.
+     * @return true if the object is started.
+     */
+    @Override
+    public boolean isStarted() {
+        return started;
+    }
 }

@@ -33,11 +33,29 @@ import java.util.Iterator;
 /**
  * Adds an HTTP header to the HTTP response with a unique request ID to support log correlation.
  */
-public class Identifier extends Handler {
+public class Identifier extends StartableHandler {
     /**
-     * The HTTP header prefix used for the measured duration header.
+     * The HTTP header used for conveying the request ID.
      */
     public static final String HTTP_HEADER = "X-Request-ID";
+
+    /**
+     * Initialization on demand holder idiom.
+     */
+    private static class Holder {
+        /**
+         * The singleton instance of the class.
+         */
+        private static final Identifier INSTANCE = new Identifier();
+    }
+
+    /**
+     * Returns the singleton instance of this class.
+     * @return the singleton instance of this class.
+     */
+    public static Identifier getInstance() {
+        return Holder.INSTANCE;
+    }
 
     /**
      * Processes an HTTP request.
@@ -50,9 +68,11 @@ public class Identifier extends Handler {
      */
     @Override
     public boolean handle(ProtocolState context, Iterator<Handler> handlers) throws IOException, AccessException {
-        String requestID = context.getRequestFieldValue("X-Request-ID");
-        if (requestID == null) requestID = UUIDHelper.generate();
-        context.setResponseFieldValue("X-Request-ID", requestID);
+        if (started) {
+            String requestID = context.getRequestFieldValue(HTTP_HEADER);
+            if (requestID == null) requestID = UUIDHelper.generate();
+            context.setResponseFieldValue(HTTP_HEADER, requestID);
+        }
 
         return next(context, handlers);
     }

@@ -60,8 +60,6 @@ public class LoggingContentHandler extends FilterContentHandler {
      */
     public LoggingContentHandler(Startable startable, Loggable loggable) {
         super(startable);
-
-        if (loggable == null) throw new NullPointerException("loggable must not be null");
         this.loggable = loggable;
     }
 
@@ -74,7 +72,7 @@ public class LoggingContentHandler extends FilterContentHandler {
      */
     @Override
     public void getInputValues(ContentHandlerInput contentHandlerInput) throws IOException {
-        if (startable.isStarted()) {
+        if (startable.isStarted() && loggable != null) {
             byte[] bytes = InputStreamHelper.read(contentHandlerInput.getInputStream());
             if (bytes != null) {
                 contentHandlerInput.setInputStream(new ByteArrayInputStream(bytes));
@@ -101,7 +99,11 @@ public class LoggingContentHandler extends FilterContentHandler {
                     content = BytesHelper.base64Encode(bytes);
                 }
 
-                loggable.log("type = ", contentType, ", content = ", content);
+                try {
+                    loggable.log("type = ", contentType, ", content = ", content);
+                } catch(Exception ex) {
+                    // do nothing
+                }
             }
         }
     }

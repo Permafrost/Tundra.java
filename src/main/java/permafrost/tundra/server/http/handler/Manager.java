@@ -132,17 +132,13 @@ public class Manager implements Startable, HTTPHandler {
      * Starts the HTTP request manager.
      */
     public synchronized void start() {
-        if (!isStarted()) {
+        if (!started) {
             started = true;
             try {
                 Map<String, HTTPHandler> registeredHandlers = getRegisteredHandlers();
                 HTTPHandler defaultHandler = getRegisteredDefaultHandler();
 
                 kernel = new Kernel(defaultHandler, registeredHandlers);
-
-                handlers.add(new Logger());
-                handlers.add(new Measurer());
-                handlers.add(new Identifier());
                 handlers.add(kernel);
 
                 setRegisteredDefaultHandler(this);
@@ -160,7 +156,7 @@ public class Manager implements Startable, HTTPHandler {
      * Stops the HTTP handler manager.
      */
     public synchronized void stop() {
-        if (isStarted()) {
+        if (started) {
             started = false;
             try {
                 Map<String, HTTPHandler> registeredHandlers = getRegisteredHandlers();

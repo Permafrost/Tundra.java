@@ -25,47 +25,47 @@
 package permafrost.tundra.server.http.handler;
 
 import com.wm.app.b2b.server.AccessException;
-import com.wm.app.b2b.server.LogManager;
-import com.wm.app.b2b.server.LogWriter;
 import com.wm.app.b2b.server.ProtocolState;
-import com.wm.app.b2b.server.Server;
 import com.wm.net.HttpHeader;
-import permafrost.tundra.lang.Startable;
-import permafrost.tundra.server.ServerThreadPoolExecutor;
+import permafrost.tundra.server.ConcurrentLogWriter;
 import permafrost.tundra.time.DurationHelper;
 import permafrost.tundra.time.DurationPattern;
-import permafrost.tundra.util.concurrent.BlockingRejectedExecutionHandler;
-import java.io.File;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.Iterator;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ExecutorService;
 
 /**
  * Logs HTTP requests and responses to a log file.
  */
-public class Logger extends Handler implements Startable {
-    /**
-     * Is this handler started or stopped?
-     */
-    protected volatile boolean started;
+public class Logger extends StartableHandler {
+
     /**
      * The logger to use when logging requests.
      */
-    protected LogWriter logger;
+    protected ConcurrentLogWriter logger;
 
     /**
-     * A single thread executor to avoid delay to HTTP responses due to log synchronization.
+     * Initialization on demand holder idiom.
      */
-    protected ExecutorService executor;
+    private static class Holder {
+        /**
+         * The singleton instance of the class.
+         */
+        private static final Logger INSTANCE = new Logger();
+    }
+
+    /**
+     * Returns the singleton instance of this class.
+     * @return the singleton instance of this class.
+     */
+    public static Logger getInstance() {
+        return Holder.INSTANCE;
+    }
 
     /**
      * Creates a new Logger.
      */
-    public Logger() {
-        start();
-    }
+    private Logger() {}
 
     /**
      * Processes an HTTP request.
@@ -82,10 +82,12 @@ public class Logger extends Handler implements Startable {
 
         if (started) {
             long startTime = System.nanoTime();
-            result = next(context, handlers);
-            long endTime = System.nanoTime();
-
-            log(context, endTime - startTime);
+            try {
+                result = next(context, handlers);
+            } finally {
+                long endTime = System.nanoTime();
+                log(context, endTime - startTime);
+            }
         } else {
             result = next(context, handlers);
         }
@@ -100,68 +102,54 @@ public class Logger extends Handler implements Startable {
      * @param duration  The measured duration for processing the request in nanoseconds.
      */
     protected void log(ProtocolState context, long duration) {
-        String forwarded = context.getRequestFieldValue("X-Forwarded-For");
+        try {
+            String forwarded = context.getRequestFieldValue("X-Forwarded-For");
 
-        String pattern;
-        if (forwarded == null) {
-            pattern = "{0} -- {2}:{3} {4} {5} -- {6} {7} {8}";
-        } else {
-            pattern = "{0} -- {1} → {2}:{3} {4} {5} -- {6} {7} {8}";
-        }
-
-        final String message = MessageFormat.format(pattern,
-                context.getInvokeState().getUser(),
-                forwarded,
-                context.getRemoteHost(),
-                Integer.toString(context.getRemotePort()),
-                HttpHeader.reqStrType[context.getRequestType()],
-                context.getRequestUrl(),
-                context.getResponseCode(),
-                context.getResponseMessage(),
-                DurationHelper.format(duration / 1000000000.0, DurationPattern.XML)
-        );
-
-        executor.submit(new Runnable() {
-            public void run() {
-                logger.write(message);
+            String pattern;
+            if (forwarded == null) {
+                pattern = "{0} -- {2}:{3} {4} {5} -- {6} {7} {8}";
+            } else {
+                pattern = "{0} -- {1} {4} {5} -- {6} {7} {8}";
             }
-        });
+
+            final String message = MessageFormat.format(pattern,
+                    context.getInvokeState().getUser(),
+                    forwarded,
+                    context.getRemoteHost(),
+                    Integer.toString(context.getRemotePort()),
+                    HttpHeader.reqStrType[context.getRequestType()],
+                    context.getRequestUrl(),
+                    context.getResponseCode(),
+                    context.getResponseMessage(),
+                    DurationHelper.format(duration / 1000000000.0, DurationPattern.XML)
+            );
+
+            logger.log(message);
+        } catch(Exception ex) {
+            // do nothing
+        }
     }
 
     /**
-     * Starts this handler.
+     * Starts this object.
      */
     @Override
     public synchronized void start() {
         if (!started) {
-            this.logger = LogManager.openLogWriter(Server.getLogDir().getAbsolutePath() + File.separatorChar + "tundra-http.log");
-            this.executor = new ServerThreadPoolExecutor(1, "Tundra/HTTP/Logger", null, Thread.MIN_PRIORITY, new ArrayBlockingQueue<Runnable>(8192), new BlockingRejectedExecutionHandler());
-
-            started = true;
+            logger = new ConcurrentLogWriter("tundra-http.log");
         }
+        super.start();
     }
 
     /**
-     * Stops this handler.
+     * Stops this object.
      */
     @Override
     public synchronized void stop() {
         if (started) {
-            this.executor.shutdown();
-            logger.close();
+            logger.stop();
             logger = null;
-
-            started = false;
         }
-    }
-
-    /**
-     * Returns true if the object is started.
-     *
-     * @return True if the object is started.
-     */
-    @Override
-    public boolean isStarted() {
-        return started;
+        super.stop();
     }
 }
