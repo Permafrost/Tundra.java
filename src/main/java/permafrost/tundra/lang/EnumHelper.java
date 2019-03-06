@@ -52,7 +52,7 @@ public final class EnumHelper {
         if (klass != null && klass.isEnum() && object instanceof String) {
             try {
                 Method method = klass.getDeclaredMethod("valueOf", String.class);
-                String enumValue = ((String)object).trim().replace(' ', '_').toUpperCase();
+                String enumValue = ((String)object).trim().replace(' ', '_').replace('-', '_').toUpperCase();
                 value = (E)method.invoke(null, enumValue);
             } catch(NoSuchMethodException ex) {
                 throw new RuntimeException(ex);
