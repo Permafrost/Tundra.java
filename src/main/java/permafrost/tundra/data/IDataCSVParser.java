@@ -32,6 +32,7 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.csv.QuoteMode;
 import permafrost.tundra.io.CloseableHelper;
 import permafrost.tundra.io.InputOutputHelper;
 import permafrost.tundra.lang.CharsetHelper;
@@ -59,11 +60,27 @@ public class IDataCSVParser extends IDataParser {
     /**
      * The default delimiter character used by the parser.
      */
-    public static final char DEFAULT_DELIMITER = ',';
+    public static final Character DEFAULT_DELIMITER_CHARACTER = ',';
     /**
-     * The delimiter used by the parser.
+     * The default escape character used by the parser.
      */
-    protected char delimiter;
+    public static final Character DEFAULT_ESCAPE_CHARACTER = null;
+    /**
+     * The default quote character used by the parser.
+     */
+    public static final Character DEFAULT_QUOTE_CHARACTER = '"';
+    /**
+     * The default quote mode used by the parser.
+     */
+    public static final QuoteMode DEFAULT_QUOTE_MODE = QuoteMode.MINIMAL;
+    /**
+     * The delimiter, quote, and escape characters used by the parser.
+     */
+    protected Character delimiter, quote, escape;
+    /**
+     * The quote mode used by the parser.
+     */
+    protected QuoteMode quoteMode;
     /**
      * The column names to use when parsing.
      */
@@ -77,7 +94,7 @@ public class IDataCSVParser extends IDataParser {
      * Construct a new IDataCSVCoder, using the default delimiter ',' and default content type "text/csv".
      */
     public IDataCSVParser() {
-        this(DEFAULT_DELIMITER);
+        this(DEFAULT_DELIMITER_CHARACTER);
     }
 
     /**
@@ -85,7 +102,7 @@ public class IDataCSVParser extends IDataParser {
      *
      * @param delimiter   The delimiter character to use.
      */
-    public IDataCSVParser(char delimiter) {
+    public IDataCSVParser(Character delimiter) {
         this(delimiter, DEFAULT_CONTENT_TYPE, true);
     }
 
@@ -97,9 +114,26 @@ public class IDataCSVParser extends IDataParser {
      * @param hasHeader   Whether to use a header row.
      * @param columns     The column names to use.
      */
-    public IDataCSVParser(char delimiter, String contentType, boolean hasHeader, String... columns) {
+    public IDataCSVParser(Character delimiter, String contentType, boolean hasHeader, String... columns) {
+        this(delimiter, DEFAULT_ESCAPE_CHARACTER, DEFAULT_QUOTE_CHARACTER, DEFAULT_QUOTE_MODE, contentType, hasHeader, columns);
+    }
+
+    /**
+     * Construct a new IDataCSVCoder.
+     *
+     * @param delimiter   The delimiter character to use.
+     * @param quote       The quote character to use.
+     * @param contentType The content type to use.
+     * @param hasHeader   Whether to use a header row.
+     * @param columns     The column names to use.
+     */
+    public IDataCSVParser(Character delimiter, Character escape, Character quote, QuoteMode quoteMode, String contentType, boolean hasHeader, String... columns) {
         super(contentType);
+        if (delimiter == null) throw new NullPointerException("delimiter must not be null");
         this.delimiter = delimiter;
+        this.escape = escape;
+        this.quote = quote;
+        this.quoteMode = quoteMode == null ? QuoteMode.MINIMAL : quoteMode;
         this.hasHeader = hasHeader;
         this.columns = columns;
     }
@@ -110,19 +144,20 @@ public class IDataCSVParser extends IDataParser {
      * @param delimiter   The delimiter character to use.
      */
     public IDataCSVParser(String delimiter) {
-        this(delimiter, DEFAULT_CONTENT_TYPE, true);
+        this(delimiter, null, null, null, DEFAULT_CONTENT_TYPE, true);
     }
 
     /**
      * Construct a new IDataCSVCoder.
      *
      * @param delimiter   The delimiter character to use.
+     * @param quote       The quote character to use.
      * @param contentType The content type to use.
      * @param hasHeader   Whether to use a header row.
      * @param columns     The column names to use.
      */
-    public IDataCSVParser(String delimiter, String contentType, boolean hasHeader, String... columns) {
-        this(toDelimiter(delimiter), contentType, hasHeader, columns);
+    public IDataCSVParser(String delimiter, String escape, String quote, QuoteMode quoteMode, String contentType, boolean hasHeader, String... columns) {
+        this(toCharacter(delimiter, DEFAULT_DELIMITER_CHARACTER), toCharacter(escape, DEFAULT_ESCAPE_CHARACTER), toCharacter(quote, DEFAULT_QUOTE_CHARACTER), quoteMode, contentType, hasHeader, columns);
     }
 
     /**
@@ -173,7 +208,7 @@ public class IDataCSVParser extends IDataParser {
                 list.add(document);
             }
 
-            IDataUtil.put(outputCursor, "recordWithNoID", list.toArray(new IData[list.size()]));
+            IDataUtil.put(outputCursor, "recordWithNoID", list.toArray(new IData[0]));
         } finally {
             CloseableHelper.close(reader);
             outputCursor.destroy();
@@ -262,17 +297,18 @@ public class IDataCSVParser extends IDataParser {
      * @return          A new CSV getRecordsFormatter configured with this parser's settings.
      */
     protected CSVFormat getRecordsFormatter(String[] columns) {
-        return CSVFormat.DEFAULT.withHeader(columns).withSkipHeaderRecord(!hasHeader).withDelimiter(delimiter).withNullString("").withAllowMissingColumnNames();
+        return CSVFormat.DEFAULT.withHeader(columns).withSkipHeaderRecord(!hasHeader).withDelimiter(delimiter).withEscape(escape).withQuote(quote).withQuoteMode(quoteMode).withNullString("").withAllowMissingColumnNames();
     }
 
     /**
      * Returns the first character of the given String.
      *
-     * @param delimiter The String to retrieve the delimiter character from.
+     * @param character The String to retrieve the delimiter character from.
      * @return          The first character of the given String.
      */
-    protected static char toDelimiter(String delimiter) {
-        if (delimiter == null || delimiter.length() == 0) return DEFAULT_DELIMITER;
-        return delimiter.charAt(0);
+    protected static Character toCharacter(String character, Character defaultValue) {
+        if (character == null || character.length() == 0) return defaultValue;
+        if (character.equals("$null")) return null;
+        return character.charAt(0);
     }
 }
