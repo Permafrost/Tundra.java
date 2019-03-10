@@ -85,7 +85,7 @@ public final class PatternHelper {
      * Returns a regular expression pattern that matches any of the values in the given string list.
      *
      * @param array The list of strings to be matched.
-     * @return A regular expression which literally matches any of the given strings.
+     * @return      A regular expression which literally matches any of the given strings.
      */
     public static String quote(String[] array) {
         return quote(array, true);
@@ -94,8 +94,9 @@ public final class PatternHelper {
     /**
      * Returns a regular expression pattern that matches any of the values in the given string list.
      *
-     * @param array The list of strings to be matched.
-     * @return A regular expression which literally matches any of the given strings.
+     * @param array     The list of strings to be matched.
+     * @param literal   Whether the strings should be quoted.
+     * @return          A regular expression which literally matches any of the given strings.
      */
     public static String quote(String[] array, boolean literal) {
         if (array == null) return null;

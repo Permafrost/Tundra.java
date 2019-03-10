@@ -44,6 +44,8 @@ public class ConcurrentLogWriter extends ConcurrentWriter implements Loggable, S
 
     /**
      * Creates a new ConcurrentLogWriter.
+     *
+     * @param filename  The file the log will be written to.
      */
     public ConcurrentLogWriter(String filename) {
         this(filename, false);
@@ -51,6 +53,9 @@ public class ConcurrentLogWriter extends ConcurrentWriter implements Loggable, S
 
     /**
      * Creates a new ConcurrentLogWriter.
+     *
+     * @param filename      The file the log will be written to.
+     * @param isAbsolute    Whether the given filename is an absolute or relative path.
      */
     public ConcurrentLogWriter(String filename, boolean isAbsolute) {
         super(LogManager.openLogWriter(isAbsolute ? filename : Server.getLogDir().getAbsolutePath() + File.separatorChar + filename));

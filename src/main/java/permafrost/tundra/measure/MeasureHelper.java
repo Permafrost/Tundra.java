@@ -54,9 +54,10 @@ public final class MeasureHelper {
     /**
      * Returns the value of the given measurement in the given unit of measure.
      *
-     * @param measure The measurement to return the value of.
-     * @param unit    The unit of measure to return the value in.
-     * @return        The value of the given measurement in the given unit of measure.
+     * @param measure   The measurement to return the value of.
+     * @param unit      The unit of measure to return the value in.
+     * @param context   The math context to use.
+     * @return          The value of the given measurement in the given unit of measure.
      */
     public static BigDecimal emit(DecimalMeasure measure, Unit unit, MathContext context) {
         return BigDecimalHelper.normalize(measure.to(unit, context).getValue());
@@ -65,10 +66,11 @@ public final class MeasureHelper {
     /**
      * Converts the given value from one unit of measure to another.
      *
-     * @param value The value to be converted.
-     * @param from  The unit of measure to be converted from.
-     * @param to    The unit of measure to be converted to.
-     * @return      The value converted from one unit of measure to another.
+     * @param value     The value to be converted.
+     * @param from      The unit of measure to be converted from.
+     * @param to        The unit of measure to be converted to.
+     * @param context   The math context to use.
+     * @return          The value converted from one unit of measure to another.
      */
     public static BigDecimal convert(BigDecimal value, Unit from, Unit to, MathContext context) {
         return emit(parse(value, from), to, context);

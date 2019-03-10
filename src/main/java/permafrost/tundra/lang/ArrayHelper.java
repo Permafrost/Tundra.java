@@ -706,7 +706,8 @@ public final class ArrayHelper {
     /**
      * Returns a string created by concatenating each element of the given array, separated by ", ".
      *
-     * @param array         The array whose contents are to be joined.* @param mode          The type of compaction to be applied to the array, if any.
+     * @param array         The array whose contents are to be joined.
+     * @param mode          The type of compaction to be applied to the array, if any.
      * @param <T>           The class of items stored in the array.
      * @return              A string representation of the given array created by concatenating together the string
      *                      representation of each item in order, separated by ", ".
@@ -1229,6 +1230,7 @@ public final class ArrayHelper {
      * Converts each string in the given array to null if it only contains whitespace characters.
      *
      * @param array   The array to be nullified.
+     * @param <T>     The component type of the array.
      * @return        The nullified array.
      */
     @SuppressWarnings("unchecked")

@@ -97,6 +97,7 @@ public class Recognizer {
      * Returns the format with the given name, if it was registered.
      *
      * @param formatName    The name of the format.
+     * @param enabledOnly   If true, only returns formats that are enabled.
      * @return              The format with the given name, if it was registered.
      */
     public Format get(String formatName, boolean enabledOnly) {

@@ -254,7 +254,8 @@ public final class TestHelper {
         /**
          * Returns the sibling service with the given name for this test case, if one exists.
          *
-         * @return the the sibling service with the given name for this test case, if one exists.
+         * @param name  The name of the sibling service.
+         * @return      The the sibling service with the given name for this test case, if one exists.
          */
         private NSName getSibling(String name) {
             NSName sibling = NSName.create(service.getInterfaceNSName().getFullName(), name);

@@ -97,6 +97,7 @@ public final class TableHelper {
      *
      * @param table             The table whose contents are to be joined.
      * @param separator         An optional separator string to be used between rows of the table and items of a row.
+     * @param mode              The type of compaction to be applied to the array, if any.
      * @param <T>               The class of items stored in the table.
      * @return                  A string representation of the given table created by concatenating together the string
      *                          representation of each item in order.
@@ -169,6 +170,7 @@ public final class TableHelper {
      * @param rowSeparator      An optional separator string to be used between rows of the table.
      * @param itemSeparator     An optional separator string to be used between items of the table.
      * @param rowDefaultValue   An optional value used when a table row is null or empty.
+     * @param builder           The StringBuilder to which resulting string is written.
      * @param <T>               The class of items stored in the table.
      */
     public static <T> void join(T[][] table, String rowSeparator, String itemSeparator, String rowDefaultValue, StringBuilder builder) {
@@ -316,8 +318,8 @@ public final class TableHelper {
      * Converts each string in the given table to null if it only contains whitespace characters.
      *
      * @param table     The table to be nullified.
-     * @param <T>       The nullified table.
-     * @return
+     * @param <T>       The component type of the table.
+     * @return          The nullified table.
      */
     public static <T> T[][] nullify(T[][] table) {
         if (table == null || table.length == 0) return null;

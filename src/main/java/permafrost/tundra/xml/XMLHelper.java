@@ -126,8 +126,9 @@ public final class XMLHelper {
     /**
      * XML decodes string values in the given IData document.
      *
-     * @param document  The IData document to encode.
-     * @return          A new IData document with string values encoded.
+     * @param document          The IData document to encode.
+     * @param attributePrefix   The prefix used to indicate when a key relates to an XML attribute.
+     * @return                  A new IData document with string values encoded.
      */
     public static IData encode(IData document, String attributePrefix) {
         return IDataHelper.transform(document, new Encoder(attributePrefix));

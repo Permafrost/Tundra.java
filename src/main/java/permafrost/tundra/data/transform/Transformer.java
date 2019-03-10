@@ -79,6 +79,10 @@ public abstract class Transformer<V, T> {
      * @param transformedValueClass The class of transformed values.
      * @param mode                  The mode of transformation required.
      * @param recurse               Whether to recursively transform child IData and IData[] objects.
+     * @param includeNulls          Whether null values should be included in transformed IData documents and IData[]
+     *                              document lists.
+     * @param includeEmptyDocuments Whether empty IData documents should be included in the transformation.
+     * @param includeEmptyArrays    Whether empty arrays should be included in the transformation.
      */
     public Transformer(Class<V> valueClass, Class<T> transformedValueClass, TransformerMode mode, boolean recurse, boolean includeNulls, boolean includeEmptyDocuments, boolean includeEmptyArrays) {
         this.valueClass = valueClass;
@@ -259,6 +263,7 @@ public abstract class Transformer<V, T> {
     /**
      * Transforms an array of values.
      *
+     * @param key   The key associated with the array value being transformed.
      * @param array The array of values to be transformed.
      * @return      A new array of transformed values.
      */
@@ -290,6 +295,7 @@ public abstract class Transformer<V, T> {
     /**
      * Transforms a table of values.
      *
+     * @param key   The key associated with the table value being transformed.
      * @param table The table of values to be transformed.
      * @return      A new table of transformed values.
      */

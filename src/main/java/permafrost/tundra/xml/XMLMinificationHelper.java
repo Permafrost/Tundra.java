@@ -46,7 +46,7 @@ public final class XMLMinificationHelper {
      *
      * @param content               The XML content to be minified.
      * @return                      The minified XML content.
-     * @throws IOException
+     * @throws IOException          When an IO error occurs.
      */
     public static InputStream minify(InputStream content) throws IOException {
         return minify(content, null);
@@ -58,7 +58,7 @@ public final class XMLMinificationHelper {
      * @param content               The XML content to be minified.
      * @param charset               The character set the character data is encoded with.
      * @return                      The minified XML content.
-     * @throws IOException
+     * @throws IOException          When an IO error occurs.
      */
     public static InputStream minify(InputStream content, Charset charset) throws IOException {
         return minify(content, charset, true, true);
@@ -72,7 +72,7 @@ public final class XMLMinificationHelper {
      * @param removeComments        Whether XML comments should be removed as part of the minification.
      * @param removeInterTagSpaces  Whether whitespace between tags should be removed as part of the minification.
      * @return                      The minified XML content.
-     * @throws IOException
+     * @throws IOException          When an IO error occurs.
      */
     public static InputStream minify(InputStream content, Charset charset, boolean removeComments, boolean removeInterTagSpaces) throws IOException {
         if (content == null) return null;

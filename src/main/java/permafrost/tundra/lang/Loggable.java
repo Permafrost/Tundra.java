@@ -33,7 +33,8 @@ public interface Loggable {
     /**
      * Logs the given message.
      *
-     * @param message The message to be logged.
+     * @param message       The message to be logged.
+     * @throws IOException  If an IO error occurs.
      */
     void log(String ...message) throws IOException;
 }
