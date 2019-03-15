@@ -30,6 +30,8 @@ import permafrost.tundra.data.transform.time.DurationFormatter;
 import permafrost.tundra.lang.ArrayHelper;
 import permafrost.tundra.math.BigDecimalHelper;
 import permafrost.tundra.math.BigIntegerHelper;
+import permafrost.tundra.math.RoundingModeHelper;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
@@ -994,6 +996,9 @@ public final class DurationHelper {
             case XML:
                 output = toISO8601(input);
                 break;
+            case XML_NANOSECONDS:
+                output = toISO8601(input, 9);
+                break;
             default:
                 throw new IllegalArgumentException(MessageFormat.format("Unsupported duration pattern: {0}", pattern));
         }
@@ -1008,6 +1013,29 @@ public final class DurationHelper {
      * @return         An XML duration string representing the given Duration object.
      */
     private static String toISO8601(Duration duration) {
+        return toISO8601(duration, null);
+    }
+
+    /**
+     * Returns a XML duration string representing the given Duration object.
+     *
+     * @param duration The duration to convert to an XML duration string.
+     * @param scale    The scale to use for the seconds component.
+     * @return         An XML duration string representing the given Duration object.
+     */
+    private static String toISO8601(Duration duration, Integer scale) {
+        return toISO8601(duration, scale, null);
+    }
+
+    /**
+     * Returns a XML duration string representing the given Duration object.
+     *
+     * @param duration      The duration to convert to an XML duration string.
+     * @param scale         The scale to use for the seconds component.
+     * @param roundingMode  The rounding mode to use when setting the scale of the seconds component.
+     * @return              An XML duration string representing the given Duration object.
+     */
+    private static String toISO8601(Duration duration, Integer scale, RoundingMode roundingMode) {
         BigInteger years = BigIntegerHelper.normalize(duration.getField(DatatypeConstants.YEARS));
         if (years == null) years = BigInteger.ZERO;
 
@@ -1051,7 +1079,7 @@ public final class DurationHelper {
             builder.append(days).append('D');
         }
 
-        if (!hasDate || !isHoursZero || !isMinutesZero || !isSecondsZero) {
+        if (!hasDate || !isHoursZero || !isMinutesZero || !isSecondsZero || scale != null) {
             builder.append('T');
             if (!isHoursZero) {
                 builder.append(hours).append('H');
@@ -1059,7 +1087,10 @@ public final class DurationHelper {
             if (!isMinutesZero) {
                 builder.append(minutes).append('M');
             }
-            if (!isSecondsZero || (!hasDate && isHoursZero && isMinutesZero)) {
+            if (scale != null ) {
+                builder.append(seconds.setScale(scale, RoundingModeHelper.normalize(roundingMode)));
+                builder.append('S');
+            } else if (!isSecondsZero || (!hasDate && isHoursZero && isMinutesZero)) {
                 if (isSecondsZero) {
                     builder.append(0);
                 } else {
