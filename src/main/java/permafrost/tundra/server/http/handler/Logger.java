@@ -25,25 +25,41 @@
 package permafrost.tundra.server.http.handler;
 
 import com.wm.app.b2b.server.AccessException;
+import com.wm.app.b2b.server.HTTPResponse;
 import com.wm.app.b2b.server.ProtocolState;
 import com.wm.net.HttpHeader;
+import org.glassfish.json.JsonProviderImpl;
+import permafrost.tundra.math.IntegerHelper;
 import permafrost.tundra.server.ConcurrentLogWriter;
 import permafrost.tundra.time.DurationHelper;
 import permafrost.tundra.time.DurationPattern;
+import javax.json.JsonObjectBuilder;
+import javax.json.JsonWriter;
+import javax.json.JsonWriterFactory;
+import javax.json.spi.JsonProvider;
 import java.io.IOException;
-import java.text.MessageFormat;
+import java.io.StringWriter;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Logs HTTP requests and responses to a log file.
  */
 public class Logger extends StartableHandler {
-
     /**
      * The logger to use when logging requests.
      */
     protected ConcurrentLogWriter logger;
-
+    /**
+     * Factory for created JSON writers.
+     */
+    private JsonWriterFactory jsonWriterFactory;
+    /**
+     * Implementation class used for JSON parsing and emitting.
+     */
+    private JsonProvider provider;
     /**
      * Initialization on demand holder idiom.
      */
@@ -65,7 +81,12 @@ public class Logger extends StartableHandler {
     /**
      * Creates a new Logger.
      */
-    private Logger() {}
+    private Logger() {
+        // using the org.glassfish.json implementation directly improves performance by avoiding disk access and thread
+        // contention caused by the class loading in the javax.json.spi.JsonProvider.provider() method
+        provider = new JsonProviderImpl();
+        jsonWriterFactory = provider.createWriterFactory(new HashMap<String, Object>(0));
+    }
 
     /**
      * Processes an HTTP request.
@@ -103,31 +124,118 @@ public class Logger extends StartableHandler {
      */
     protected void log(ProtocolState context, long duration) {
         try {
-            String forwarded = context.getRequestFieldValue("X-Forwarded-For");
+            StringWriter stringWriter = new StringWriter();
+            JsonWriter writer = jsonWriterFactory.createWriter(stringWriter);
+            JsonObjectBuilder builder = provider.createObjectBuilder();
 
-            String pattern;
-            if (forwarded == null) {
-                pattern = "{0} -- {2}:{3} {4} {5} -- {6} {7} {8}";
-            } else {
-                pattern = "{0} -- {1} {4} {5} -- {6} {7} {8}";
-            }
+            builder.add("duration", DurationHelper.format(duration / 1000000000.0, DurationPattern.XML_NANOSECONDS));
+            builder.add("client", encodeClient(context));
+            builder.add("request", encodeRequest(context));
+            builder.add("response", encodeResponse(context));
 
-            final String message = MessageFormat.format(pattern,
-                    context.getInvokeState().getUser(),
-                    forwarded,
-                    context.getRemoteHost(),
-                    Integer.toString(context.getRemotePort()),
-                    HttpHeader.reqStrType[context.getRequestType()],
-                    context.getRequestUrl(),
-                    context.getResponseCode(),
-                    context.getResponseMessage(),
-                    DurationHelper.format(duration / 1000000000.0, DurationPattern.XML)
-            );
+            writer.write(builder.build());
+            writer.close();
 
-            logger.log(message);
+            logger.log(stringWriter.toString());
         } catch(Exception ex) {
             // do nothing
         }
+    }
+
+    /**
+     * Returns a JsonObjectBuilder representing the client of the HTTP request.
+     *
+     * @param context   The HTTP request context.
+     * @return          The JsonObjectBuilder representing the client.
+     */
+    protected JsonObjectBuilder encodeClient(ProtocolState context) {
+        JsonObjectBuilder client = provider.createObjectBuilder();
+
+        try {
+            client.add("host", context.getRemoteHost());
+            client.add("port", context.getRemotePort());
+            client.add("user", context.getInvokeState().getUser().toString());
+        } catch(Exception ex) {
+            // do nothing
+        }
+
+        return client;
+    }
+
+    /**
+     * Returns a JsonObjectBuilder representing the HTTP request.
+     *
+     * @param context   The HTTP request context.
+     * @return          The JsonObjectBuilder representing the request.
+     */
+    protected JsonObjectBuilder encodeRequest(ProtocolState context) {
+        JsonObjectBuilder request = provider.createObjectBuilder();
+
+        try {
+            request.add("method", HttpHeader.reqStrType[context.getRequestType()]);
+            request.add("uri", context.getRequestUrl());
+
+            JsonObjectBuilder headers = provider.createObjectBuilder();
+            Map<String, String> map = new TreeMap<String, String>(context.getRequestHeader().getFieldsMap());
+            for (Map.Entry<String, String> entry : map.entrySet()) {
+                String key = entry.getKey();
+                String value = entry.getValue();
+                if (key != null && value != null) {
+                    if (key.equalsIgnoreCase("Authorization")) {
+                        value = "REDACTED";
+                    }
+                    headers.add(key, value);
+                }
+            }
+
+            request.add("headers", headers);
+        } catch(Exception ex) {
+            // do nothing
+        }
+
+        return request;
+    }
+
+    /**
+     * Returns a JsonObjectBuilder representing the response to the HTTP request.
+     *
+     * @param context   The HTTP request context.
+     * @return          The JsonObjectBuilder representing the response.
+     */
+    protected JsonObjectBuilder encodeResponse(ProtocolState context) {
+        JsonObjectBuilder response = provider.createObjectBuilder();
+
+        try {
+            JsonObjectBuilder status = provider.createObjectBuilder();
+            status.add("code", context.getResponseCode());
+            status.add("message", context.getResponseMessage());
+
+            response.add("status", status);
+
+            JsonObjectBuilder headers = provider.createObjectBuilder();
+            Map<String, String> map = new TreeMap<String, String>(context.getResponseHeader().getFieldsMap());
+
+            if (!map.containsKey("Content-Length")) {
+                // add content length, if it hasn't been added to the response headers yet
+                HTTPResponse httpResponse = context.getResponse();
+                int responseSize = httpResponse.getOutputSize();
+                map.put("Content-Length", IntegerHelper.emit(responseSize));
+            }
+
+            for (Map.Entry<String, String> entry : map.entrySet()) {
+                String key = entry.getKey();
+                String value = entry.getValue();
+                if (key != null && value != null) {
+                    headers.add(entry.getKey(), entry.getValue());
+                }
+            }
+
+            response.add("headers", headers);
+        } catch(Exception ex) {
+            // do nothing
+        }
+
+        return response;
     }
 
     /**

@@ -24,6 +24,7 @@ required to be included on the project's classpath:
 It is also dependent on the following open source libraries, which
 are required to be included on the project's classpath:
 
+* `axis2-kernel-1.7.9.jar` - http://axis.apache.org/axis2/java/core/
 * `commons-collections4-4.1.jar` - https://commons.apache.org/proper/commons-collections/
 * `commons-compress-1.12.jar` - https://commons.apache.org/proper/commons-compress/
 * `commons-csv-1.4.jar` - https://commons.apache.org/proper/commons-csv/
