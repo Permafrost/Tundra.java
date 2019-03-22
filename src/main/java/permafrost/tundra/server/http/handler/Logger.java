@@ -31,6 +31,7 @@ import com.wm.net.HttpHeader;
 import org.glassfish.json.JsonProviderImpl;
 import permafrost.tundra.math.IntegerHelper;
 import permafrost.tundra.server.ConcurrentLogWriter;
+import permafrost.tundra.time.DateTimeHelper;
 import permafrost.tundra.time.DurationHelper;
 import permafrost.tundra.time.DurationPattern;
 import javax.json.JsonObjectBuilder;
@@ -102,12 +103,12 @@ public class Logger extends StartableHandler {
         boolean result;
 
         if (started) {
-            long startTime = System.nanoTime();
+            long start = System.nanoTime(), startTime = System.currentTimeMillis();
             try {
                 result = next(context, handlers);
             } finally {
-                long endTime = System.nanoTime();
-                log(context, endTime - startTime);
+                long end = System.nanoTime(), endTime = System.currentTimeMillis();
+                log(context, end - start, startTime, endTime);
             }
         } else {
             result = next(context, handlers);
@@ -121,17 +122,19 @@ public class Logger extends StartableHandler {
      *
      * @param context   The HTTP request to be logged.
      * @param duration  The measured duration for processing the request in nanoseconds.
+     * @param startTime The datetime the request was received.
+     * @param endTime   The datetime the response was generated.
      */
-    protected void log(ProtocolState context, long duration) {
+    protected void log(ProtocolState context, long duration, long startTime, long endTime) {
         try {
             StringWriter stringWriter = new StringWriter();
             JsonWriter writer = jsonWriterFactory.createWriter(stringWriter);
             JsonObjectBuilder builder = provider.createObjectBuilder();
 
-            builder.add("duration", DurationHelper.format(duration / 1000000000.0, DurationPattern.XML_NANOSECONDS));
             builder.add("client", encodeClient(context));
-            builder.add("request", encodeRequest(context));
-            builder.add("response", encodeResponse(context));
+            builder.add("request", encodeRequest(context, startTime));
+            builder.add("response", encodeResponse(context, endTime));
+            builder.add("duration", DurationHelper.format(duration / 1000000000.0, DurationPattern.XML_NANOSECONDS));
 
             writer.write(builder.build());
             writer.close();
@@ -166,12 +169,14 @@ public class Logger extends StartableHandler {
      * Returns a JsonObjectBuilder representing the HTTP request.
      *
      * @param context   The HTTP request context.
+     * @param datetime  The datetime the request was received.
      * @return          The JsonObjectBuilder representing the request.
      */
-    protected JsonObjectBuilder encodeRequest(ProtocolState context) {
+    protected JsonObjectBuilder encodeRequest(ProtocolState context, long datetime) {
         JsonObjectBuilder request = provider.createObjectBuilder();
 
         try {
+            request.add("datetime", DateTimeHelper.format(datetime));
             request.add("method", HttpHeader.reqStrType[context.getRequestType()]);
             request.add("uri", context.getRequestUrl());
 
@@ -200,16 +205,18 @@ public class Logger extends StartableHandler {
      * Returns a JsonObjectBuilder representing the response to the HTTP request.
      *
      * @param context   The HTTP request context.
+     * @param datetime  The datetime the response was generated.
      * @return          The JsonObjectBuilder representing the response.
      */
-    protected JsonObjectBuilder encodeResponse(ProtocolState context) {
+    protected JsonObjectBuilder encodeResponse(ProtocolState context, long datetime) {
         JsonObjectBuilder response = provider.createObjectBuilder();
 
         try {
+            response.add("datetime", DateTimeHelper.format(datetime));
+
             JsonObjectBuilder status = provider.createObjectBuilder();
             status.add("code", context.getResponseCode());
             status.add("message", context.getResponseMessage());
-
             response.add("status", status);
 
             JsonObjectBuilder headers = provider.createObjectBuilder();
