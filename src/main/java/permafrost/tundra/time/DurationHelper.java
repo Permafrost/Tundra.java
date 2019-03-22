@@ -587,7 +587,7 @@ public final class DurationHelper {
         pattern = DurationPattern.normalize(pattern);
         Duration output;
 
-        if (pattern == DurationPattern.XML) {
+        if (pattern == DurationPattern.XML || pattern == DurationPattern.XML_MILLISECONDS || pattern == DurationPattern.XML_NANOSECONDS) {
             output = DATATYPE_FACTORY.newDuration(input);
         } else {
             output = parse(new BigDecimal(input), pattern);
@@ -995,6 +995,9 @@ public final class DurationHelper {
                 break;
             case XML:
                 output = toISO8601(input);
+                break;
+            case XML_MILLISECONDS:
+                output = toISO8601(input, 3);
                 break;
             case XML_NANOSECONDS:
                 output = toISO8601(input, 9);
