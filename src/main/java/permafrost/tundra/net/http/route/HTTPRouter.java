@@ -42,6 +42,8 @@ import permafrost.tundra.net.http.HTTPHelper;
 import permafrost.tundra.net.http.HTTPMethod;
 import permafrost.tundra.net.uri.URIQueryHelper;
 import permafrost.tundra.time.DurationHelper;
+import permafrost.tundra.time.DurationPattern;
+
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -143,7 +145,7 @@ public class HTTPRouter implements HTTPHandler {
      * @throws AccessException  If the the HTTP request requires authentication or is not authorized.
      */
     public final boolean process(ProtocolState state) throws IOException, AccessException {
-        long startTime = System.currentTimeMillis();
+        long startTime = System.nanoTime();
 
         ContentHandler contentHandler = ServerAPI.getContentHandler(state.getContentType());
         Map.Entry<HTTPRoute, IData> matchResult = routes.match(HTTPMethod.valueOf(state.getRequestType()), "/" + state.getHttpRequestUrl());
@@ -185,8 +187,8 @@ public class HTTPRouter implements HTTPHandler {
             result = true;
         }
 
-        long endTime = System.currentTimeMillis();
-        state.setResponseFieldValue(RESPONSE_DURATION_HEADER, DurationHelper.emit(DurationHelper.parse(endTime - startTime)));
+        long endTime = System.nanoTime();
+        state.setResponseFieldValue(RESPONSE_DURATION_HEADER, DurationHelper.format((endTime - startTime) / 1000000000.0, DurationPattern.XML_NANOSECONDS));
 
         return result;
     }
