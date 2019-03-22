@@ -98,7 +98,7 @@ public class Measurer extends StartableHandler {
                 result = next(context, handlers);
             } finally {
                 long endTime = System.nanoTime();
-                context.setResponseFieldValue(header, DurationHelper.format((endTime - startTime) / 1000000000.0, DurationPattern.XML));
+                context.setResponseFieldValue(header, DurationHelper.format((endTime - startTime) / 1000000000.0, DurationPattern.XML_NANOSECONDS));
             }
         } else {
             result = next(context, handlers);
