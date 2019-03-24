@@ -119,6 +119,7 @@ public final class TestHelper {
          * Constructs a new TestSuite.
          *
          * @param testPackage   The package that this test suite is implemented in.
+         * @param concurrency   The number of threads to use when executing the test suite.
          */
         public TestSuite(Package testPackage, int concurrency) {
             if (testPackage == null) throw new NullPointerException("testPackage must not be null");
