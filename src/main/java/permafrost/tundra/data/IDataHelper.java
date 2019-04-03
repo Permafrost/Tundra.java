@@ -2217,7 +2217,7 @@ public final class IDataHelper {
      * @return          A new IData document containing the truncated strings.
      */
     public static IData truncate(IData input, int length, boolean ellipsis) {
-        return IDataHelper.transform(input, new Truncator(TransformerMode.VALUES, length, ellipsis, true));
+        return transform(input, new Truncator(TransformerMode.VALUES, length, ellipsis, true));
     }
 
     /**
@@ -2231,7 +2231,7 @@ public final class IDataHelper {
      * @return          A new IData[] document list containing the truncated strings.
      */
     public static IData[] truncate(IData[] input, int length, boolean ellipsis) {
-        return IDataHelper.transform(input, new Truncator(TransformerMode.VALUES, length, ellipsis, true));
+        return transform(input, new Truncator(TransformerMode.VALUES, length, ellipsis, true));
     }
 
     /**
