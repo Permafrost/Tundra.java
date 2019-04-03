@@ -38,6 +38,7 @@ import permafrost.tundra.collection.CollectionHelper;
 import permafrost.tundra.collection.ListHelper;
 import permafrost.tundra.collection.SetHelper;
 import permafrost.tundra.data.transform.*;
+import permafrost.tundra.data.transform.string.*;
 import permafrost.tundra.flow.ConditionEvaluator;
 import permafrost.tundra.flow.variable.SubstitutionHelper;
 import permafrost.tundra.lang.ArrayHelper;

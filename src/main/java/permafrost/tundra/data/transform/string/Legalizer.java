@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Lachlan Dowding
+ * Copyright (c) 2019 Lachlan Dowding
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,37 +22,23 @@
  * SOFTWARE.
  */
 
-package permafrost.tundra.data.transform;
+package permafrost.tundra.data.transform.string;
 
+import permafrost.tundra.data.transform.Transformer;
+import permafrost.tundra.data.transform.TransformerMode;
 import permafrost.tundra.lang.StringHelper;
 
 /**
- * Removes ISO control characters from all String elements in an IData document or IData[] document list.
+ * Converts illegal characters to underscores to create legal Java identifiers.
  */
-public class Uncontroller extends Transformer<String, String> {
+public class Legalizer extends Transformer<String, String> {
     /**
-     * Creates a new Uncontroller object.
-     */
-    public Uncontroller() {
-        this(TransformerMode.VALUES);
-    }
-
-    /**
-     * Creates a new Uncontroller object.
-     *
-     * @param mode          The transformer mode to use.
-     */
-    public Uncontroller(TransformerMode mode) {
-        this(mode, true);
-    }
-
-    /**
-     * Creates a new Uncontroller object.
+     * Creates a new Legalizer object.
      *
      * @param mode          The transformer mode to use.
      * @param recurse       Whether to recursively transform child IData documents and IData[] document lists.
      */
-    public Uncontroller(TransformerMode mode, boolean recurse) {
+    public Legalizer(TransformerMode mode, boolean recurse) {
         super(String.class, String.class, mode, recurse, true, true, true);
     }
 
@@ -65,7 +51,7 @@ public class Uncontroller extends Transformer<String, String> {
      */
     @Override
     protected String transformKey(String key, Object value) {
-        return StringHelper.uncontrol(key);
+        return StringHelper.legalize(key);
     }
 
     /**
@@ -77,6 +63,6 @@ public class Uncontroller extends Transformer<String, String> {
      */
     @Override
     protected String transformValue(String key, String value) {
-        return StringHelper.uncontrol(value);
+        return StringHelper.legalize(value);
     }
 }

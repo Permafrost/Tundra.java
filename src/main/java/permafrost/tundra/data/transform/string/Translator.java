@@ -22,12 +22,14 @@
  * SOFTWARE.
  */
 
-package permafrost.tundra.data.transform;
+package permafrost.tundra.data.transform.string;
 
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
 import permafrost.tundra.data.IDataHelper;
+import permafrost.tundra.data.transform.Transformer;
+import permafrost.tundra.data.transform.TransformerMode;
 
 /**
  * Translates an input value to an output value using a translation table.

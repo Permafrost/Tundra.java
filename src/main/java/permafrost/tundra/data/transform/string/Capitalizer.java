@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Lachlan Dowding
+ * Copyright (c) 2019 Lachlan Dowding
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,15 +22,45 @@
  * SOFTWARE.
  */
 
-package permafrost.tundra.data.transform;
+package permafrost.tundra.data.transform.string;
+
+import permafrost.tundra.data.transform.Transformer;
+import permafrost.tundra.data.transform.TransformerMode;
+import permafrost.tundra.lang.StringHelper;
 
 /**
- * Trims whitespace from elements in an IData document or IData[] document list.
+ * Capitalizes the first character in either the first word or all words in the String elements in an IData document or
+ * IData[] document list.
  */
-public class Trimmer extends Transformer<String, String> {
+public class Capitalizer extends Transformer<String, String> {
     /**
-     * Creates a new Trimmer object.
+     * Whether only the first word should be capitalized, or all words.
+     */
+    protected boolean firstWordOnly;
+
+    /**
+     * Creates a new Capitalizer object.
      *
+     * @param firstWordOnly Whether only the first word should be capitalized, or all words.
+     */
+    public Capitalizer(boolean firstWordOnly) {
+        this(firstWordOnly, TransformerMode.VALUES);
+    }
+
+    /**
+     * Creates a new Capitalizer object.
+     *
+     * @param firstWordOnly Whether only the first word should be capitalized, or all words.
+     * @param mode          The transformer mode to use.
+     */
+    public Capitalizer(boolean firstWordOnly, TransformerMode mode) {
+        this(firstWordOnly, mode, true, true, true, true);
+    }
+
+    /**
+     * Creates a new Capitalizer object.
+     *
+     * @param firstWordOnly         Whether only the first word should be capitalized, or all words.
      * @param mode                  The transformer mode to use.
      * @param recurse               Whether to recursively transform child IData documents and IData[] document lists.
      * @param includeNulls          Whether null values should be included in transformed IData documents and IData[]
@@ -38,8 +68,9 @@ public class Trimmer extends Transformer<String, String> {
      * @param includeEmptyDocuments Whether empty IData documents should be included in the transformation.
      * @param includeEmptyArrays    Whether empty arrays should be included in the transformation.
      */
-    public Trimmer(TransformerMode mode, boolean recurse, boolean includeNulls, boolean includeEmptyDocuments, boolean includeEmptyArrays) {
+    public Capitalizer(boolean firstWordOnly, TransformerMode mode, boolean recurse, boolean includeNulls, boolean includeEmptyDocuments, boolean includeEmptyArrays) {
         super(String.class, String.class, mode, recurse, includeNulls, includeEmptyDocuments, includeEmptyArrays);
+        this.firstWordOnly = firstWordOnly;
     }
 
     /**
@@ -51,7 +82,7 @@ public class Trimmer extends Transformer<String, String> {
      */
     @Override
     protected String transformKey(String key, Object value) {
-        return key.trim();
+        return StringHelper.capitalize(key, firstWordOnly);
     }
 
     /**
@@ -63,6 +94,6 @@ public class Trimmer extends Transformer<String, String> {
      */
     @Override
     protected String transformValue(String key, String value) {
-        return value.trim();
+        return StringHelper.capitalize(value, firstWordOnly);
     }
 }

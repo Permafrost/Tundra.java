@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2017 Lachlan Dowding
+ * Copyright (c) 2019 Lachlan Dowding
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,33 +22,36 @@
  * SOFTWARE.
  */
 
-package permafrost.tundra.data.transform;
+package permafrost.tundra.data.transform.string;
+
+import permafrost.tundra.data.transform.Transformer;
+import permafrost.tundra.data.transform.TransformerMode;
+import permafrost.tundra.lang.LocaleHelper;
+import java.util.Locale;
 
 /**
- * Adds a given prefix to string elements in an IData document or IData[] document list.
+ * Converts String elements to uppercase in an IData document or IData[] document list.
  */
-public class Prefixer extends Transformer<String, String> {
+public class Uppercaser extends Transformer<String, String> {
     /**
-     * The prefix to be added to string elements.
+     * The locale used for the uppercase rules.
      */
-    protected String prefix;
-    /**
-     * Whether to add the prefix even if a string already starts with it.
-     */
-    protected boolean force;
+    protected Locale locale;
 
     /**
-     * Creates a new Prefixer object.
+     * Creates a new Uppercaser object.
      *
-     * @param prefix        The prefix to be added to string elements.
-     * @param force         Whether to add the prefix even when a string is already prefixed with it.
-     * @param mode          The transformer mode to use.
-     * @param recurse       Whether to recursively transform child IData documents and IData[] document lists.
+     * @param locale                The locale to use for uppercase rules.
+     * @param mode                  The transformer mode to use.
+     * @param recurse               Whether to recursively transform child IData documents and IData[] document lists.
+     * @param includeNulls          Whether null values should be included in transformed IData documents and IData[]
+     *                              document lists.
+     * @param includeEmptyDocuments Whether empty IData documents should be included in the transformation.
+     * @param includeEmptyArrays    Whether empty arrays should be included in the transformation.
      */
-    public Prefixer(String prefix, boolean force, TransformerMode mode, boolean recurse) {
-        super(String.class, String.class, mode, recurse, true, true, true);
-        this.prefix = prefix;
-        this.force = force;
+    public Uppercaser(Locale locale, TransformerMode mode, boolean recurse, boolean includeNulls, boolean includeEmptyDocuments, boolean includeEmptyArrays) {
+        super(String.class, String.class, mode, recurse, includeNulls, includeEmptyDocuments, includeEmptyArrays);
+        this.locale = LocaleHelper.normalize(locale);
     }
 
     /**
@@ -60,7 +63,7 @@ public class Prefixer extends Transformer<String, String> {
      */
     @Override
     protected String transformKey(String key, Object value) {
-        return addPrefix(key);
+        return key.toUpperCase(locale);
     }
 
     /**
@@ -72,16 +75,6 @@ public class Prefixer extends Transformer<String, String> {
      */
     @Override
     protected String transformValue(String key, String value) {
-        return addPrefix(value);
-    }
-
-    /**
-     * Adds the prefix to the given string.
-     *
-     * @param string    The string to add the prefix to.
-     * @return          The string prefixed with the prefix.
-     */
-    protected String addPrefix(String string) {
-        return prefix != null && (force || !string.startsWith(prefix)) ? prefix + string : string;
+        return value.toUpperCase(locale);
     }
 }

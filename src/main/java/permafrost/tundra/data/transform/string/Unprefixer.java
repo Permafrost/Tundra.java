@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2017 Lachlan Dowding
+ * Copyright (c) 2019 Lachlan Dowding
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,27 +22,30 @@
  * SOFTWARE.
  */
 
-package permafrost.tundra.data.transform;
+package permafrost.tundra.data.transform.string;
+
+import permafrost.tundra.data.transform.Transformer;
+import permafrost.tundra.data.transform.TransformerMode;
 
 /**
- * Removes a given suffix from string elements in an IData document or IData[] document list.
+ * Removes a given prefix from string elements in an IData document or IData[] document list.
  */
-public class Unsuffixer extends Transformer<String, String> {
+public class Unprefixer extends Transformer<String, String> {
     /**
-     * The suffix to be removed from string elements.
+     * The prefix to be removed from string elements.
      */
-    protected String suffix;
+    protected String prefix;
 
     /**
      * Creates a new Unprefixer object.
      *
-     * @param suffix        The suffix to be removed from string elements.
+     * @param prefix        The prefix to be removed from string elements.
      * @param mode          The transformer mode to use.
      * @param recurse       Whether to recursively transform child IData documents and IData[] document lists.
      */
-    public Unsuffixer(String suffix, TransformerMode mode, boolean recurse) {
+    public Unprefixer(String prefix, TransformerMode mode, boolean recurse) {
         super(String.class, String.class, mode, recurse, true, true, true);
-        this.suffix = suffix;
+        this.prefix = prefix;
     }
 
     /**
@@ -54,7 +57,7 @@ public class Unsuffixer extends Transformer<String, String> {
      */
     @Override
     protected String transformKey(String key, Object value) {
-        return removeSuffix(key);
+        return removePrefix(key);
     }
 
     /**
@@ -66,16 +69,16 @@ public class Unsuffixer extends Transformer<String, String> {
      */
     @Override
     protected String transformValue(String key, String value) {
-        return removeSuffix(value);
+        return removePrefix(value);
     }
 
     /**
-     * Removes the suffix to the given string.
+     * Removes the prefix to the given string.
      *
-     * @param string    The string to remove the suffix from.
-     * @return          The string with the suffix removed.
+     * @param string    The string to remove the prefix from.
+     * @return          The string with the prefix removed.
      */
-    protected String removeSuffix(String string) {
-        return suffix != null && string.endsWith(suffix) ? string.substring(0, string.length() - suffix.length()) : string;
+    protected String removePrefix(String string) {
+        return prefix != null && string.startsWith(prefix) ? string.substring(prefix.length()) : string;
     }
 }

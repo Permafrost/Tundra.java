@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2018 Lachlan Dowding
+ * Copyright (c) 2019 Lachlan Dowding
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,43 +22,26 @@
  * SOFTWARE.
  */
 
-package permafrost.tundra.data.transform;
+package permafrost.tundra.data.transform.string;
 
-import permafrost.tundra.lang.StringHelper;
+import permafrost.tundra.data.transform.Transformer;
+import permafrost.tundra.data.transform.TransformerMode;
+import permafrost.tundra.lang.LocaleHelper;
+import java.util.Locale;
 
 /**
- * Capitalizes the first character in either the first word or all words in the String elements in an IData document or
- * IData[] document list.
+ * Converts String elements to lowercase in an IData document or IData[] document list.
  */
-public class Capitalizer extends Transformer<String, String> {
+public class Lowercaser extends Transformer<String, String> {
     /**
-     * Whether only the first word should be capitalized, or all words.
+     * The locale used for the lowercase rules.
      */
-    protected boolean firstWordOnly;
-
+    protected Locale locale;
+    
     /**
-     * Creates a new Capitalizer object.
+     * Creates a new Lowercaser object.
      *
-     * @param firstWordOnly Whether only the first word should be capitalized, or all words.
-     */
-    public Capitalizer(boolean firstWordOnly) {
-        this(firstWordOnly, TransformerMode.VALUES);
-    }
-
-    /**
-     * Creates a new Capitalizer object.
-     *
-     * @param firstWordOnly Whether only the first word should be capitalized, or all words.
-     * @param mode          The transformer mode to use.
-     */
-    public Capitalizer(boolean firstWordOnly, TransformerMode mode) {
-        this(firstWordOnly, mode, true, true, true, true);
-    }
-
-    /**
-     * Creates a new Capitalizer object.
-     *
-     * @param firstWordOnly         Whether only the first word should be capitalized, or all words.
+     * @param locale                The locale to use for lowercasing rules.
      * @param mode                  The transformer mode to use.
      * @param recurse               Whether to recursively transform child IData documents and IData[] document lists.
      * @param includeNulls          Whether null values should be included in transformed IData documents and IData[]
@@ -66,9 +49,9 @@ public class Capitalizer extends Transformer<String, String> {
      * @param includeEmptyDocuments Whether empty IData documents should be included in the transformation.
      * @param includeEmptyArrays    Whether empty arrays should be included in the transformation.
      */
-    public Capitalizer(boolean firstWordOnly, TransformerMode mode, boolean recurse, boolean includeNulls, boolean includeEmptyDocuments, boolean includeEmptyArrays) {
+    public Lowercaser(Locale locale, TransformerMode mode, boolean recurse, boolean includeNulls, boolean includeEmptyDocuments, boolean includeEmptyArrays) {
         super(String.class, String.class, mode, recurse, includeNulls, includeEmptyDocuments, includeEmptyArrays);
-        this.firstWordOnly = firstWordOnly;
+        this.locale = LocaleHelper.normalize(locale);
     }
 
     /**
@@ -80,7 +63,7 @@ public class Capitalizer extends Transformer<String, String> {
      */
     @Override
     protected String transformKey(String key, Object value) {
-        return StringHelper.capitalize(key, firstWordOnly);
+        return key.toLowerCase(locale);
     }
 
     /**
@@ -92,6 +75,6 @@ public class Capitalizer extends Transformer<String, String> {
      */
     @Override
     protected String transformValue(String key, String value) {
-        return StringHelper.capitalize(value, firstWordOnly);
+        return value.toLowerCase(locale);
     }
 }

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2017 Lachlan Dowding
+ * Copyright (c) 2019 Lachlan Dowding
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,27 +22,36 @@
  * SOFTWARE.
  */
 
-package permafrost.tundra.data.transform;
+package permafrost.tundra.data.transform.string;
+
+import permafrost.tundra.data.transform.Transformer;
+import permafrost.tundra.data.transform.TransformerMode;
 
 /**
- * Removes a given prefix from string elements in an IData document or IData[] document list.
+ * Adds a given prefix to string elements in an IData document or IData[] document list.
  */
-public class Unprefixer extends Transformer<String, String> {
+public class Prefixer extends Transformer<String, String> {
     /**
-     * The prefix to be removed from string elements.
+     * The prefix to be added to string elements.
      */
     protected String prefix;
+    /**
+     * Whether to add the prefix even if a string already starts with it.
+     */
+    protected boolean force;
 
     /**
-     * Creates a new Unprefixer object.
+     * Creates a new Prefixer object.
      *
-     * @param prefix        The prefix to be removed from string elements.
+     * @param prefix        The prefix to be added to string elements.
+     * @param force         Whether to add the prefix even when a string is already prefixed with it.
      * @param mode          The transformer mode to use.
      * @param recurse       Whether to recursively transform child IData documents and IData[] document lists.
      */
-    public Unprefixer(String prefix, TransformerMode mode, boolean recurse) {
+    public Prefixer(String prefix, boolean force, TransformerMode mode, boolean recurse) {
         super(String.class, String.class, mode, recurse, true, true, true);
         this.prefix = prefix;
+        this.force = force;
     }
 
     /**
@@ -54,7 +63,7 @@ public class Unprefixer extends Transformer<String, String> {
      */
     @Override
     protected String transformKey(String key, Object value) {
-        return removePrefix(key);
+        return addPrefix(key);
     }
 
     /**
@@ -66,16 +75,16 @@ public class Unprefixer extends Transformer<String, String> {
      */
     @Override
     protected String transformValue(String key, String value) {
-        return removePrefix(value);
+        return addPrefix(value);
     }
 
     /**
-     * Removes the prefix to the given string.
+     * Adds the prefix to the given string.
      *
-     * @param string    The string to remove the prefix from.
-     * @return          The string with the prefix removed.
+     * @param string    The string to add the prefix to.
+     * @return          The string prefixed with the prefix.
      */
-    protected String removePrefix(String string) {
-        return prefix != null && string.startsWith(prefix) ? string.substring(prefix.length()) : string;
+    protected String addPrefix(String string) {
+        return prefix != null && (force || !string.startsWith(prefix)) ? prefix + string : string;
     }
 }

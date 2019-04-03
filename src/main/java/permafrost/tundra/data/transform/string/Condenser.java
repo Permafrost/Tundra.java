@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Lachlan Dowding
+ * Copyright (c) 2019 Lachlan Dowding
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,34 +22,25 @@
  * SOFTWARE.
  */
 
-package permafrost.tundra.data.transform;
+package permafrost.tundra.data.transform.string;
 
-import permafrost.tundra.lang.LocaleHelper;
-import java.util.Locale;
+import permafrost.tundra.data.transform.Transformer;
+import permafrost.tundra.data.transform.TransformerMode;
+import permafrost.tundra.lang.StringHelper;
 
 /**
- * Converts String elements to uppercase in an IData document or IData[] document list.
+ * Squeezes whitespace from elements in an IData document or IData[] document list.
  */
-public class Uppercaser extends Transformer<String, String> {
+public class Condenser extends Transformer<Object, Object> {
     /**
-     * The locale used for the uppercase rules.
-     */
-    protected Locale locale;
-
-    /**
-     * Creates a new Uppercaser object.
+     * Creates a new Squeezer object.
      *
-     * @param locale                The locale to use for uppercase rules.
-     * @param mode                  The transformer mode to use.
-     * @param recurse               Whether to recursively transform child IData documents and IData[] document lists.
-     * @param includeNulls          Whether null values should be included in transformed IData documents and IData[]
-     *                              document lists.
-     * @param includeEmptyDocuments Whether empty IData documents should be included in the transformation.
-     * @param includeEmptyArrays    Whether empty arrays should be included in the transformation.
+     * @param recurse   Whether to recursively transform child IData documents and IData[] document lists.
      */
-    public Uppercaser(Locale locale, TransformerMode mode, boolean recurse, boolean includeNulls, boolean includeEmptyDocuments, boolean includeEmptyArrays) {
-        super(String.class, String.class, mode, recurse, includeNulls, includeEmptyDocuments, includeEmptyArrays);
-        this.locale = LocaleHelper.normalize(locale);
+    public Condenser(boolean recurse) {
+        super(Object.class, Object.class, TransformerMode.VALUES, recurse, false, false, false);
+        normalizeTransformedArrays = true;
+        normalizeTransformedTables = true;
     }
 
     /**
@@ -61,7 +52,7 @@ public class Uppercaser extends Transformer<String, String> {
      */
     @Override
     protected String transformKey(String key, Object value) {
-        return key.toUpperCase(locale);
+        return StringHelper.condense(key);
     }
 
     /**
@@ -72,7 +63,10 @@ public class Uppercaser extends Transformer<String, String> {
      * @return      The transformed value.
      */
     @Override
-    protected String transformValue(String key, String value) {
-        return value.toUpperCase(locale);
+    protected Object transformValue(String key, Object value) {
+        if (value instanceof String) {
+            value = StringHelper.condense((String)value);
+        }
+        return value;
     }
 }

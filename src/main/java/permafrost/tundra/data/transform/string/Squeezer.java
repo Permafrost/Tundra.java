@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2017 Lachlan Dowding
+ * Copyright (c) 2019 Lachlan Dowding
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,20 +22,22 @@
  * SOFTWARE.
  */
 
-package permafrost.tundra.data.transform;
+package permafrost.tundra.data.transform.string;
 
+import permafrost.tundra.data.transform.Transformer;
+import permafrost.tundra.data.transform.TransformerMode;
 import permafrost.tundra.lang.StringHelper;
 
 /**
  * Squeezes whitespace from elements in an IData document or IData[] document list.
  */
-public class Condenser extends Transformer<Object, Object> {
+public class Squeezer extends Transformer<Object, Object> {
     /**
      * Creates a new Squeezer object.
      *
      * @param recurse   Whether to recursively transform child IData documents and IData[] document lists.
      */
-    public Condenser(boolean recurse) {
+    public Squeezer(boolean recurse) {
         super(Object.class, Object.class, TransformerMode.VALUES, recurse, false, false, false);
         normalizeTransformedArrays = true;
         normalizeTransformedTables = true;
@@ -50,7 +52,7 @@ public class Condenser extends Transformer<Object, Object> {
      */
     @Override
     protected String transformKey(String key, Object value) {
-        return StringHelper.condense(key);
+        return StringHelper.squeeze(key);
     }
 
     /**
@@ -63,7 +65,7 @@ public class Condenser extends Transformer<Object, Object> {
     @Override
     protected Object transformValue(String key, Object value) {
         if (value instanceof String) {
-            value = StringHelper.condense((String)value);
+            value = StringHelper.squeeze((String)value);
         }
         return value;
     }

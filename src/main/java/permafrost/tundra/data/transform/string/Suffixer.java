@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Lachlan Dowding
+ * Copyright (c) 2019 Lachlan Dowding
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,35 +22,36 @@
  * SOFTWARE.
  */
 
-package permafrost.tundra.data.transform;
+package permafrost.tundra.data.transform.string;
 
-import permafrost.tundra.lang.StringHelper;
+import permafrost.tundra.data.transform.Transformer;
+import permafrost.tundra.data.transform.TransformerMode;
 
 /**
- * Truncates strings to the given length.
+ * Adds a given suffix to string elements in an IData document or IData[] document list.
  */
-public class Truncator extends Transformer<String, String> {
+public class Suffixer extends Transformer<String, String> {
     /**
-     * The desired length to truncate strings to.
+     * The suffix to be added to string elements.
      */
-    protected int length;
+    protected String suffix;
     /**
-     * Whether to prefix/suffix truncated strings with an ellipsis character.
+     * Whether to add the suffix even if a string already ends with it.
      */
-    protected boolean ellipsis;
+    protected boolean force;
 
     /**
-     * Creates a new Truncator object.
+     * Creates a new Suffixer object.
      *
-     * @param mode      The transformer mode to use.
-     * @param length    The length to truncate the string to.
-     * @param ellipsis  If true, the returned string is suffixed with an ellipsis character when truncated.
-     * @param recurse   Whether to recursively transform child IData documents and IData[] document lists.
+     * @param suffix        The suffix to be added to string elements.
+     * @param force         Whether to add the suffix even when a string is already suffixed with it.
+     * @param mode          The transformer mode to use.
+     * @param recurse       Whether to recursively transform child IData documents and IData[] document lists.
      */
-    public Truncator(TransformerMode mode, int length, boolean ellipsis, boolean recurse) {
+    public Suffixer(String suffix, boolean force, TransformerMode mode, boolean recurse) {
         super(String.class, String.class, mode, recurse, true, true, true);
-        this.length = length;
-        this.ellipsis = ellipsis;
+        this.suffix = suffix;
+        this.force = force;
     }
 
     /**
@@ -62,7 +63,7 @@ public class Truncator extends Transformer<String, String> {
      */
     @Override
     protected String transformKey(String key, Object value) {
-        return StringHelper.truncate(key, length, ellipsis);
+        return addSuffix(key);
     }
 
     /**
@@ -74,6 +75,16 @@ public class Truncator extends Transformer<String, String> {
      */
     @Override
     protected String transformValue(String key, String value) {
-        return StringHelper.truncate(value, length, ellipsis);
+        return addSuffix(value);
+    }
+
+    /**
+     * Adds the suffix to the given string.
+     *
+     * @param string    The string to add the suffix to.
+     * @return          The string suffixed with the suffix.
+     */
+    protected String addSuffix(String string) {
+        return suffix != null && (force || !string.endsWith(suffix)) ? string + suffix : string;
     }
 }

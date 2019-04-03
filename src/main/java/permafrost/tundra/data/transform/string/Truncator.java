@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Lachlan Dowding
+ * Copyright (c) 2019 Lachlan Dowding
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,34 +22,37 @@
  * SOFTWARE.
  */
 
-package permafrost.tundra.data.transform;
+package permafrost.tundra.data.transform.string;
 
-import permafrost.tundra.lang.LocaleHelper;
-import java.util.Locale;
+import permafrost.tundra.data.transform.Transformer;
+import permafrost.tundra.data.transform.TransformerMode;
+import permafrost.tundra.lang.StringHelper;
 
 /**
- * Converts String elements to lowercase in an IData document or IData[] document list.
+ * Truncates strings to the given length.
  */
-public class Lowercaser extends Transformer<String, String> {
+public class Truncator extends Transformer<String, String> {
     /**
-     * The locale used for the lowercase rules.
+     * The desired length to truncate strings to.
      */
-    protected Locale locale;
-    
+    protected int length;
     /**
-     * Creates a new Lowercaser object.
+     * Whether to prefix/suffix truncated strings with an ellipsis character.
+     */
+    protected boolean ellipsis;
+
+    /**
+     * Creates a new Truncator object.
      *
-     * @param locale                The locale to use for lowercasing rules.
-     * @param mode                  The transformer mode to use.
-     * @param recurse               Whether to recursively transform child IData documents and IData[] document lists.
-     * @param includeNulls          Whether null values should be included in transformed IData documents and IData[]
-     *                              document lists.
-     * @param includeEmptyDocuments Whether empty IData documents should be included in the transformation.
-     * @param includeEmptyArrays    Whether empty arrays should be included in the transformation.
+     * @param mode      The transformer mode to use.
+     * @param length    The length to truncate the string to.
+     * @param ellipsis  If true, the returned string is suffixed with an ellipsis character when truncated.
+     * @param recurse   Whether to recursively transform child IData documents and IData[] document lists.
      */
-    public Lowercaser(Locale locale, TransformerMode mode, boolean recurse, boolean includeNulls, boolean includeEmptyDocuments, boolean includeEmptyArrays) {
-        super(String.class, String.class, mode, recurse, includeNulls, includeEmptyDocuments, includeEmptyArrays);
-        this.locale = LocaleHelper.normalize(locale);
+    public Truncator(TransformerMode mode, int length, boolean ellipsis, boolean recurse) {
+        super(String.class, String.class, mode, recurse, true, true, true);
+        this.length = length;
+        this.ellipsis = ellipsis;
     }
 
     /**
@@ -61,7 +64,7 @@ public class Lowercaser extends Transformer<String, String> {
      */
     @Override
     protected String transformKey(String key, Object value) {
-        return key.toLowerCase(locale);
+        return StringHelper.truncate(key, length, ellipsis);
     }
 
     /**
@@ -73,6 +76,6 @@ public class Lowercaser extends Transformer<String, String> {
      */
     @Override
     protected String transformValue(String key, String value) {
-        return value.toLowerCase(locale);
+        return StringHelper.truncate(value, length, ellipsis);
     }
 }

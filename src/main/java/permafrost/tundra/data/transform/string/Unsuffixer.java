@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2017 Lachlan Dowding
+ * Copyright (c) 2019 Lachlan Dowding
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,22 +22,30 @@
  * SOFTWARE.
  */
 
-package permafrost.tundra.data.transform;
+package permafrost.tundra.data.transform.string;
 
-import permafrost.tundra.lang.StringHelper;
+import permafrost.tundra.data.transform.Transformer;
+import permafrost.tundra.data.transform.TransformerMode;
 
 /**
- * Converts illegal characters to underscores to create legal Java identifiers.
+ * Removes a given suffix from string elements in an IData document or IData[] document list.
  */
-public class Legalizer extends Transformer<String, String> {
+public class Unsuffixer extends Transformer<String, String> {
     /**
-     * Creates a new Legalizer object.
+     * The suffix to be removed from string elements.
+     */
+    protected String suffix;
+
+    /**
+     * Creates a new Unprefixer object.
      *
+     * @param suffix        The suffix to be removed from string elements.
      * @param mode          The transformer mode to use.
      * @param recurse       Whether to recursively transform child IData documents and IData[] document lists.
      */
-    public Legalizer(TransformerMode mode, boolean recurse) {
+    public Unsuffixer(String suffix, TransformerMode mode, boolean recurse) {
         super(String.class, String.class, mode, recurse, true, true, true);
+        this.suffix = suffix;
     }
 
     /**
@@ -49,7 +57,7 @@ public class Legalizer extends Transformer<String, String> {
      */
     @Override
     protected String transformKey(String key, Object value) {
-        return StringHelper.legalize(key);
+        return removeSuffix(key);
     }
 
     /**
@@ -61,6 +69,16 @@ public class Legalizer extends Transformer<String, String> {
      */
     @Override
     protected String transformValue(String key, String value) {
-        return StringHelper.legalize(value);
+        return removeSuffix(value);
+    }
+
+    /**
+     * Removes the suffix to the given string.
+     *
+     * @param string    The string to remove the suffix from.
+     * @return          The string with the suffix removed.
+     */
+    protected String removeSuffix(String string) {
+        return suffix != null && string.endsWith(suffix) ? string.substring(0, string.length() - suffix.length()) : string;
     }
 }

@@ -22,30 +22,52 @@
  * SOFTWARE.
  */
 
-package permafrost.tundra.data.transform;
+package permafrost.tundra.data.transform.string;
 
+import permafrost.tundra.data.transform.Transformer;
+import permafrost.tundra.data.transform.TransformerMode;
 import permafrost.tundra.lang.StringHelper;
-import permafrost.tundra.util.regex.PatternHelper;
-import java.util.regex.Pattern;
 
 /**
- * Splits strings using a given regular expression pattern.
+ * Removes ISO control characters from all String elements in an IData document or IData[] document list.
  */
-public class Splitter extends Transformer<String, String[]> {
+public class Uncontroller extends Transformer<String, String> {
     /**
-     * The regular expression pattern used for splitting strings.
+     * Creates a new Uncontroller object.
      */
-    private final Pattern pattern;
+    public Uncontroller() {
+        this(TransformerMode.VALUES);
+    }
 
     /**
-     * Creates a new Splitter object.
+     * Creates a new Uncontroller object.
      *
-     * @param pattern   The literal or regular expression pattern to split around.
-     * @param literal   Whether the pattern is a literal pattern or a regular expression.
+     * @param mode          The transformer mode to use.
      */
-    public Splitter(String pattern, boolean literal) {
-        super(String.class, String[].class, TransformerMode.VALUES, true, true, true, true);
-        this.pattern = PatternHelper.compile(pattern, literal);
+    public Uncontroller(TransformerMode mode) {
+        this(mode, true);
+    }
+
+    /**
+     * Creates a new Uncontroller object.
+     *
+     * @param mode          The transformer mode to use.
+     * @param recurse       Whether to recursively transform child IData documents and IData[] document lists.
+     */
+    public Uncontroller(TransformerMode mode, boolean recurse) {
+        super(String.class, String.class, mode, recurse, true, true, true);
+    }
+
+    /**
+     * Transforms the given key.
+     *
+     * @param key   The key to be transformed.
+     * @param value The value associated with the key being transformed.
+     * @return      The transformed key.
+     */
+    @Override
+    protected String transformKey(String key, Object value) {
+        return StringHelper.uncontrol(key);
     }
 
     /**
@@ -56,7 +78,7 @@ public class Splitter extends Transformer<String, String[]> {
      * @return      The transformed value.
      */
     @Override
-    protected String[] transformValue(String key, String value) {
-        return StringHelper.split(value, pattern);
+    protected String transformValue(String key, String value) {
+        return StringHelper.uncontrol(value);
     }
 }

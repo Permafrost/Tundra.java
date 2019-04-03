@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2017 Lachlan Dowding
+ * Copyright (c) 2019 Lachlan Dowding
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,33 +22,23 @@
  * SOFTWARE.
  */
 
-package permafrost.tundra.data.transform;
+package permafrost.tundra.data.transform.string;
+
+import permafrost.tundra.data.transform.Transformer;
+import permafrost.tundra.data.transform.TransformerMode;
+import permafrost.tundra.lang.StringHelper;
 
 /**
- * Adds a given suffix to string elements in an IData document or IData[] document list.
+ * Converts all string values that only contain whitespace characters to null.
  */
-public class Suffixer extends Transformer<String, String> {
+public class Nullifier extends Transformer<String, String> {
     /**
-     * The suffix to be added to string elements.
-     */
-    protected String suffix;
-    /**
-     * Whether to add the suffix even if a string already ends with it.
-     */
-    protected boolean force;
-
-    /**
-     * Creates a new Suffixer object.
+     * Creates a new Nullifier object.
      *
-     * @param suffix        The suffix to be added to string elements.
-     * @param force         Whether to add the suffix even when a string is already suffixed with it.
-     * @param mode          The transformer mode to use.
-     * @param recurse       Whether to recursively transform child IData documents and IData[] document lists.
+     * @param recurse   Whether to recursively transform child IData documents and IData[] document lists.
      */
-    public Suffixer(String suffix, boolean force, TransformerMode mode, boolean recurse) {
-        super(String.class, String.class, mode, recurse, true, true, true);
-        this.suffix = suffix;
-        this.force = force;
+    public Nullifier(boolean recurse) {
+        super(String.class, String.class, TransformerMode.VALUES, recurse, true, true, true);
     }
 
     /**
@@ -60,7 +50,7 @@ public class Suffixer extends Transformer<String, String> {
      */
     @Override
     protected String transformKey(String key, Object value) {
-        return addSuffix(key);
+        return key;
     }
 
     /**
@@ -72,16 +62,6 @@ public class Suffixer extends Transformer<String, String> {
      */
     @Override
     protected String transformValue(String key, String value) {
-        return addSuffix(value);
-    }
-
-    /**
-     * Adds the suffix to the given string.
-     *
-     * @param string    The string to add the suffix to.
-     * @return          The string suffixed with the suffix.
-     */
-    protected String addSuffix(String string) {
-        return suffix != null && (force || !string.endsWith(suffix)) ? string + suffix : string;
+        return StringHelper.nullify(value);
     }
 }

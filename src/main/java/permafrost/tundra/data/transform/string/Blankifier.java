@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Lachlan Dowding
+ * Copyright (c) 2019 Lachlan Dowding
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,33 +22,22 @@
  * SOFTWARE.
  */
 
-package permafrost.tundra.data.transform;
+package permafrost.tundra.data.transform.string;
 
-import permafrost.tundra.lang.StringHelper;
+import permafrost.tundra.data.transform.Transformer;
+import permafrost.tundra.data.transform.TransformerMode;
 
 /**
- * Converts all string values that only contain whitespace characters to null.
+ * Converts all null values to empty strings.
  */
-public class Nullifier extends Transformer<String, String> {
+public class Blankifier extends Transformer<String, String> {
     /**
-     * Creates a new Nullifier object.
+     * Creates a new Blankifier object.
      *
      * @param recurse   Whether to recursively transform child IData documents and IData[] document lists.
      */
-    public Nullifier(boolean recurse) {
+    public Blankifier(boolean recurse) {
         super(String.class, String.class, TransformerMode.VALUES, recurse, true, true, true);
-    }
-
-    /**
-     * Transforms the given key.
-     *
-     * @param key   The key to be transformed.
-     * @param value The value associated with the key being transformed.
-     * @return      The transformed key.
-     */
-    @Override
-    protected String transformKey(String key, Object value) {
-        return key;
     }
 
     /**
@@ -60,6 +49,17 @@ public class Nullifier extends Transformer<String, String> {
      */
     @Override
     protected String transformValue(String key, String value) {
-        return StringHelper.nullify(value);
+        return value;
+    }
+
+    /**
+     * Transforms a null value.
+     *
+     * @param key   The key associated with the null value being transformed.
+     * @return      The transformed value.
+     */
+    @Override
+    protected String transformNull(String key) {
+        return "";
     }
 }

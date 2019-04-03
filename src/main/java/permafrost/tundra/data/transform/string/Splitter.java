@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Lachlan Dowding
+ * Copyright (c) 2019 Lachlan Dowding
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,35 +22,32 @@
  * SOFTWARE.
  */
 
-package permafrost.tundra.data.transform;
+package permafrost.tundra.data.transform.string;
 
+import permafrost.tundra.data.transform.Transformer;
+import permafrost.tundra.data.transform.TransformerMode;
 import permafrost.tundra.lang.StringHelper;
+import permafrost.tundra.util.regex.PatternHelper;
+import java.util.regex.Pattern;
 
 /**
- * Squeezes whitespace from elements in an IData document or IData[] document list.
+ * Splits strings using a given regular expression pattern.
  */
-public class Squeezer extends Transformer<Object, Object> {
+public class Splitter extends Transformer<String, String[]> {
     /**
-     * Creates a new Squeezer object.
-     *
-     * @param recurse   Whether to recursively transform child IData documents and IData[] document lists.
+     * The regular expression pattern used for splitting strings.
      */
-    public Squeezer(boolean recurse) {
-        super(Object.class, Object.class, TransformerMode.VALUES, recurse, false, false, false);
-        normalizeTransformedArrays = true;
-        normalizeTransformedTables = true;
-    }
+    private final Pattern pattern;
 
     /**
-     * Transforms the given key.
+     * Creates a new Splitter object.
      *
-     * @param key   The key to be transformed.
-     * @param value The value associated with the key being transformed.
-     * @return      The transformed key.
+     * @param pattern   The literal or regular expression pattern to split around.
+     * @param literal   Whether the pattern is a literal pattern or a regular expression.
      */
-    @Override
-    protected String transformKey(String key, Object value) {
-        return StringHelper.squeeze(key);
+    public Splitter(String pattern, boolean literal) {
+        super(String.class, String[].class, TransformerMode.VALUES, true, true, true, true);
+        this.pattern = PatternHelper.compile(pattern, literal);
     }
 
     /**
@@ -61,10 +58,7 @@ public class Squeezer extends Transformer<Object, Object> {
      * @return      The transformed value.
      */
     @Override
-    protected Object transformValue(String key, Object value) {
-        if (value instanceof String) {
-            value = StringHelper.squeeze((String)value);
-        }
-        return value;
+    protected String[] transformValue(String key, String value) {
+        return StringHelper.split(value, pattern);
     }
 }

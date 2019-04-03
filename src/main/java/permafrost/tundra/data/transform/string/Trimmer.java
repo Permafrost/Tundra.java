@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Lachlan Dowding
+ * Copyright (c) 2019 Lachlan Dowding
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,42 +22,27 @@
  * SOFTWARE.
  */
 
-package permafrost.tundra.data.transform;
+package permafrost.tundra.data.transform.string;
 
-import permafrost.tundra.lang.StringHelper;
-import java.util.regex.Pattern;
+import permafrost.tundra.data.transform.Transformer;
+import permafrost.tundra.data.transform.TransformerMode;
 
 /**
- * Replaces either the first or all occurrences of the given regular expression with the given replacement.
+ * Trims whitespace from elements in an IData document or IData[] document list.
  */
-public class Replacer extends Transformer<String, String> {
+public class Trimmer extends Transformer<String, String> {
     /**
-     * The regular expression pattern to be replaced.
-     */
-    protected Pattern pattern;
-    /**
-     * The replacement string.
-     */
-    protected String replacement;
-    /**
-     * Whether only the first or all matches should be replaced.
-     */
-    protected boolean firstOnly;
-
-    /**
-     * Creates a new Replacer object.
+     * Creates a new Trimmer object.
      *
-     * @param mode          The transformer mode to use.
-     * @param pattern       The regular expression pattern.
-     * @param replacement   The replacement string.
-     * @param firstOnly     If true, only the first occurrence is replaced, otherwise all occurrences are replaced.
-     * @param recurse       Whether to recursively transform child IData documents and IData[] document lists.
+     * @param mode                  The transformer mode to use.
+     * @param recurse               Whether to recursively transform child IData documents and IData[] document lists.
+     * @param includeNulls          Whether null values should be included in transformed IData documents and IData[]
+     *                              document lists.
+     * @param includeEmptyDocuments Whether empty IData documents should be included in the transformation.
+     * @param includeEmptyArrays    Whether empty arrays should be included in the transformation.
      */
-    public Replacer(TransformerMode mode, Pattern pattern, String replacement, boolean firstOnly, boolean recurse) {
-        super(String.class, String.class, mode, recurse, true, true, true);
-        this.pattern = pattern;
-        this.replacement = replacement;
-        this.firstOnly = firstOnly;
+    public Trimmer(TransformerMode mode, boolean recurse, boolean includeNulls, boolean includeEmptyDocuments, boolean includeEmptyArrays) {
+        super(String.class, String.class, mode, recurse, includeNulls, includeEmptyDocuments, includeEmptyArrays);
     }
 
     /**
@@ -69,7 +54,7 @@ public class Replacer extends Transformer<String, String> {
      */
     @Override
     protected String transformKey(String key, Object value) {
-        return StringHelper.replace(key, pattern, replacement, firstOnly);
+        return key.trim();
     }
 
     /**
@@ -81,6 +66,6 @@ public class Replacer extends Transformer<String, String> {
      */
     @Override
     protected String transformValue(String key, String value) {
-        return StringHelper.replace(value, pattern, replacement, firstOnly);
+        return value.trim();
     }
 }

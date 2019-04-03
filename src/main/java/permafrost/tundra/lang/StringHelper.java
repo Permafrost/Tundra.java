@@ -29,9 +29,7 @@ import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
 import com.wm.data.IDataUtil;
 import permafrost.tundra.data.IDataHelper;
-import permafrost.tundra.data.transform.Capitalizer;
-import permafrost.tundra.data.transform.TransformerMode;
-import permafrost.tundra.data.transform.Uncontroller;
+import permafrost.tundra.data.transform.string.Uncontroller;
 import permafrost.tundra.io.InputOutputHelper;
 import permafrost.tundra.io.InputStreamHelper;
 import permafrost.tundra.io.ReaderHelper;
@@ -366,7 +364,7 @@ public final class StringHelper {
      * @param input  The string to be sliced.
      * @param index  The zero-based starting index of the slice.
      * @param length The length in characters of the slice.
-     * @return The resulting substring.
+     * @return       The resulting substring.
      */
     public static String slice(String input, int index, int length) {
         if (input == null || input.equals("")) return input;
