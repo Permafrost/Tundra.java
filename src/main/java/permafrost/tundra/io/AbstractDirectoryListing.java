@@ -111,6 +111,6 @@ public abstract class AbstractDirectoryListing implements DirectoryListing {
             output.add(FileHelper.normalize(file));
         }
 
-        return output.toArray(new String[output.size()]);
+        return output.toArray(new String[0]);
     }
 }

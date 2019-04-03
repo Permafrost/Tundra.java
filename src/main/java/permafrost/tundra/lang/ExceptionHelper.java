@@ -155,7 +155,7 @@ public final class ExceptionHelper {
      */
     public static String getMessage(Collection<? extends Throwable> exceptions) {
         if (exceptions == null) return "";
-        return getMessage(exceptions.toArray(new Throwable[exceptions.size()]));
+        return getMessage(exceptions.toArray(new Throwable[0]));
     }
 
     /**
@@ -176,7 +176,7 @@ public final class ExceptionHelper {
      */
     public static Collection<String> getMessages(Collection<? extends Throwable> exceptions) {
         if (exceptions == null) return null;
-        return Arrays.asList(getMessages(exceptions.toArray(new Throwable[exceptions.size()])));
+        return Arrays.asList(getMessages(exceptions.toArray(new Throwable[0])));
     }
 
     /**

@@ -26,6 +26,7 @@ package permafrost.tundra.collection;
 
 import permafrost.tundra.lang.ArrayHelper;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -96,6 +97,20 @@ public final class CollectionHelper {
     }
 
     /**
+     * Converts the given collection to an array, using the given array as a template for the resulting
+     * array's component type.
+     *
+     * @param collection    The collection to be converted.
+     * @param template      An array to use as the template for the resulting array's component type.
+     * @param <E>           The component type of the collection and resulting array.
+     * @return              The collection converted to an array with a component type matching the given template.
+     */
+    public static <E> E[] arrayify(Collection<E> collection, E[] template) {
+        if (collection == null || template == null) return null;
+        return collection.toArray(Arrays.copyOf(template, 0));
+    }
+
+    /**
      * Converts the given collection to an array.
      *
      * @param collection    The collection to be converted.
@@ -105,7 +120,7 @@ public final class CollectionHelper {
      */
     public static <E> E[] arrayify(Collection<E> collection, Class<E> klass) {
         if (collection == null) return null;
-        return collection.toArray(ArrayHelper.instantiate(klass, collection.size()));
+        return collection.toArray(ArrayHelper.instantiate(klass, 0));
     }
 
     /**

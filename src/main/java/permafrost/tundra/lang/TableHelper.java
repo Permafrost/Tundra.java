@@ -24,6 +24,8 @@
 
 package permafrost.tundra.lang;
 
+import permafrost.tundra.collection.CollectionHelper;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -62,7 +64,7 @@ public final class TableHelper {
             if (row != null) list.add(ArrayHelper.compact(row));
         }
 
-        return list.toArray(Arrays.copyOf(table, list.size()));
+        return CollectionHelper.arrayify(list, table);
     }
 
     /**
@@ -309,7 +311,7 @@ public final class TableHelper {
             if (row != null) list.add(row);
         }
 
-        table = list.toArray(Arrays.copyOf(table, list.size()));
+        table = CollectionHelper.arrayify(list, table);
 
         return table.length == 0 ? null : table;
     }
@@ -331,7 +333,7 @@ public final class TableHelper {
             if (row != null) list.add(row);
         }
 
-        table = list.toArray(Arrays.copyOf(table, list.size()));
+        table = CollectionHelper.arrayify(list, table);
 
         return table.length == 0 ? null : table;
     }
@@ -354,7 +356,7 @@ public final class TableHelper {
                 list.add(ArrayHelper.blankify(row));
             }
 
-            table = list.toArray(Arrays.copyOf(table, list.size()));
+            table = CollectionHelper.arrayify(list, table);
 
             return table.length == 0 ? null : table;
         } else {

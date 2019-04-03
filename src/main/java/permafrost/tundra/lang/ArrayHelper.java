@@ -25,6 +25,7 @@
 package permafrost.tundra.lang;
 
 import com.wm.data.IData;
+import permafrost.tundra.collection.CollectionHelper;
 import permafrost.tundra.collection.ListHelper;
 import permafrost.tundra.data.IDataHelper;
 import permafrost.tundra.data.IDataMap;
@@ -36,7 +37,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeSet;
 
 /**
@@ -51,8 +51,7 @@ public final class ArrayHelper {
     /**
      * Disallow instantiation of this class.
      */
-    private ArrayHelper() {
-    }
+    private ArrayHelper() {}
 
     /**
      * Returns a new array, with the given element inserted at the end.
@@ -132,7 +131,7 @@ public final class ArrayHelper {
             if (item != null) list.add(item);
         }
 
-        return list.toArray(Arrays.copyOf(array, list.size()));
+        return CollectionHelper.arrayify(list, array);
     }
 
     /**
@@ -186,7 +185,7 @@ public final class ArrayHelper {
 
         for (Map.Entry<String, Object> entry : IDataMap.of(operands)) {
             Object value = entry.getValue();
-            if (value != null && arrayClass.isInstance(value)) {
+            if (arrayClass.isInstance(value)) {
                 list.add((T[])value);
             }
         }
@@ -231,7 +230,7 @@ public final class ArrayHelper {
                     if (array != null) Collections.addAll(list, array);
                 }
 
-                concatenation = list.toArray(Arrays.copyOf(copyable, length));
+                concatenation = CollectionHelper.arrayify(list, copyable);
             }
         }
 
@@ -253,7 +252,7 @@ public final class ArrayHelper {
         list.addAll(Arrays.asList(firstArray));
         list.removeAll(Arrays.asList(secondArray));
 
-        return list.toArray(Arrays.copyOf(firstArray, list.size()));
+        return CollectionHelper.arrayify(list, firstArray);
     }
 
     /**
@@ -298,7 +297,7 @@ public final class ArrayHelper {
         Class arrayClass = ClassHelper.getArrayClass(componentClass, 1);
         for (Map.Entry<String, Object> entry : IDataMap.of(operands)) {
             Object value = entry.getValue();
-            if (value != null && arrayClass.isInstance(value)) {
+            if (arrayClass.isInstance(value)) {
                 list.add((T[])value);
             }
         }
@@ -632,7 +631,7 @@ public final class ArrayHelper {
         }
         list.add(index, item);
 
-        return list.toArray(instantiate(klass, list.size()));
+        return list.toArray(instantiate(klass, 0));
     }
 
     /**
@@ -652,7 +651,7 @@ public final class ArrayHelper {
         Class arrayClass = ClassHelper.getArrayClass(componentClass, 1);
         for (Map.Entry<String, Object> entry : IDataMap.of(operands)) {
             Object value = entry.getValue();
-            if (value != null && arrayClass.isInstance(value)) {
+            if (arrayClass.isInstance(value)) {
                 list.add((T[])value);
             }
         }
@@ -688,7 +687,7 @@ public final class ArrayHelper {
             intersection.retainAll(Arrays.asList(arrays.get(i)));
         }
 
-        return intersection.toArray(Arrays.copyOf(arrays.get(0), intersection.size()));
+        return CollectionHelper.arrayify(intersection, arrays.get(0));
     }
 
     /**
@@ -996,7 +995,7 @@ public final class ArrayHelper {
         List<T> list = Arrays.asList(Arrays.copyOf(array, array.length));
         Collections.reverse(list);
 
-        return list.toArray(Arrays.copyOf(array, list.size()));
+        return CollectionHelper.arrayify(list, array);
     }
 
     /**
@@ -1105,8 +1104,7 @@ public final class ArrayHelper {
      */
     public static <T> T[] unique(T[] array) {
         if (array == null) return null;
-        Set<T> set = new TreeSet<T>(Arrays.asList(array));
-        return set.toArray(Arrays.copyOf(array, set.size()));
+        return CollectionHelper.arrayify(new TreeSet<T>(Arrays.asList(array)), array);
     }
 
     /**
@@ -1169,7 +1167,7 @@ public final class ArrayHelper {
     @SuppressWarnings("unchecked")
     public static <T> T[] normalize(T[] input, Class<?> klass) {
         if (input == null) return null;
-        return Arrays.asList(input).toArray((T[])instantiate(klass, input.length));
+        return Arrays.asList(input).toArray((T[])instantiate(klass, 0));
     }
 
     /**
@@ -1195,7 +1193,7 @@ public final class ArrayHelper {
     @SuppressWarnings("unchecked")
     public static <T> T[] normalize(Collection<T> input, Class<?> klass) {
         if (input == null) return null;
-        return input.toArray((T[])instantiate(klass, input.size()));
+        return input.toArray((T[])instantiate(klass, 0));
     }
 
     /**
@@ -1221,7 +1219,7 @@ public final class ArrayHelper {
             }
         }
 
-        array = list.toArray(Arrays.copyOf(array, list.size()));
+        array = CollectionHelper.arrayify(list, array);
 
         return array.length == 0 ? null : array;
     }
@@ -1244,7 +1242,7 @@ public final class ArrayHelper {
             if (item != null) list.add(item);
         }
 
-        array = list.toArray(Arrays.copyOf(array, list.size()));
+        array = CollectionHelper.arrayify(list, array);
 
         return array.length == 0 ? null : array;
     }

@@ -173,7 +173,7 @@ public final class ClassHelper {
      */
     public static Class<?>[] getAncestors(Class<?>... classes) {
         Set<Class<?>> ancestors = getAncestors(Arrays.asList(classes));
-        return ancestors.toArray(new Class<?>[ancestors.size()]);
+        return ancestors.toArray(new Class<?>[0]);
     }
 
     /**

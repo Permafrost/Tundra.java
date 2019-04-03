@@ -201,7 +201,7 @@ public final class TestHelper {
                 }
 
                 IDataHelper.put(cursor, "counts", counts);
-                IDataHelper.put(cursor, "cases", cases.toArray(new IData[cases.size()]));
+                IDataHelper.put(cursor, "cases", cases.toArray(new IData[0]));
             } finally {
                 cursor.destroy();
                 executor.shutdownNow();

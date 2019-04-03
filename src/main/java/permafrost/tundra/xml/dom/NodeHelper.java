@@ -315,7 +315,7 @@ public final class NodeHelper {
                 }
             }
 
-            if (hasElementChildren) map.put("elements", list.toArray(new IData[list.size()]));
+            if (hasElementChildren) map.put("elements", list.toArray(new IData[0]));
         }
 
         return map;

@@ -71,7 +71,7 @@ public final class URIPathHelper {
         }
         if (index <= input.length()) split(input.substring(index), list);
 
-        return ArrayHelper.compact(list.toArray(new String[list.size()]));
+        return ArrayHelper.compact(list.toArray(new String[0]));
     }
 
     /**

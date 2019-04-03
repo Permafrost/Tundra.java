@@ -311,7 +311,7 @@ public class ConfigurationManager {
             }
         }
 
-        return output.toArray(new IData[output.size()]);
+        return output.toArray(new IData[0]);
     }
 
     /**

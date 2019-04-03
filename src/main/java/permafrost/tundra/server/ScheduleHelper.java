@@ -380,7 +380,7 @@ public final class ScheduleHelper {
             if (matched) tasks.add(task);
         }
 
-        return tasks.toArray(new IData[tasks.size()]);
+        return tasks.toArray(new IData[0]);
     }
 
     /**

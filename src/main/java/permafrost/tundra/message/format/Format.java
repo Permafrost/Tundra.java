@@ -228,7 +228,7 @@ public class Format implements Comparable<Format>, IDataCodable {
     public static Format[] of(IData[] documents) {
         if (documents == null) return null;
         Collection<Format> output = of(Arrays.asList(documents));
-        return output.toArray(new Format[output.size()]);
+        return output.toArray(new Format[0]);
     }
 
     /**
@@ -259,7 +259,7 @@ public class Format implements Comparable<Format>, IDataCodable {
      */
     public static IData[] toIDataArray(Collection<Format> formats) {
         if (formats == null) return null;
-        return toIDataArray(formats.toArray(new Format[formats.size()]));
+        return toIDataArray(formats.toArray(new Format[0]));
     }
 
     /**

@@ -904,13 +904,13 @@ public final class StringHelper {
 
             IData capture = IDataFactory.create();
             IDataCursor captureCursor = capture.getCursor();
-            IDataUtil.put(captureCursor, "groups", groups.toArray(new IData[groups.size()]));
+            IDataUtil.put(captureCursor, "groups", groups.toArray(new IData[0]));
             IDataUtil.put(captureCursor, "groups.length", "" + groups.size());
             captureCursor.destroy();
             captures.add(capture);
         }
 
-        return captures.toArray(new IData[captures.size()]);
+        return captures.toArray(new IData[0]);
     }
 
     /**
@@ -1598,7 +1598,7 @@ public final class StringHelper {
             }
         }
 
-        return String.format(locale, pattern, args.toArray(new Object[args.size()]));
+        return String.format(locale, pattern, args.toArray(new Object[0]));
     }
 
     /**
@@ -1776,7 +1776,7 @@ public final class StringHelper {
 
         if (output.size() > 0) output.remove(output.size() - 1);
 
-        return output.toArray(new String[output.size()]);
+        return output.toArray(new String[0]);
     }
 
     /**

@@ -87,7 +87,7 @@ public final class IDataHelper {
      */
     public static String[] getKeys(IData document) {
         List<String> keys = getKeyList(document);
-        return keys.toArray(new String[keys.size()]);
+        return keys.toArray(new String[0]);
     }
 
     /**
@@ -111,7 +111,7 @@ public final class IDataHelper {
      */
     public static String[] getKeys(IData document, Pattern pattern) {
         List<String> keys = getKeyList(document, pattern);
-        return keys.toArray(new String[keys.size()]);
+        return keys.toArray(new String[0]);
     }
 
     /**
@@ -226,7 +226,7 @@ public final class IDataHelper {
      */
     public static <V> V[] getValues(IData document, Class<V> valueClass) {
         List<V> values = getValueList(document, valueClass);
-        return values.toArray(ArrayHelper.instantiate(valueClass, values.size()));
+        return values.toArray(ArrayHelper.instantiate(valueClass, 0));
     }
 
     /**
@@ -338,7 +338,7 @@ public final class IDataHelper {
      */
     public static IData[] getIDataValues(IData document) {
         List<IData> values = getIDataValueList(document);
-        return values.toArray(new IData[values.size()]);
+        return values.toArray(new IData[0]);
     }
 
     /**
@@ -386,7 +386,7 @@ public final class IDataHelper {
     public static <T> T[] getLeaves(IData document, Class<T> klass, boolean recurse) {
         List<T> leaves = new ArrayList<T>();
         getLeavesFromIData(leaves, document, klass, recurse);
-        return leaves.toArray(ArrayHelper.instantiate(klass, leaves.size()));
+        return leaves.toArray(ArrayHelper.instantiate(klass, 0));
     }
 
     /**
@@ -434,7 +434,7 @@ public final class IDataHelper {
     public static <T> T[] getLeaves(IData[] array, Class<T> klass, boolean recurse) {
         List<T> leaves = new ArrayList<T>();
         getLeavesFromIDataArray(leaves, array, klass, recurse);
-        return leaves.toArray(ArrayHelper.instantiate(klass, leaves.size()));
+        return leaves.toArray(ArrayHelper.instantiate(klass, 0));
     }
 
     /**
@@ -4382,7 +4382,7 @@ public final class IDataHelper {
             }
         }
 
-        return keys.toArray(new String[keys.size()]);
+        return keys.toArray(new String[0]);
     }
 
     /**
@@ -4429,7 +4429,7 @@ public final class IDataHelper {
             pivot.add(item);
         }
 
-        return pivot.toArray(new IData[pivot.size()]);
+        return pivot.toArray(new IData[0]);
     }
 
     /**
@@ -4893,14 +4893,14 @@ public final class IDataHelper {
                 IData group = IDataFactory.create();
                 IDataCursor cursor = group.getCursor();
                 IDataUtil.put(cursor, "group", key.getIData());
-                IDataUtil.put(cursor, "items", items.toArray(new IData[items.size()]));
+                IDataUtil.put(cursor, "items", items.toArray(new IData[0]));
                 cursor.destroy();
 
                 result.add(group);
             }
         }
 
-        return result.toArray(new IData[result.size()]);
+        return result.toArray(new IData[0]);
     }
 
     /**
@@ -4938,7 +4938,7 @@ public final class IDataHelper {
             for (Map.Entry<CompoundKey, List<IData>> entry : groups.entrySet()) {
                 CompoundKey key = entry.getKey();
                 List<IData> value = entry.getValue();
-                IData[] items = value.toArray(new IData[value.size()]);
+                IData[] items = value.toArray(new IData[0]);
 
                 IData group = IDataFactory.create();
                 IDataCursor cursor = group.getCursor();
@@ -4959,7 +4959,7 @@ public final class IDataHelper {
             }
         }
 
-        return result.toArray(new IData[result.size()]);
+        return result.toArray(new IData[0]);
     }
 
     /**
@@ -5028,7 +5028,7 @@ public final class IDataHelper {
                     }
                 }
 
-                output = set.values().toArray(new IData[set.size()]);
+                output = set.values().toArray(new IData[0]);
             }
         }
 

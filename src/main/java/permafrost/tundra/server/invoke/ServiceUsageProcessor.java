@@ -178,7 +178,7 @@ public class ServiceUsageProcessor extends AbstractInvokeChainProcessor implemen
             }
         }
 
-        IDataUtil.put(cursor, "invocations.current", currentInvocations.toArray(new IData[currentInvocations.size()]));
+        IDataUtil.put(cursor, "invocations.current", currentInvocations.toArray(new IData[0]));
         IDataUtil.put(cursor, "invocations.current.length", currentInvocations.size());
 
         cursor.destroy();
@@ -462,7 +462,7 @@ public class ServiceUsageProcessor extends AbstractInvokeChainProcessor implemen
             for(Frame frame : stack) {
                 frames.add(frame.getIData());
             }
-            IDataUtil.put(cursor, "callstack", frames.toArray(new IData[frames.size()]));
+            IDataUtil.put(cursor, "callstack", frames.toArray(new IData[0]));
             IDataUtil.put(cursor, "callstack.length", frames.size());
 
             cursor.destroy();

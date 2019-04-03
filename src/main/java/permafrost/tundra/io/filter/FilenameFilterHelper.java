@@ -48,7 +48,7 @@ public class FilenameFilterHelper {
      */
     public static FilenameFilter[] create(FilenameFilterType type, String... patterns) {
         Collection<FilenameFilter> filters = create(type, ListHelper.of(patterns));
-        return filters == null ? null : filters.toArray(new FilenameFilter[filters.size()]);
+        return filters == null ? null : filters.toArray(new FilenameFilter[0]);
     }
 
     /**

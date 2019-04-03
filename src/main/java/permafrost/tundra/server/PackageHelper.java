@@ -131,7 +131,7 @@ public final class PackageHelper {
             }
         }
 
-        return packageSet.toArray(new Package[packageSet.size()]);
+        return packageSet.toArray(new Package[0]);
     }
 
     /**
@@ -214,11 +214,11 @@ public final class PackageHelper {
 
         IData output = IDataFactory.create();
         IDataCursor cursor = output.getCursor();
-        IDataUtil.put(cursor, "packages", packages.toArray(new String[packages.size()]));
+        IDataUtil.put(cursor, "packages", packages.toArray(new String[0]));
         IDataUtil.put(cursor, "packages.length", IntegerHelper.emit(packages.size()));
-        IDataUtil.put(cursor, "nodes", resolved.values().toArray(new IData[resolved.size()]));
+        IDataUtil.put(cursor, "nodes", resolved.values().toArray(new IData[0]));
         IDataUtil.put(cursor, "nodes.length", IntegerHelper.emit(resolved.size()));
-        IDataUtil.put(cursor, "unresolved", unresolved.toArray(new String[unresolved.size()]));
+        IDataUtil.put(cursor, "unresolved", unresolved.toArray(new String[0]));
         IDataUtil.put(cursor, "unresolved.length", IntegerHelper.emit(unresolved.size()));
         cursor.destroy();
 
@@ -290,9 +290,9 @@ public final class PackageHelper {
 
         IData output = IDataFactory.create();
         IDataCursor cursor = output.getCursor();
-        IDataUtil.put(cursor, "packages", packages.toArray(new String[packages.size()]));
+        IDataUtil.put(cursor, "packages", packages.toArray(new String[0]));
         IDataUtil.put(cursor, "packages.length", IntegerHelper.emit(packages.size()));
-        IDataUtil.put(cursor, "nodes", nodes.values().toArray(new IData[nodes.size()]));
+        IDataUtil.put(cursor, "nodes", nodes.values().toArray(new IData[0]));
         IDataUtil.put(cursor, "nodes.length", IntegerHelper.emit(nodes.size()));
         cursor.destroy();
 
@@ -358,7 +358,7 @@ public final class PackageHelper {
             if (item != null) output.add(item.getName());
         }
 
-        return output.toArray(new String[output.size()]);
+        return output.toArray(new String[0]);
     }
 
     /**
@@ -416,7 +416,7 @@ public final class PackageHelper {
             output.add(map);
         }
 
-        return output.toArray(new IData[output.size()]);
+        return output.toArray(new IData[0]);
     }
 
     /**

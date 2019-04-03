@@ -225,7 +225,7 @@ public final class XMLHelper {
 
         }
 
-        return errors.size() == 0 ? null : ExceptionHelper.getMessages(errors.toArray(new Throwable[errors.size()]));
+        return errors.size() == 0 ? null : ExceptionHelper.getMessages(errors.toArray(new Throwable[0]));
     }
 
     /**

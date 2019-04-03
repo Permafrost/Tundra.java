@@ -197,6 +197,6 @@ public class HTTPRouteTable extends TreeMap<String, HTTPRouteList> {
             output.add(item);
         }
 
-        return output.toArray(new IData[output.size()]);
+        return output.toArray(new IData[0]);
     }
 }

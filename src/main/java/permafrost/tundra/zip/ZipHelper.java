@@ -119,7 +119,7 @@ public final class ZipHelper {
             CloseableHelper.close(zipInputStream);
         }
 
-        return contents.toArray(new ZipEntryWithData[contents.size()]);
+        return contents.toArray(new ZipEntryWithData[0]);
     }
 
     /**

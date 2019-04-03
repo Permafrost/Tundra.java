@@ -227,7 +227,7 @@ public abstract class Transformer<V, T> {
             }
         }
 
-        return includeEmptyArrays || output.size() > 0 ? output.toArray(new IData[output.size()]) : null;
+        return includeEmptyArrays || output.size() > 0 ? output.toArray(new IData[0]) : null;
     }
 
     /**
@@ -285,7 +285,7 @@ public abstract class Transformer<V, T> {
             if (normalizeTransformedArrays) {
                 return ArrayHelper.normalize(output);
             } else {
-                return output.toArray(ArrayHelper.instantiate(transformedValueClass, output.size()));
+                return output.toArray(ArrayHelper.instantiate(transformedValueClass, 0));
             }
         } else {
             return null;

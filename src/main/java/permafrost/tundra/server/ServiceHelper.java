@@ -221,9 +221,9 @@ public final class ServiceHelper {
 
         IData output = IDataFactory.create();
         IDataCursor cursor = output.getCursor();
-        IDataUtil.put(cursor, "packages", packages.toArray(new String[packages.size()]));
+        IDataUtil.put(cursor, "packages", packages.toArray(new String[0]));
         IDataUtil.put(cursor, "packages.length", IntegerHelper.emit(packages.size()));
-        IDataUtil.put(cursor, "nodes", nodes.values().toArray(new IData[nodes.size()]));
+        IDataUtil.put(cursor, "nodes", nodes.values().toArray(new IData[0]));
         IDataUtil.put(cursor, "nodes.length", IntegerHelper.emit(nodes.size()));
         cursor.destroy();
 
@@ -289,11 +289,11 @@ public final class ServiceHelper {
 
         IData output = IDataFactory.create();
         IDataCursor cursor = output.getCursor();
-        IDataUtil.put(cursor, "packages", packages.toArray(new String[packages.size()]));
+        IDataUtil.put(cursor, "packages", packages.toArray(new String[0]));
         IDataUtil.put(cursor, "packages.length", IntegerHelper.emit(packages.size()));
-        IDataUtil.put(cursor, "nodes", resolved.values().toArray(new IData[resolved.size()]));
+        IDataUtil.put(cursor, "nodes", resolved.values().toArray(new IData[0]));
         IDataUtil.put(cursor, "nodes.length", IntegerHelper.emit(resolved.size()));
-        IDataUtil.put(cursor, "unresolved", unresolved.toArray(new String[unresolved.size()]));
+        IDataUtil.put(cursor, "unresolved", unresolved.toArray(new String[0]));
         IDataUtil.put(cursor, "unresolved.length", IntegerHelper.emit(unresolved.size()));
         cursor.destroy();
 

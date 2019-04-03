@@ -52,6 +52,6 @@ public final class EnumerationHelper {
             output.add(item == null ? null : ObjectHelper.stringify(item));
         }
 
-        return output.toArray(new String[output.size()]);
+        return output.toArray(new String[0]);
     }
 }

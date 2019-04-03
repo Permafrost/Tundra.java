@@ -164,7 +164,7 @@ class IDataKey extends ArrayDeque<IDataKey.Part> {
      */
     @Override
     public String toString() {
-        return ArrayHelper.join(this.toArray(new Part[this.size()]), "/");
+        return ArrayHelper.join(this.toArray(new Part[0]), "/");
     }
 
     /**

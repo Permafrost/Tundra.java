@@ -86,7 +86,7 @@ public class HTTPRouteList extends ArrayList<HTTPRoute> {
         for (HTTPRoute route : this) {
             output.add(route.getIData());
         }
-        return output.toArray(new IData[output.size()]);
+        return output.toArray(new IData[0]);
     }
 
     /**

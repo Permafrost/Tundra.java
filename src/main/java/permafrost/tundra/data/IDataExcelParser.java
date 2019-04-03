@@ -197,7 +197,7 @@ public class IDataExcelParser extends IDataParser {
                     }
                 }
 
-                cursor.insertAfter(sheet.getSheetName(), outputRows.toArray(new IData[outputRows.size()]));
+                cursor.insertAfter(sheet.getSheetName(), outputRows.toArray(new IData[0]));
             }
         } catch(InvalidFormatException ex) {
             throw new RuntimeException(ex);
