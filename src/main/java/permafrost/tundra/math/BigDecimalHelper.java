@@ -27,6 +27,7 @@ package permafrost.tundra.math;
 import com.wm.app.b2b.server.ServiceException;
 import com.wm.data.IData;
 import permafrost.tundra.data.IDataHelper;
+import permafrost.tundra.data.transform.Transformer;
 import permafrost.tundra.data.transform.math.BigDecimalFormatter;
 import permafrost.tundra.lang.ArrayHelper;
 import permafrost.tundra.lang.ExceptionHelper;
@@ -432,7 +433,7 @@ public final class BigDecimalHelper {
      * @return           The reformatted decimal strings.
      */
     public static IData format(IData document, String inPattern, String outPattern) {
-        return IDataHelper.transform(document, new BigDecimalFormatter(inPattern, outPattern));
+        return Transformer.transform(document, new BigDecimalFormatter(inPattern, outPattern));
     }
 
     /**
@@ -444,7 +445,7 @@ public final class BigDecimalHelper {
      * @return           The reformatted decimal strings.
      */
     public static IData format(IData document, String[] inPatterns, String outPattern) {
-        return IDataHelper.transform(document, new BigDecimalFormatter(inPatterns, outPattern));
+        return Transformer.transform(document, new BigDecimalFormatter(inPatterns, outPattern));
     }
 
     /**

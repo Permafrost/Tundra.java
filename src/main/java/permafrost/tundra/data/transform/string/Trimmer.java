@@ -34,6 +34,25 @@ public class Trimmer extends Transformer<String, String> {
     /**
      * Creates a new Trimmer object.
      *
+     * @param recurse Whether to recursively transform child IData documents and IData[] document lists.
+     */
+    public Trimmer(boolean recurse) {
+        this(null, true);
+    }
+
+    /**
+     * Creates a new Trimmer object.
+     *
+     * @param mode    The transformer mode to use.
+     * @param recurse Whether to recursively transform child IData documents and IData[] document lists.
+     */
+    public Trimmer(TransformerMode mode, boolean recurse) {
+        this(mode, recurse, true, true, true);
+    }
+
+    /**
+     * Creates a new Trimmer object.
+     *
      * @param mode                  The transformer mode to use.
      * @param recurse               Whether to recursively transform child IData documents and IData[] document lists.
      * @param includeNulls          Whether null values should be included in transformed IData documents and IData[]

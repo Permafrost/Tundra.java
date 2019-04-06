@@ -30,6 +30,7 @@ import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
 import com.wm.data.IDataUtil;
 import permafrost.tundra.data.IDataHelper;
+import permafrost.tundra.data.transform.Transformer;
 import permafrost.tundra.data.transform.net.uri.Decoder;
 import permafrost.tundra.data.transform.net.uri.Encoder;
 import permafrost.tundra.flow.variable.SubstitutionHelper;
@@ -219,7 +220,7 @@ public final class URIHelper {
      * @return          The encoded IData document.
      */
     public static IData encode(IData document, Charset charset) {
-        return IDataHelper.transform(document, new Encoder(charset));
+        return Transformer.transform(document, new Encoder(charset));
     }
 
     /**
@@ -313,7 +314,7 @@ public final class URIHelper {
      * @return          The decoded IData document.
      */
     public static IData decode(IData document, Charset charset) {
-        return IDataHelper.transform(document, new Decoder(charset));
+        return Transformer.transform(document, new Decoder(charset));
     }
 
     /**

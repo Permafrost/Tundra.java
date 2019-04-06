@@ -43,12 +43,12 @@ public class Suffixer extends Transformer<String, String> {
     /**
      * Creates a new Suffixer object.
      *
+     * @param mode          The transformer mode to use.
      * @param suffix        The suffix to be added to string elements.
      * @param force         Whether to add the suffix even when a string is already suffixed with it.
-     * @param mode          The transformer mode to use.
      * @param recurse       Whether to recursively transform child IData documents and IData[] document lists.
      */
-    public Suffixer(String suffix, boolean force, TransformerMode mode, boolean recurse) {
+    public Suffixer(TransformerMode mode, String suffix, boolean force, boolean recurse) {
         super(String.class, String.class, mode, recurse, true, true, true);
         this.suffix = suffix;
         this.force = force;

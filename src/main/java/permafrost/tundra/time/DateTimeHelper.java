@@ -26,6 +26,7 @@ package permafrost.tundra.time;
 
 import com.wm.data.IData;
 import permafrost.tundra.data.IDataHelper;
+import permafrost.tundra.data.transform.Transformer;
 import permafrost.tundra.data.transform.time.DateTimeFormatter;
 import permafrost.tundra.lang.ArrayHelper;
 import java.sql.Timestamp;
@@ -1011,7 +1012,7 @@ public final class DateTimeHelper {
      * @return              The given datetime strings reformatted according to the given outPattern.
      */
     public static IData format(IData document, String inPattern, TimeZone inTimeZone, String outPattern, TimeZone outTimeZone) {
-        return IDataHelper.transform(document, new DateTimeFormatter(inPattern, inTimeZone, outPattern, outTimeZone));
+        return Transformer.transform(document, new DateTimeFormatter(inPattern, inTimeZone, outPattern, outTimeZone));
     }
 
     /**
@@ -1025,7 +1026,7 @@ public final class DateTimeHelper {
      * @return              The given datetime strings reformatted according to the given outPattern.
      */
     public static IData format(IData document, String[] inPatterns, TimeZone inTimeZone, String outPattern, TimeZone outTimeZone) {
-        return IDataHelper.transform(document, new DateTimeFormatter(inPatterns, inTimeZone, outPattern, outTimeZone));
+        return Transformer.transform(document, new DateTimeFormatter(inPatterns, inTimeZone, outPattern, outTimeZone));
     }
 
     /**

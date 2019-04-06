@@ -39,11 +39,11 @@ public class Unsuffixer extends Transformer<String, String> {
     /**
      * Creates a new Unprefixer object.
      *
-     * @param suffix        The suffix to be removed from string elements.
      * @param mode          The transformer mode to use.
+     * @param suffix        The suffix to be removed from string elements.
      * @param recurse       Whether to recursively transform child IData documents and IData[] document lists.
      */
-    public Unsuffixer(String suffix, TransformerMode mode, boolean recurse) {
+    public Unsuffixer(TransformerMode mode, String suffix, boolean recurse) {
         super(String.class, String.class, mode, recurse, true, true, true);
         this.suffix = suffix;
     }

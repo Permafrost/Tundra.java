@@ -37,19 +37,30 @@ public class Lowercaser extends Transformer<String, String> {
      * The locale used for the lowercase rules.
      */
     protected Locale locale;
-    
+
     /**
      * Creates a new Lowercaser object.
      *
-     * @param locale                The locale to use for lowercasing rules.
      * @param mode                  The transformer mode to use.
+     * @param locale                The locale to use for lowercasing rules.
+     * @param recurse               Whether to recursively transform child IData documents and IData[] document lists.
+     */
+    public Lowercaser(TransformerMode mode, Locale locale, boolean recurse) {
+        this(mode, locale, recurse, true, true, true);
+    }
+
+    /**
+     * Creates a new Lowercaser object.
+     *
+     * @param mode                  The transformer mode to use.
+     * @param locale                The locale to use for lowercasing rules.
      * @param recurse               Whether to recursively transform child IData documents and IData[] document lists.
      * @param includeNulls          Whether null values should be included in transformed IData documents and IData[]
      *                              document lists.
      * @param includeEmptyDocuments Whether empty IData documents should be included in the transformation.
      * @param includeEmptyArrays    Whether empty arrays should be included in the transformation.
      */
-    public Lowercaser(Locale locale, TransformerMode mode, boolean recurse, boolean includeNulls, boolean includeEmptyDocuments, boolean includeEmptyArrays) {
+    public Lowercaser(TransformerMode mode, Locale locale, boolean recurse, boolean includeNulls, boolean includeEmptyDocuments, boolean includeEmptyArrays) {
         super(String.class, String.class, mode, recurse, includeNulls, includeEmptyDocuments, includeEmptyArrays);
         this.locale = LocaleHelper.normalize(locale);
     }

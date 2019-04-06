@@ -29,6 +29,7 @@ import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
 import com.wm.data.IDataUtil;
 import permafrost.tundra.data.IDataHelper;
+import permafrost.tundra.data.transform.Transformer;
 import permafrost.tundra.data.transform.string.Uncontroller;
 import permafrost.tundra.io.InputOutputHelper;
 import permafrost.tundra.io.InputStreamHelper;
@@ -1809,7 +1810,7 @@ public final class StringHelper {
      * @return          A new IData document whose string values contain no control characters.
      */
     public static IData uncontrol(IData document) {
-        return IDataHelper.transform(document, new Uncontroller());
+        return Transformer.transform(document, new Uncontroller());
     }
 
     /**
@@ -1822,6 +1823,6 @@ public final class StringHelper {
      * @return          A new IData[] document list whose string values contain no control characters.
      */
     public static IData[] uncontrol(IData[] array) {
-        return IDataHelper.transform(array, new Uncontroller());
+        return Transformer.transform(array, new Uncontroller());
     }
 }

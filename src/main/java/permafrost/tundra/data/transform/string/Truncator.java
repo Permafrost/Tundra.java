@@ -44,6 +44,16 @@ public class Truncator extends Transformer<String, String> {
     /**
      * Creates a new Truncator object.
      *
+     * @param length    The length to truncate the string to.
+     * @param ellipsis  If true, the returned string is suffixed with an ellipsis character when truncated.
+     */
+    public Truncator(int length, boolean ellipsis) {
+        this(null, length, ellipsis, true);
+    }
+
+    /**
+     * Creates a new Truncator object.
+     *
      * @param mode      The transformer mode to use.
      * @param length    The length to truncate the string to.
      * @param ellipsis  If true, the returned string is suffixed with an ellipsis character when truncated.

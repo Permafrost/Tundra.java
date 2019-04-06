@@ -33,6 +33,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import permafrost.tundra.content.MalformedException;
 import permafrost.tundra.content.ValidationException;
 import permafrost.tundra.data.IDataHelper;
+import permafrost.tundra.data.transform.Transformer;
 import permafrost.tundra.data.transform.xml.Decoder;
 import permafrost.tundra.data.transform.xml.Encoder;
 import permafrost.tundra.io.CloseableHelper;
@@ -131,7 +132,7 @@ public final class XMLHelper {
      * @return                  A new IData document with string values encoded.
      */
     public static IData encode(IData document, String attributePrefix) {
-        return IDataHelper.transform(document, new Encoder(attributePrefix));
+        return Transformer.transform(document, new Encoder(attributePrefix));
     }
 
     /**
@@ -169,7 +170,7 @@ public final class XMLHelper {
      * @return          A new IData document with string values decoded.
      */
     public static IData decode(IData document) {
-        return IDataHelper.transform(document, new Decoder());
+        return Transformer.transform(document, new Decoder());
     }
 
     /**

@@ -43,12 +43,12 @@ public class Prefixer extends Transformer<String, String> {
     /**
      * Creates a new Prefixer object.
      *
+     * @param mode          The transformer mode to use.
      * @param prefix        The prefix to be added to string elements.
      * @param force         Whether to add the prefix even when a string is already prefixed with it.
-     * @param mode          The transformer mode to use.
      * @param recurse       Whether to recursively transform child IData documents and IData[] document lists.
      */
-    public Prefixer(String prefix, boolean force, TransformerMode mode, boolean recurse) {
+    public Prefixer(TransformerMode mode, String prefix, boolean force, boolean recurse) {
         super(String.class, String.class, mode, recurse, true, true, true);
         this.prefix = prefix;
         this.force = force;

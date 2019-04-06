@@ -44,31 +44,42 @@ public class Capitalizer extends Transformer<String, String> {
      * @param firstWordOnly Whether only the first word should be capitalized, or all words.
      */
     public Capitalizer(boolean firstWordOnly) {
-        this(firstWordOnly, TransformerMode.VALUES);
+        this(null, firstWordOnly);
     }
 
     /**
      * Creates a new Capitalizer object.
      *
-     * @param firstWordOnly Whether only the first word should be capitalized, or all words.
      * @param mode          The transformer mode to use.
+     * @param firstWordOnly Whether only the first word should be capitalized, or all words.
      */
-    public Capitalizer(boolean firstWordOnly, TransformerMode mode) {
-        this(firstWordOnly, mode, true, true, true, true);
+    public Capitalizer(TransformerMode mode, boolean firstWordOnly) {
+        this(mode, firstWordOnly, true);
     }
 
     /**
      * Creates a new Capitalizer object.
      *
-     * @param firstWordOnly         Whether only the first word should be capitalized, or all words.
+     * @param mode          The transformer mode to use.
+     * @param firstWordOnly Whether only the first word should be capitalized, or all words.
+     * @param recurse       Whether to recursively transform child IData documents and IData[] document lists.
+     */
+    public Capitalizer(TransformerMode mode, boolean firstWordOnly, boolean recurse) {
+        this(mode, firstWordOnly, recurse, true, true, true);
+    }
+
+    /**
+     * Creates a new Capitalizer object.
+     *
      * @param mode                  The transformer mode to use.
+     * @param firstWordOnly         Whether only the first word should be capitalized, or all words.
      * @param recurse               Whether to recursively transform child IData documents and IData[] document lists.
      * @param includeNulls          Whether null values should be included in transformed IData documents and IData[]
      *                              document lists.
      * @param includeEmptyDocuments Whether empty IData documents should be included in the transformation.
      * @param includeEmptyArrays    Whether empty arrays should be included in the transformation.
      */
-    public Capitalizer(boolean firstWordOnly, TransformerMode mode, boolean recurse, boolean includeNulls, boolean includeEmptyDocuments, boolean includeEmptyArrays) {
+    public Capitalizer(TransformerMode mode, boolean firstWordOnly, boolean recurse, boolean includeNulls, boolean includeEmptyDocuments, boolean includeEmptyArrays) {
         super(String.class, String.class, mode, recurse, includeNulls, includeEmptyDocuments, includeEmptyArrays);
         this.firstWordOnly = firstWordOnly;
     }

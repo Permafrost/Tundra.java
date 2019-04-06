@@ -26,6 +26,7 @@ package permafrost.tundra.time;
 
 import com.wm.data.IData;
 import permafrost.tundra.data.IDataHelper;
+import permafrost.tundra.data.transform.Transformer;
 import permafrost.tundra.data.transform.time.DurationFormatter;
 import permafrost.tundra.lang.ArrayHelper;
 import permafrost.tundra.math.BigDecimalHelper;
@@ -391,7 +392,7 @@ public final class DurationHelper {
      * @return              The duration strings reformatted according to the outPattern.
      */
     public static IData format(IData document, DurationPattern inPattern, DurationPattern outPattern, Date instant) {
-        return IDataHelper.transform(document, new DurationFormatter(inPattern, outPattern, instant, true));
+        return Transformer.transform(document, new DurationFormatter(inPattern, outPattern, instant, true));
     }
 
     /**
@@ -405,7 +406,7 @@ public final class DurationHelper {
      * @return              The duration strings reformatted according to the outPattern.
      */
     public static IData format(IData document, DurationPattern[] inPatterns, DurationPattern outPattern, Date instant) {
-        return IDataHelper.transform(document, new DurationFormatter(inPatterns, outPattern, instant, true));
+        return Transformer.transform(document, new DurationFormatter(inPatterns, outPattern, instant, true));
     }
 
     /**
