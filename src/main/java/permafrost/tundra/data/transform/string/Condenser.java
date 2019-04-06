@@ -29,16 +29,26 @@ import permafrost.tundra.data.transform.TransformerMode;
 import permafrost.tundra.lang.StringHelper;
 
 /**
- * Squeezes whitespace from elements in an IData document or IData[] document list.
+ * Replaces runs of whitespace with a single space in String elements in an IData document or IData[] document list.
  */
-public class Condenser extends Transformer<Object, Object> {
+public class Condenser extends Transformer<String, String> {
     /**
-     * Creates a new Squeezer object.
+     * Creates a new Condenser object which condenses values in IData and IData[] objects.
      *
      * @param recurse   Whether to recursively transform child IData documents and IData[] document lists.
      */
     public Condenser(boolean recurse) {
-        super(Object.class, Object.class, TransformerMode.VALUES, recurse, false, false, false);
+        this(null, recurse);
+    }
+
+    /**
+     * Creates a new Condenser object.
+     *
+     * @param mode      The transformer mode to use.
+     * @param recurse   Whether to recursively transform child IData documents and IData[] document lists.
+     */
+    public Condenser(TransformerMode mode, boolean recurse) {
+        super(String.class, String.class, mode, recurse, false, false, false);
         normalizeTransformedArrays = true;
         normalizeTransformedTables = true;
     }
@@ -63,10 +73,7 @@ public class Condenser extends Transformer<Object, Object> {
      * @return      The transformed value.
      */
     @Override
-    protected Object transformValue(String key, Object value) {
-        if (value instanceof String) {
-            value = StringHelper.condense((String)value);
-        }
-        return value;
+    protected String transformValue(String key, String value) {
+        return StringHelper.condense(value);
     }
 }

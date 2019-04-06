@@ -1995,52 +1995,6 @@ public final class IDataHelper {
     }
 
     /**
-     * Returns a new IData with string values condensed such that runs of one or more whitespace characters are
-     * replaced with a single space then trimmed of leading and trailing whitespace.
-     *
-     * @param document  An IData document to be condensed.
-     * @return          A new IData document that is the given IData condensed.
-     */
-    public static IData condense(IData document) {
-        return condense(document, true);
-    }
-
-    /**
-     * Returns a new IData with string values condensed such that runs of one or more whitespace characters are
-     * replaced with a single space then trimmed of leading and trailing whitespace.
-     *
-     * @param document  An IData document to be condensed.
-     * @param recurse   Whether to also condense embedded IData and IData[] objects.
-     * @return          A new IData document that is the given IData condensed.
-     */
-    public static IData condense(IData document, boolean recurse) {
-        return transform(document, new Condenser(recurse));
-    }
-
-    /**
-     * Returns a new IData[] with string values condensed such that runs of one or more whitespace characters are
-     * replaced with a single space then trimmed of leading and trailing whitespace.
-     *
-     * @param array     An IData[] to be condensed.
-     * @return          A new IData[] that is the given IData[] condensed.
-     */
-    public static IData[] condense(IData[] array) {
-        return condense(array, true);
-    }
-
-    /**
-     * Returns a new IData[] with string values condensed such that runs of one or more whitespace characters are
-     * replaced with a single space then trimmed of leading and trailing whitespace.
-     *
-     * @param array     An IData[] to be condensed.
-     * @param recurse   Whether to also condense embedded IData and IData[] objects.
-     * @return          A new IData[] that is the given IData[] condensed.
-     */
-    public static IData[] condense(IData[] array, boolean recurse) {
-        return transform(array, new Condenser(recurse));
-    }
-
-    /**
      * Trims all string values, then converts empty strings to nulls, then compacts by removing all null values.
      *
      * @param document  An IData document to be squeezed.

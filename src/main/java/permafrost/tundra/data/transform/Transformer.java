@@ -323,4 +323,26 @@ public abstract class Transformer<V, T> {
             return null;
         }
     }
+
+    /**
+     * Transforms the given IData document using the given transformer.
+     *
+     * @param document      The IData document to be transformed.
+     * @param transformer   The Transformer object to use to transform the given IData document.
+     * @return              The resulting transformed IData document.
+     */
+    public static IData transform(IData document, Transformer transformer) {
+        return transformer.transform(document);
+    }
+
+    /**
+     * Transforms the given IData[] document list using the given transformer.
+     *
+     * @param array         The IData[] document list to be transformed.
+     * @param transformer   The Transformer object to use to transform the given IData[] document list.
+     * @return              The resulting transformed IData[] document list.
+     */
+    public static IData[] transform(IData[] array, Transformer transformer) {
+        return transformer.transform(array);
+    }
 }
