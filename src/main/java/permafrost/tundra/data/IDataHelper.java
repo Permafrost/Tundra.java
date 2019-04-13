@@ -3851,13 +3851,9 @@ public final class IDataHelper {
                 Object value = ic.getValue();
                 if (recurse) {
                     if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
-                        IData[] array = toIDataArray(value);
-                        for (int j = 0; j < array.length; j++) {
-                            array[j] = sort(array[j], recurse);
-                        }
-                        value = array;
+                        value = sort(toIDataArray(value), recurse, descending);
                     } else if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
-                        value = sort(toIData(value), recurse);
+                        value = sort(toIData(value), recurse, descending);
                     }
                 }
                 oc.insertAfter(keys[i], value);
@@ -3866,6 +3862,27 @@ public final class IDataHelper {
 
         ic.destroy();
         oc.destroy();
+
+        return output;
+    }
+
+    /**
+     * Sorts the each IData document in the given array by its keys in natural ascending or descending order.
+     *
+     * @param array         An array whose IData document items are to be sorted by its keys.
+     * @param recurse       A boolean which when true will also recursively sort nested IData document and IData[]
+     *                      document lists.
+     * @param descending    Whether to sort in descending or ascending order.
+     * @return              A new array containing IData documents with sorted keys.
+     */
+    public static IData[] sort(IData[] array, boolean recurse, boolean descending) {
+        if (array == null || array.length == 0) return array;
+
+        IData[] output = new IData[array.length];
+
+        for (int i = 0; i < array.length; i++) {
+            output[i] = IDataHelper.sort(array[i], recurse, descending);
+        }
 
         return output;
     }
