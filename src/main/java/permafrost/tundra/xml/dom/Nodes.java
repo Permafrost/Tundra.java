@@ -121,6 +121,7 @@ public class Nodes extends AbstractList<Node> implements NodeList {
      * @param namespaceContext  The namespace context to use for prefixing qualified names.
      * @param recurse           If true, child nodes will be recursed and returned also.
      * @return                  An IData[] representation of this object.
+     * @throws ServiceException If an error occurs.
      */
     public IData[] reflect(NamespaceContext namespaceContext, boolean recurse) throws ServiceException {
         return NodeHelper.reflect(this, namespaceContext, recurse);

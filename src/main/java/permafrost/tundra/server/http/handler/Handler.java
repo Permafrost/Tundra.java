@@ -52,6 +52,7 @@ public abstract class Handler {
      *
      * @param context           The HTTP request context.
      * @param handlers          The queue of subsequent handlers to be called to handle the request.
+     * @return                  True if the request was processed.
      * @throws IOException      If an IO error occurs.
      * @throws AccessException  If a security error occurs.
      */

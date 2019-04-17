@@ -77,7 +77,18 @@ public class ServiceEstimator extends ConcurrentEstimator {
         protected long successes = 0, failures = 0;
 
         /**
-         * Create a new Results object.
+         * Constructs a new Results object.
+         *
+         * @param subject    The subject or description of what was estimated.
+         * @param unit       The unit of measurement related to the measured samples.
+         * @param count      The number of samples measured.
+         * @param successes  The number of successful invocations (those which did not throw an exception).
+         * @param failures   The number of failed invocations (those which did throw an exception).
+         * @param mean       The measured mean value.
+         * @param sq         The measured square value.
+         * @param minimum    The measured minimum value.
+         * @param maximum    The measured maximum value.
+         * @param cumulative The measured cumulative value.
          */
         public Results(String subject, String unit, long count, long successes, long failures, double mean, double sq, double minimum, double maximum, double cumulative) {
             super(subject, unit, count, mean, sq, minimum, maximum, cumulative);

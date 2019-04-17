@@ -52,7 +52,6 @@ public class ServerThreadPoolExecutor extends ThreadPoolExecutor {
      * @param threadPriority   The priority used for each thread created.
      * @param workQueue        The queue to use for storing submitted jobs prior to their execution by a thread.
      * @param handler          The policy used to handle when a submitted job is rejected due to resource exhaustion.
-     * @param threadPriority   The priority each created thread will have.
      */
     public ServerThreadPoolExecutor(int threadPoolSize, String threadNamePrefix, String threadNameSuffix, int threadPriority, BlockingQueue<Runnable> workQueue, RejectedExecutionHandler handler) {
         this(threadPoolSize, threadNamePrefix, threadNameSuffix, threadPriority, false, InvokeState.getCurrentState(), workQueue, handler);
@@ -69,7 +68,6 @@ public class ServerThreadPoolExecutor extends ThreadPoolExecutor {
      * @param invokeState      The invoke state to clone for each thread created.
      * @param workQueue        The queue to use for storing submitted jobs prior to their execution by a thread.
      * @param handler          The policy used to handle when a submitted job is rejected due to resource exhaustion.
-     * @param threadPriority   The priority each created thread will have.
      */
     public ServerThreadPoolExecutor(int threadPoolSize, String threadNamePrefix, String threadNameSuffix, int threadPriority, boolean threadDaemon, InvokeState invokeState, BlockingQueue<Runnable> workQueue, RejectedExecutionHandler handler) {
         super(threadPoolSize, threadPoolSize, DEFAULT_THREAD_KEEP_ALIVE_TIMEOUT_SECONDS, TimeUnit.SECONDS, workQueue, new ServerThreadFactory(threadNamePrefix, threadNameSuffix, threadPriority, threadDaemon, invokeState), handler);
