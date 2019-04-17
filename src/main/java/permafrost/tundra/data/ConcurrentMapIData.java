@@ -56,7 +56,7 @@ public class ConcurrentMapIData<K, V> extends AbstractConcurrentMap<K, V> implem
     }
 
     /**
-     * Constructs a new unsorted ConcurrentMapIData.
+     * Constructs a new optionally sorted ConcurrentMapIData.
      *
      * @param sorted    Whether to sort by keys.
      */
