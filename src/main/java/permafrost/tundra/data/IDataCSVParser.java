@@ -122,7 +122,9 @@ public class IDataCSVParser extends IDataParser {
      * Construct a new IDataCSVCoder.
      *
      * @param delimiter   The delimiter character to use.
+     * @param escape      The escape character to use.
      * @param quote       The quote character to use.
+     * @param quoteMode   The quote mode to use.
      * @param contentType The content type to use.
      * @param hasHeader   Whether to use a header row.
      * @param columns     The column names to use.
@@ -151,7 +153,9 @@ public class IDataCSVParser extends IDataParser {
      * Construct a new IDataCSVCoder.
      *
      * @param delimiter   The delimiter character to use.
+     * @param escape      The escape character to use.
      * @param quote       The quote character to use.
+     * @param quoteMode   The quote mode to use.
      * @param contentType The content type to use.
      * @param hasHeader   Whether to use a header row.
      * @param columns     The column names to use.
@@ -270,8 +274,10 @@ public class IDataCSVParser extends IDataParser {
     /**
      * Flips the given map.
      *
-     * @param map  The map to flip.
-     * @return      The flipped map.
+     * @param map The map to flip.
+     * @param <K> The key class.
+     * @param <V> The value class.
+     * @return    The flipped map.
      */
     protected static <K, V> Map<V, K> flip(Map<K, V> map) {
         if (map == null) return null;
@@ -303,8 +309,9 @@ public class IDataCSVParser extends IDataParser {
     /**
      * Returns the first character of the given String.
      *
-     * @param character The String to retrieve the delimiter character from.
-     * @return          The first character of the given String.
+     * @param character    The String to retrieve the delimiter character from.
+     * @param defaultValue The default value returned if the given character is null or has zero length.
+     * @return             The first character of the given String.
      */
     protected static Character toCharacter(String character, Character defaultValue) {
         if (character == null || character.length() == 0) return defaultValue;
