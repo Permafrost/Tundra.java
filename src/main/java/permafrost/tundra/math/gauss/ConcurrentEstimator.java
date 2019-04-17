@@ -71,7 +71,8 @@ public class ConcurrentEstimator extends Estimator {
     /**
      * Constructs a new estimator object.
      *
-     * @param unit The unit of measurement related to the measured samples.
+     * @param subject   The subject or description of what is being estimated.
+     * @param unit      The unit of measurement related to the measured samples.
      */
     public ConcurrentEstimator(String subject, String unit) {
         super(subject, unit);
