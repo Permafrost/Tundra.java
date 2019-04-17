@@ -221,6 +221,7 @@ public final class IDataHelper {
      *
      * @param document   An IData document.
      * @param valueClass The class that the returned values are instances of.
+     * @param <V>        The class that the returned values are instances of.
      * @return           The list of top-level values that are instances of the given class from the given IData
      *                   document.
      */
@@ -244,6 +245,7 @@ public final class IDataHelper {
      *
      * @param document   An IData document.
      * @param valueClass The class that the returned values are instances of.
+     * @param <V>        The class that the returned values are instances of.
      * @return           The list of top-level values that are instances of the given class from the given IData
      *                   document.
      */
@@ -2977,6 +2979,7 @@ public final class IDataHelper {
      * @param key               The key literal to be added.
      * @param value             The value to be associated with the given key. If null, no change is made to the cursor.
      * @param klass             The required class of the value; the value will be coerced to this class if possible.
+     * @param <T>               The required class of the value; the value will be coerced to this class if possible.
      */
     public static <T> void put(IDataCursor cursor, String key, Object value, Class<T> klass) {
         put(cursor, key, value, klass, true);
@@ -2991,6 +2994,7 @@ public final class IDataHelper {
      * @param klass             The required class of the value; the value will be coerced to this class if possible.
      * @param includeNullValue  If false and the given value is null, no change is made to the cursor. In all other
      *                          cases the given value will be associated with the given key.
+     * @param <T>               The required class of the value; the value will be coerced to this class if possible.
      */
     public static <T> void put(IDataCursor cursor, String key, Object value, Class<T> klass, boolean includeNullValue) {
         put(cursor, key, value, klass, includeNullValue, true);
@@ -3007,6 +3011,7 @@ public final class IDataHelper {
      *                          cases the given value will be associated with the given key.
      * @param includeEmptyValue If false and the given value is an empty array or empty string, no change is made to the
      *                          cursor. In all other cases the given value will be associated with the given key.
+     * @param <T>               The required class of the value; the value will be coerced to this class if possible.
      */
     public static <T> void put(IDataCursor cursor, String key, Object value, Class<T> klass, boolean includeNullValue, boolean includeEmptyValue) {
         put(cursor, key, value, klass, includeNullValue, includeEmptyValue, true);
@@ -3025,6 +3030,7 @@ public final class IDataHelper {
      *                          cursor. In all other cases the given value will be associated with the given key.
      * @param replace           If a value is already associated with the given key, replace it, rather than add a new
      *                          instance of the key.
+     * @param <T>               The required class of the value; the value will be coerced to this class if possible.
      */
     public static <T> void put(IDataCursor cursor, String key, Object value, Class<T> klass, boolean includeNullValue, boolean includeEmptyValue, boolean replace) {
         put(cursor, key, ObjectHelper.convert(value, klass, false), includeNullValue, includeEmptyValue, replace);
@@ -3033,9 +3039,10 @@ public final class IDataHelper {
     /**
      * Associates the given key with the given value in an IDataCursor.
      *
-     * @param cursor    The IDataCursor to add the key value association to.
-     * @param key       The key literal to be added.
-     * @param value     The value to be associated with the given key.
+     * @param cursor        The IDataCursor to add the key value association to.
+     * @param key           The key literal to be added.
+     * @param value         The value to be associated with the given key.
+     * @param defaultValue  The default value to be used if the given value is null.
      */
     public static void putOrDefault(IDataCursor cursor, String key, Object value, Object defaultValue) {
         put(cursor, key, value == null ? defaultValue : value, true, true);
@@ -3044,9 +3051,12 @@ public final class IDataHelper {
     /**
      * Associates the given key with the given value in an IDataCursor.
      *
-     * @param cursor    The IDataCursor to add the key value association to.
-     * @param key       The key literal to be added.
-     * @param value     The value to be associated with the given key.
+     * @param cursor        The IDataCursor to add the key value association to.
+     * @param key           The key literal to be added.
+     * @param value         The value to be associated with the given key.
+     * @param klass         The required class of the value; the value will be coerced to this class if possible.
+     * @param defaultValue  The default value to be used if the given value is null.
+     * @param <T>           The required class of the value; the value will be coerced to this class if possible.
      */
     public static <T> void putOrDefault(IDataCursor cursor, String key, Object value, Class<T> klass, T defaultValue) {
         put(cursor, key, value == null ? defaultValue : value, klass, true, true, true);
