@@ -53,6 +53,15 @@ public class Estimator {
 
         /**
          * Constructs a new Results object.
+         *
+         * @param subject    The subject or description of what was estimated.
+         * @param unit       The unit of measurement related to the measured samples.
+         * @param count      The number of samples measured.
+         * @param mean       The measured mean value.
+         * @param sq         The measured square value.
+         * @param minimum    The measured minimum value.
+         * @param maximum    The measured maximum value.
+         * @param cumulative The measured cumulative value.
          */
         public Results(String subject, String unit, long count, double mean, double sq, double minimum, double maximum, double cumulative) {
             this.subject = subject;
