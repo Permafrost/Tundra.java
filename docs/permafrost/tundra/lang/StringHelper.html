@@ -73,14 +73,14 @@ var activeTableTab = "activeTableTab";
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
-<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
-<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
 </div>
@@ -116,54 +116,6 @@ extends java.lang.Object</pre>
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
-<!-- =========== FIELD SUMMARY =========== -->
-<ul class="blockList">
-<li class="blockList"><a name="field.summary">
-<!--   -->
-</a>
-<h3>Field Summary</h3>
-<table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Field Summary table, listing fields, and an explanation">
-<caption><span>Fields</span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier and Type</th>
-<th class="colLast" scope="col">Field and Description</th>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private static char</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/lang/StringHelper.html#JAVA_IDENTIFIER_ILLEGAL_CHARACTER_REPLACEMENT">JAVA_IDENTIFIER_ILLEGAL_CHARACTER_REPLACEMENT</a></span></code>
-<div class="block">The character used to replace illegal characters when converting a string to a legal Java identifier.</div>
-</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>private static java.util.regex.Pattern</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/lang/StringHelper.html#WHITESPACE_PATTERN">WHITESPACE_PATTERN</a></span></code>
-<div class="block">The pattern used to find runs of one or more whitespace characters in a string.</div>
-</td>
-</tr>
-</table>
-</li>
-</ul>
-<!-- ======== CONSTRUCTOR SUMMARY ======== -->
-<ul class="blockList">
-<li class="blockList"><a name="constructor.summary">
-<!--   -->
-</a>
-<h3>Constructor Summary</h3>
-<table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Constructor Summary table, listing constructors, and an explanation">
-<caption><span>Constructors</span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier</th>
-<th class="colLast" scope="col">Constructor and Description</th>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private </code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/lang/StringHelper.html#StringHelper--">StringHelper</a></span>()</code>
-<div class="block">Disallow instantiation of this class.</div>
-</td>
-</tr>
-</table>
-</li>
-</ul>
 <!-- ========== METHOD SUMMARY =========== -->
 <ul class="blockList">
 <li class="blockList"><a name="method.summary">
@@ -998,56 +950,6 @@ extends java.lang.Object</pre>
 <div class="details">
 <ul class="blockList">
 <li class="blockList">
-<!-- ============ FIELD DETAIL =========== -->
-<ul class="blockList">
-<li class="blockList"><a name="field.detail">
-<!--   -->
-</a>
-<h3>Field Detail</h3>
-<a name="WHITESPACE_PATTERN">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>WHITESPACE_PATTERN</h4>
-<pre>private static final&nbsp;java.util.regex.Pattern WHITESPACE_PATTERN</pre>
-<div class="block">The pattern used to find runs of one or more whitespace characters in a string.</div>
-</li>
-</ul>
-<a name="JAVA_IDENTIFIER_ILLEGAL_CHARACTER_REPLACEMENT">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>JAVA_IDENTIFIER_ILLEGAL_CHARACTER_REPLACEMENT</h4>
-<pre>private static final&nbsp;char JAVA_IDENTIFIER_ILLEGAL_CHARACTER_REPLACEMENT</pre>
-<div class="block">The character used to replace illegal characters when converting a string to a legal Java identifier.</div>
-<dl>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../constant-values.html#permafrost.tundra.lang.StringHelper.JAVA_IDENTIFIER_ILLEGAL_CHARACTER_REPLACEMENT">Constant Field Values</a></dd>
-</dl>
-</li>
-</ul>
-</li>
-</ul>
-<!-- ========= CONSTRUCTOR DETAIL ======== -->
-<ul class="blockList">
-<li class="blockList"><a name="constructor.detail">
-<!--   -->
-</a>
-<h3>Constructor Detail</h3>
-<a name="StringHelper--">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>StringHelper</h4>
-<pre>private&nbsp;StringHelper()</pre>
-<div class="block">Disallow instantiation of this class.</div>
-</li>
-</ul>
-</li>
-</ul>
 <!-- ============ METHOD DETAIL ========== -->
 <ul class="blockList">
 <li class="blockList"><a name="method.detail">
@@ -3072,7 +2974,7 @@ extends java.lang.Object</pre>
 <div class="block">Removes all ISO control characters from the given string.
 
  A character is considered to be an ISO control character if its code is in the range ' ' through ''
- or in the range '' through ''.</div>
+ or in the range '' through '?'.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>input</code> - The string to remove control characters from.</dd>
@@ -3091,7 +2993,7 @@ extends java.lang.Object</pre>
 <div class="block">Removes all ISO control characters from all string values in the given IData document.
 
  A character is considered to be an ISO control character if its code is in the range ' ' through ''
- or in the range '' through ''.</div>
+ or in the range '' through '?'.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>document</code> - The IData document to process.</dd>
@@ -3110,7 +3012,7 @@ extends java.lang.Object</pre>
 <div class="block">Removes all ISO control characters from all string values in the given IData document.
 
  A character is considered to be an ISO control character if its code is in the range ' ' through ''
- or in the range '' through ''.</div>
+ or in the range '' through '?'.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>array</code> - The IData[] document list to process.</dd>
@@ -3172,14 +3074,14 @@ extends java.lang.Object</pre>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
-<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
-<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
 </div>

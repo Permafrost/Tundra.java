@@ -48,7 +48,7 @@ var activeTableTab = "activeTableTab";
 <div class="subNav">
 <ul class="navList">
 <li><a href="../../../../../permafrost/tundra/server/http/handler/Kernel.html" title="class in permafrost.tundra.server.http.handler"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li><a href="../../../../../permafrost/tundra/server/http/handler/Logger.Holder.html" title="class in permafrost.tundra.server.http.handler"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../../../permafrost/tundra/server/http/handler/Manager.html" title="class in permafrost.tundra.server.http.handler"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../../index.html?permafrost/tundra/server/http/handler/Logger.html" target="_top">Frames</a></li>
@@ -72,15 +72,15 @@ var activeTableTab = "activeTableTab";
 <div>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
-<li><a href="#nested.class.summary">Nested</a>&nbsp;|&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
 <li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
-<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
-<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
 </div>
@@ -130,27 +130,6 @@ extends <a href="../../../../../permafrost/tundra/server/http/handler/StartableH
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
-<!-- ======== NESTED CLASS SUMMARY ======== -->
-<ul class="blockList">
-<li class="blockList"><a name="nested.class.summary">
-<!--   -->
-</a>
-<h3>Nested Class Summary</h3>
-<table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Nested Class Summary table, listing nested classes, and an explanation">
-<caption><span>Nested Classes</span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier and Type</th>
-<th class="colLast" scope="col">Class and Description</th>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private static class&nbsp;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/server/http/handler/Logger.Holder.html" title="class in permafrost.tundra.server.http.handler">Logger.Holder</a></span></code>
-<div class="block">Initialization on demand holder idiom.</div>
-</td>
-</tr>
-</table>
-</li>
-</ul>
 <!-- =========== FIELD SUMMARY =========== -->
 <ul class="blockList">
 <li class="blockList"><a name="field.summary">
@@ -164,21 +143,9 @@ extends <a href="../../../../../permafrost/tundra/server/http/handler/StartableH
 <th class="colLast" scope="col">Field and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>private javax.json.JsonWriterFactory</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/server/http/handler/Logger.html#jsonWriterFactory">jsonWriterFactory</a></span></code>
-<div class="block">Factory for created JSON writers.</div>
-</td>
-</tr>
-<tr class="rowColor">
 <td class="colFirst"><code>protected <a href="../../../../../permafrost/tundra/server/ConcurrentLogWriter.html" title="class in permafrost.tundra.server">ConcurrentLogWriter</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/server/http/handler/Logger.html#logger">logger</a></span></code>
 <div class="block">The logger to use when logging requests.</div>
-</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private javax.json.spi.JsonProvider</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/server/http/handler/Logger.html#provider">provider</a></span></code>
-<div class="block">Implementation class used for JSON parsing and emitting.</div>
 </td>
 </tr>
 </table>
@@ -189,27 +156,6 @@ extends <a href="../../../../../permafrost/tundra/server/http/handler/StartableH
 <h3>Fields inherited from class&nbsp;permafrost.tundra.server.http.handler.<a href="../../../../../permafrost/tundra/server/http/handler/StartableHandler.html" title="class in permafrost.tundra.server.http.handler">StartableHandler</a></h3>
 <code><a href="../../../../../permafrost/tundra/server/http/handler/StartableHandler.html#started">started</a></code></li>
 </ul>
-</li>
-</ul>
-<!-- ======== CONSTRUCTOR SUMMARY ======== -->
-<ul class="blockList">
-<li class="blockList"><a name="constructor.summary">
-<!--   -->
-</a>
-<h3>Constructor Summary</h3>
-<table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Constructor Summary table, listing constructors, and an explanation">
-<caption><span>Constructors</span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier</th>
-<th class="colLast" scope="col">Constructor and Description</th>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private </code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/server/http/handler/Logger.html#Logger--">Logger</a></span>()</code>
-<div class="block">Creates a new Logger.</div>
-</td>
-</tr>
-</table>
 </li>
 </ul>
 <!-- ========== METHOD SUMMARY =========== -->
@@ -317,49 +263,11 @@ extends <a href="../../../../../permafrost/tundra/server/http/handler/StartableH
 <a name="logger">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>logger</h4>
 <pre>protected&nbsp;<a href="../../../../../permafrost/tundra/server/ConcurrentLogWriter.html" title="class in permafrost.tundra.server">ConcurrentLogWriter</a> logger</pre>
 <div class="block">The logger to use when logging requests.</div>
-</li>
-</ul>
-<a name="jsonWriterFactory">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>jsonWriterFactory</h4>
-<pre>private&nbsp;javax.json.JsonWriterFactory jsonWriterFactory</pre>
-<div class="block">Factory for created JSON writers.</div>
-</li>
-</ul>
-<a name="provider">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>provider</h4>
-<pre>private&nbsp;javax.json.spi.JsonProvider provider</pre>
-<div class="block">Implementation class used for JSON parsing and emitting.</div>
-</li>
-</ul>
-</li>
-</ul>
-<!-- ========= CONSTRUCTOR DETAIL ======== -->
-<ul class="blockList">
-<li class="blockList"><a name="constructor.detail">
-<!--   -->
-</a>
-<h3>Constructor Detail</h3>
-<a name="Logger--">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>Logger</h4>
-<pre>private&nbsp;Logger()</pre>
-<div class="block">Creates a new Logger.</div>
 </li>
 </ul>
 </li>
@@ -541,7 +449,7 @@ extends <a href="../../../../../permafrost/tundra/server/http/handler/StartableH
 <div class="subNav">
 <ul class="navList">
 <li><a href="../../../../../permafrost/tundra/server/http/handler/Kernel.html" title="class in permafrost.tundra.server.http.handler"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li><a href="../../../../../permafrost/tundra/server/http/handler/Logger.Holder.html" title="class in permafrost.tundra.server.http.handler"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../../../permafrost/tundra/server/http/handler/Manager.html" title="class in permafrost.tundra.server.http.handler"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../../index.html?permafrost/tundra/server/http/handler/Logger.html" target="_top">Frames</a></li>
@@ -565,15 +473,15 @@ extends <a href="../../../../../permafrost/tundra/server/http/handler/StartableH
 <div>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
-<li><a href="#nested.class.summary">Nested</a>&nbsp;|&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
 <li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
-<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
-<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
 </div>

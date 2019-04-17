@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":9,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10};
+var methods = {"i0":10,"i1":9,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -48,7 +48,7 @@ var activeTableTab = "activeTableTab";
 <div class="subNav">
 <ul class="navList">
 <li><a href="../../../../../permafrost/tundra/net/http/route/HTTPRouteList.html" title="class in permafrost.tundra.net.http.route"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li><a href="../../../../../permafrost/tundra/net/http/route/HTTPRouter.Holder.html" title="class in permafrost.tundra.net.http.route"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../../../permafrost/tundra/net/http/route/HTTPRouteTable.html" title="class in permafrost.tundra.net.http.route"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../../index.html?permafrost/tundra/net/http/route/HTTPRouter.html" target="_top">Frames</a></li>
@@ -72,15 +72,15 @@ var activeTableTab = "activeTableTab";
 <div>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
-<li><a href="#nested.class.summary">Nested</a>&nbsp;|&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
 <li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
-<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
-<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
 </div>
@@ -121,27 +121,6 @@ implements com.wm.app.b2b.server.HTTPHandler</pre>
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
-<!-- ======== NESTED CLASS SUMMARY ======== -->
-<ul class="blockList">
-<li class="blockList"><a name="nested.class.summary">
-<!--   -->
-</a>
-<h3>Nested Class Summary</h3>
-<table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Nested Class Summary table, listing nested classes, and an explanation">
-<caption><span>Nested Classes</span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier and Type</th>
-<th class="colLast" scope="col">Class and Description</th>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private static class&nbsp;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/net/http/route/HTTPRouter.Holder.html" title="class in permafrost.tundra.net.http.route">HTTPRouter.Holder</a></span></code>
-<div class="block">Initialization on demand holder idiom.</div>
-</td>
-</tr>
-</table>
-</li>
-</ul>
 <!-- =========== FIELD SUMMARY =========== -->
 <ul class="blockList">
 <li class="blockList"><a name="field.summary">
@@ -155,21 +134,9 @@ implements com.wm.app.b2b.server.HTTPHandler</pre>
 <th class="colLast" scope="col">Field and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>private static com.wm.app.b2b.server.HTTPDocHandler</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/net/http/route/HTTPRouter.html#DEFAULT_DOCUMENT_HANDLER">DEFAULT_DOCUMENT_HANDLER</a></span></code>
-<div class="block">The handler used to serve documents.</div>
-</td>
-</tr>
-<tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/net/http/route/HTTPRouter.html#DEFAULT_INVOKE_DIRECTIVE">DEFAULT_INVOKE_DIRECTIVE</a></span></code>
 <div class="block">The default directive used for invoking services.</div>
-</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private static com.wm.app.b2b.server.HTTPInvokeHandler</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/net/http/route/HTTPRouter.html#DEFAULT_INVOKE_HANDLER">DEFAULT_INVOKE_HANDLER</a></span></code>
-<div class="block">The handler used to invoke services.</div>
 </td>
 </tr>
 <tr class="rowColor">
@@ -180,37 +147,6 @@ implements com.wm.app.b2b.server.HTTPHandler</pre>
 </td>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>private java.lang.reflect.Method</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/net/http/route/HTTPRouter.html#overwriteReqUrlMethod">overwriteReqUrlMethod</a></span></code>
-<div class="block">The method to use to overwrite the request URL on the current invoke state HTTP headers.</div>
-</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>private static java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/net/http/route/HTTPRouter.html#PROTOCOL_REQUEST_HEADER_PROPERTY">PROTOCOL_REQUEST_HEADER_PROPERTY</a></span></code>
-<div class="block">The ProtocolInfoIf property for the request header.</div>
-</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private java.lang.reflect.Field</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/net/http/route/HTTPRouter.html#requestUrlField">requestUrlField</a></span></code>
-<div class="block">The field to use to overwrite the request URL on the current invoke state HTTP headers, if the above method
- does not exist.</div>
-</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>private static java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/net/http/route/HTTPRouter.html#RESPONSE_DURATION_HEADER">RESPONSE_DURATION_HEADER</a></span></code>
-<div class="block">The header used to return the response time in milliseconds.</div>
-</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private <a href="../../../../../permafrost/tundra/net/http/route/HTTPRouteTable.html" title="class in permafrost.tundra.net.http.route">HTTPRouteTable</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/net/http/route/HTTPRouter.html#routes">routes</a></span></code>
-<div class="block">The route table, which holds routing instructions for different URIs.</div>
-</td>
-</tr>
-<tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/net/http/route/HTTPRouter.html#WATT_SERVER_INVOKE_DIRECTIVE">WATT_SERVER_INVOKE_DIRECTIVE</a></span></code>
 <div class="block">The Integration Server configuration key for a custom invoke directive.</div>
@@ -224,27 +160,6 @@ implements com.wm.app.b2b.server.HTTPHandler</pre>
 <h3>Fields inherited from interface&nbsp;com.wm.app.b2b.server.HTTPHandler</h3>
 <code>WATT_SERVER_NOACCESSURL, WATT_SERVER_NOOBJECTURL</code></li>
 </ul>
-</li>
-</ul>
-<!-- ======== CONSTRUCTOR SUMMARY ======== -->
-<ul class="blockList">
-<li class="blockList"><a name="constructor.summary">
-<!--   -->
-</a>
-<h3>Constructor Summary</h3>
-<table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Constructor Summary table, listing constructors, and an explanation">
-<caption><span>Constructors</span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier</th>
-<th class="colLast" scope="col">Constructor and Description</th>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private </code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/net/http/route/HTTPRouter.html#HTTPRouter--">HTTPRouter</a></span>()</code>
-<div class="block">Disallow instantiation of this class.</div>
-</td>
-</tr>
-</table>
 </li>
 </ul>
 <!-- ========== METHOD SUMMARY =========== -->
@@ -311,19 +226,13 @@ implements com.wm.app.b2b.server.HTTPHandler</pre>
 </td>
 </tr>
 <tr id="i8" class="altColor">
-<td class="colFirst"><code>private java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/net/http/route/HTTPRouter.html#setRequestURL-java.lang.String-">setRequestURL</a></span>(java.lang.String&nbsp;newRequestURL)</code>
-<div class="block">Sets the requestUrl field on the HttpHeader object in the current InvokeState.</div>
-</td>
-</tr>
-<tr id="i9" class="rowColor">
 <td class="colFirst"><code>protected void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/net/http/route/HTTPRouter.html#unregister-java.util.Collection-">unregister</a></span>(java.util.Collection&lt;java.lang.String&gt;&nbsp;directives)</code>
 <div class="block">Unregisters this object as a handler of the given directives from the Integration Server HTTP request
  dispatcher.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>protected void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/net/http/route/HTTPRouter.html#unregister-java.lang.String-">unregister</a></span>(java.lang.String&nbsp;directive)</code>
 <div class="block">Unregisters this object as a handler of the given directive from the Integration Server HTTP request dispatcher.</div>
@@ -351,54 +260,6 @@ implements com.wm.app.b2b.server.HTTPHandler</pre>
 <!--   -->
 </a>
 <h3>Field Detail</h3>
-<a name="RESPONSE_DURATION_HEADER">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>RESPONSE_DURATION_HEADER</h4>
-<pre>private static final&nbsp;java.lang.String RESPONSE_DURATION_HEADER</pre>
-<div class="block">The header used to return the response time in milliseconds.</div>
-<dl>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../../../constant-values.html#permafrost.tundra.net.http.route.HTTPRouter.RESPONSE_DURATION_HEADER">Constant Field Values</a></dd>
-</dl>
-</li>
-</ul>
-<a name="PROTOCOL_REQUEST_HEADER_PROPERTY">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>PROTOCOL_REQUEST_HEADER_PROPERTY</h4>
-<pre>private static final&nbsp;java.lang.String PROTOCOL_REQUEST_HEADER_PROPERTY</pre>
-<div class="block">The ProtocolInfoIf property for the request header.</div>
-<dl>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../../../constant-values.html#permafrost.tundra.net.http.route.HTTPRouter.PROTOCOL_REQUEST_HEADER_PROPERTY">Constant Field Values</a></dd>
-</dl>
-</li>
-</ul>
-<a name="DEFAULT_INVOKE_HANDLER">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>DEFAULT_INVOKE_HANDLER</h4>
-<pre>private static final&nbsp;com.wm.app.b2b.server.HTTPInvokeHandler DEFAULT_INVOKE_HANDLER</pre>
-<div class="block">The handler used to invoke services.</div>
-</li>
-</ul>
-<a name="DEFAULT_DOCUMENT_HANDLER">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>DEFAULT_DOCUMENT_HANDLER</h4>
-<pre>private static final&nbsp;com.wm.app.b2b.server.HTTPDocHandler DEFAULT_DOCUMENT_HANDLER</pre>
-<div class="block">The handler used to serve documents.</div>
-</li>
-</ul>
 <a name="DEFAULT_INVOKE_DIRECTIVE">
 <!--   -->
 </a>
@@ -430,61 +291,12 @@ implements com.wm.app.b2b.server.HTTPHandler</pre>
 <a name="INVOKE_REQUEST_URL">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>INVOKE_REQUEST_URL</h4>
 <pre>public static final&nbsp;java.lang.String INVOKE_REQUEST_URL</pre>
 <div class="block">A request URL which matches the invoke directive, used to fool the AuditLogManager so it does not log spurious
  Access Denied errors.</div>
-</li>
-</ul>
-<a name="routes">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>routes</h4>
-<pre>private volatile&nbsp;<a href="../../../../../permafrost/tundra/net/http/route/HTTPRouteTable.html" title="class in permafrost.tundra.net.http.route">HTTPRouteTable</a> routes</pre>
-<div class="block">The route table, which holds routing instructions for different URIs.</div>
-</li>
-</ul>
-<a name="overwriteReqUrlMethod">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>overwriteReqUrlMethod</h4>
-<pre>private&nbsp;java.lang.reflect.Method overwriteReqUrlMethod</pre>
-<div class="block">The method to use to overwrite the request URL on the current invoke state HTTP headers.</div>
-</li>
-</ul>
-<a name="requestUrlField">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>requestUrlField</h4>
-<pre>private&nbsp;java.lang.reflect.Field requestUrlField</pre>
-<div class="block">The field to use to overwrite the request URL on the current invoke state HTTP headers, if the above method
- does not exist.</div>
-</li>
-</ul>
-</li>
-</ul>
-<!-- ========= CONSTRUCTOR DETAIL ======== -->
-<ul class="blockList">
-<li class="blockList"><a name="constructor.detail">
-<!--   -->
-</a>
-<h3>Constructor Detail</h3>
-<a name="HTTPRouter--">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>HTTPRouter</h4>
-<pre>private&nbsp;HTTPRouter()</pre>
-<div class="block">Disallow instantiation of this class.</div>
 </li>
 </ul>
 </li>
@@ -529,22 +341,6 @@ implements com.wm.app.b2b.server.HTTPHandler</pre>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code>java.io.IOException</code> - If an I/O problem is encountered reading from or writing to the client socket.</dd>
 <dd><code>com.wm.app.b2b.server.AccessException</code> - If the the HTTP request requires authentication or is not authorized.</dd>
-</dl>
-</li>
-</ul>
-<a name="setRequestURL-java.lang.String-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>setRequestURL</h4>
-<pre>private&nbsp;java.lang.String&nbsp;setRequestURL(java.lang.String&nbsp;newRequestURL)</pre>
-<div class="block">Sets the requestUrl field on the HttpHeader object in the current InvokeState.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>newRequestURL</code> - The value to set.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>The previous value.</dd>
 </dl>
 </li>
 </ul>
@@ -685,7 +481,7 @@ implements com.wm.app.b2b.server.HTTPHandler</pre>
 <div class="subNav">
 <ul class="navList">
 <li><a href="../../../../../permafrost/tundra/net/http/route/HTTPRouteList.html" title="class in permafrost.tundra.net.http.route"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li><a href="../../../../../permafrost/tundra/net/http/route/HTTPRouter.Holder.html" title="class in permafrost.tundra.net.http.route"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../../../permafrost/tundra/net/http/route/HTTPRouteTable.html" title="class in permafrost.tundra.net.http.route"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../../index.html?permafrost/tundra/net/http/route/HTTPRouter.html" target="_top">Frames</a></li>
@@ -709,15 +505,15 @@ implements com.wm.app.b2b.server.HTTPHandler</pre>
 <div>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
-<li><a href="#nested.class.summary">Nested</a>&nbsp;|&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
 <li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
-<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
-<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
 </div>

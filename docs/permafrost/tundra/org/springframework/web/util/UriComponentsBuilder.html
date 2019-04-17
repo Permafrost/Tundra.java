@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":9,"i10":9,"i11":9,"i12":9,"i13":9,"i14":9,"i15":10,"i16":9,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10,"i27":10,"i28":10,"i29":10,"i30":10,"i31":10,"i32":10,"i33":10,"i34":10,"i35":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":9,"i8":9,"i9":9,"i10":9,"i11":9,"i12":9,"i13":10,"i14":9,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10,"i27":10,"i28":10,"i29":10,"i30":10,"i31":10};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -47,8 +47,8 @@ var activeTableTab = "activeTableTab";
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponents.VarArgsTemplateVariables.html" title="class in permafrost.tundra.org.springframework.web.util"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.CompositePathComponentBuilder.html" title="class in permafrost.tundra.org.springframework.web.util"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponents.UriTemplateVariables.html" title="interface in permafrost.tundra.org.springframework.web.util"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriTemplate.html" title="class in permafrost.tundra.org.springframework.web.util"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../../../index.html?permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html" target="_top">Frames</a></li>
@@ -72,14 +72,14 @@ var activeTableTab = "activeTableTab";
 <div>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
-<li><a href="#nested.class.summary">Nested</a>&nbsp;|&nbsp;</li>
-<li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
@@ -140,144 +140,6 @@ implements java.lang.Cloneable</pre>
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
-<!-- ======== NESTED CLASS SUMMARY ======== -->
-<ul class="blockList">
-<li class="blockList"><a name="nested.class.summary">
-<!--   -->
-</a>
-<h3>Nested Class Summary</h3>
-<table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Nested Class Summary table, listing nested classes, and an explanation">
-<caption><span>Nested Classes</span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier and Type</th>
-<th class="colLast" scope="col">Class and Description</th>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private static class&nbsp;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.CompositePathComponentBuilder.html" title="class in permafrost.tundra.org.springframework.web.util">UriComponentsBuilder.CompositePathComponentBuilder</a></span></code>&nbsp;</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>private static class&nbsp;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.FullPathComponentBuilder.html" title="class in permafrost.tundra.org.springframework.web.util">UriComponentsBuilder.FullPathComponentBuilder</a></span></code>&nbsp;</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private static interface&nbsp;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.PathComponentBuilder.html" title="interface in permafrost.tundra.org.springframework.web.util">UriComponentsBuilder.PathComponentBuilder</a></span></code>&nbsp;</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>private static class&nbsp;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.PathSegmentComponentBuilder.html" title="class in permafrost.tundra.org.springframework.web.util">UriComponentsBuilder.PathSegmentComponentBuilder</a></span></code>&nbsp;</td>
-</tr>
-</table>
-</li>
-</ul>
-<!-- =========== FIELD SUMMARY =========== -->
-<ul class="blockList">
-<li class="blockList"><a name="field.summary">
-<!--   -->
-</a>
-<h3>Field Summary</h3>
-<table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Field Summary table, listing fields, and an explanation">
-<caption><span>Fields</span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier and Type</th>
-<th class="colLast" scope="col">Field and Description</th>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private static java.util.regex.Pattern</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#FORWARDED_HOST_PATTERN">FORWARDED_HOST_PATTERN</a></span></code>&nbsp;</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>private static java.util.regex.Pattern</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#FORWARDED_PROTO_PATTERN">FORWARDED_PROTO_PATTERN</a></span></code>&nbsp;</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#fragment">fragment</a></span></code>&nbsp;</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>private java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#host">host</a></span></code>&nbsp;</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private static java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#HOST_IPV4_PATTERN">HOST_IPV4_PATTERN</a></span></code>&nbsp;</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>private static java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#HOST_IPV6_PATTERN">HOST_IPV6_PATTERN</a></span></code>&nbsp;</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private static java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#HOST_PATTERN">HOST_PATTERN</a></span></code>&nbsp;</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>private static java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#HTTP_PATTERN">HTTP_PATTERN</a></span></code>&nbsp;</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private static java.util.regex.Pattern</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#HTTP_URL_PATTERN">HTTP_URL_PATTERN</a></span></code>&nbsp;</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>private static java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#LAST_PATTERN">LAST_PATTERN</a></span></code>&nbsp;</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private static java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#PATH_PATTERN">PATH_PATTERN</a></span></code>&nbsp;</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>private <a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.CompositePathComponentBuilder.html" title="class in permafrost.tundra.org.springframework.web.util">UriComponentsBuilder.CompositePathComponentBuilder</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#pathBuilder">pathBuilder</a></span></code>&nbsp;</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#port">port</a></span></code>&nbsp;</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>private static java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#PORT_PATTERN">PORT_PATTERN</a></span></code>&nbsp;</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private static java.util.regex.Pattern</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#QUERY_PARAM_PATTERN">QUERY_PARAM_PATTERN</a></span></code>&nbsp;</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>private static java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#QUERY_PATTERN">QUERY_PATTERN</a></span></code>&nbsp;</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private <a href="../../../../../../permafrost/tundra/org/springframework/util/MultiValueMap.html" title="interface in permafrost.tundra.org.springframework.util">MultiValueMap</a>&lt;java.lang.String,java.lang.String&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#queryParams">queryParams</a></span></code>&nbsp;</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>private java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#scheme">scheme</a></span></code>&nbsp;</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private static java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#SCHEME_PATTERN">SCHEME_PATTERN</a></span></code>&nbsp;</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>private java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#ssp">ssp</a></span></code>&nbsp;</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private static java.util.regex.Pattern</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#URI_PATTERN">URI_PATTERN</a></span></code>&nbsp;</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>private java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#userInfo">userInfo</a></span></code>&nbsp;</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private static java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#USERINFO_PATTERN">USERINFO_PATTERN</a></span></code>&nbsp;</td>
-</tr>
-</table>
-</li>
-</ul>
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
 <ul class="blockList">
 <li class="blockList"><a name="constructor.summary">
@@ -318,64 +180,51 @@ implements java.lang.Cloneable</pre>
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>private void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#adaptForwardedHost-java.lang.String-">adaptForwardedHost</a></span>(java.lang.String&nbsp;hostToUse)</code>&nbsp;</td>
-</tr>
-<tr id="i1" class="rowColor">
-<td class="colFirst"><code>(package private) <a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html" title="class in permafrost.tundra.org.springframework.web.util">UriComponentsBuilder</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#adaptFromForwardedHeaders-permafrost.tundra.org.springframework.http.HttpHeaders-">adaptFromForwardedHeaders</a></span>(<a href="../../../../../../permafrost/tundra/org/springframework/http/HttpHeaders.html" title="class in permafrost.tundra.org.springframework.http">HttpHeaders</a>&nbsp;headers)</code>
-<div class="block">Adapt this builder's scheme+host+port from the given headers, specifically
- "Forwarded" (<a href="http://tools.ietf.org/html/rfc7239">RFC 7239</a>,
- or "X-Forwarded-Host", "X-Forwarded-Port", and "X-Forwarded-Proto" if
- "Forwarded" is not found.</div>
-</td>
-</tr>
-<tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponents.html" title="class in permafrost.tundra.org.springframework.web.util">UriComponents</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#build--">build</a></span>()</code>
 <div class="block">Build a <code>UriComponents</code> instance from the various components contained in this builder.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponents.html" title="class in permafrost.tundra.org.springframework.web.util">UriComponents</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#build-boolean-">build</a></span>(boolean&nbsp;encoded)</code>
 <div class="block">Build a <code>UriComponents</code> instance from the various components
  contained in this builder.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponents.html" title="class in permafrost.tundra.org.springframework.web.util">UriComponents</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#buildAndExpand-java.util.Map-">buildAndExpand</a></span>(java.util.Map&lt;java.lang.String,?&gt;&nbsp;uriVariables)</code>
 <div class="block">Build a <code>UriComponents</code> instance and replaces URI template variables
  with the values from a map.</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponents.html" title="class in permafrost.tundra.org.springframework.web.util">UriComponents</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#buildAndExpand-java.lang.Object...-">buildAndExpand</a></span>(java.lang.Object...&nbsp;uriVariableValues)</code>
 <div class="block">Build a <code>UriComponents</code> instance and replaces URI template variables
  with the values from an array.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>java.lang.Object</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#clone--">clone</a></span>()</code>
 <div class="block">Public declaration of Object's <code>clone()</code> method.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html" title="class in permafrost.tundra.org.springframework.web.util">UriComponentsBuilder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#cloneBuilder--">cloneBuilder</a></span>()</code>
 <div class="block">Clone this <code>UriComponentsBuilder</code>.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html" title="class in permafrost.tundra.org.springframework.web.util">UriComponentsBuilder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#fragment-java.lang.String-">fragment</a></span>(java.lang.String&nbsp;fragment)</code>
 <div class="block">Set the URI fragment.</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>static <a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html" title="class in permafrost.tundra.org.springframework.web.util">UriComponentsBuilder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#fromHttpRequest-permafrost.tundra.org.springframework.http.HttpRequest-">fromHttpRequest</a></span>(<a href="../../../../../../permafrost/tundra/org/springframework/http/HttpRequest.html" title="interface in permafrost.tundra.org.springframework.http">HttpRequest</a>&nbsp;request)</code>
 <div class="block">Create a new <code>UriComponents</code> object from the URI associated with
@@ -385,104 +234,104 @@ implements java.lang.Cloneable</pre>
  "Forwarded" is not found.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>static <a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html" title="class in permafrost.tundra.org.springframework.web.util">UriComponentsBuilder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#fromHttpUrl-java.lang.String-">fromHttpUrl</a></span>(java.lang.String&nbsp;httpUrl)</code>
 <div class="block">Create a URI components builder from the given HTTP URL String.</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>static <a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html" title="class in permafrost.tundra.org.springframework.web.util">UriComponentsBuilder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#fromOriginHeader-java.lang.String-">fromOriginHeader</a></span>(java.lang.String&nbsp;origin)</code>
 <div class="block">Create an instance by parsing the "Origin" header of an HTTP request.</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>static <a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html" title="class in permafrost.tundra.org.springframework.web.util">UriComponentsBuilder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#fromPath-java.lang.String-">fromPath</a></span>(java.lang.String&nbsp;path)</code>
 <div class="block">Create a builder that is initialized with the given path.</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>static <a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html" title="class in permafrost.tundra.org.springframework.web.util">UriComponentsBuilder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#fromUri-java.net.URI-">fromUri</a></span>(java.net.URI&nbsp;uri)</code>
 <div class="block">Create a builder that is initialized with the given <code>URI</code>.</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>static <a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html" title="class in permafrost.tundra.org.springframework.web.util">UriComponentsBuilder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#fromUriString-java.lang.String-">fromUriString</a></span>(java.lang.String&nbsp;uri)</code>
 <div class="block">Create a builder that is initialized with the given URI string.</div>
 </td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html" title="class in permafrost.tundra.org.springframework.web.util">UriComponentsBuilder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#host-java.lang.String-">host</a></span>(java.lang.String&nbsp;host)</code>
 <div class="block">Set the URI host.</div>
 </td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>static <a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html" title="class in permafrost.tundra.org.springframework.web.util">UriComponentsBuilder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#newInstance--">newInstance</a></span>()</code>
 <div class="block">Create a new, empty builder.</div>
 </td>
 </tr>
-<tr id="i17" class="rowColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html" title="class in permafrost.tundra.org.springframework.web.util">UriComponentsBuilder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#path-java.lang.String-">path</a></span>(java.lang.String&nbsp;path)</code>
 <div class="block">Append the given path to the existing path of this builder.</div>
 </td>
 </tr>
-<tr id="i18" class="altColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html" title="class in permafrost.tundra.org.springframework.web.util">UriComponentsBuilder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#pathSegment-java.lang.String...-">pathSegment</a></span>(java.lang.String...&nbsp;pathSegments)</code>
 <div class="block">Append path segments to the existing path.</div>
 </td>
 </tr>
-<tr id="i19" class="rowColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html" title="class in permafrost.tundra.org.springframework.web.util">UriComponentsBuilder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#port-int-">port</a></span>(int&nbsp;port)</code>
 <div class="block">Set the URI port.</div>
 </td>
 </tr>
-<tr id="i20" class="altColor">
+<tr id="i18" class="altColor">
 <td class="colFirst"><code><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html" title="class in permafrost.tundra.org.springframework.web.util">UriComponentsBuilder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#port-java.lang.String-">port</a></span>(java.lang.String&nbsp;port)</code>
 <div class="block">Set the URI port.</div>
 </td>
 </tr>
-<tr id="i21" class="rowColor">
+<tr id="i19" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html" title="class in permafrost.tundra.org.springframework.web.util">UriComponentsBuilder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#query-java.lang.String-">query</a></span>(java.lang.String&nbsp;query)</code>
 <div class="block">Append the given query to the existing query of this builder.</div>
 </td>
 </tr>
-<tr id="i22" class="altColor">
+<tr id="i20" class="altColor">
 <td class="colFirst"><code><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html" title="class in permafrost.tundra.org.springframework.web.util">UriComponentsBuilder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#queryParam-java.lang.String-java.lang.Object...-">queryParam</a></span>(java.lang.String&nbsp;name,
           java.lang.Object...&nbsp;values)</code>
 <div class="block">Append the given query parameter to the existing query parameters.</div>
 </td>
 </tr>
-<tr id="i23" class="rowColor">
+<tr id="i21" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html" title="class in permafrost.tundra.org.springframework.web.util">UriComponentsBuilder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#queryParams-permafrost.tundra.org.springframework.util.MultiValueMap-">queryParams</a></span>(<a href="../../../../../../permafrost/tundra/org/springframework/util/MultiValueMap.html" title="interface in permafrost.tundra.org.springframework.util">MultiValueMap</a>&lt;java.lang.String,java.lang.String&gt;&nbsp;params)</code>
 <div class="block">Add the given query parameters.</div>
 </td>
 </tr>
-<tr id="i24" class="altColor">
+<tr id="i22" class="altColor">
 <td class="colFirst"><code><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html" title="class in permafrost.tundra.org.springframework.web.util">UriComponentsBuilder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#replacePath-java.lang.String-">replacePath</a></span>(java.lang.String&nbsp;path)</code>
 <div class="block">Set the path of this builder overriding all existing path and path segment values.</div>
 </td>
 </tr>
-<tr id="i25" class="rowColor">
+<tr id="i23" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html" title="class in permafrost.tundra.org.springframework.web.util">UriComponentsBuilder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#replaceQuery-java.lang.String-">replaceQuery</a></span>(java.lang.String&nbsp;query)</code>
 <div class="block">Set the query of this builder overriding all existing query parameters.</div>
 </td>
 </tr>
-<tr id="i26" class="altColor">
+<tr id="i24" class="altColor">
 <td class="colFirst"><code><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html" title="class in permafrost.tundra.org.springframework.web.util">UriComponentsBuilder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#replaceQueryParam-java.lang.String-java.lang.Object...-">replaceQueryParam</a></span>(java.lang.String&nbsp;name,
                  java.lang.Object...&nbsp;values)</code>
@@ -490,52 +339,44 @@ implements java.lang.Cloneable</pre>
  the same parameter.</div>
 </td>
 </tr>
-<tr id="i27" class="rowColor">
+<tr id="i25" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html" title="class in permafrost.tundra.org.springframework.web.util">UriComponentsBuilder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#replaceQueryParams-permafrost.tundra.org.springframework.util.MultiValueMap-">replaceQueryParams</a></span>(<a href="../../../../../../permafrost/tundra/org/springframework/util/MultiValueMap.html" title="interface in permafrost.tundra.org.springframework.util">MultiValueMap</a>&lt;java.lang.String,java.lang.String&gt;&nbsp;params)</code>
 <div class="block">Set the query parameter values overriding all existing query values.</div>
 </td>
 </tr>
-<tr id="i28" class="altColor">
-<td class="colFirst"><code>private void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#resetHierarchicalComponents--">resetHierarchicalComponents</a></span>()</code>&nbsp;</td>
-</tr>
-<tr id="i29" class="rowColor">
-<td class="colFirst"><code>private void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#resetSchemeSpecificPart--">resetSchemeSpecificPart</a></span>()</code>&nbsp;</td>
-</tr>
-<tr id="i30" class="altColor">
+<tr id="i26" class="altColor">
 <td class="colFirst"><code><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html" title="class in permafrost.tundra.org.springframework.web.util">UriComponentsBuilder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#scheme-java.lang.String-">scheme</a></span>(java.lang.String&nbsp;scheme)</code>
 <div class="block">Set the URI scheme.</div>
 </td>
 </tr>
-<tr id="i31" class="rowColor">
+<tr id="i27" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html" title="class in permafrost.tundra.org.springframework.web.util">UriComponentsBuilder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#schemeSpecificPart-java.lang.String-">schemeSpecificPart</a></span>(java.lang.String&nbsp;ssp)</code>
 <div class="block">Set the URI scheme-specific-part.</div>
 </td>
 </tr>
-<tr id="i32" class="altColor">
+<tr id="i28" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#toUriString--">toUriString</a></span>()</code>
 <div class="block">Build a URI String.</div>
 </td>
 </tr>
-<tr id="i33" class="rowColor">
+<tr id="i29" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html" title="class in permafrost.tundra.org.springframework.web.util">UriComponentsBuilder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#uri-java.net.URI-">uri</a></span>(java.net.URI&nbsp;uri)</code>
 <div class="block">Initialize components of this builder from components of the given URI.</div>
 </td>
 </tr>
-<tr id="i34" class="altColor">
+<tr id="i30" class="altColor">
 <td class="colFirst"><code><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html" title="class in permafrost.tundra.org.springframework.web.util">UriComponentsBuilder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#uriComponents-permafrost.tundra.org.springframework.web.util.UriComponents-">uriComponents</a></span>(<a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponents.html" title="class in permafrost.tundra.org.springframework.web.util">UriComponents</a>&nbsp;uriComponents)</code>
 <div class="block">Set or append individual URI components of this builder from the values
  of the given <a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponents.html" title="class in permafrost.tundra.org.springframework.web.util"><code>UriComponents</code></a> instance.</div>
 </td>
 </tr>
-<tr id="i35" class="rowColor">
+<tr id="i31" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html" title="class in permafrost.tundra.org.springframework.web.util">UriComponentsBuilder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html#userInfo-java.lang.String-">userInfo</a></span>(java.lang.String&nbsp;userInfo)</code>
 <div class="block">Set the URI user info.</div>
@@ -557,261 +398,6 @@ implements java.lang.Cloneable</pre>
 <div class="details">
 <ul class="blockList">
 <li class="blockList">
-<!-- ============ FIELD DETAIL =========== -->
-<ul class="blockList">
-<li class="blockList"><a name="field.detail">
-<!--   -->
-</a>
-<h3>Field Detail</h3>
-<a name="QUERY_PARAM_PATTERN">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>QUERY_PARAM_PATTERN</h4>
-<pre>private static final&nbsp;java.util.regex.Pattern QUERY_PARAM_PATTERN</pre>
-</li>
-</ul>
-<a name="SCHEME_PATTERN">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>SCHEME_PATTERN</h4>
-<pre>private static final&nbsp;java.lang.String SCHEME_PATTERN</pre>
-<dl>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../../../../constant-values.html#permafrost.tundra.org.springframework.web.util.UriComponentsBuilder.SCHEME_PATTERN">Constant Field Values</a></dd>
-</dl>
-</li>
-</ul>
-<a name="HTTP_PATTERN">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>HTTP_PATTERN</h4>
-<pre>private static final&nbsp;java.lang.String HTTP_PATTERN</pre>
-<dl>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../../../../constant-values.html#permafrost.tundra.org.springframework.web.util.UriComponentsBuilder.HTTP_PATTERN">Constant Field Values</a></dd>
-</dl>
-</li>
-</ul>
-<a name="USERINFO_PATTERN">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>USERINFO_PATTERN</h4>
-<pre>private static final&nbsp;java.lang.String USERINFO_PATTERN</pre>
-<dl>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../../../../constant-values.html#permafrost.tundra.org.springframework.web.util.UriComponentsBuilder.USERINFO_PATTERN">Constant Field Values</a></dd>
-</dl>
-</li>
-</ul>
-<a name="HOST_IPV4_PATTERN">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>HOST_IPV4_PATTERN</h4>
-<pre>private static final&nbsp;java.lang.String HOST_IPV4_PATTERN</pre>
-<dl>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../../../../constant-values.html#permafrost.tundra.org.springframework.web.util.UriComponentsBuilder.HOST_IPV4_PATTERN">Constant Field Values</a></dd>
-</dl>
-</li>
-</ul>
-<a name="HOST_IPV6_PATTERN">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>HOST_IPV6_PATTERN</h4>
-<pre>private static final&nbsp;java.lang.String HOST_IPV6_PATTERN</pre>
-<dl>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../../../../constant-values.html#permafrost.tundra.org.springframework.web.util.UriComponentsBuilder.HOST_IPV6_PATTERN">Constant Field Values</a></dd>
-</dl>
-</li>
-</ul>
-<a name="HOST_PATTERN">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>HOST_PATTERN</h4>
-<pre>private static final&nbsp;java.lang.String HOST_PATTERN</pre>
-<dl>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../../../../constant-values.html#permafrost.tundra.org.springframework.web.util.UriComponentsBuilder.HOST_PATTERN">Constant Field Values</a></dd>
-</dl>
-</li>
-</ul>
-<a name="PORT_PATTERN">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>PORT_PATTERN</h4>
-<pre>private static final&nbsp;java.lang.String PORT_PATTERN</pre>
-<dl>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../../../../constant-values.html#permafrost.tundra.org.springframework.web.util.UriComponentsBuilder.PORT_PATTERN">Constant Field Values</a></dd>
-</dl>
-</li>
-</ul>
-<a name="PATH_PATTERN">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>PATH_PATTERN</h4>
-<pre>private static final&nbsp;java.lang.String PATH_PATTERN</pre>
-<dl>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../../../../constant-values.html#permafrost.tundra.org.springframework.web.util.UriComponentsBuilder.PATH_PATTERN">Constant Field Values</a></dd>
-</dl>
-</li>
-</ul>
-<a name="QUERY_PATTERN">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>QUERY_PATTERN</h4>
-<pre>private static final&nbsp;java.lang.String QUERY_PATTERN</pre>
-<dl>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../../../../constant-values.html#permafrost.tundra.org.springframework.web.util.UriComponentsBuilder.QUERY_PATTERN">Constant Field Values</a></dd>
-</dl>
-</li>
-</ul>
-<a name="LAST_PATTERN">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>LAST_PATTERN</h4>
-<pre>private static final&nbsp;java.lang.String LAST_PATTERN</pre>
-<dl>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../../../../constant-values.html#permafrost.tundra.org.springframework.web.util.UriComponentsBuilder.LAST_PATTERN">Constant Field Values</a></dd>
-</dl>
-</li>
-</ul>
-<a name="URI_PATTERN">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>URI_PATTERN</h4>
-<pre>private static final&nbsp;java.util.regex.Pattern URI_PATTERN</pre>
-</li>
-</ul>
-<a name="HTTP_URL_PATTERN">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>HTTP_URL_PATTERN</h4>
-<pre>private static final&nbsp;java.util.regex.Pattern HTTP_URL_PATTERN</pre>
-</li>
-</ul>
-<a name="FORWARDED_HOST_PATTERN">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>FORWARDED_HOST_PATTERN</h4>
-<pre>private static final&nbsp;java.util.regex.Pattern FORWARDED_HOST_PATTERN</pre>
-</li>
-</ul>
-<a name="FORWARDED_PROTO_PATTERN">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>FORWARDED_PROTO_PATTERN</h4>
-<pre>private static final&nbsp;java.util.regex.Pattern FORWARDED_PROTO_PATTERN</pre>
-</li>
-</ul>
-<a name="scheme">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>scheme</h4>
-<pre>private&nbsp;java.lang.String scheme</pre>
-</li>
-</ul>
-<a name="ssp">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>ssp</h4>
-<pre>private&nbsp;java.lang.String ssp</pre>
-</li>
-</ul>
-<a name="userInfo">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>userInfo</h4>
-<pre>private&nbsp;java.lang.String userInfo</pre>
-</li>
-</ul>
-<a name="host">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>host</h4>
-<pre>private&nbsp;java.lang.String host</pre>
-</li>
-</ul>
-<a name="port">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>port</h4>
-<pre>private&nbsp;java.lang.String port</pre>
-</li>
-</ul>
-<a name="pathBuilder">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>pathBuilder</h4>
-<pre>private&nbsp;<a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.CompositePathComponentBuilder.html" title="class in permafrost.tundra.org.springframework.web.util">UriComponentsBuilder.CompositePathComponentBuilder</a> pathBuilder</pre>
-</li>
-</ul>
-<a name="queryParams">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>queryParams</h4>
-<pre>private final&nbsp;<a href="../../../../../../permafrost/tundra/org/springframework/util/MultiValueMap.html" title="interface in permafrost.tundra.org.springframework.util">MultiValueMap</a>&lt;java.lang.String,java.lang.String&gt; queryParams</pre>
-</li>
-</ul>
-<a name="fragment">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>fragment</h4>
-<pre>private&nbsp;java.lang.String fragment</pre>
-</li>
-</ul>
-</li>
-</ul>
 <!-- ========= CONSTRUCTOR DETAIL ======== -->
 <ul class="blockList">
 <li class="blockList"><a name="constructor.detail">
@@ -1411,54 +997,6 @@ implements java.lang.Cloneable</pre>
 </dl>
 </li>
 </ul>
-<a name="adaptFromForwardedHeaders-permafrost.tundra.org.springframework.http.HttpHeaders-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>adaptFromForwardedHeaders</h4>
-<pre><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html" title="class in permafrost.tundra.org.springframework.web.util">UriComponentsBuilder</a>&nbsp;adaptFromForwardedHeaders(<a href="../../../../../../permafrost/tundra/org/springframework/http/HttpHeaders.html" title="class in permafrost.tundra.org.springframework.http">HttpHeaders</a>&nbsp;headers)</pre>
-<div class="block">Adapt this builder's scheme+host+port from the given headers, specifically
- "Forwarded" (<a href="http://tools.ietf.org/html/rfc7239">RFC 7239</a>,
- or "X-Forwarded-Host", "X-Forwarded-Port", and "X-Forwarded-Proto" if
- "Forwarded" is not found.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>headers</code> - the HTTP headers to consider</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>this UriComponentsBuilder</dd>
-<dt><span class="simpleTagLabel">Since:</span></dt>
-<dd>4.2.7</dd>
-</dl>
-</li>
-</ul>
-<a name="adaptForwardedHost-java.lang.String-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>adaptForwardedHost</h4>
-<pre>private&nbsp;void&nbsp;adaptForwardedHost(java.lang.String&nbsp;hostToUse)</pre>
-</li>
-</ul>
-<a name="resetHierarchicalComponents--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>resetHierarchicalComponents</h4>
-<pre>private&nbsp;void&nbsp;resetHierarchicalComponents()</pre>
-</li>
-</ul>
-<a name="resetSchemeSpecificPart--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>resetSchemeSpecificPart</h4>
-<pre>private&nbsp;void&nbsp;resetSchemeSpecificPart()</pre>
-</li>
-</ul>
 <a name="clone--">
 <!--   -->
 </a>
@@ -1517,8 +1055,8 @@ implements java.lang.Cloneable</pre>
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponents.VarArgsTemplateVariables.html" title="class in permafrost.tundra.org.springframework.web.util"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.CompositePathComponentBuilder.html" title="class in permafrost.tundra.org.springframework.web.util"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriComponents.UriTemplateVariables.html" title="interface in permafrost.tundra.org.springframework.web.util"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../../../../permafrost/tundra/org/springframework/web/util/UriTemplate.html" title="class in permafrost.tundra.org.springframework.web.util"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../../../index.html?permafrost/tundra/org/springframework/web/util/UriComponentsBuilder.html" target="_top">Frames</a></li>
@@ -1542,14 +1080,14 @@ implements java.lang.Cloneable</pre>
 <div>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
-<li><a href="#nested.class.summary">Nested</a>&nbsp;|&nbsp;</li>
-<li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>

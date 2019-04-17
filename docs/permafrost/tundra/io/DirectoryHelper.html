@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9,"i11":9,"i12":9,"i13":9,"i14":9,"i15":9,"i16":9,"i17":9,"i18":9,"i19":9,"i20":9,"i21":9,"i22":9,"i23":9,"i24":9,"i25":9,"i26":9,"i27":9,"i28":9};
+var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9,"i11":9,"i12":9,"i13":9,"i14":9,"i15":9,"i16":9,"i17":9,"i18":9,"i19":9,"i20":9,"i21":9,"i22":9,"i23":9,"i24":9,"i25":9,"i26":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -74,13 +74,13 @@ var activeTableTab = "activeTableTab";
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
 </div>
@@ -116,27 +116,6 @@ extends java.lang.Object</pre>
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
-<!-- ======== CONSTRUCTOR SUMMARY ======== -->
-<ul class="blockList">
-<li class="blockList"><a name="constructor.summary">
-<!--   -->
-</a>
-<h3>Constructor Summary</h3>
-<table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Constructor Summary table, listing constructors, and an explanation">
-<caption><span>Constructors</span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier</th>
-<th class="colLast" scope="col">Constructor and Description</th>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private </code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/io/DirectoryHelper.html#DirectoryHelper--">DirectoryHelper</a></span>()</code>
-<div class="block">Disallow instantiation of this class;</div>
-</td>
-</tr>
-</table>
-</li>
-</ul>
 <!-- ========== METHOD SUMMARY =========== -->
 <ul class="blockList">
 <li class="blockList"><a name="method.summary">
@@ -357,31 +336,11 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr id="i26" class="altColor">
-<td class="colFirst"><code>private static void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/io/DirectoryHelper.html#tar-org.apache.commons.compress.archivers.tar.TarArchiveOutputStream-java.util.Deque-java.io.File-java.io.FilenameFilter-boolean-">tar</a></span>(org.apache.commons.compress.archivers.tar.TarArchiveOutputStream&nbsp;tarOutputStream,
-   java.util.Deque&lt;java.lang.String&gt;&nbsp;path,
-   java.io.File&nbsp;directory,
-   java.io.FilenameFilter&nbsp;filter,
-   boolean&nbsp;recurse)</code>
-<div class="block">Adds the files in the given directory into a tar archive.</div>
-</td>
-</tr>
-<tr id="i27" class="rowColor">
 <td class="colFirst"><code>static java.io.InputStream</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/io/DirectoryHelper.html#zip-java.io.File-java.io.FilenameFilter-boolean-boolean-">zip</a></span>(java.io.File&nbsp;directory,
    java.io.FilenameFilter&nbsp;filter,
    boolean&nbsp;recurse,
    boolean&nbsp;includeParentInPath)</code>
-<div class="block">Compresses the files in the given directory into a zip archive.</div>
-</td>
-</tr>
-<tr id="i28" class="altColor">
-<td class="colFirst"><code>private static void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/io/DirectoryHelper.html#zip-java.util.zip.ZipOutputStream-java.util.Deque-java.io.File-java.io.FilenameFilter-boolean-">zip</a></span>(java.util.zip.ZipOutputStream&nbsp;zipOutputStream,
-   java.util.Deque&lt;java.lang.String&gt;&nbsp;path,
-   java.io.File&nbsp;directory,
-   java.io.FilenameFilter&nbsp;filter,
-   boolean&nbsp;recurse)</code>
 <div class="block">Compresses the files in the given directory into a zip archive.</div>
 </td>
 </tr>
@@ -401,24 +360,6 @@ extends java.lang.Object</pre>
 <div class="details">
 <ul class="blockList">
 <li class="blockList">
-<!-- ========= CONSTRUCTOR DETAIL ======== -->
-<ul class="blockList">
-<li class="blockList"><a name="constructor.detail">
-<!--   -->
-</a>
-<h3>Constructor Detail</h3>
-<a name="DirectoryHelper--">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>DirectoryHelper</h4>
-<pre>private&nbsp;DirectoryHelper()</pre>
-<div class="block">Disallow instantiation of this class;</div>
-</li>
-</ul>
-</li>
-</ul>
 <!-- ============ METHOD DETAIL ========== -->
 <ul class="blockList">
 <li class="blockList"><a name="method.detail">
@@ -774,31 +715,6 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
-<a name="zip-java.util.zip.ZipOutputStream-java.util.Deque-java.io.File-java.io.FilenameFilter-boolean-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>zip</h4>
-<pre>private static&nbsp;void&nbsp;zip(java.util.zip.ZipOutputStream&nbsp;zipOutputStream,
-                        java.util.Deque&lt;java.lang.String&gt;&nbsp;path,
-                        java.io.File&nbsp;directory,
-                        java.io.FilenameFilter&nbsp;filter,
-                        boolean&nbsp;recurse)
-                 throws java.io.IOException</pre>
-<div class="block">Compresses the files in the given directory into a zip archive.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>zipOutputStream</code> - The zip stream to write the directory's contents to.</dd>
-<dd><code>path</code> - The path prefix for all file names.</dd>
-<dd><code>directory</code> - The directory to compress.</dd>
-<dd><code>filter</code> - An optional filter to determine which files to include in the archive.</dd>
-<dd><code>recurse</code> - Whether to also recursively archive subdirectories.</dd>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.io.IOException</code> - If an IO error occurs.</dd>
-</dl>
-</li>
-</ul>
 <a name="tar-java.io.File-java.io.FilenameFilter-boolean-boolean-boolean-">
 <!--   -->
 </a>
@@ -821,31 +737,6 @@ extends java.lang.Object</pre>
 <dd><code>gzip</code> - Whether to gzip the resulting tar archive.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>An input stream from which the resulting tar archive can be read.</dd>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.io.IOException</code> - If an IO error occurs.</dd>
-</dl>
-</li>
-</ul>
-<a name="tar-org.apache.commons.compress.archivers.tar.TarArchiveOutputStream-java.util.Deque-java.io.File-java.io.FilenameFilter-boolean-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>tar</h4>
-<pre>private static&nbsp;void&nbsp;tar(org.apache.commons.compress.archivers.tar.TarArchiveOutputStream&nbsp;tarOutputStream,
-                        java.util.Deque&lt;java.lang.String&gt;&nbsp;path,
-                        java.io.File&nbsp;directory,
-                        java.io.FilenameFilter&nbsp;filter,
-                        boolean&nbsp;recurse)
-                 throws java.io.IOException</pre>
-<div class="block">Adds the files in the given directory into a tar archive.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>tarOutputStream</code> - The tar stream to write the directory's contents to.</dd>
-<dd><code>path</code> - The path prefix for all file names.</dd>
-<dd><code>directory</code> - The directory to compress.</dd>
-<dd><code>filter</code> - An optional filter to determine which files to include in the archive.</dd>
-<dd><code>recurse</code> - Whether to also recursively archive subdirectories.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code>java.io.IOException</code> - If an IO error occurs.</dd>
 </dl>
@@ -1113,13 +1004,13 @@ extends java.lang.Object</pre>
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
 </div>

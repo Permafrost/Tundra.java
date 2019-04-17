@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9,"i11":9,"i12":9,"i13":9,"i14":9,"i15":9,"i16":9,"i17":9};
+var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -74,13 +74,13 @@ var activeTableTab = "activeTableTab";
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
 </div>
@@ -116,27 +116,6 @@ extends java.lang.Object</pre>
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
-<!-- ======== CONSTRUCTOR SUMMARY ======== -->
-<ul class="blockList">
-<li class="blockList"><a name="constructor.summary">
-<!--   -->
-</a>
-<h3>Constructor Summary</h3>
-<table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Constructor Summary table, listing constructors, and an explanation">
-<caption><span>Constructors</span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier</th>
-<th class="colLast" scope="col">Constructor and Description</th>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private </code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/PackageHelper.html#PackageHelper--">PackageHelper</a></span>()</code>
-<div class="block">Disallow instantiation of this class.</div>
-</td>
-</tr>
-</table>
-</li>
-</ul>
 <!-- ========== METHOD SUMMARY =========== -->
 <ul class="blockList">
 <li class="blockList"><a name="method.summary">
@@ -156,105 +135,63 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code>private static com.wm.data.IData</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/PackageHelper.html#getDependents-com.wm.app.b2b.server.Package-">getDependents</a></span>(com.wm.app.b2b.server.Package&nbsp;pkg)</code>
-<div class="block">Returns the list of services that are dependent on the services in the given package.</div>
-</td>
-</tr>
-<tr id="i2" class="altColor">
-<td class="colFirst"><code>private static com.wm.data.IData</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/PackageHelper.html#getDependents-java.lang.String-">getDependents</a></span>(java.lang.String&nbsp;packageName)</code>
-<div class="block">Returns the list of services that are dependent on the services in the given package.</div>
-</td>
-</tr>
-<tr id="i3" class="rowColor">
 <td class="colFirst"><code>static com.wm.app.b2b.server.Package</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/PackageHelper.html#getPackage-java.lang.String-">getPackage</a></span>(java.lang.String&nbsp;packageName)</code>
 <div class="block">Returns the package with the given name if it exists on this Integration Server.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>static com.wm.data.IData</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/PackageHelper.html#getReferences-com.wm.app.b2b.server.Package-">getReferences</a></span>(com.wm.app.b2b.server.Package&nbsp;pkg)</code>
 <div class="block">Returns the list of elements referenced by the services in the given package.</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>static com.wm.data.IData</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/PackageHelper.html#getReferences-java.lang.String-">getReferences</a></span>(java.lang.String&nbsp;packageName)</code>
 <div class="block">Returns the list of elements referenced by given the services in the given package.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>static boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/PackageHelper.html#isEnabled-java.lang.String-">isEnabled</a></span>(java.lang.String&nbsp;packageName)</code>
 <div class="block">Returns true if the package with the given name is enabled on this Integration Server.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>static com.wm.app.b2b.server.Package[]</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/PackageHelper.html#list--">list</a></span>()</code>
 <div class="block">Returns a list of packages on this Integration Server.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>static com.wm.app.b2b.server.Package[]</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/PackageHelper.html#list-boolean-">list</a></span>(boolean&nbsp;enabledOnly)</code>
 <div class="block">Returns a list of packages on this Integration Server.</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/PackageHelper.html#reload-java.lang.String-">reload</a></span>(java.lang.String&nbsp;packageName)</code>
 <div class="block">Reloads the package with the given name.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>static com.wm.app.b2b.server.Package</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/PackageHelper.html#self--">self</a></span>()</code>
 <div class="block">Returns the invoking package.</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
-<td class="colFirst"><code>private static com.wm.data.IData</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/PackageHelper.html#toIData-com.wm.app.b2b.server.Manifest-">toIData</a></span>(com.wm.app.b2b.server.Manifest&nbsp;manifest)</code>
-<div class="block">Converts the given Manifest object to an IData document representation.</div>
-</td>
-</tr>
-<tr id="i12" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>static com.wm.data.IData</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/PackageHelper.html#toIData-com.wm.app.b2b.server.Package-">toIData</a></span>(com.wm.app.b2b.server.Package&nbsp;pkg)</code>
 <div class="block">Converts the given Package to an IData document.</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
-<td class="colFirst"><code>private static com.wm.data.IData</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/PackageHelper.html#toIData-com.wm.app.b2b.server.PackageState-">toIData</a></span>(com.wm.app.b2b.server.PackageState&nbsp;packageState)</code>
-<div class="block">Converts the given PackageState object to an IData document representation.</div>
-</td>
-</tr>
-<tr id="i14" class="altColor">
-<td class="colFirst"><code>private static com.wm.data.IData</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/PackageHelper.html#toIData-com.wm.app.b2b.server.PackageStore-">toIData</a></span>(com.wm.app.b2b.server.PackageStore&nbsp;packageStore)</code>
-<div class="block">Converts the given PackageStore object to an IData document representation.</div>
-</td>
-</tr>
-<tr id="i15" class="rowColor">
-<td class="colFirst"><code>private static com.wm.data.IData[]</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/PackageHelper.html#toIDataArray-java.lang.Iterable-">toIDataArray</a></span>(java.lang.Iterable&lt;com.wm.app.b2b.server.Manifest.Requires&gt;&nbsp;packageDependencies)</code>
-<div class="block">Convert the given list of package dependencies to an IData[].</div>
-</td>
-</tr>
-<tr id="i16" class="altColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>static com.wm.data.IData[]</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/PackageHelper.html#toIDataArray-com.wm.app.b2b.server.Package...-">toIDataArray</a></span>(com.wm.app.b2b.server.Package...&nbsp;packages)</code>
 <div class="block">Converts the given list of packages to an IData[].</div>
-</td>
-</tr>
-<tr id="i17" class="rowColor">
-<td class="colFirst"><code>private static java.lang.String[]</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/PackageHelper.html#toStringArray-com.wm.app.b2b.server.Package...-">toStringArray</a></span>(com.wm.app.b2b.server.Package...&nbsp;packages)</code>
-<div class="block">Converts an Package[] to a String[] by calling getName on each package in the list.</div>
 </td>
 </tr>
 </table>
@@ -273,24 +210,6 @@ extends java.lang.Object</pre>
 <div class="details">
 <ul class="blockList">
 <li class="blockList">
-<!-- ========= CONSTRUCTOR DETAIL ======== -->
-<ul class="blockList">
-<li class="blockList"><a name="constructor.detail">
-<!--   -->
-</a>
-<h3>Constructor Detail</h3>
-<a name="PackageHelper--">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>PackageHelper</h4>
-<pre>private&nbsp;PackageHelper()</pre>
-<div class="block">Disallow instantiation of this class.</div>
-</li>
-</ul>
-</li>
-</ul>
 <!-- ============ METHOD DETAIL ========== -->
 <ul class="blockList">
 <li class="blockList"><a name="method.detail">
@@ -435,38 +354,6 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
-<a name="getDependents-java.lang.String-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getDependents</h4>
-<pre>private static&nbsp;com.wm.data.IData&nbsp;getDependents(java.lang.String&nbsp;packageName)</pre>
-<div class="block">Returns the list of services that are dependent on the services in the given package.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>packageName</code> - The package to get dependents for.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>The list of dependents for the given package.</dd>
-</dl>
-</li>
-</ul>
-<a name="getDependents-com.wm.app.b2b.server.Package-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getDependents</h4>
-<pre>private static&nbsp;com.wm.data.IData&nbsp;getDependents(com.wm.app.b2b.server.Package&nbsp;pkg)</pre>
-<div class="block">Returns the list of services that are dependent on the services in the given package.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>pkg</code> - The package to get dependents for.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>The list of dependents for the given package.</dd>
-</dl>
-</li>
-</ul>
 <a name="toIData-com.wm.app.b2b.server.Package-">
 <!--   -->
 </a>
@@ -486,7 +373,7 @@ extends java.lang.Object</pre>
 <a name="toIDataArray-com.wm.app.b2b.server.Package...-">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>toIDataArray</h4>
 <pre>public static&nbsp;com.wm.data.IData[]&nbsp;toIDataArray(com.wm.app.b2b.server.Package...&nbsp;packages)</pre>
@@ -496,86 +383,6 @@ extends java.lang.Object</pre>
 <dd><code>packages</code> - The list of packages to convert.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The IData[] representation of the packages.</dd>
-</dl>
-</li>
-</ul>
-<a name="toStringArray-com.wm.app.b2b.server.Package...-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>toStringArray</h4>
-<pre>private static&nbsp;java.lang.String[]&nbsp;toStringArray(com.wm.app.b2b.server.Package...&nbsp;packages)</pre>
-<div class="block">Converts an Package[] to a String[] by calling getName on each package in the list.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>packages</code> - The list of packages to convert.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>The String[] representation of the list.</dd>
-</dl>
-</li>
-</ul>
-<a name="toIData-com.wm.app.b2b.server.Manifest-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>toIData</h4>
-<pre>private static&nbsp;com.wm.data.IData&nbsp;toIData(com.wm.app.b2b.server.Manifest&nbsp;manifest)</pre>
-<div class="block">Converts the given Manifest object to an IData document representation.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>manifest</code> - The object to be converted.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>An IData representation of the object.</dd>
-</dl>
-</li>
-</ul>
-<a name="toIDataArray-java.lang.Iterable-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>toIDataArray</h4>
-<pre>private static&nbsp;com.wm.data.IData[]&nbsp;toIDataArray(java.lang.Iterable&lt;com.wm.app.b2b.server.Manifest.Requires&gt;&nbsp;packageDependencies)</pre>
-<div class="block">Convert the given list of package dependencies to an IData[].</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>packageDependencies</code> - The object to convert.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>The IData[] representation of the object.</dd>
-</dl>
-</li>
-</ul>
-<a name="toIData-com.wm.app.b2b.server.PackageState-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>toIData</h4>
-<pre>private static&nbsp;com.wm.data.IData&nbsp;toIData(com.wm.app.b2b.server.PackageState&nbsp;packageState)</pre>
-<div class="block">Converts the given PackageState object to an IData document representation.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>packageState</code> - The object to be converted.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>An IData representation of the object.</dd>
-</dl>
-</li>
-</ul>
-<a name="toIData-com.wm.app.b2b.server.PackageStore-">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>toIData</h4>
-<pre>private static&nbsp;com.wm.data.IData&nbsp;toIData(com.wm.app.b2b.server.PackageStore&nbsp;packageStore)</pre>
-<div class="block">Converts the given PackageStore object to an IData document representation.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>packageStore</code> - The object to be converted.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>An IData representation of the object.</dd>
 </dl>
 </li>
 </ul>
@@ -633,13 +440,13 @@ extends java.lang.Object</pre>
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
 </div>

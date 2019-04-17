@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10};
+var methods = {"i0":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -73,13 +73,13 @@ var activeTableTab = "activeTableTab";
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
@@ -117,63 +117,6 @@ extends java.lang.Object</pre>
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
-<!-- =========== FIELD SUMMARY =========== -->
-<ul class="blockList">
-<li class="blockList"><a name="field.summary">
-<!--   -->
-</a>
-<h3>Field Summary</h3>
-<table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Field Summary table, listing fields, and an explanation">
-<caption><span>Fields</span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier and Type</th>
-<th class="colLast" scope="col">Field and Description</th>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private static java.util.concurrent.TimeUnit</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/id/IntegerID.html#DEFAULT_TIME_UNIT">DEFAULT_TIME_UNIT</a></span></code>
-<div class="block">The default time unit used to generate IDs.</div>
-</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>private long</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/id/IntegerID.html#epoch">epoch</a></span></code>
-<div class="block">The epoch from which time is measured.</div>
-</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private int</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/id/IntegerID.html#partition">partition</a></span></code>
-<div class="block">The value used to partition the ID space.</div>
-</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>private int</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/id/IntegerID.html#partitionBitLength">partitionBitLength</a></span></code>
-<div class="block">The number of bits used for partitioning the ID space.</div>
-</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private long</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/id/IntegerID.html#previous">previous</a></span></code>
-<div class="block">The previously generated ID's time component, used to ensure only one ID is generated per second.</div>
-</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>private int</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/id/IntegerID.html#timeDivisor">timeDivisor</a></span></code>
-<div class="block">The divisor used to calculate the time component of the ID (time % divisor).</div>
-</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private java.util.concurrent.TimeUnit</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/id/IntegerID.html#timeUnit">timeUnit</a></span></code>
-<div class="block">The unit of time used for calculating the time component of the ID.</div>
-</td>
-</tr>
-</table>
-</li>
-</ul>
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
 <ul class="blockList">
 <li class="blockList"><a name="constructor.summary">
@@ -241,21 +184,9 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>private long</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/id/IntegerID.html#currentTime--">currentTime</a></span>()</code>
-<div class="block">Returns the current time since this generator's epoch in this generator's time unit.</div>
-</td>
-</tr>
-<tr id="i1" class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/id/IntegerID.html#generate--">generate</a></span>()</code>
 <div class="block">Returns a newly generated ID.</div>
-</td>
-</tr>
-<tr id="i2" class="altColor">
-<td class="colFirst"><code>private int</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/id/IntegerID.html#generate-long-">generate</a></span>(long&nbsp;time)</code>
-<div class="block">Returns a new ID given a time value.</div>
 </td>
 </tr>
 </table>
@@ -274,84 +205,6 @@ extends java.lang.Object</pre>
 <div class="details">
 <ul class="blockList">
 <li class="blockList">
-<!-- ============ FIELD DETAIL =========== -->
-<ul class="blockList">
-<li class="blockList"><a name="field.detail">
-<!--   -->
-</a>
-<h3>Field Detail</h3>
-<a name="DEFAULT_TIME_UNIT">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>DEFAULT_TIME_UNIT</h4>
-<pre>private static final&nbsp;java.util.concurrent.TimeUnit DEFAULT_TIME_UNIT</pre>
-<div class="block">The default time unit used to generate IDs.</div>
-</li>
-</ul>
-<a name="previous">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>previous</h4>
-<pre>private&nbsp;long previous</pre>
-<div class="block">The previously generated ID's time component, used to ensure only one ID is generated per second.</div>
-</li>
-</ul>
-<a name="epoch">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>epoch</h4>
-<pre>private&nbsp;long epoch</pre>
-<div class="block">The epoch from which time is measured.</div>
-</li>
-</ul>
-<a name="timeDivisor">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>timeDivisor</h4>
-<pre>private&nbsp;int timeDivisor</pre>
-<div class="block">The divisor used to calculate the time component of the ID (time % divisor).</div>
-</li>
-</ul>
-<a name="partitionBitLength">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>partitionBitLength</h4>
-<pre>private&nbsp;int partitionBitLength</pre>
-<div class="block">The number of bits used for partitioning the ID space.</div>
-</li>
-</ul>
-<a name="partition">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>partition</h4>
-<pre>private&nbsp;int partition</pre>
-<div class="block">The value used to partition the ID space.</div>
-</li>
-</ul>
-<a name="timeUnit">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>timeUnit</h4>
-<pre>private&nbsp;java.util.concurrent.TimeUnit timeUnit</pre>
-<div class="block">The unit of time used for calculating the time component of the ID.</div>
-</li>
-</ul>
-</li>
-</ul>
 <!-- ========= CONSTRUCTOR DETAIL ======== -->
 <ul class="blockList">
 <li class="blockList"><a name="constructor.detail">
@@ -466,7 +319,7 @@ extends java.lang.Object</pre>
 <a name="generate--">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>generate</h4>
 <pre>public&nbsp;int&nbsp;generate()</pre>
@@ -474,36 +327,6 @@ extends java.lang.Object</pre>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A newly generated ID.</dd>
-</dl>
-</li>
-</ul>
-<a name="generate-long-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>generate</h4>
-<pre>private&nbsp;int&nbsp;generate(long&nbsp;time)</pre>
-<div class="block">Returns a new ID given a time value.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>time</code> - The time to use to generate the new ID.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>A new ID.</dd>
-</dl>
-</li>
-</ul>
-<a name="currentTime--">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>currentTime</h4>
-<pre>private&nbsp;long&nbsp;currentTime()</pre>
-<div class="block">Returns the current time since this generator's epoch in this generator's time unit.</div>
-<dl>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>the current time since this generator's epoch in this generator's time unit.</dd>
 </dl>
 </li>
 </ul>
@@ -560,13 +383,13 @@ extends java.lang.Object</pre>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>

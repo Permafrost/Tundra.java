@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9,"i11":9,"i12":9,"i13":9,"i14":9,"i15":9};
+var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9,"i11":9,"i12":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -73,14 +73,14 @@ var activeTableTab = "activeTableTab";
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
-<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
-<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
 </div>
@@ -116,66 +116,6 @@ extends java.lang.Object</pre>
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
-<!-- =========== FIELD SUMMARY =========== -->
-<ul class="blockList">
-<li class="blockList"><a name="field.summary">
-<!--   -->
-</a>
-<h3>Field Summary</h3>
-<table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Field Summary table, listing fields, and an explanation">
-<caption><span>Fields</span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier and Type</th>
-<th class="colLast" scope="col">Field and Description</th>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private static java.util.concurrent.ConcurrentMap&lt;java.lang.String,com.wm.data.IData&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/configuration/ConfigurationManager.html#CONFIGURATIONS">CONFIGURATIONS</a></span></code>
-<div class="block">Cache of package configurations.</div>
-</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>private static java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/configuration/ConfigurationManager.html#PACKAGE_CONFIGURATION_EXTENSIONS_PATTERN">PACKAGE_CONFIGURATION_EXTENSIONS_PATTERN</a></span></code>
-<div class="block">Regular expression pattern to match the supported configuration filename extensions.</div>
-</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private static java.util.regex.Pattern</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/configuration/ConfigurationManager.html#PACKAGE_CONFIGURATION_PATTERN">PACKAGE_CONFIGURATION_PATTERN</a></span></code>
-<div class="block">Regular expression pattern to match package level configuration files.</div>
-</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>private static java.io.File</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/configuration/ConfigurationManager.html#SERVER_PACKAGE_CONFIGURATION_DIRECTORY">SERVER_PACKAGE_CONFIGURATION_DIRECTORY</a></span></code>
-<div class="block">Directory containing server-specific package configuration files.</div>
-</td>
-</tr>
-</table>
-</li>
-</ul>
-<!-- ======== CONSTRUCTOR SUMMARY ======== -->
-<ul class="blockList">
-<li class="blockList"><a name="constructor.summary">
-<!--   -->
-</a>
-<h3>Constructor Summary</h3>
-<table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Constructor Summary table, listing constructors, and an explanation">
-<caption><span>Constructors</span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier</th>
-<th class="colLast" scope="col">Constructor and Description</th>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private </code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/configuration/ConfigurationManager.html#ConfigurationManager--">ConfigurationManager</a></span>()</code>
-<div class="block">Disallow instantiation of this class.</div>
-</td>
-</tr>
-</table>
-</li>
-</ul>
 <!-- ========== METHOD SUMMARY =========== -->
 <ul class="blockList">
 <li class="blockList"><a name="method.summary">
@@ -241,49 +181,31 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr id="i8" class="altColor">
-<td class="colFirst"><code>private static <a href="../../../permafrost/tundra/data/IDataParser.html" title="class in permafrost.tundra.data">IDataParser</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/configuration/ConfigurationManager.html#getParser-java.io.File-">getParser</a></span>(java.io.File&nbsp;file)</code>
-<div class="block">Returns an IDataTextParser that can parse the given file.</div>
-</td>
-</tr>
-<tr id="i9" class="rowColor">
 <td class="colFirst"><code>static com.wm.data.IData[]</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/configuration/ConfigurationManager.html#list--">list</a></span>()</code>
 <div class="block">Returns a list of all package configurations.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>static com.wm.data.IData[]</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/configuration/ConfigurationManager.html#list-boolean-">list</a></span>(boolean&nbsp;refresh)</code>
 <div class="block">Returns a list of all package configurations.</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>static com.wm.data.IData[]</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/configuration/ConfigurationManager.html#list-boolean-boolean-">list</a></span>(boolean&nbsp;refresh,
     boolean&nbsp;updateCache)</code>
 <div class="block">Returns a list of all package configurations.</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
-<td class="colFirst"><code>private static com.wm.data.IData</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/configuration/ConfigurationManager.html#merge-java.io.File...-">merge</a></span>(java.io.File...&nbsp;files)</code>
-<div class="block">Reads the given list of files, and returns a merged IData representation of their contents.</div>
-</td>
-</tr>
-<tr id="i13" class="rowColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>static com.wm.data.IData</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/configuration/ConfigurationManager.html#peek-java.lang.String-">peek</a></span>(java.lang.String&nbsp;packageName)</code>
 <div class="block">Returns the given package's configuration stored on disk, without updating the configuration cache.</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
-<td class="colFirst"><code>private static com.wm.data.IData</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/configuration/ConfigurationManager.html#read-java.io.File-">read</a></span>(java.io.File&nbsp;file)</code>
-<div class="block">Reads the given file and returns an IData representation of its contents.</div>
-</td>
-</tr>
-<tr id="i15" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/configuration/ConfigurationManager.html#refresh--">refresh</a></span>()</code>
 <div class="block">Refreshes all cached configurations from disk.</div>
@@ -305,76 +227,6 @@ extends java.lang.Object</pre>
 <div class="details">
 <ul class="blockList">
 <li class="blockList">
-<!-- ============ FIELD DETAIL =========== -->
-<ul class="blockList">
-<li class="blockList"><a name="field.detail">
-<!--   -->
-</a>
-<h3>Field Detail</h3>
-<a name="SERVER_PACKAGE_CONFIGURATION_DIRECTORY">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>SERVER_PACKAGE_CONFIGURATION_DIRECTORY</h4>
-<pre>private static final&nbsp;java.io.File SERVER_PACKAGE_CONFIGURATION_DIRECTORY</pre>
-<div class="block">Directory containing server-specific package configuration files.</div>
-</li>
-</ul>
-<a name="PACKAGE_CONFIGURATION_EXTENSIONS_PATTERN">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>PACKAGE_CONFIGURATION_EXTENSIONS_PATTERN</h4>
-<pre>private static final&nbsp;java.lang.String PACKAGE_CONFIGURATION_EXTENSIONS_PATTERN</pre>
-<div class="block">Regular expression pattern to match the supported configuration filename extensions.</div>
-<dl>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../constant-values.html#permafrost.tundra.configuration.ConfigurationManager.PACKAGE_CONFIGURATION_EXTENSIONS_PATTERN">Constant Field Values</a></dd>
-</dl>
-</li>
-</ul>
-<a name="PACKAGE_CONFIGURATION_PATTERN">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>PACKAGE_CONFIGURATION_PATTERN</h4>
-<pre>private static final&nbsp;java.util.regex.Pattern PACKAGE_CONFIGURATION_PATTERN</pre>
-<div class="block">Regular expression pattern to match package level configuration files.</div>
-</li>
-</ul>
-<a name="CONFIGURATIONS">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>CONFIGURATIONS</h4>
-<pre>private static final&nbsp;java.util.concurrent.ConcurrentMap&lt;java.lang.String,com.wm.data.IData&gt; CONFIGURATIONS</pre>
-<div class="block">Cache of package configurations.</div>
-</li>
-</ul>
-</li>
-</ul>
-<!-- ========= CONSTRUCTOR DETAIL ======== -->
-<ul class="blockList">
-<li class="blockList"><a name="constructor.detail">
-<!--   -->
-</a>
-<h3>Constructor Detail</h3>
-<a name="ConfigurationManager--">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>ConfigurationManager</h4>
-<pre>private&nbsp;ConfigurationManager()</pre>
-<div class="block">Disallow instantiation of this class.</div>
-</li>
-</ul>
-</li>
-</ul>
 <!-- ============ METHOD DETAIL ========== -->
 <ul class="blockList">
 <li class="blockList"><a name="method.detail">
@@ -613,7 +465,7 @@ extends java.lang.Object</pre>
 <a name="list-boolean-boolean-">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>list</h4>
 <pre>public static&nbsp;com.wm.data.IData[]&nbsp;list(boolean&nbsp;refresh,
@@ -629,60 +481,6 @@ extends java.lang.Object</pre>
 <dd>The configuration settings associated with all configured packages.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code>com.wm.app.b2b.server.ServiceException</code> - If an error occurs when substituting global variables.</dd>
-</dl>
-</li>
-</ul>
-<a name="read-java.io.File-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>read</h4>
-<pre>private static&nbsp;com.wm.data.IData&nbsp;read(java.io.File&nbsp;file)
-                               throws java.io.IOException</pre>
-<div class="block">Reads the given file and returns an IData representation of its contents.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>file</code> - The file to be read.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>An IData representation of the file's contents.</dd>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.io.IOException</code> - If an error occurs reading the file.</dd>
-</dl>
-</li>
-</ul>
-<a name="merge-java.io.File...-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>merge</h4>
-<pre>private static&nbsp;com.wm.data.IData&nbsp;merge(java.io.File...&nbsp;files)
-                                throws java.io.IOException</pre>
-<div class="block">Reads the given list of files, and returns a merged IData representation of their contents.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>files</code> - The list of files to be read.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>A merged IData representation of their contents.</dd>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.io.IOException</code> - If an error occurs reading the files.</dd>
-</dl>
-</li>
-</ul>
-<a name="getParser-java.io.File-">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>getParser</h4>
-<pre>private static&nbsp;<a href="../../../permafrost/tundra/data/IDataParser.html" title="class in permafrost.tundra.data">IDataParser</a>&nbsp;getParser(java.io.File&nbsp;file)</pre>
-<div class="block">Returns an IDataTextParser that can parse the given file.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>file</code> - The file to be parsed.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>An IDataTextParser that can parse the given file, or null if it cannot be parsed.</dd>
 </dl>
 </li>
 </ul>
@@ -739,14 +537,14 @@ extends java.lang.Object</pre>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
-<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
-<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
 </div>

@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":41,"i2":9,"i3":9,"i4":41,"i5":9,"i6":41,"i7":9,"i8":9,"i9":9,"i10":9,"i11":9,"i12":9,"i13":41,"i14":9,"i15":41,"i16":9,"i17":9,"i18":41,"i19":9,"i20":41,"i21":9,"i22":41,"i23":9,"i24":41,"i25":9,"i26":41,"i27":9,"i28":41,"i29":9};
+var methods = {"i0":41,"i1":9,"i2":41,"i3":9,"i4":41,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":41,"i11":9,"i12":41,"i13":9,"i14":41,"i15":9,"i16":41,"i17":9,"i18":41,"i19":9,"i20":41,"i21":9,"i22":41,"i23":9,"i24":41,"i25":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -174,12 +174,6 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>private static void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/Assert.html#assignableCheckFailed-java.lang.Class-java.lang.Class-java.lang.String-">assignableCheckFailed</a></span>(java.lang.Class&lt;?&gt;&nbsp;superType,
-                     java.lang.Class&lt;?&gt;&nbsp;subType,
-                     java.lang.String&nbsp;msg)</code>&nbsp;</td>
-</tr>
-<tr id="i1" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/Assert.html#doesNotContain-java.lang.String-java.lang.String-">doesNotContain</a></span>(java.lang.String&nbsp;textToSearch,
               java.lang.String&nbsp;substring)</code>
@@ -188,7 +182,7 @@ extends java.lang.Object</pre>
 </div>
 </td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/Assert.html#doesNotContain-java.lang.String-java.lang.String-java.lang.String-">doesNotContain</a></span>(java.lang.String&nbsp;textToSearch,
               java.lang.String&nbsp;substring,
@@ -196,11 +190,7 @@ extends java.lang.Object</pre>
 <div class="block">Assert that the given text does not contain the given substring.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
-<td class="colFirst"><code>private static boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/Assert.html#endsWithSeparator-java.lang.String-">endsWithSeparator</a></span>(java.lang.String&nbsp;msg)</code>&nbsp;</td>
-</tr>
-<tr id="i4" class="altColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/Assert.html#hasLength-java.lang.String-">hasLength</a></span>(java.lang.String&nbsp;text)</code>
 <div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
@@ -208,7 +198,7 @@ extends java.lang.Object</pre>
 </div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/Assert.html#hasLength-java.lang.String-java.lang.String-">hasLength</a></span>(java.lang.String&nbsp;text,
          java.lang.String&nbsp;message)</code>
@@ -216,7 +206,7 @@ extends java.lang.Object</pre>
  it must not be <code>null</code> and not the empty String.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/Assert.html#hasText-java.lang.String-">hasText</a></span>(java.lang.String&nbsp;text)</code>
 <div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
@@ -224,7 +214,7 @@ extends java.lang.Object</pre>
 </div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/Assert.html#hasText-java.lang.String-java.lang.String-">hasText</a></span>(java.lang.String&nbsp;text,
        java.lang.String&nbsp;message)</code>
@@ -232,20 +222,14 @@ extends java.lang.Object</pre>
  be <code>null</code> and must contain at least one non-whitespace character.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
-<td class="colFirst"><code>private static void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/Assert.html#instanceCheckFailed-java.lang.Class-java.lang.Object-java.lang.String-">instanceCheckFailed</a></span>(java.lang.Class&lt;?&gt;&nbsp;type,
-                   java.lang.Object&nbsp;obj,
-                   java.lang.String&nbsp;msg)</code>&nbsp;</td>
-</tr>
-<tr id="i9" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/Assert.html#isAssignable-java.lang.Class-java.lang.Class-">isAssignable</a></span>(java.lang.Class&lt;?&gt;&nbsp;superType,
             java.lang.Class&lt;?&gt;&nbsp;subType)</code>
 <div class="block">Assert that <code>superType.isAssignableFrom(subType)</code> is <code>true</code>.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/Assert.html#isAssignable-java.lang.Class-java.lang.Class-java.lang.String-">isAssignable</a></span>(java.lang.Class&lt;?&gt;&nbsp;superType,
             java.lang.Class&lt;?&gt;&nbsp;subType,
@@ -253,14 +237,14 @@ extends java.lang.Object</pre>
 <div class="block">Assert that <code>superType.isAssignableFrom(subType)</code> is <code>true</code>.</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/Assert.html#isInstanceOf-java.lang.Class-java.lang.Object-">isInstanceOf</a></span>(java.lang.Class&lt;?&gt;&nbsp;type,
             java.lang.Object&nbsp;obj)</code>
 <div class="block">Assert that the provided object is an instance of the provided class.</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/Assert.html#isInstanceOf-java.lang.Class-java.lang.Object-java.lang.String-">isInstanceOf</a></span>(java.lang.Class&lt;?&gt;&nbsp;type,
             java.lang.Object&nbsp;obj,
@@ -268,7 +252,7 @@ extends java.lang.Object</pre>
 <div class="block">Assert that the provided object is an instance of the provided class.</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/Assert.html#isNull-java.lang.Object-">isNull</a></span>(java.lang.Object&nbsp;object)</code>
 <div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
@@ -276,14 +260,14 @@ extends java.lang.Object</pre>
 </div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/Assert.html#isNull-java.lang.Object-java.lang.String-">isNull</a></span>(java.lang.Object&nbsp;object,
       java.lang.String&nbsp;message)</code>
 <div class="block">Assert that an object is <code>null</code>.</div>
 </td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/Assert.html#isTrue-boolean-">isTrue</a></span>(boolean&nbsp;expression)</code>
 <div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
@@ -291,7 +275,7 @@ extends java.lang.Object</pre>
 </div>
 </td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/Assert.html#isTrue-boolean-java.lang.String-">isTrue</a></span>(boolean&nbsp;expression,
       java.lang.String&nbsp;message)</code>
@@ -299,12 +283,7 @@ extends java.lang.Object</pre>
  if the expression evaluates to <code>false</code>.</div>
 </td>
 </tr>
-<tr id="i17" class="rowColor">
-<td class="colFirst"><code>private static java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/Assert.html#messageWithTypeName-java.lang.String-java.lang.Object-">messageWithTypeName</a></span>(java.lang.String&nbsp;msg,
-                   java.lang.Object&nbsp;typeName)</code>&nbsp;</td>
-</tr>
-<tr id="i18" class="altColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/Assert.html#noNullElements-java.lang.Object:A-">noNullElements</a></span>(java.lang.Object[]&nbsp;array)</code>
 <div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
@@ -312,14 +291,14 @@ extends java.lang.Object</pre>
 </div>
 </td>
 </tr>
-<tr id="i19" class="rowColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/Assert.html#noNullElements-java.lang.Object:A-java.lang.String-">noNullElements</a></span>(java.lang.Object[]&nbsp;array,
               java.lang.String&nbsp;message)</code>
 <div class="block">Assert that an array contains no <code>null</code> elements.</div>
 </td>
 </tr>
-<tr id="i20" class="altColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/Assert.html#notEmpty-java.util.Collection-">notEmpty</a></span>(java.util.Collection&lt;?&gt;&nbsp;collection)</code>
 <div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
@@ -327,7 +306,7 @@ extends java.lang.Object</pre>
 </div>
 </td>
 </tr>
-<tr id="i21" class="rowColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/Assert.html#notEmpty-java.util.Collection-java.lang.String-">notEmpty</a></span>(java.util.Collection&lt;?&gt;&nbsp;collection,
         java.lang.String&nbsp;message)</code>
@@ -335,7 +314,7 @@ extends java.lang.Object</pre>
  <code>null</code> and must contain at least one element.</div>
 </td>
 </tr>
-<tr id="i22" class="altColor">
+<tr id="i18" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/Assert.html#notEmpty-java.util.Map-">notEmpty</a></span>(java.util.Map&lt;?,?&gt;&nbsp;map)</code>
 <div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
@@ -343,7 +322,7 @@ extends java.lang.Object</pre>
 </div>
 </td>
 </tr>
-<tr id="i23" class="rowColor">
+<tr id="i19" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/Assert.html#notEmpty-java.util.Map-java.lang.String-">notEmpty</a></span>(java.util.Map&lt;?,?&gt;&nbsp;map,
         java.lang.String&nbsp;message)</code>
@@ -351,7 +330,7 @@ extends java.lang.Object</pre>
  and must contain at least one entry.</div>
 </td>
 </tr>
-<tr id="i24" class="altColor">
+<tr id="i20" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/Assert.html#notEmpty-java.lang.Object:A-">notEmpty</a></span>(java.lang.Object[]&nbsp;array)</code>
 <div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
@@ -359,7 +338,7 @@ extends java.lang.Object</pre>
 </div>
 </td>
 </tr>
-<tr id="i25" class="rowColor">
+<tr id="i21" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/Assert.html#notEmpty-java.lang.Object:A-java.lang.String-">notEmpty</a></span>(java.lang.Object[]&nbsp;array,
         java.lang.String&nbsp;message)</code>
@@ -367,7 +346,7 @@ extends java.lang.Object</pre>
  <code>null</code> and must contain at least one element.</div>
 </td>
 </tr>
-<tr id="i26" class="altColor">
+<tr id="i22" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/Assert.html#notNull-java.lang.Object-">notNull</a></span>(java.lang.Object&nbsp;object)</code>
 <div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
@@ -375,14 +354,14 @@ extends java.lang.Object</pre>
 </div>
 </td>
 </tr>
-<tr id="i27" class="rowColor">
+<tr id="i23" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/Assert.html#notNull-java.lang.Object-java.lang.String-">notNull</a></span>(java.lang.Object&nbsp;object,
        java.lang.String&nbsp;message)</code>
 <div class="block">Assert that an object is not <code>null</code>.</div>
 </td>
 </tr>
-<tr id="i28" class="altColor">
+<tr id="i24" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/Assert.html#state-boolean-">state</a></span>(boolean&nbsp;expression)</code>
 <div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
@@ -390,7 +369,7 @@ extends java.lang.Object</pre>
 </div>
 </td>
 </tr>
-<tr id="i29" class="rowColor">
+<tr id="i25" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/Assert.html#state-boolean-java.lang.String-">state</a></span>(boolean&nbsp;expression,
      java.lang.String&nbsp;message)</code>
@@ -656,7 +635,7 @@ public static&nbsp;void&nbsp;hasText(java.lang.String&nbsp;text)</pre>
 <h4>doesNotContain</h4>
 <pre>@Deprecated
 public static&nbsp;void&nbsp;doesNotContain(java.lang.String&nbsp;textToSearch,
-                                              java.lang.String&nbsp;substring)</pre>
+                                               java.lang.String&nbsp;substring)</pre>
 <div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">as of 4.3.7, in favor of <a href="../../../../../permafrost/tundra/org/springframework/util/Assert.html#doesNotContain-java.lang.String-java.lang.String-java.lang.String-"><code>doesNotContain(String, String, String)</code></a></span></div>
 </li>
 </ul>
@@ -857,7 +836,7 @@ public static&nbsp;void&nbsp;notEmpty(java.util.Map&lt;?,?&gt;&nbsp;map)</pre>
 <a name="isAssignable-java.lang.Class-java.lang.Class-">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>isAssignable</h4>
 <pre>public static&nbsp;void&nbsp;isAssignable(java.lang.Class&lt;?&gt;&nbsp;superType,
@@ -871,47 +850,6 @@ public static&nbsp;void&nbsp;notEmpty(java.util.Map&lt;?,?&gt;&nbsp;map)</pre>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code>java.lang.IllegalArgumentException</code> - if the classes are not assignable</dd>
 </dl>
-</li>
-</ul>
-<a name="instanceCheckFailed-java.lang.Class-java.lang.Object-java.lang.String-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>instanceCheckFailed</h4>
-<pre>private static&nbsp;void&nbsp;instanceCheckFailed(java.lang.Class&lt;?&gt;&nbsp;type,
-                                        java.lang.Object&nbsp;obj,
-                                        java.lang.String&nbsp;msg)</pre>
-</li>
-</ul>
-<a name="assignableCheckFailed-java.lang.Class-java.lang.Class-java.lang.String-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>assignableCheckFailed</h4>
-<pre>private static&nbsp;void&nbsp;assignableCheckFailed(java.lang.Class&lt;?&gt;&nbsp;superType,
-                                          java.lang.Class&lt;?&gt;&nbsp;subType,
-                                          java.lang.String&nbsp;msg)</pre>
-</li>
-</ul>
-<a name="endsWithSeparator-java.lang.String-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>endsWithSeparator</h4>
-<pre>private static&nbsp;boolean&nbsp;endsWithSeparator(java.lang.String&nbsp;msg)</pre>
-</li>
-</ul>
-<a name="messageWithTypeName-java.lang.String-java.lang.Object-">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>messageWithTypeName</h4>
-<pre>private static&nbsp;java.lang.String&nbsp;messageWithTypeName(java.lang.String&nbsp;msg,
-                                                    java.lang.Object&nbsp;typeName)</pre>
 </li>
 </ul>
 </li>

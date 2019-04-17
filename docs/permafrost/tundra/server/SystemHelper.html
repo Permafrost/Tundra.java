@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9};
+var methods = {"i0":9,"i1":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -73,14 +73,14 @@ var activeTableTab = "activeTableTab";
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
-<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
-<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
 </div>
@@ -116,54 +116,6 @@ extends java.lang.Object</pre>
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
-<!-- =========== FIELD SUMMARY =========== -->
-<ul class="blockList">
-<li class="blockList"><a name="field.summary">
-<!--   -->
-</a>
-<h3>Field Summary</h3>
-<table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Field Summary table, listing fields, and an explanation">
-<caption><span>Fields</span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier and Type</th>
-<th class="colLast" scope="col">Field and Description</th>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private static boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/SystemHelper.html#OPERATING_SYSTEM_IS_WINDOWS">OPERATING_SYSTEM_IS_WINDOWS</a></span></code>
-<div class="block">Whether the operating system is Microsoft Windows based.</div>
-</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>private static com.wm.data.IData</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/SystemHelper.html#system">system</a></span></code>
-<div class="block">The cached structure for system environment variables.</div>
-</td>
-</tr>
-</table>
-</li>
-</ul>
-<!-- ======== CONSTRUCTOR SUMMARY ======== -->
-<ul class="blockList">
-<li class="blockList"><a name="constructor.summary">
-<!--   -->
-</a>
-<h3>Constructor Summary</h3>
-<table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Constructor Summary table, listing constructors, and an explanation">
-<caption><span>Constructors</span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier</th>
-<th class="colLast" scope="col">Constructor and Description</th>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private </code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/SystemHelper.html#SystemHelper--">SystemHelper</a></span>()</code>
-<div class="block">Disallow instantiation of this class.</div>
-</td>
-</tr>
-</table>
-</li>
-</ul>
 <!-- ========== METHOD SUMMARY =========== -->
 <ul class="blockList">
 <li class="blockList"><a name="method.summary">
@@ -177,49 +129,13 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>private static java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/SystemHelper.html#getDefaultFromEmailAddress--">getDefaultFromEmailAddress</a></span>()</code>
-<div class="block">Returns the default from email address of this Integration Server.</div>
-</td>
-</tr>
-<tr id="i1" class="rowColor">
-<td class="colFirst"><code>private static com.wm.data.IData</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/SystemHelper.html#getDirectories--">getDirectories</a></span>()</code>
-<div class="block">Returns the locations of well-known Integration Server directories.</div>
-</td>
-</tr>
-<tr id="i2" class="altColor">
-<td class="colFirst"><code>private static com.wm.data.IData</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/SystemHelper.html#getEnvironment--">getEnvironment</a></span>()</code>
-<div class="block">Returns the current system environment variables.</div>
-</td>
-</tr>
-<tr id="i3" class="rowColor">
-<td class="colFirst"><code>private static com.wm.data.IData</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/SystemHelper.html#getMemoryUsage--">getMemoryUsage</a></span>()</code>
-<div class="block">Returns the Java heap memory usage for the currently executing JVM process.</div>
-</td>
-</tr>
-<tr id="i4" class="altColor">
-<td class="colFirst"><code>private static com.wm.data.IData</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/SystemHelper.html#getProperties--">getProperties</a></span>()</code>
-<div class="block">Returns the current system properties.</div>
-</td>
-</tr>
-<tr id="i5" class="rowColor">
-<td class="colFirst"><code>private static boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/SystemHelper.html#isWindows--">isWindows</a></span>()</code>
-<div class="block">Returns true if the operating system is Microsoft Windows based.</div>
-</td>
-</tr>
-<tr id="i6" class="altColor">
 <td class="colFirst"><code>static com.wm.data.IData</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/SystemHelper.html#reflect--">reflect</a></span>()</code>
 <div class="block">Returns information about Integration Server such as the software version, environment settings, Java properties,
  well-known directory locations, and memory usage.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code>static com.wm.data.IData</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/SystemHelper.html#reflect-boolean-">reflect</a></span>(boolean&nbsp;refresh)</code>
 <div class="block">Returns information about Integration Server such as the software version, environment settings, Java properties,
@@ -242,52 +158,6 @@ extends java.lang.Object</pre>
 <div class="details">
 <ul class="blockList">
 <li class="blockList">
-<!-- ============ FIELD DETAIL =========== -->
-<ul class="blockList">
-<li class="blockList"><a name="field.detail">
-<!--   -->
-</a>
-<h3>Field Detail</h3>
-<a name="system">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>system</h4>
-<pre>private static volatile&nbsp;com.wm.data.IData system</pre>
-<div class="block">The cached structure for system environment variables.</div>
-</li>
-</ul>
-<a name="OPERATING_SYSTEM_IS_WINDOWS">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>OPERATING_SYSTEM_IS_WINDOWS</h4>
-<pre>private static volatile&nbsp;boolean OPERATING_SYSTEM_IS_WINDOWS</pre>
-<div class="block">Whether the operating system is Microsoft Windows based.</div>
-</li>
-</ul>
-</li>
-</ul>
-<!-- ========= CONSTRUCTOR DETAIL ======== -->
-<ul class="blockList">
-<li class="blockList"><a name="constructor.detail">
-<!--   -->
-</a>
-<h3>Constructor Detail</h3>
-<a name="SystemHelper--">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>SystemHelper</h4>
-<pre>private&nbsp;SystemHelper()</pre>
-<div class="block">Disallow instantiation of this class.</div>
-</li>
-</ul>
-</li>
-</ul>
 <!-- ============ METHOD DETAIL ========== -->
 <ul class="blockList">
 <li class="blockList"><a name="method.detail">
@@ -315,7 +185,7 @@ extends java.lang.Object</pre>
 <a name="reflect-boolean-">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>reflect</h4>
 <pre>public static&nbsp;com.wm.data.IData&nbsp;reflect(boolean&nbsp;refresh)
@@ -330,90 +200,6 @@ extends java.lang.Object</pre>
 <dd>Integration Server properties.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code>com.wm.app.b2b.server.ServiceException</code> - If an error occurs.</dd>
-</dl>
-</li>
-</ul>
-<a name="isWindows--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>isWindows</h4>
-<pre>private static&nbsp;boolean&nbsp;isWindows()</pre>
-<div class="block">Returns true if the operating system is Microsoft Windows based.</div>
-<dl>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>True if the operating system is Microsoft Windows based.</dd>
-</dl>
-</li>
-</ul>
-<a name="getEnvironment--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getEnvironment</h4>
-<pre>private static&nbsp;com.wm.data.IData&nbsp;getEnvironment()</pre>
-<div class="block">Returns the current system environment variables.</div>
-<dl>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>The current system environment variables.</dd>
-</dl>
-</li>
-</ul>
-<a name="getProperties--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getProperties</h4>
-<pre>private static&nbsp;com.wm.data.IData&nbsp;getProperties()</pre>
-<div class="block">Returns the current system properties.</div>
-<dl>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>The current system properties.</dd>
-</dl>
-</li>
-</ul>
-<a name="getDirectories--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getDirectories</h4>
-<pre>private static&nbsp;com.wm.data.IData&nbsp;getDirectories()</pre>
-<div class="block">Returns the locations of well-known Integration Server directories.</div>
-<dl>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>The locations of well-known Integration Server directories.</dd>
-</dl>
-</li>
-</ul>
-<a name="getMemoryUsage--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getMemoryUsage</h4>
-<pre>private static&nbsp;com.wm.data.IData&nbsp;getMemoryUsage()</pre>
-<div class="block">Returns the Java heap memory usage for the currently executing JVM process.</div>
-<dl>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>The Java heap memory usage for the currently executing JVM process.</dd>
-</dl>
-</li>
-</ul>
-<a name="getDefaultFromEmailAddress--">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>getDefaultFromEmailAddress</h4>
-<pre>private static&nbsp;java.lang.String&nbsp;getDefaultFromEmailAddress()</pre>
-<div class="block">Returns the default from email address of this Integration Server.</div>
-<dl>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>the default from email address of this Integration Server.</dd>
 </dl>
 </li>
 </ul>
@@ -470,14 +256,14 @@ extends java.lang.Object</pre>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
-<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
-<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
 </div>

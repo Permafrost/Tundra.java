@@ -191,7 +191,7 @@ extends <a href="../../../../permafrost/tundra/math/gauss/Estimator.Results.html
        double&nbsp;minimum,
        double&nbsp;maximum,
        double&nbsp;cumulative)</code>
-<div class="block">Create a new Results object.</div>
+<div class="block">Constructs a new Results object.</div>
 </td>
 </tr>
 </table>
@@ -316,7 +316,20 @@ extends <a href="../../../../permafrost/tundra/math/gauss/Estimator.Results.html
                double&nbsp;minimum,
                double&nbsp;maximum,
                double&nbsp;cumulative)</pre>
-<div class="block">Create a new Results object.</div>
+<div class="block">Constructs a new Results object.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>subject</code> - The subject or description of what was estimated.</dd>
+<dd><code>unit</code> - The unit of measurement related to the measured samples.</dd>
+<dd><code>count</code> - The number of samples measured.</dd>
+<dd><code>successes</code> - The number of successful invocations (those which did not throw an exception).</dd>
+<dd><code>failures</code> - The number of failed invocations (those which did throw an exception).</dd>
+<dd><code>mean</code> - The measured mean value.</dd>
+<dd><code>sq</code> - The measured square value.</dd>
+<dd><code>minimum</code> - The measured minimum value.</dd>
+<dd><code>maximum</code> - The measured maximum value.</dd>
+<dd><code>cumulative</code> - The measured cumulative value.</dd>
+</dl>
 </li>
 </ul>
 </li>

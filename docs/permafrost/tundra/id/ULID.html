@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":9,"i2":9,"i3":9};
+var methods = {"i0":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -73,13 +73,13 @@ var activeTableTab = "activeTableTab";
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
@@ -116,45 +116,6 @@ extends java.lang.Object</pre>
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
-<!-- =========== FIELD SUMMARY =========== -->
-<ul class="blockList">
-<li class="blockList"><a name="field.summary">
-<!--   -->
-</a>
-<h3>Field Summary</h3>
-<table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Field Summary table, listing fields, and an explanation">
-<caption><span>Fields</span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier and Type</th>
-<th class="colLast" scope="col">Field and Description</th>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private static char[]</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/id/ULID.html#ENCODE_TABLE">ENCODE_TABLE</a></span></code>
-<div class="block">Table of characters used to base32-encode the ULID time and random components.</div>
-</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>private static int</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/id/ULID.html#RANDOM_LENGTH">RANDOM_LENGTH</a></span></code>
-<div class="block">The number of characters in the ULID devoted to the random component.</div>
-</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private static double</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/id/ULID.html#RANDOM_MULTIPLIER">RANDOM_MULTIPLIER</a></span></code>
-<div class="block">The multiplication factor used for 40-bits of randomness.</div>
-</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>private static int</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/id/ULID.html#TIME_LENGTH">TIME_LENGTH</a></span></code>
-<div class="block">The number of characters in the ULID devoted to the time component.</div>
-</td>
-</tr>
-</table>
-</li>
-</ul>
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
 <ul class="blockList">
 <li class="blockList"><a name="constructor.summary">
@@ -185,26 +146,6 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>private static void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/id/ULID.html#encode-java.lang.StringBuilder-long-int-">encode</a></span>(java.lang.StringBuilder&nbsp;buffer,
-      long&nbsp;value,
-      int&nbsp;length)</code>
-<div class="block">Base-32 encodes the given value for the given length into the given buffer.</div>
-</td>
-</tr>
-<tr id="i1" class="rowColor">
-<td class="colFirst"><code>private static void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/id/ULID.html#encodeRandom-java.lang.StringBuilder-">encodeRandom</a></span>(java.lang.StringBuilder&nbsp;buffer)</code>
-<div class="block">Encodes a randomness component into this ULID's string buffer.</div>
-</td>
-</tr>
-<tr id="i2" class="altColor">
-<td class="colFirst"><code>private static void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/id/ULID.html#encodeTime-java.lang.StringBuilder-">encodeTime</a></span>(java.lang.StringBuilder&nbsp;buffer)</code>
-<div class="block">Encode the current time into this ULID's string buffer.</div>
-</td>
-</tr>
-<tr id="i3" class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/id/ULID.html#generate--">generate</a></span>()</code>
 <div class="block">Returns a newly generated ULID.</div>
@@ -226,62 +167,6 @@ extends java.lang.Object</pre>
 <div class="details">
 <ul class="blockList">
 <li class="blockList">
-<!-- ============ FIELD DETAIL =========== -->
-<ul class="blockList">
-<li class="blockList"><a name="field.detail">
-<!--   -->
-</a>
-<h3>Field Detail</h3>
-<a name="ENCODE_TABLE">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>ENCODE_TABLE</h4>
-<pre>private static final&nbsp;char[] ENCODE_TABLE</pre>
-<div class="block">Table of characters used to base32-encode the ULID time and random components.</div>
-</li>
-</ul>
-<a name="TIME_LENGTH">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>TIME_LENGTH</h4>
-<pre>private static final&nbsp;int TIME_LENGTH</pre>
-<div class="block">The number of characters in the ULID devoted to the time component.</div>
-<dl>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../constant-values.html#permafrost.tundra.id.ULID.TIME_LENGTH">Constant Field Values</a></dd>
-</dl>
-</li>
-</ul>
-<a name="RANDOM_LENGTH">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>RANDOM_LENGTH</h4>
-<pre>private static final&nbsp;int RANDOM_LENGTH</pre>
-<div class="block">The number of characters in the ULID devoted to the random component.</div>
-<dl>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../constant-values.html#permafrost.tundra.id.ULID.RANDOM_LENGTH">Constant Field Values</a></dd>
-</dl>
-</li>
-</ul>
-<a name="RANDOM_MULTIPLIER">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>RANDOM_MULTIPLIER</h4>
-<pre>private static final&nbsp;double RANDOM_MULTIPLIER</pre>
-<div class="block">The multiplication factor used for 40-bits of randomness.</div>
-</li>
-</ul>
-</li>
-</ul>
 <!-- ========= CONSTRUCTOR DETAIL ======== -->
 <ul class="blockList">
 <li class="blockList"><a name="constructor.detail">
@@ -308,7 +193,7 @@ extends java.lang.Object</pre>
 <a name="generate--">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>generate</h4>
 <pre>public static&nbsp;java.lang.String&nbsp;generate()</pre>
@@ -316,52 +201,6 @@ extends java.lang.Object</pre>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A newly generated ULID.</dd>
-</dl>
-</li>
-</ul>
-<a name="encode-java.lang.StringBuilder-long-int-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>encode</h4>
-<pre>private static&nbsp;void&nbsp;encode(java.lang.StringBuilder&nbsp;buffer,
-                           long&nbsp;value,
-                           int&nbsp;length)</pre>
-<div class="block">Base-32 encodes the given value for the given length into the given buffer.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>buffer</code> - The buffer to encode the value into.</dd>
-<dd><code>value</code> - The value to be encoded.</dd>
-<dd><code>length</code> - The number of base-32 characters the value is to be represented by.</dd>
-</dl>
-</li>
-</ul>
-<a name="encodeTime-java.lang.StringBuilder-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>encodeTime</h4>
-<pre>private static&nbsp;void&nbsp;encodeTime(java.lang.StringBuilder&nbsp;buffer)</pre>
-<div class="block">Encode the current time into this ULID's string buffer.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>buffer</code> - The buffer into which the time is encoded.</dd>
-</dl>
-</li>
-</ul>
-<a name="encodeRandom-java.lang.StringBuilder-">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>encodeRandom</h4>
-<pre>private static&nbsp;void&nbsp;encodeRandom(java.lang.StringBuilder&nbsp;buffer)</pre>
-<div class="block">Encodes a randomness component into this ULID's string buffer.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>buffer</code> - The buffer into which the random number is encoded.</dd>
 </dl>
 </li>
 </ul>
@@ -418,13 +257,13 @@ extends java.lang.Object</pre>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>

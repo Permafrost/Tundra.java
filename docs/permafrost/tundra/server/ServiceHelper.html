@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9,"i11":9,"i12":9,"i13":9,"i14":9,"i15":9,"i16":9,"i17":9,"i18":9,"i19":9,"i20":9,"i21":9,"i22":9,"i23":9,"i24":9,"i25":9,"i26":9,"i27":9,"i28":9,"i29":9,"i30":9,"i31":9,"i32":9,"i33":9,"i34":9,"i35":9};
+var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9,"i11":9,"i12":9,"i13":9,"i14":9,"i15":9,"i16":9,"i17":9,"i18":9,"i19":9,"i20":9,"i21":9,"i22":9,"i23":9,"i24":9,"i25":9,"i26":9,"i27":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -74,13 +74,13 @@ var activeTableTab = "activeTableTab";
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
 </div>
@@ -116,27 +116,6 @@ extends java.lang.Object</pre>
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
-<!-- ======== CONSTRUCTOR SUMMARY ======== -->
-<ul class="blockList">
-<li class="blockList"><a name="constructor.summary">
-<!--   -->
-</a>
-<h3>Constructor Summary</h3>
-<table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Constructor Summary table, listing constructors, and an explanation">
-<caption><span>Constructors</span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier</th>
-<th class="colLast" scope="col">Constructor and Description</th>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private </code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/ServiceHelper.html#ServiceHelper--">ServiceHelper</a></span>()</code>
-<div class="block">Disallow instantiation of this class.</div>
-</td>
-</tr>
-</table>
-</li>
-</ul>
 <!-- ========== METHOD SUMMARY =========== -->
 <ul class="blockList">
 <li class="blockList"><a name="method.summary">
@@ -195,15 +174,6 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr id="i6" class="altColor">
-<td class="colFirst"><code>private static void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/ServiceHelper.html#create-java.lang.String-java.lang.String-java.lang.String-java.lang.String-">create</a></span>(java.lang.String&nbsp;packageName,
-      java.lang.String&nbsp;serviceName,
-      java.lang.String&nbsp;type,
-      java.lang.String&nbsp;subtype)</code>
-<div class="block">Creates a new service in the given package with the given name.</div>
-</td>
-</tr>
-<tr id="i7" class="rowColor">
 <td class="colFirst"><code>static com.wm.data.IData</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/ServiceHelper.html#ensure-java.lang.String-java.lang.String-java.lang.String-com.wm.data.IData-">ensure</a></span>(java.lang.String&nbsp;tryService,
       java.lang.String&nbsp;catchService,
@@ -212,7 +182,7 @@ extends java.lang.Object</pre>
 <div class="block">Provides a try/catch/finally pattern for flow services.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>static com.wm.data.IData</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/ServiceHelper.html#ensure-java.lang.String-java.lang.String-java.lang.String-com.wm.data.IData-com.wm.data.IData-com.wm.data.IData-">ensure</a></span>(java.lang.String&nbsp;tryService,
       java.lang.String&nbsp;catchService,
@@ -223,70 +193,70 @@ extends java.lang.Object</pre>
 <div class="block">Provides a try/catch/finally pattern for flow services.</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>static boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/ServiceHelper.html#exists-java.lang.String-">exists</a></span>(java.lang.String&nbsp;service)</code>
 <div class="block">Returns true if the given service exists in Integration Server.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>static boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/ServiceHelper.html#exists-java.lang.String-boolean-">exists</a></span>(java.lang.String&nbsp;service,
       boolean&nbsp;raise)</code>
 <div class="block">Returns true if the given service exists in Integration Server.</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>static com.wm.app.b2b.server.ServiceThread</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/ServiceHelper.html#fork-java.lang.String-com.wm.data.IData-">fork</a></span>(java.lang.String&nbsp;service,
     com.wm.data.IData&nbsp;pipeline)</code>
 <div class="block">Invokes the given service with the given pipeline asynchronously (in another thread).</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>static java.util.List&lt;com.wm.lang.ns.NSService&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/ServiceHelper.html#getCallStack--">getCallStack</a></span>()</code>
 <div class="block">Returns a copy of the call stack for the current invocation.</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>static com.wm.data.IData</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/ServiceHelper.html#getDependents-java.lang.String...-">getDependents</a></span>(java.lang.String...&nbsp;services)</code>
 <div class="block">Returns the list of services that are dependent on the given list of services.</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/ServiceHelper.html#getPackageName-com.wm.app.b2b.server.BaseService-">getPackageName</a></span>(com.wm.app.b2b.server.BaseService&nbsp;service)</code>
 <div class="block">Returns the name of the package the given service resides in.</div>
 </td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/ServiceHelper.html#getPackageName-java.lang.String-">getPackageName</a></span>(java.lang.String&nbsp;serviceName)</code>
 <div class="block">Returns the name of the package the given service resides in.</div>
 </td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code>static com.wm.data.IData</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/ServiceHelper.html#getReferences-java.lang.String...-">getReferences</a></span>(java.lang.String...&nbsp;services)</code>
 <div class="block">Returns the list of elements referenced by the given list of services.</div>
 </td>
 </tr>
-<tr id="i17" class="rowColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code>static com.wm.app.b2b.server.BaseService</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/ServiceHelper.html#getService-java.lang.String-">getService</a></span>(java.lang.String&nbsp;serviceName)</code>
 <div class="block">Returns a BaseService object given a service name.</div>
 </td>
 </tr>
-<tr id="i18" class="altColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code>static com.wm.data.IData</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/ServiceHelper.html#invoke-java.lang.String-com.wm.data.IData-">invoke</a></span>(java.lang.String&nbsp;service,
       com.wm.data.IData&nbsp;pipeline)</code>
 <div class="block">Invokes the given service with the given pipeline synchronously.</div>
 </td>
 </tr>
-<tr id="i19" class="rowColor">
+<tr id="i18" class="altColor">
 <td class="colFirst"><code>static com.wm.data.IData</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/ServiceHelper.html#invoke-java.lang.String-com.wm.data.IData-boolean-">invoke</a></span>(java.lang.String&nbsp;service,
       com.wm.data.IData&nbsp;pipeline,
@@ -294,7 +264,7 @@ extends java.lang.Object</pre>
 <div class="block">Invokes the given service with the given pipeline synchronously.</div>
 </td>
 </tr>
-<tr id="i20" class="altColor">
+<tr id="i19" class="rowColor">
 <td class="colFirst"><code>static com.wm.data.IData</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/ServiceHelper.html#invoke-java.lang.String-com.wm.data.IData-boolean-boolean-">invoke</a></span>(java.lang.String&nbsp;service,
       com.wm.data.IData&nbsp;pipeline,
@@ -303,7 +273,7 @@ extends java.lang.Object</pre>
 <div class="block">Invokes the given service with the given pipeline synchronously.</div>
 </td>
 </tr>
-<tr id="i21" class="rowColor">
+<tr id="i20" class="altColor">
 <td class="colFirst"><code>static com.wm.data.IData</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/ServiceHelper.html#invoke-java.lang.String-com.wm.data.IData-boolean-boolean-boolean-">invoke</a></span>(java.lang.String&nbsp;service,
       com.wm.data.IData&nbsp;pipeline,
@@ -313,45 +283,32 @@ extends java.lang.Object</pre>
 <div class="block">Invokes the given service with the given pipeline synchronously.</div>
 </td>
 </tr>
-<tr id="i22" class="altColor">
+<tr id="i21" class="rowColor">
 <td class="colFirst"><code>static boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/ServiceHelper.html#isInitiator--">isInitiator</a></span>()</code>
 <div class="block">Returns true if the calling service is the top-level initiating service of the current thread.</div>
 </td>
 </tr>
-<tr id="i23" class="rowColor">
+<tr id="i22" class="altColor">
 <td class="colFirst"><code>static com.wm.data.IData</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/ServiceHelper.html#join-com.wm.app.b2b.server.ServiceThread-">join</a></span>(com.wm.app.b2b.server.ServiceThread&nbsp;serviceThread)</code>
 <div class="block">Waits for an asynchronously invoked service to complete.</div>
 </td>
 </tr>
-<tr id="i24" class="altColor">
+<tr id="i23" class="rowColor">
 <td class="colFirst"><code>static com.wm.data.IData</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/ServiceHelper.html#join-com.wm.app.b2b.server.ServiceThread-boolean-">join</a></span>(com.wm.app.b2b.server.ServiceThread&nbsp;serviceThread,
     boolean&nbsp;raise)</code>
 <div class="block">Waits for an asynchronously invoked service to complete.</div>
 </td>
 </tr>
-<tr id="i25" class="rowColor">
-<td class="colFirst"><code>private static com.wm.data.IData</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/ServiceHelper.html#normalize-com.wm.data.IData-">normalize</a></span>(com.wm.data.IData&nbsp;pipeline)</code>
-<div class="block">Returns a new IData if the given pipeline is null, otherwise returns a clone of the given pipeline.</div>
-</td>
-</tr>
-<tr id="i26" class="altColor">
-<td class="colFirst"><code>private static com.wm.data.IData</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/ServiceHelper.html#normalize-com.wm.data.IData-boolean-">normalize</a></span>(com.wm.data.IData&nbsp;pipeline,
-         boolean&nbsp;clone)</code>
-<div class="block">Returns a new IData if the given pipeline is null, otherwise returns a clone of the given pipeline.</div>
-</td>
-</tr>
-<tr id="i27" class="rowColor">
+<tr id="i24" class="altColor">
 <td class="colFirst"><code>static com.wm.data.IData</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/ServiceHelper.html#reflect-java.lang.String-">reflect</a></span>(java.lang.String&nbsp;serviceName)</code>
 <div class="block">Returns information about the service with the given name.</div>
 </td>
 </tr>
-<tr id="i28" class="altColor">
+<tr id="i25" class="rowColor">
 <td class="colFirst"><code>static com.wm.data.IData</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/ServiceHelper.html#rescue-java.lang.String-com.wm.data.IData-java.lang.Throwable-">rescue</a></span>(java.lang.String&nbsp;catchService,
       com.wm.data.IData&nbsp;pipeline,
@@ -359,7 +316,7 @@ extends java.lang.Object</pre>
 <div class="block">Handles an exception using the given catch service.</div>
 </td>
 </tr>
-<tr id="i29" class="rowColor">
+<tr id="i26" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/ServiceHelper.html#respond-int-java.lang.String-com.wm.data.IData-java.io.InputStream-java.lang.String-java.nio.charset.Charset-">respond</a></span>(int&nbsp;code,
        java.lang.String&nbsp;message,
@@ -370,49 +327,10 @@ extends java.lang.Object</pre>
 <div class="block">Sets the HTTP response status, headers, and body for the current service invocation.</div>
 </td>
 </tr>
-<tr id="i30" class="altColor">
+<tr id="i27" class="rowColor">
 <td class="colFirst"><code>static com.wm.lang.ns.NSService</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/ServiceHelper.html#self--">self</a></span>()</code>
 <div class="block">Returns the invoking service.</div>
-</td>
-</tr>
-<tr id="i31" class="rowColor">
-<td class="colFirst"><code>private static void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/ServiceHelper.html#setContentType-com.wm.net.HttpHeader-java.lang.String-java.nio.charset.Charset-">setContentType</a></span>(com.wm.net.HttpHeader&nbsp;response,
-              java.lang.String&nbsp;contentType,
-              java.nio.charset.Charset&nbsp;charset)</code>
-<div class="block">Sets the Content-Type header in the given HTTP response.</div>
-</td>
-</tr>
-<tr id="i32" class="altColor">
-<td class="colFirst"><code>private static void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/ServiceHelper.html#setHeader-com.wm.net.HttpHeader-java.lang.String-java.lang.Object-">setHeader</a></span>(com.wm.net.HttpHeader&nbsp;response,
-         java.lang.String&nbsp;key,
-         java.lang.Object&nbsp;value)</code>
-<div class="block">Sets the HTTP header with the given key to the given value in the given HTTP response.</div>
-</td>
-</tr>
-<tr id="i33" class="rowColor">
-<td class="colFirst"><code>private static void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/ServiceHelper.html#setHeaders-com.wm.net.HttpHeader-com.wm.data.IData-">setHeaders</a></span>(com.wm.net.HttpHeader&nbsp;response,
-          com.wm.data.IData&nbsp;headers)</code>
-<div class="block">Sets all HTTP header with the given keys to their associated values from the given IData document in the given
- HTTP response.</div>
-</td>
-</tr>
-<tr id="i34" class="altColor">
-<td class="colFirst"><code>private static void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/ServiceHelper.html#setResponseBody-com.wm.net.HttpHeader-java.io.InputStream-">setResponseBody</a></span>(com.wm.net.HttpHeader&nbsp;response,
-               java.io.InputStream&nbsp;content)</code>
-<div class="block">Sets the response body in the given HTTP response.</div>
-</td>
-</tr>
-<tr id="i35" class="rowColor">
-<td class="colFirst"><code>private static void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/ServiceHelper.html#setResponseStatus-com.wm.net.HttpHeader-int-java.lang.String-">setResponseStatus</a></span>(com.wm.net.HttpHeader&nbsp;response,
-                 int&nbsp;code,
-                 java.lang.String&nbsp;message)</code>
-<div class="block">Sets the response status code and message in the given HTTP response.</div>
 </td>
 </tr>
 </table>
@@ -431,24 +349,6 @@ extends java.lang.Object</pre>
 <div class="details">
 <ul class="blockList">
 <li class="blockList">
-<!-- ========= CONSTRUCTOR DETAIL ======== -->
-<ul class="blockList">
-<li class="blockList"><a name="constructor.detail">
-<!--   -->
-</a>
-<h3>Constructor Detail</h3>
-<a name="ServiceHelper--">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>ServiceHelper</h4>
-<pre>private&nbsp;ServiceHelper()</pre>
-<div class="block">Disallow instantiation of this class.</div>
-</li>
-</ul>
-</li>
-</ul>
 <!-- ============ METHOD DETAIL ========== -->
 <ul class="blockList">
 <li class="blockList"><a name="method.detail">
@@ -480,29 +380,6 @@ extends java.lang.Object</pre>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>True if the calling service is the top-level initiating service of the current thread.</dd>
-</dl>
-</li>
-</ul>
-<a name="create-java.lang.String-java.lang.String-java.lang.String-java.lang.String-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>create</h4>
-<pre>private static&nbsp;void&nbsp;create(java.lang.String&nbsp;packageName,
-                           java.lang.String&nbsp;serviceName,
-                           java.lang.String&nbsp;type,
-                           java.lang.String&nbsp;subtype)
-                    throws com.wm.app.b2b.server.ServiceException</pre>
-<div class="block">Creates a new service in the given package with the given name.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>packageName</code> - The name of the package to create the service in.</dd>
-<dd><code>serviceName</code> - The fully-qualified name of the service to be created.</dd>
-<dd><code>type</code> - The type of service to be created.</dd>
-<dd><code>subtype</code> - The subtype of service to be created.</dd>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>com.wm.app.b2b.server.ServiceException</code> - If an error creating the service occurs.</dd>
 </dl>
 </li>
 </ul>
@@ -612,99 +489,6 @@ extends java.lang.Object</pre>
 <dd><code>charset</code> - The character set used if a text response is being returned.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code>com.wm.app.b2b.server.ServiceException</code> - If an I/O error occurs.</dd>
-</dl>
-</li>
-</ul>
-<a name="setResponseBody-com.wm.net.HttpHeader-java.io.InputStream-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>setResponseBody</h4>
-<pre>private static&nbsp;void&nbsp;setResponseBody(com.wm.net.HttpHeader&nbsp;response,
-                                    java.io.InputStream&nbsp;content)
-                             throws com.wm.app.b2b.server.ServiceException</pre>
-<div class="block">Sets the response body in the given HTTP response.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>response</code> - The HTTP response to set the response body in.</dd>
-<dd><code>content</code> - The content to set the response body to.</dd>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>com.wm.app.b2b.server.ServiceException</code> - If an I/O error occurs.</dd>
-</dl>
-</li>
-</ul>
-<a name="setResponseStatus-com.wm.net.HttpHeader-int-java.lang.String-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>setResponseStatus</h4>
-<pre>private static&nbsp;void&nbsp;setResponseStatus(com.wm.net.HttpHeader&nbsp;response,
-                                      int&nbsp;code,
-                                      java.lang.String&nbsp;message)</pre>
-<div class="block">Sets the response status code and message in the given HTTP response.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>response</code> - The HTTP response to set the response status in.</dd>
-<dd><code>code</code> - The response status code.</dd>
-<dd><code>message</code> - The response status message.</dd>
-</dl>
-</li>
-</ul>
-<a name="setContentType-com.wm.net.HttpHeader-java.lang.String-java.nio.charset.Charset-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>setContentType</h4>
-<pre>private static&nbsp;void&nbsp;setContentType(com.wm.net.HttpHeader&nbsp;response,
-                                   java.lang.String&nbsp;contentType,
-                                   java.nio.charset.Charset&nbsp;charset)
-                            throws com.wm.app.b2b.server.ServiceException</pre>
-<div class="block">Sets the Content-Type header in the given HTTP response.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>response</code> - The HTTP response to set the header in.</dd>
-<dd><code>contentType</code> - The MIME content type.</dd>
-<dd><code>charset</code> - The character set used by the content, or null if not applicable.</dd>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>com.wm.app.b2b.server.ServiceException</code> - If the MIME content type is malformed.</dd>
-</dl>
-</li>
-</ul>
-<a name="setHeaders-com.wm.net.HttpHeader-com.wm.data.IData-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>setHeaders</h4>
-<pre>private static&nbsp;void&nbsp;setHeaders(com.wm.net.HttpHeader&nbsp;response,
-                               com.wm.data.IData&nbsp;headers)</pre>
-<div class="block">Sets all HTTP header with the given keys to their associated values from the given IData document in the given
- HTTP response.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>response</code> - The HTTP response to add the header to.</dd>
-<dd><code>headers</code> - An IData document containing key value pairs to be set as headers in the given response.</dd>
-</dl>
-</li>
-</ul>
-<a name="setHeader-com.wm.net.HttpHeader-java.lang.String-java.lang.Object-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>setHeader</h4>
-<pre>private static&nbsp;void&nbsp;setHeader(com.wm.net.HttpHeader&nbsp;response,
-                              java.lang.String&nbsp;key,
-                              java.lang.Object&nbsp;value)</pre>
-<div class="block">Sets the HTTP header with the given key to the given value in the given HTTP response.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>response</code> - The HTTP response to add the header to.</dd>
-<dd><code>key</code> - The header's key.</dd>
-<dd><code>value</code> - The header's value.</dd>
 </dl>
 </li>
 </ul>
@@ -1086,40 +870,6 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
-<a name="normalize-com.wm.data.IData-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>normalize</h4>
-<pre>private static&nbsp;com.wm.data.IData&nbsp;normalize(com.wm.data.IData&nbsp;pipeline)</pre>
-<div class="block">Returns a new IData if the given pipeline is null, otherwise returns a clone of the given pipeline.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>pipeline</code> - The pipeline to be normalized.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>The normalized pipeline.</dd>
-</dl>
-</li>
-</ul>
-<a name="normalize-com.wm.data.IData-boolean-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>normalize</h4>
-<pre>private static&nbsp;com.wm.data.IData&nbsp;normalize(com.wm.data.IData&nbsp;pipeline,
-                                           boolean&nbsp;clone)</pre>
-<div class="block">Returns a new IData if the given pipeline is null, otherwise returns a clone of the given pipeline.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>pipeline</code> - The pipeline to be normalized.</dd>
-<dd><code>clone</code> - If true the pipeline will be cloned, otherwise it will be returned as is.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>The normalized pipeline.</dd>
-</dl>
-</li>
-</ul>
 <a name="getService-java.lang.String-">
 <!--   -->
 </a>
@@ -1222,13 +972,13 @@ extends java.lang.Object</pre>
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
 </div>

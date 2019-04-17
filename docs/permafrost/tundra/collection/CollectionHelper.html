@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9};
+var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -74,13 +74,13 @@ var activeTableTab = "activeTableTab";
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
 </div>
@@ -116,27 +116,6 @@ extends java.lang.Object</pre>
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
-<!-- ======== CONSTRUCTOR SUMMARY ======== -->
-<ul class="blockList">
-<li class="blockList"><a name="constructor.summary">
-<!--   -->
-</a>
-<h3>Constructor Summary</h3>
-<table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Constructor Summary table, listing constructors, and an explanation">
-<caption><span>Constructors</span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier</th>
-<th class="colLast" scope="col">Constructor and Description</th>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private </code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/collection/CollectionHelper.html#CollectionHelper--">CollectionHelper</a></span>()</code>
-<div class="block">Disallow instantiation of this class.</div>
-</td>
-</tr>
-</table>
-</li>
-</ul>
 <!-- ========== METHOD SUMMARY =========== -->
 <ul class="blockList">
 <li class="blockList"><a name="method.summary">
@@ -178,32 +157,40 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr id="i4" class="altColor">
+<td class="colFirst"><code>static &lt;E&gt;&nbsp;E[]</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/collection/CollectionHelper.html#arrayify-java.util.Collection-E:A-">arrayify</a></span>(java.util.Collection&lt;E&gt;&nbsp;collection,
+        E[]&nbsp;template)</code>
+<div class="block">Converts the given collection to an array, using the given array as a template for the resulting
+ array's component type.</div>
+</td>
+</tr>
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>static &lt;E&gt;&nbsp;java.util.Collection&lt;E&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/collection/CollectionHelper.html#clear-java.util.Collection-">clear</a></span>(java.util.Collection&lt;E&gt;&nbsp;collection)</code>
 <div class="block">Removes all elements from the given collection.</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>static &lt;E&gt;&nbsp;boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/collection/CollectionHelper.html#includes-java.util.Collection-E-">includes</a></span>(java.util.Collection&lt;E&gt;&nbsp;collection,
         E&nbsp;item)</code>
 <div class="block">Returns true if the given collection includes the given item.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>static &lt;E&gt;&nbsp;int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/collection/CollectionHelper.html#length-java.util.Collection-">length</a></span>(java.util.Collection&lt;E&gt;&nbsp;collection)</code>
 <div class="block">Returns the number of items in the given collection.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>static &lt;E&gt;&nbsp;java.util.Collection&lt;java.lang.String&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/collection/CollectionHelper.html#stringify-java.util.Collection-">stringify</a></span>(java.util.Collection&lt;E&gt;&nbsp;collection)</code>
 <div class="block">Converts the given collection to a collection of strings by calling toString() on each
  item.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>static &lt;E&gt;&nbsp;java.util.Collection&lt;java.lang.String&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/collection/CollectionHelper.html#stringify-java.util.Collection-boolean-">stringify</a></span>(java.util.Collection&lt;E&gt;&nbsp;collection,
          boolean&nbsp;includeNulls)</code>
@@ -227,24 +214,6 @@ extends java.lang.Object</pre>
 <div class="details">
 <ul class="blockList">
 <li class="blockList">
-<!-- ========= CONSTRUCTOR DETAIL ======== -->
-<ul class="blockList">
-<li class="blockList"><a name="constructor.detail">
-<!--   -->
-</a>
-<h3>Constructor Detail</h3>
-<a name="CollectionHelper--">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>CollectionHelper</h4>
-<pre>private&nbsp;CollectionHelper()</pre>
-<div class="block">Disallow instantiation of this class.</div>
-</li>
-</ul>
-</li>
-</ul>
 <!-- ============ METHOD DETAIL ========== -->
 <ul class="blockList">
 <li class="blockList"><a name="method.detail">
@@ -330,6 +299,29 @@ extends java.lang.Object</pre>
 <dd><code>collection</code> - The collection to be cleared.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The cleared collection.</dd>
+</dl>
+</li>
+</ul>
+<a name="arrayify-java.util.Collection-java.lang.Object:A-">
+<!--   -->
+</a><a name="arrayify-java.util.Collection-E:A-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>arrayify</h4>
+<pre>public static&nbsp;&lt;E&gt;&nbsp;E[]&nbsp;arrayify(java.util.Collection&lt;E&gt;&nbsp;collection,
+                               E[]&nbsp;template)</pre>
+<div class="block">Converts the given collection to an array, using the given array as a template for the resulting
+ array's component type.</div>
+<dl>
+<dt><span class="paramLabel">Type Parameters:</span></dt>
+<dd><code>E</code> - The component type of the collection and resulting array.</dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>collection</code> - The collection to be converted.</dd>
+<dd><code>template</code> - An array to use as the template for the resulting array's component type.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The collection converted to an array with a component type matching the given template.</dd>
 </dl>
 </li>
 </ul>
@@ -485,13 +477,13 @@ extends java.lang.Object</pre>
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
 </div>

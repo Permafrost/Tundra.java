@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10};
+var methods = {"i0":10,"i1":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -202,12 +202,6 @@ extends <a href="../../../permafrost/tundra/data/IDataParser.html" title="class 
 </td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code>private java.lang.Object</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/data/IDataYAMLParser.html#normalize-java.lang.Object-">normalize</a></span>(java.lang.Object&nbsp;value)</code>
-<div class="block">Converts a parsed value to an IData compatible representation.</div>
-</td>
-</tr>
-<tr id="i2" class="altColor">
 <td class="colFirst"><code>com.wm.data.IData</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/data/IDataYAMLParser.html#parse-java.io.InputStream-java.nio.charset.Charset-">parse</a></span>(java.io.InputStream&nbsp;inputStream,
      java.nio.charset.Charset&nbsp;charset)</code>
@@ -294,7 +288,7 @@ extends <a href="../../../permafrost/tundra/data/IDataParser.html" title="class 
 <a name="parse-java.io.InputStream-java.nio.charset.Charset-">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>parse</h4>
 <pre>public&nbsp;com.wm.data.IData&nbsp;parse(java.io.InputStream&nbsp;inputStream,
@@ -311,22 +305,6 @@ extends <a href="../../../permafrost/tundra/data/IDataParser.html" title="class 
 <dd>An IData representation of the given input stream data.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code>java.io.IOException</code> - If there is a problem reading from the stream.</dd>
-</dl>
-</li>
-</ul>
-<a name="normalize-java.lang.Object-">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>normalize</h4>
-<pre>private&nbsp;java.lang.Object&nbsp;normalize(java.lang.Object&nbsp;value)</pre>
-<div class="block">Converts a parsed value to an IData compatible representation.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>value</code> - The value to be converted.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>The converted value.</dd>
 </dl>
 </li>
 </ul>

@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9,"i11":9,"i12":9,"i13":9,"i14":9,"i15":9,"i16":9,"i17":9,"i18":9,"i19":9,"i20":9,"i21":9,"i22":9,"i23":9,"i24":9,"i25":9,"i26":9,"i27":9,"i28":9,"i29":9,"i30":9,"i31":9,"i32":9,"i33":9,"i34":9,"i35":9,"i36":9};
+var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9,"i11":9,"i12":9,"i13":9,"i14":9,"i15":9,"i16":9,"i17":9,"i18":9,"i19":9,"i20":9,"i21":9,"i22":9,"i23":9,"i24":9,"i25":9,"i26":9,"i27":9,"i28":9,"i29":9,"i30":9,"i31":9,"i32":9,"i33":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -175,45 +175,18 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Field and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>private static java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ReflectionUtils.html#CGLIB_RENAMED_METHOD_PREFIX">CGLIB_RENAMED_METHOD_PREFIX</a></span></code>
-<div class="block">Naming prefix for CGLIB-renamed methods.</div>
-</td>
-</tr>
-<tr class="rowColor">
 <td class="colFirst"><code>static <a href="../../../../../permafrost/tundra/org/springframework/util/ReflectionUtils.FieldFilter.html" title="interface in permafrost.tundra.org.springframework.util">ReflectionUtils.FieldFilter</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ReflectionUtils.html#COPYABLE_FIELDS">COPYABLE_FIELDS</a></span></code>
 <div class="block">Pre-built FieldFilter that matches all non-static, non-final fields.</div>
 </td>
 </tr>
-<tr class="altColor">
-<td class="colFirst"><code>private static java.util.Map&lt;java.lang.Class&lt;?&gt;,java.lang.reflect.Field[]&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ReflectionUtils.html#declaredFieldsCache">declaredFieldsCache</a></span></code>
-<div class="block">Cache for <code>Class.getDeclaredFields()</code>, allowing for fast iteration.</div>
-</td>
-</tr>
 <tr class="rowColor">
-<td class="colFirst"><code>private static java.util.Map&lt;java.lang.Class&lt;?&gt;,java.lang.reflect.Method[]&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ReflectionUtils.html#declaredMethodsCache">declaredMethodsCache</a></span></code>
-<div class="block">Cache for <code>Class.getDeclaredMethods()</code> plus equivalent default methods
- from Java 8 based interfaces, allowing for fast iteration.</div>
-</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private static java.lang.reflect.Field[]</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ReflectionUtils.html#NO_FIELDS">NO_FIELDS</a></span></code>&nbsp;</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>private static java.lang.reflect.Method[]</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ReflectionUtils.html#NO_METHODS">NO_METHODS</a></span></code>&nbsp;</td>
-</tr>
-<tr class="altColor">
 <td class="colFirst"><code>static <a href="../../../../../permafrost/tundra/org/springframework/util/ReflectionUtils.MethodFilter.html" title="interface in permafrost.tundra.org.springframework.util">ReflectionUtils.MethodFilter</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ReflectionUtils.html#NON_BRIDGED_METHODS">NON_BRIDGED_METHODS</a></span></code>
 <div class="block">Pre-built MethodFilter that matches all non-bridge methods.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>static <a href="../../../../../permafrost/tundra/org/springframework/util/ReflectionUtils.MethodFilter.html" title="interface in permafrost.tundra.org.springframework.util">ReflectionUtils.MethodFilter</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ReflectionUtils.html#USER_DECLARED_METHODS">USER_DECLARED_METHODS</a></span></code>
 <div class="block">Pre-built MethodFilter that matches all non-bridge methods
@@ -318,10 +291,6 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr id="i8" class="altColor">
-<td class="colFirst"><code>private static java.util.List&lt;java.lang.reflect.Method&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ReflectionUtils.html#findConcreteMethodsOnInterfaces-java.lang.Class-">findConcreteMethodsOnInterfaces</a></span>(java.lang.Class&lt;?&gt;&nbsp;clazz)</code>&nbsp;</td>
-</tr>
-<tr id="i9" class="rowColor">
 <td class="colFirst"><code>static java.lang.reflect.Field</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ReflectionUtils.html#findField-java.lang.Class-java.lang.String-">findField</a></span>(java.lang.Class&lt;?&gt;&nbsp;clazz,
          java.lang.String&nbsp;name)</code>
@@ -329,7 +298,7 @@ extends java.lang.Object</pre>
  supplied <code>name</code>.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>static java.lang.reflect.Field</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ReflectionUtils.html#findField-java.lang.Class-java.lang.String-java.lang.Class-">findField</a></span>(java.lang.Class&lt;?&gt;&nbsp;clazz,
          java.lang.String&nbsp;name,
@@ -338,7 +307,7 @@ extends java.lang.Object</pre>
  supplied <code>name</code> and/or <code>type</code>.</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>static java.lang.reflect.Method</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ReflectionUtils.html#findMethod-java.lang.Class-java.lang.String-">findMethod</a></span>(java.lang.Class&lt;?&gt;&nbsp;clazz,
           java.lang.String&nbsp;name)</code>
@@ -346,7 +315,7 @@ extends java.lang.Object</pre>
  and no parameters.</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>static java.lang.reflect.Method</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ReflectionUtils.html#findMethod-java.lang.Class-java.lang.String-java.lang.Class...-">findMethod</a></span>(java.lang.Class&lt;?&gt;&nbsp;clazz,
           java.lang.String&nbsp;name,
@@ -355,27 +324,13 @@ extends java.lang.Object</pre>
  and parameter types.</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>static java.lang.reflect.Method[]</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ReflectionUtils.html#getAllDeclaredMethods-java.lang.Class-">getAllDeclaredMethods</a></span>(java.lang.Class&lt;?&gt;&nbsp;leafClass)</code>
 <div class="block">Get all declared methods on the leaf class and all superclasses.</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
-<td class="colFirst"><code>private static java.lang.reflect.Field[]</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ReflectionUtils.html#getDeclaredFields-java.lang.Class-">getDeclaredFields</a></span>(java.lang.Class&lt;?&gt;&nbsp;clazz)</code>
-<div class="block">This variant retrieves <code>Class.getDeclaredFields()</code> from a local cache
- in order to avoid the JVM's SecurityManager check and defensive array copying.</div>
-</td>
-</tr>
-<tr id="i15" class="rowColor">
-<td class="colFirst"><code>private static java.lang.reflect.Method[]</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ReflectionUtils.html#getDeclaredMethods-java.lang.Class-">getDeclaredMethods</a></span>(java.lang.Class&lt;?&gt;&nbsp;clazz)</code>
-<div class="block">This variant retrieves <code>Class.getDeclaredMethods()</code> from a local cache
- in order to avoid the JVM's SecurityManager check and defensive array copying.</div>
-</td>
-</tr>
-<tr id="i16" class="altColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>static java.lang.Object</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ReflectionUtils.html#getField-java.lang.reflect.Field-java.lang.Object-">getField</a></span>(java.lang.reflect.Field&nbsp;field,
         java.lang.Object&nbsp;target)</code>
@@ -383,25 +338,25 @@ extends java.lang.Object</pre>
  specified <code>target object</code>.</div>
 </td>
 </tr>
-<tr id="i17" class="rowColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>static java.lang.reflect.Method[]</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ReflectionUtils.html#getUniqueDeclaredMethods-java.lang.Class-">getUniqueDeclaredMethods</a></span>(java.lang.Class&lt;?&gt;&nbsp;leafClass)</code>
 <div class="block">Get the unique set of declared methods on the leaf class and all superclasses.</div>
 </td>
 </tr>
-<tr id="i18" class="altColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ReflectionUtils.html#handleInvocationTargetException-java.lang.reflect.InvocationTargetException-">handleInvocationTargetException</a></span>(java.lang.reflect.InvocationTargetException&nbsp;ex)</code>
 <div class="block">Handle the given invocation target exception.</div>
 </td>
 </tr>
-<tr id="i19" class="rowColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ReflectionUtils.html#handleReflectionException-java.lang.Exception-">handleReflectionException</a></span>(java.lang.Exception&nbsp;ex)</code>
 <div class="block">Handle the given reflection exception.</div>
 </td>
 </tr>
-<tr id="i20" class="altColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code>static java.lang.Object</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ReflectionUtils.html#invokeJdbcMethod-java.lang.reflect.Method-java.lang.Object-">invokeJdbcMethod</a></span>(java.lang.reflect.Method&nbsp;method,
                 java.lang.Object&nbsp;target)</code>
@@ -409,7 +364,7 @@ extends java.lang.Object</pre>
  object with no arguments.</div>
 </td>
 </tr>
-<tr id="i21" class="rowColor">
+<tr id="i18" class="altColor">
 <td class="colFirst"><code>static java.lang.Object</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ReflectionUtils.html#invokeJdbcMethod-java.lang.reflect.Method-java.lang.Object-java.lang.Object...-">invokeJdbcMethod</a></span>(java.lang.reflect.Method&nbsp;method,
                 java.lang.Object&nbsp;target,
@@ -418,14 +373,14 @@ extends java.lang.Object</pre>
  object with the supplied arguments.</div>
 </td>
 </tr>
-<tr id="i22" class="altColor">
+<tr id="i19" class="rowColor">
 <td class="colFirst"><code>static java.lang.Object</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ReflectionUtils.html#invokeMethod-java.lang.reflect.Method-java.lang.Object-">invokeMethod</a></span>(java.lang.reflect.Method&nbsp;method,
             java.lang.Object&nbsp;target)</code>
 <div class="block">Invoke the specified <code>Method</code> against the supplied target object with no arguments.</div>
 </td>
 </tr>
-<tr id="i23" class="rowColor">
+<tr id="i20" class="altColor">
 <td class="colFirst"><code>static java.lang.Object</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ReflectionUtils.html#invokeMethod-java.lang.reflect.Method-java.lang.Object-java.lang.Object...-">invokeMethod</a></span>(java.lang.reflect.Method&nbsp;method,
             java.lang.Object&nbsp;target,
@@ -434,79 +389,79 @@ extends java.lang.Object</pre>
  supplied arguments.</div>
 </td>
 </tr>
-<tr id="i24" class="altColor">
+<tr id="i21" class="rowColor">
 <td class="colFirst"><code>static boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ReflectionUtils.html#isCglibRenamedMethod-java.lang.reflect.Method-">isCglibRenamedMethod</a></span>(java.lang.reflect.Method&nbsp;renamedMethod)</code>
 <div class="block">Determine whether the given method is a CGLIB 'renamed' method,
  following the pattern "CGLIB$methodName$0".</div>
 </td>
 </tr>
-<tr id="i25" class="rowColor">
+<tr id="i22" class="altColor">
 <td class="colFirst"><code>static boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ReflectionUtils.html#isEqualsMethod-java.lang.reflect.Method-">isEqualsMethod</a></span>(java.lang.reflect.Method&nbsp;method)</code>
 <div class="block">Determine whether the given method is an "equals" method.</div>
 </td>
 </tr>
-<tr id="i26" class="altColor">
+<tr id="i23" class="rowColor">
 <td class="colFirst"><code>static boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ReflectionUtils.html#isHashCodeMethod-java.lang.reflect.Method-">isHashCodeMethod</a></span>(java.lang.reflect.Method&nbsp;method)</code>
 <div class="block">Determine whether the given method is a "hashCode" method.</div>
 </td>
 </tr>
-<tr id="i27" class="rowColor">
+<tr id="i24" class="altColor">
 <td class="colFirst"><code>static boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ReflectionUtils.html#isObjectMethod-java.lang.reflect.Method-">isObjectMethod</a></span>(java.lang.reflect.Method&nbsp;method)</code>
 <div class="block">Determine whether the given method is originally declared by <code>Object</code>.</div>
 </td>
 </tr>
-<tr id="i28" class="altColor">
+<tr id="i25" class="rowColor">
 <td class="colFirst"><code>static boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ReflectionUtils.html#isPublicStaticFinal-java.lang.reflect.Field-">isPublicStaticFinal</a></span>(java.lang.reflect.Field&nbsp;field)</code>
 <div class="block">Determine whether the given field is a "public static final" constant.</div>
 </td>
 </tr>
-<tr id="i29" class="rowColor">
+<tr id="i26" class="altColor">
 <td class="colFirst"><code>static boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ReflectionUtils.html#isToStringMethod-java.lang.reflect.Method-">isToStringMethod</a></span>(java.lang.reflect.Method&nbsp;method)</code>
 <div class="block">Determine whether the given method is a "toString" method.</div>
 </td>
 </tr>
-<tr id="i30" class="altColor">
+<tr id="i27" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ReflectionUtils.html#makeAccessible-java.lang.reflect.Constructor-">makeAccessible</a></span>(java.lang.reflect.Constructor&lt;?&gt;&nbsp;ctor)</code>
 <div class="block">Make the given constructor accessible, explicitly setting it accessible
  if necessary.</div>
 </td>
 </tr>
-<tr id="i31" class="rowColor">
+<tr id="i28" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ReflectionUtils.html#makeAccessible-java.lang.reflect.Field-">makeAccessible</a></span>(java.lang.reflect.Field&nbsp;field)</code>
 <div class="block">Make the given field accessible, explicitly setting it accessible if
  necessary.</div>
 </td>
 </tr>
-<tr id="i32" class="altColor">
+<tr id="i29" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ReflectionUtils.html#makeAccessible-java.lang.reflect.Method-">makeAccessible</a></span>(java.lang.reflect.Method&nbsp;method)</code>
 <div class="block">Make the given method accessible, explicitly setting it accessible if
  necessary.</div>
 </td>
 </tr>
-<tr id="i33" class="rowColor">
+<tr id="i30" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ReflectionUtils.html#rethrowException-java.lang.Throwable-">rethrowException</a></span>(java.lang.Throwable&nbsp;ex)</code>
 <div class="block">Rethrow the given <code>exception</code>, which is presumably the
  <em>target exception</em> of an <code>InvocationTargetException</code>.</div>
 </td>
 </tr>
-<tr id="i34" class="altColor">
+<tr id="i31" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ReflectionUtils.html#rethrowRuntimeException-java.lang.Throwable-">rethrowRuntimeException</a></span>(java.lang.Throwable&nbsp;ex)</code>
 <div class="block">Rethrow the given <code>exception</code>, which is presumably the
  <em>target exception</em> of an <code>InvocationTargetException</code>.</div>
 </td>
 </tr>
-<tr id="i35" class="rowColor">
+<tr id="i32" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ReflectionUtils.html#setField-java.lang.reflect.Field-java.lang.Object-java.lang.Object-">setField</a></span>(java.lang.reflect.Field&nbsp;field,
         java.lang.Object&nbsp;target,
@@ -515,7 +470,7 @@ extends java.lang.Object</pre>
  specified <code>target object</code> to the specified <code>value</code>.</div>
 </td>
 </tr>
-<tr id="i36" class="altColor">
+<tr id="i33" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ReflectionUtils.html#shallowCopyFieldState-java.lang.Object-java.lang.Object-">shallowCopyFieldState</a></span>(java.lang.Object&nbsp;src,
                      java.lang.Object&nbsp;dest)</code>
@@ -545,60 +500,6 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Field Detail</h3>
-<a name="CGLIB_RENAMED_METHOD_PREFIX">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>CGLIB_RENAMED_METHOD_PREFIX</h4>
-<pre>private static final&nbsp;java.lang.String CGLIB_RENAMED_METHOD_PREFIX</pre>
-<div class="block">Naming prefix for CGLIB-renamed methods.</div>
-<dl>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../../../permafrost/tundra/org/springframework/util/ReflectionUtils.html#isCglibRenamedMethod-java.lang.reflect.Method-"><code>isCglibRenamedMethod(java.lang.reflect.Method)</code></a>, 
-<a href="../../../../../constant-values.html#permafrost.tundra.org.springframework.util.ReflectionUtils.CGLIB_RENAMED_METHOD_PREFIX">Constant Field Values</a></dd>
-</dl>
-</li>
-</ul>
-<a name="NO_METHODS">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>NO_METHODS</h4>
-<pre>private static final&nbsp;java.lang.reflect.Method[] NO_METHODS</pre>
-</li>
-</ul>
-<a name="NO_FIELDS">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>NO_FIELDS</h4>
-<pre>private static final&nbsp;java.lang.reflect.Field[] NO_FIELDS</pre>
-</li>
-</ul>
-<a name="declaredMethodsCache">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>declaredMethodsCache</h4>
-<pre>private static final&nbsp;java.util.Map&lt;java.lang.Class&lt;?&gt;,java.lang.reflect.Method[]&gt; declaredMethodsCache</pre>
-<div class="block">Cache for <code>Class.getDeclaredMethods()</code> plus equivalent default methods
- from Java 8 based interfaces, allowing for fast iteration.</div>
-</li>
-</ul>
-<a name="declaredFieldsCache">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>declaredFieldsCache</h4>
-<pre>private static final&nbsp;java.util.Map&lt;java.lang.Class&lt;?&gt;,java.lang.reflect.Field[]&gt; declaredFieldsCache</pre>
-<div class="block">Cache for <code>Class.getDeclaredFields()</code>, allowing for fast iteration.</div>
-</li>
-</ul>
 <a name="COPYABLE_FIELDS">
 <!--   -->
 </a>
@@ -1215,36 +1116,6 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
-<a name="getDeclaredMethods-java.lang.Class-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getDeclaredMethods</h4>
-<pre>private static&nbsp;java.lang.reflect.Method[]&nbsp;getDeclaredMethods(java.lang.Class&lt;?&gt;&nbsp;clazz)</pre>
-<div class="block">This variant retrieves <code>Class.getDeclaredMethods()</code> from a local cache
- in order to avoid the JVM's SecurityManager check and defensive array copying.
- In addition, it also includes Java 8 default methods from locally implemented
- interfaces, since those are effectively to be treated just like declared methods.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>clazz</code> - the class to introspect</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>the cached array of methods</dd>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><code>Class.getDeclaredMethods()</code></dd>
-</dl>
-</li>
-</ul>
-<a name="findConcreteMethodsOnInterfaces-java.lang.Class-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>findConcreteMethodsOnInterfaces</h4>
-<pre>private static&nbsp;java.util.List&lt;java.lang.reflect.Method&gt;&nbsp;findConcreteMethodsOnInterfaces(java.lang.Class&lt;?&gt;&nbsp;clazz)</pre>
-</li>
-</ul>
 <a name="doWithLocalFields-java.lang.Class-permafrost.tundra.org.springframework.util.ReflectionUtils.FieldCallback-">
 <!--   -->
 </a>
@@ -1298,25 +1169,6 @@ extends java.lang.Object</pre>
 <dd><code>clazz</code> - the target class to analyze</dd>
 <dd><code>fc</code> - the callback to invoke for each field</dd>
 <dd><code>ff</code> - the filter that determines the fields to apply the callback to</dd>
-</dl>
-</li>
-</ul>
-<a name="getDeclaredFields-java.lang.Class-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getDeclaredFields</h4>
-<pre>private static&nbsp;java.lang.reflect.Field[]&nbsp;getDeclaredFields(java.lang.Class&lt;?&gt;&nbsp;clazz)</pre>
-<div class="block">This variant retrieves <code>Class.getDeclaredFields()</code> from a local cache
- in order to avoid the JVM's SecurityManager check and defensive array copying.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>clazz</code> - the class to introspect</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>the cached array of fields</dd>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><code>Class.getDeclaredFields()</code></dd>
 </dl>
 </li>
 </ul>

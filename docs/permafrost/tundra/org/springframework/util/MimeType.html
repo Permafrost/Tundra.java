@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":42,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":9};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":42,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -173,30 +173,6 @@ implements java.lang.Comparable&lt;<a href="../../../../../permafrost/tundra/org
 <th class="colLast" scope="col">Field and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>private static java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/MimeType.html#PARAM_CHARSET">PARAM_CHARSET</a></span></code>&nbsp;</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>private java.util.Map&lt;java.lang.String,java.lang.String&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/MimeType.html#parameters">parameters</a></span></code>&nbsp;</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private static long</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/MimeType.html#serialVersionUID">serialVersionUID</a></span></code>&nbsp;</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>private java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/MimeType.html#subtype">subtype</a></span></code>&nbsp;</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private static java.util.BitSet</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/MimeType.html#TOKEN">TOKEN</a></span></code>&nbsp;</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>private java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/MimeType.html#type">type</a></span></code>&nbsp;</td>
-</tr>
-<tr class="altColor">
 <td class="colFirst"><code>protected static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/MimeType.html#WILDCARD_TYPE">WILDCARD_TYPE</a></span></code>&nbsp;</td>
 </tr>
@@ -269,48 +245,31 @@ implements java.lang.Comparable&lt;<a href="../../../../../permafrost/tundra/org
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>private static java.util.Map&lt;java.lang.String,java.lang.String&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/MimeType.html#addCharsetParameter-java.nio.charset.Charset-java.util.Map-">addCharsetParameter</a></span>(java.nio.charset.Charset&nbsp;charset,
-                   java.util.Map&lt;java.lang.String,java.lang.String&gt;&nbsp;parameters)</code>&nbsp;</td>
-</tr>
-<tr id="i1" class="rowColor">
-<td class="colFirst"><code>private void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/MimeType.html#appendTo-java.util.Map-java.lang.StringBuilder-">appendTo</a></span>(java.util.Map&lt;java.lang.String,java.lang.String&gt;&nbsp;map,
-        java.lang.StringBuilder&nbsp;builder)</code>&nbsp;</td>
-</tr>
-<tr id="i2" class="altColor">
 <td class="colFirst"><code>protected void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/MimeType.html#appendTo-java.lang.StringBuilder-">appendTo</a></span>(java.lang.StringBuilder&nbsp;builder)</code>&nbsp;</td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code>protected void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/MimeType.html#checkParameters-java.lang.String-java.lang.String-">checkParameters</a></span>(java.lang.String&nbsp;attribute,
                java.lang.String&nbsp;value)</code>&nbsp;</td>
 </tr>
-<tr id="i4" class="altColor">
-<td class="colFirst"><code>private void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/MimeType.html#checkToken-java.lang.String-">checkToken</a></span>(java.lang.String&nbsp;token)</code>
-<div class="block">Checks the given token string for illegal characters, as defined in RFC 2616,
- section 2.2.</div>
-</td>
-</tr>
-<tr id="i5" class="rowColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/MimeType.html#compareTo-permafrost.tundra.org.springframework.util.MimeType-">compareTo</a></span>(<a href="../../../../../permafrost/tundra/org/springframework/util/MimeType.html" title="class in permafrost.tundra.org.springframework.util">MimeType</a>&nbsp;other)</code>
 <div class="block">Compares this MIME Type to another alphabetically.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/MimeType.html#equals-java.lang.Object-">equals</a></span>(java.lang.Object&nbsp;other)</code>&nbsp;</td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>java.nio.charset.Charset</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/MimeType.html#getCharset--">getCharset</a></span>()</code>
 <div class="block">Return the character set, as indicated by a <code>charset</code> parameter, if any.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>java.nio.charset.Charset</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/MimeType.html#getCharSet--">getCharSet</a></span>()</code>
 <div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
@@ -319,57 +278,53 @@ implements java.lang.Comparable&lt;<a href="../../../../../permafrost/tundra/org
 </div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/MimeType.html#getParameter-java.lang.String-">getParameter</a></span>(java.lang.String&nbsp;name)</code>
 <div class="block">Return a generic parameter value, given a parameter name.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>java.util.Map&lt;java.lang.String,java.lang.String&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/MimeType.html#getParameters--">getParameters</a></span>()</code>
 <div class="block">Return all generic parameter values.</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/MimeType.html#getSubtype--">getSubtype</a></span>()</code>
 <div class="block">Return the subtype.</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/MimeType.html#getType--">getType</a></span>()</code>
 <div class="block">Return the primary type.</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/MimeType.html#hashCode--">hashCode</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/MimeType.html#includes-permafrost.tundra.org.springframework.util.MimeType-">includes</a></span>(<a href="../../../../../permafrost/tundra/org/springframework/util/MimeType.html" title="class in permafrost.tundra.org.springframework.util">MimeType</a>&nbsp;other)</code>
 <div class="block">Indicate whether this MIME Type includes the given MIME Type.</div>
 </td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/MimeType.html#isCompatibleWith-permafrost.tundra.org.springframework.util.MimeType-">isCompatibleWith</a></span>(<a href="../../../../../permafrost/tundra/org/springframework/util/MimeType.html" title="class in permafrost.tundra.org.springframework.util">MimeType</a>&nbsp;other)</code>
 <div class="block">Indicate whether this MIME Type is compatible with the given MIME Type.</div>
 </td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/MimeType.html#isConcrete--">isConcrete</a></span>()</code>
 <div class="block">Indicates whether this MIME Type is concrete, i.e.</div>
 </td>
 </tr>
-<tr id="i17" class="rowColor">
-<td class="colFirst"><code>private boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/MimeType.html#isQuotedString-java.lang.String-">isQuotedString</a></span>(java.lang.String&nbsp;s)</code>&nbsp;</td>
-</tr>
-<tr id="i18" class="altColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/MimeType.html#isWildcardSubtype--">isWildcardSubtype</a></span>()</code>
 <div class="block">Indicates whether the <a href="../../../../../permafrost/tundra/org/springframework/util/MimeType.html#getSubtype--">subtype</a> is the wildcard
@@ -377,30 +332,22 @@ implements java.lang.Comparable&lt;<a href="../../../../../permafrost/tundra/org
  (e.g.</div>
 </td>
 </tr>
-<tr id="i19" class="rowColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/MimeType.html#isWildcardType--">isWildcardType</a></span>()</code>
 <div class="block">Indicates whether the <a href="../../../../../permafrost/tundra/org/springframework/util/MimeType.html#getType--">type</a> is the wildcard character
  <code>&#42;</code> or not.</div>
 </td>
 </tr>
-<tr id="i20" class="altColor">
-<td class="colFirst"><code>private boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/MimeType.html#parametersAreEqual-permafrost.tundra.org.springframework.util.MimeType-">parametersAreEqual</a></span>(<a href="../../../../../permafrost/tundra/org/springframework/util/MimeType.html" title="class in permafrost.tundra.org.springframework.util">MimeType</a>&nbsp;other)</code>
-<div class="block">Determine if the parameters in this <code>MimeType</code> and the supplied
- <code>MimeType</code> are equal, performing case-insensitive comparisons
- for <code>Charset</code>s.</div>
-</td>
-</tr>
-<tr id="i21" class="rowColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/MimeType.html#toString--">toString</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i22" class="altColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code>protected java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/MimeType.html#unquote-java.lang.String-">unquote</a></span>(java.lang.String&nbsp;s)</code>&nbsp;</td>
 </tr>
-<tr id="i23" class="rowColor">
+<tr id="i18" class="altColor">
 <td class="colFirst"><code>static <a href="../../../../../permafrost/tundra/org/springframework/util/MimeType.html" title="class in permafrost.tundra.org.springframework.util">MimeType</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/MimeType.html#valueOf-java.lang.String-">valueOf</a></span>(java.lang.String&nbsp;value)</code>
 <div class="block">Parse the given String value into a <code>MimeType</code> object,
@@ -430,23 +377,10 @@ implements java.lang.Comparable&lt;<a href="../../../../../permafrost/tundra/org
 <!--   -->
 </a>
 <h3>Field Detail</h3>
-<a name="serialVersionUID">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>serialVersionUID</h4>
-<pre>private static final&nbsp;long serialVersionUID</pre>
-<dl>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../../../constant-values.html#permafrost.tundra.org.springframework.util.MimeType.serialVersionUID">Constant Field Values</a></dd>
-</dl>
-</li>
-</ul>
 <a name="WILDCARD_TYPE">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>WILDCARD_TYPE</h4>
 <pre>protected static final&nbsp;java.lang.String WILDCARD_TYPE</pre>
@@ -454,55 +388,6 @@ implements java.lang.Comparable&lt;<a href="../../../../../permafrost/tundra/org
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../../constant-values.html#permafrost.tundra.org.springframework.util.MimeType.WILDCARD_TYPE">Constant Field Values</a></dd>
 </dl>
-</li>
-</ul>
-<a name="PARAM_CHARSET">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>PARAM_CHARSET</h4>
-<pre>private static final&nbsp;java.lang.String PARAM_CHARSET</pre>
-<dl>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../../../constant-values.html#permafrost.tundra.org.springframework.util.MimeType.PARAM_CHARSET">Constant Field Values</a></dd>
-</dl>
-</li>
-</ul>
-<a name="TOKEN">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>TOKEN</h4>
-<pre>private static final&nbsp;java.util.BitSet TOKEN</pre>
-</li>
-</ul>
-<a name="type">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>type</h4>
-<pre>private final&nbsp;java.lang.String type</pre>
-</li>
-</ul>
-<a name="subtype">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>subtype</h4>
-<pre>private final&nbsp;java.lang.String subtype</pre>
-</li>
-</ul>
-<a name="parameters">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>parameters</h4>
-<pre>private final&nbsp;java.util.Map&lt;java.lang.String,java.lang.String&gt; parameters</pre>
 </li>
 </ul>
 </li>
@@ -638,23 +523,6 @@ implements java.lang.Comparable&lt;<a href="../../../../../permafrost/tundra/org
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="checkToken-java.lang.String-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>checkToken</h4>
-<pre>private&nbsp;void&nbsp;checkToken(java.lang.String&nbsp;token)</pre>
-<div class="block">Checks the given token string for illegal characters, as defined in RFC 2616,
- section 2.2.</div>
-<dl>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.lang.IllegalArgumentException</code> - in case of illegal characters</dd>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="http://tools.ietf.org/html/rfc2616#section-2.2">HTTP 1.1, section 2.2</a></dd>
-</dl>
-</li>
-</ul>
 <a name="checkParameters-java.lang.String-java.lang.String-">
 <!--   -->
 </a>
@@ -663,15 +531,6 @@ implements java.lang.Comparable&lt;<a href="../../../../../permafrost/tundra/org
 <h4>checkParameters</h4>
 <pre>protected&nbsp;void&nbsp;checkParameters(java.lang.String&nbsp;attribute,
                                java.lang.String&nbsp;value)</pre>
-</li>
-</ul>
-<a name="isQuotedString-java.lang.String-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>isQuotedString</h4>
-<pre>private&nbsp;boolean&nbsp;isQuotedString(java.lang.String&nbsp;s)</pre>
 </li>
 </ul>
 <a name="unquote-java.lang.String-">
@@ -861,22 +720,6 @@ public&nbsp;java.nio.charset.Charset&nbsp;getCharSet()</pre>
 </dl>
 </li>
 </ul>
-<a name="parametersAreEqual-permafrost.tundra.org.springframework.util.MimeType-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>parametersAreEqual</h4>
-<pre>private&nbsp;boolean&nbsp;parametersAreEqual(<a href="../../../../../permafrost/tundra/org/springframework/util/MimeType.html" title="class in permafrost.tundra.org.springframework.util">MimeType</a>&nbsp;other)</pre>
-<div class="block">Determine if the parameters in this <code>MimeType</code> and the supplied
- <code>MimeType</code> are equal, performing case-insensitive comparisons
- for <code>Charset</code>s.</div>
-<dl>
-<dt><span class="simpleTagLabel">Since:</span></dt>
-<dd>4.2</dd>
-</dl>
-</li>
-</ul>
 <a name="hashCode--">
 <!--   -->
 </a>
@@ -912,16 +755,6 @@ public&nbsp;java.nio.charset.Charset&nbsp;getCharSet()</pre>
 <pre>protected&nbsp;void&nbsp;appendTo(java.lang.StringBuilder&nbsp;builder)</pre>
 </li>
 </ul>
-<a name="appendTo-java.util.Map-java.lang.StringBuilder-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>appendTo</h4>
-<pre>private&nbsp;void&nbsp;appendTo(java.util.Map&lt;java.lang.String,java.lang.String&gt;&nbsp;map,
-                      java.lang.StringBuilder&nbsp;builder)</pre>
-</li>
-</ul>
 <a name="compareTo-permafrost.tundra.org.springframework.util.MimeType-">
 <!--   -->
 </a>
@@ -943,7 +776,7 @@ public&nbsp;java.nio.charset.Charset&nbsp;getCharSet()</pre>
 <a name="valueOf-java.lang.String-">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>valueOf</h4>
 <pre>public static&nbsp;<a href="../../../../../permafrost/tundra/org/springframework/util/MimeType.html" title="class in permafrost.tundra.org.springframework.util">MimeType</a>&nbsp;valueOf(java.lang.String&nbsp;value)</pre>
@@ -954,16 +787,6 @@ public&nbsp;java.nio.charset.Charset&nbsp;getCharSet()</pre>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../../permafrost/tundra/org/springframework/util/MimeTypeUtils.html#parseMimeType-java.lang.String-"><code>MimeTypeUtils.parseMimeType(String)</code></a></dd>
 </dl>
-</li>
-</ul>
-<a name="addCharsetParameter-java.nio.charset.Charset-java.util.Map-">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>addCharsetParameter</h4>
-<pre>private static&nbsp;java.util.Map&lt;java.lang.String,java.lang.String&gt;&nbsp;addCharsetParameter(java.nio.charset.Charset&nbsp;charset,
-                                                                                    java.util.Map&lt;java.lang.String,java.lang.String&gt;&nbsp;parameters)</pre>
 </li>
 </ul>
 </li>

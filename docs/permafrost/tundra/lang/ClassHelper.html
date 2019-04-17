@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9,"i11":9};
+var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -74,13 +74,13 @@ var activeTableTab = "activeTableTab";
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
 </div>
@@ -115,27 +115,6 @@ extends java.lang.Object</pre>
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
-<!-- ======== CONSTRUCTOR SUMMARY ======== -->
-<ul class="blockList">
-<li class="blockList"><a name="constructor.summary">
-<!--   -->
-</a>
-<h3>Constructor Summary</h3>
-<table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Constructor Summary table, listing constructors, and an explanation">
-<caption><span>Constructors</span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier</th>
-<th class="colLast" scope="col">Constructor and Description</th>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private </code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/lang/ClassHelper.html#ClassHelper--">ClassHelper</a></span>()</code>
-<div class="block">Disallow instantiation of this class.</div>
-</td>
-</tr>
-</table>
-</li>
-</ul>
 <!-- ========== METHOD SUMMARY =========== -->
 <ul class="blockList">
 <li class="blockList"><a name="method.summary">
@@ -161,64 +140,52 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr id="i2" class="altColor">
-<td class="colFirst"><code>(package private) static java.util.Set&lt;java.lang.Class&lt;?&gt;&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/lang/ClassHelper.html#getAncestors-java.lang.Class-">getAncestors</a></span>(java.lang.Class&lt;?&gt;&nbsp;klass)</code>
-<div class="block">Returns all the ancestor classes from nearest to furthest for the given class.</div>
-</td>
-</tr>
-<tr id="i3" class="rowColor">
 <td class="colFirst"><code>static java.util.Set&lt;java.lang.Class&lt;?&gt;&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/lang/ClassHelper.html#getAncestors-java.util.Collection-">getAncestors</a></span>(java.util.Collection&lt;java.lang.Class&lt;?&gt;&gt;&nbsp;classes)</code>
 <div class="block">Returns all the common ancestor classes from the given set of classes.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>static java.lang.Class&lt;?&gt;[]</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/lang/ClassHelper.html#getAncestors-java.lang.String...-">getAncestors</a></span>(java.lang.String...&nbsp;classNames)</code>
 <div class="block">Returns all the common ancestor classes from the given set of class names.</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>static &lt;T&gt;&nbsp;java.lang.Class&lt;?&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/lang/ClassHelper.html#getArrayClass-java.lang.Class-">getArrayClass</a></span>(java.lang.Class&lt;T&gt;&nbsp;componentClass)</code>
 <div class="block">Returns the one dimensional array class associated with the given component class.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>static &lt;T&gt;&nbsp;java.lang.Class&lt;?&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/lang/ClassHelper.html#getArrayClass-java.lang.Class-int-">getArrayClass</a></span>(java.lang.Class&lt;T&gt;&nbsp;componentClass,
              int&nbsp;dimensions)</code>
 <div class="block">Returns the array class associated with the given component class and number of dimensions.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>static java.lang.Class&lt;?&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/lang/ClassHelper.html#getNearestAncestor-java.lang.Class...-">getNearestAncestor</a></span>(java.lang.Class&lt;?&gt;...&nbsp;classes)</code>
 <div class="block">Returns the nearest class which is an ancestor to all the classes in the given set.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>static java.lang.Class&lt;?&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/lang/ClassHelper.html#getNearestAncestor-java.util.Set-">getNearestAncestor</a></span>(java.util.Set&lt;java.lang.Class&lt;?&gt;&gt;&nbsp;classes)</code>
 <div class="block">Returns the nearest class which is an ancestor to all the classes in the given set.</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>static java.lang.Class&lt;?&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/lang/ClassHelper.html#getNearestAncestor-java.lang.String...-">getNearestAncestor</a></span>(java.lang.String...&nbsp;classNames)</code>
 <div class="block">Returns the nearest class which is an ancestor to all the classes in the given set.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>static java.lang.Class</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/lang/ClassHelper.html#normalize-java.lang.Object-">normalize</a></span>(java.lang.Object&nbsp;object)</code>
 <div class="block">Converts the given object to a Class.</div>
-</td>
-</tr>
-<tr id="i11" class="rowColor">
-<td class="colFirst"><code>(package private) static java.lang.Class&lt;?&gt;[]</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/lang/ClassHelper.html#toClassArray-java.lang.String:A-">toClassArray</a></span>(java.lang.String[]&nbsp;classNames)</code>
-<div class="block">Converts the given list of class names to a list of classes.</div>
 </td>
 </tr>
 </table>
@@ -237,24 +204,6 @@ extends java.lang.Object</pre>
 <div class="details">
 <ul class="blockList">
 <li class="blockList">
-<!-- ========= CONSTRUCTOR DETAIL ======== -->
-<ul class="blockList">
-<li class="blockList"><a name="constructor.detail">
-<!--   -->
-</a>
-<h3>Constructor Detail</h3>
-<a name="ClassHelper--">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>ClassHelper</h4>
-<pre>private&nbsp;ClassHelper()</pre>
-<div class="block">Disallow instantiation of this class.</div>
-</li>
-</ul>
-</li>
-</ul>
 <!-- ============ METHOD DETAIL ========== -->
 <ul class="blockList">
 <li class="blockList"><a name="method.detail">
@@ -331,41 +280,6 @@ extends java.lang.Object</pre>
 <dd><code>dimensions</code> - The array dimensions to use.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The array class associated with the given component class and number of dimensions.</dd>
-</dl>
-</li>
-</ul>
-<a name="toClassArray-java.lang.String:A-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>toClassArray</h4>
-<pre>static&nbsp;java.lang.Class&lt;?&gt;[]&nbsp;toClassArray(java.lang.String[]&nbsp;classNames)
-                                  throws java.lang.ClassNotFoundException</pre>
-<div class="block">Converts the given list of class names to a list of classes.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>classNames</code> - A list of class names.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>A list of classes that correspond to the given names.</dd>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.lang.ClassNotFoundException</code> - If a class name cannot be not found.</dd>
-</dl>
-</li>
-</ul>
-<a name="getAncestors-java.lang.Class-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getAncestors</h4>
-<pre>static&nbsp;java.util.Set&lt;java.lang.Class&lt;?&gt;&gt;&nbsp;getAncestors(java.lang.Class&lt;?&gt;&nbsp;klass)</pre>
-<div class="block">Returns all the ancestor classes from nearest to furthest for the given class.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>klass</code> - A class to fetch the ancestors of.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>All the ancestor classes from nearest to furthest for the given class.</dd>
 </dl>
 </li>
 </ul>
@@ -526,13 +440,13 @@ extends java.lang.Object</pre>
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
 </div>

@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":6,"i2":10,"i3":6,"i4":10,"i5":6,"i6":10,"i7":6,"i8":10};
+var methods = {"i0":6,"i1":10,"i2":6,"i3":10,"i4":6,"i5":10,"i6":6,"i7":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -109,10 +109,6 @@ var activeTableTab = "activeTableTab";
 <dt>All Implemented Interfaces:</dt>
 <dd><a href="../../../permafrost/tundra/io/DirectoryListing.html" title="interface in permafrost.tundra.io">DirectoryListing</a></dd>
 </dl>
-<dl>
-<dt>Direct Known Subclasses:</dt>
-<dd><a href="../../../permafrost/tundra/io/DirectoryLister.DirectoryListingImplementation.html" title="class in permafrost.tundra.io">DirectoryLister.DirectoryListingImplementation</a></dd>
-</dl>
 <hr>
 <br>
 <pre>public abstract class <span class="typeNameLabel">AbstractDirectoryListing</span>
@@ -155,54 +151,48 @@ implements <a href="../../../permafrost/tundra/io/DirectoryListing.html" title="
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>private java.lang.String[]</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/io/AbstractDirectoryListing.html#convertListToStringArray-java.util.List-">convertListToStringArray</a></span>(java.util.List&lt;java.io.File&gt;&nbsp;list)</code>
-<div class="block">Converts a List to a String[].</div>
-</td>
-</tr>
-<tr id="i1" class="rowColor">
 <td class="colFirst"><code>abstract java.io.File</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/io/AbstractDirectoryListing.html#getDirectory--">getDirectory</a></span>()</code>
 <div class="block">Returns the directory which produced this listing.</div>
 </td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/io/AbstractDirectoryListing.html#getDirectoryAsString--">getDirectoryAsString</a></span>()</code>
 <div class="block">Returns the directory which produced this listing as a String.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>abstract java.util.List&lt;java.io.File&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/io/AbstractDirectoryListing.html#listAll--">listAll</a></span>()</code>
 <div class="block">Returns all the files and directories in this listing.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>java.lang.String[]</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/io/AbstractDirectoryListing.html#listAllAsStringArray--">listAllAsStringArray</a></span>()</code>
 <div class="block">Returns all the files and directories in this listing as a String[].</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>abstract java.util.List&lt;java.io.File&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/io/AbstractDirectoryListing.html#listDirectories--">listDirectories</a></span>()</code>
 <div class="block">Returns all the directories in this listing.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>java.lang.String[]</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/io/AbstractDirectoryListing.html#listDirectoriesAsStringArray--">listDirectoriesAsStringArray</a></span>()</code>
 <div class="block">Returns all the directories in this listing as a String[].</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>abstract java.util.List&lt;java.io.File&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/io/AbstractDirectoryListing.html#listFiles--">listFiles</a></span>()</code>
 <div class="block">Returns all the files in this listing.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>java.lang.String[]</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/io/AbstractDirectoryListing.html#listFilesAsStringArray--">listFilesAsStringArray</a></span>()</code>
 <div class="block">Returns all the files in this listing as a String[].</div>
@@ -362,7 +352,7 @@ implements <a href="../../../permafrost/tundra/io/DirectoryListing.html" title="
 <a name="getDirectoryAsString--">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>getDirectoryAsString</h4>
 <pre>public&nbsp;java.lang.String&nbsp;getDirectoryAsString()</pre>
@@ -372,22 +362,6 @@ implements <a href="../../../permafrost/tundra/io/DirectoryListing.html" title="
 <dd><code><a href="../../../permafrost/tundra/io/DirectoryListing.html#getDirectoryAsString--">getDirectoryAsString</a></code>&nbsp;in interface&nbsp;<code><a href="../../../permafrost/tundra/io/DirectoryListing.html" title="interface in permafrost.tundra.io">DirectoryListing</a></code></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The directory which produced this listing as a String.</dd>
-</dl>
-</li>
-</ul>
-<a name="convertListToStringArray-java.util.List-">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>convertListToStringArray</h4>
-<pre>private&nbsp;java.lang.String[]&nbsp;convertListToStringArray(java.util.List&lt;java.io.File&gt;&nbsp;list)</pre>
-<div class="block">Converts a List to a String[].</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>list</code> - The List to be converted.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>The String[] representation of the given list.</dd>
 </dl>
 </li>
 </ul>

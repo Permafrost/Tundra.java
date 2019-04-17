@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10};
+var methods = {"i0":9,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -47,8 +47,8 @@ var activeTableTab = "activeTableTab";
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../../permafrost/tundra/org/springframework/util/CollectionUtils.MultiValueMapAdapter.html" title="class in permafrost.tundra.org.springframework.util"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li><a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.Entries.html" title="class in permafrost.tundra.org.springframework.util"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../../../permafrost/tundra/org/springframework/util/CollectionUtils.html" title="class in permafrost.tundra.org.springframework.util"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.Entry.html" title="class in permafrost.tundra.org.springframework.util"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../../index.html?permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html" target="_top">Frames</a></li>
@@ -73,13 +73,13 @@ var activeTableTab = "activeTableTab";
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li><a href="#nested.class.summary">Nested</a>&nbsp;|&nbsp;</li>
-<li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
@@ -163,81 +163,39 @@ implements java.util.concurrent.ConcurrentMap&lt;K,V&gt;</pre>
 <th class="colLast" scope="col">Class and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>private class&nbsp;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.Entries.html" title="class in permafrost.tundra.org.springframework.util">ConcurrentReferenceHashMap.Entries</a></span></code>
-<div class="block">Allows a task access to <a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.Segment.html" title="class in permafrost.tundra.org.springframework.util"><code>ConcurrentReferenceHashMap.Segment</code></a> entries.</div>
-</td>
-</tr>
-<tr class="rowColor">
 <td class="colFirst"><code>protected static class&nbsp;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.Entry.html" title="class in permafrost.tundra.org.springframework.util">ConcurrentReferenceHashMap.Entry</a>&lt;<a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.Entry.html" title="type parameter in ConcurrentReferenceHashMap.Entry">K</a>,<a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.Entry.html" title="type parameter in ConcurrentReferenceHashMap.Entry">V</a>&gt;</span></code>
 <div class="block">A single map entry.</div>
 </td>
 </tr>
-<tr class="altColor">
-<td class="colFirst"><code>private class&nbsp;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.EntryIterator.html" title="class in permafrost.tundra.org.springframework.util">ConcurrentReferenceHashMap.EntryIterator</a></span></code>
-<div class="block">Internal entry iterator implementation.</div>
-</td>
-</tr>
 <tr class="rowColor">
-<td class="colFirst"><code>private class&nbsp;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.EntrySet.html" title="class in permafrost.tundra.org.springframework.util">ConcurrentReferenceHashMap.EntrySet</a></span></code>
-<div class="block">Internal entry-set implementation.</div>
-</td>
-</tr>
-<tr class="altColor">
 <td class="colFirst"><code>protected static interface&nbsp;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.Reference.html" title="interface in permafrost.tundra.org.springframework.util">ConcurrentReferenceHashMap.Reference</a>&lt;<a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.Reference.html" title="type parameter in ConcurrentReferenceHashMap.Reference">K</a>,<a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.Reference.html" title="type parameter in ConcurrentReferenceHashMap.Reference">V</a>&gt;</span></code>
 <div class="block">A reference to an <a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.Entry.html" title="class in permafrost.tundra.org.springframework.util"><code>ConcurrentReferenceHashMap.Entry</code></a> contained in the map.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>protected class&nbsp;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.ReferenceManager.html" title="class in permafrost.tundra.org.springframework.util">ConcurrentReferenceHashMap.ReferenceManager</a></span></code>
 <div class="block">Strategy class used to manage <a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.Reference.html" title="interface in permafrost.tundra.org.springframework.util"><code>ConcurrentReferenceHashMap.Reference</code></a>s.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>static class&nbsp;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.ReferenceType.html" title="enum in permafrost.tundra.org.springframework.util">ConcurrentReferenceHashMap.ReferenceType</a></span></code>
 <div class="block">Various reference types supported by this map.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>protected static class&nbsp;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.Restructure.html" title="enum in permafrost.tundra.org.springframework.util">ConcurrentReferenceHashMap.Restructure</a></span></code>
 <div class="block">The types of restructuring that can be performed.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>protected class&nbsp;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.Segment.html" title="class in permafrost.tundra.org.springframework.util">ConcurrentReferenceHashMap.Segment</a></span></code>
 <div class="block">A single segment used to divide the map to allow better concurrent performance.</div>
-</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>private static class&nbsp;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.SoftEntryReference.html" title="class in permafrost.tundra.org.springframework.util">ConcurrentReferenceHashMap.SoftEntryReference</a>&lt;<a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.SoftEntryReference.html" title="type parameter in ConcurrentReferenceHashMap.SoftEntryReference">K</a>,<a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.SoftEntryReference.html" title="type parameter in ConcurrentReferenceHashMap.SoftEntryReference">V</a>&gt;</span></code>
-<div class="block">Internal <a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.Reference.html" title="interface in permafrost.tundra.org.springframework.util"><code>ConcurrentReferenceHashMap.Reference</code></a> implementation for <code>SoftReference</code>s.</div>
-</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private class&nbsp;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.Task.html" title="class in permafrost.tundra.org.springframework.util">ConcurrentReferenceHashMap.Task</a>&lt;<a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.Task.html" title="type parameter in ConcurrentReferenceHashMap.Task">T</a>&gt;</span></code>
-<div class="block">A task that can be <a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.Segment.html#doTask-int-java.lang.Object-permafrost.tundra.org.springframework.util.ConcurrentReferenceHashMap.Task-"><code>run</code></a> against a <a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.Segment.html" title="class in permafrost.tundra.org.springframework.util"><code>ConcurrentReferenceHashMap.Segment</code></a>.</div>
-</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>private static class&nbsp;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.TaskOption.html" title="enum in permafrost.tundra.org.springframework.util">ConcurrentReferenceHashMap.TaskOption</a></span></code>
-<div class="block">Various options supported by a <code>Task</code>.</div>
-</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private static class&nbsp;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.WeakEntryReference.html" title="class in permafrost.tundra.org.springframework.util">ConcurrentReferenceHashMap.WeakEntryReference</a>&lt;<a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.WeakEntryReference.html" title="type parameter in ConcurrentReferenceHashMap.WeakEntryReference">K</a>,<a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.WeakEntryReference.html" title="type parameter in ConcurrentReferenceHashMap.WeakEntryReference">V</a>&gt;</span></code>
-<div class="block">Internal <a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.Reference.html" title="interface in permafrost.tundra.org.springframework.util"><code>ConcurrentReferenceHashMap.Reference</code></a> implementation for <code>WeakReference</code>s.</div>
 </td>
 </tr>
 </table>
@@ -248,75 +206,6 @@ implements java.util.concurrent.ConcurrentMap&lt;K,V&gt;</pre>
 <h3>Nested classes/interfaces inherited from class&nbsp;java.util.AbstractMap</h3>
 <code>java.util.AbstractMap.SimpleEntry&lt;K,V&gt;, java.util.AbstractMap.SimpleImmutableEntry&lt;K,V&gt;</code></li>
 </ul>
-</li>
-</ul>
-<!-- =========== FIELD SUMMARY =========== -->
-<ul class="blockList">
-<li class="blockList"><a name="field.summary">
-<!--   -->
-</a>
-<h3>Field Summary</h3>
-<table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Field Summary table, listing fields, and an explanation">
-<caption><span>Fields</span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier and Type</th>
-<th class="colLast" scope="col">Field and Description</th>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private static int</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html#DEFAULT_CONCURRENCY_LEVEL">DEFAULT_CONCURRENCY_LEVEL</a></span></code>&nbsp;</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>private static int</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html#DEFAULT_INITIAL_CAPACITY">DEFAULT_INITIAL_CAPACITY</a></span></code>&nbsp;</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private static float</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html#DEFAULT_LOAD_FACTOR">DEFAULT_LOAD_FACTOR</a></span></code>&nbsp;</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>private static <a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.ReferenceType.html" title="enum in permafrost.tundra.org.springframework.util">ConcurrentReferenceHashMap.ReferenceType</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html#DEFAULT_REFERENCE_TYPE">DEFAULT_REFERENCE_TYPE</a></span></code>&nbsp;</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private java.util.Set&lt;java.util.Map.Entry&lt;<a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html" title="type parameter in ConcurrentReferenceHashMap">K</a>,<a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html" title="type parameter in ConcurrentReferenceHashMap">V</a>&gt;&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html#entrySet">entrySet</a></span></code>
-<div class="block">Late binding entry set.</div>
-</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>private float</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html#loadFactor">loadFactor</a></span></code>
-<div class="block">When the average number of references per table exceeds this value resize will be attempted.</div>
-</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private static int</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html#MAXIMUM_CONCURRENCY_LEVEL">MAXIMUM_CONCURRENCY_LEVEL</a></span></code>&nbsp;</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>private static int</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html#MAXIMUM_SEGMENT_SIZE">MAXIMUM_SEGMENT_SIZE</a></span></code>&nbsp;</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private <a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.ReferenceType.html" title="enum in permafrost.tundra.org.springframework.util">ConcurrentReferenceHashMap.ReferenceType</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html#referenceType">referenceType</a></span></code>
-<div class="block">The reference type: SOFT or WEAK.</div>
-</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>private <a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.Segment.html" title="class in permafrost.tundra.org.springframework.util">ConcurrentReferenceHashMap.Segment</a>[]</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html#segments">segments</a></span></code>
-<div class="block">Array of segments indexed using the high order bits from the hash.</div>
-</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private int</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html#shift">shift</a></span></code>
-<div class="block">The shift value used to calculate the size of the segments array and an index from the hash.</div>
-</td>
-</tr>
-</table>
 </li>
 </ul>
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
@@ -411,39 +300,30 @@ implements java.util.concurrent.ConcurrentMap&lt;K,V&gt;</pre>
 </td>
 </tr>
 <tr id="i4" class="altColor">
-<td class="colFirst"><code>private &lt;T&gt;&nbsp;T</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html#doTask-java.lang.Object-permafrost.tundra.org.springframework.util.ConcurrentReferenceHashMap.Task-">doTask</a></span>(java.lang.Object&nbsp;key,
-      <a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.Task.html" title="class in permafrost.tundra.org.springframework.util">ConcurrentReferenceHashMap.Task</a>&lt;T&gt;&nbsp;task)</code>&nbsp;</td>
-</tr>
-<tr id="i5" class="rowColor">
 <td class="colFirst"><code>java.util.Set&lt;java.util.Map.Entry&lt;<a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html" title="type parameter in ConcurrentReferenceHashMap">K</a>,<a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html" title="type parameter in ConcurrentReferenceHashMap">V</a>&gt;&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html#entrySet--">entrySet</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html" title="type parameter in ConcurrentReferenceHashMap">V</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html#get-java.lang.Object-">get</a></span>(java.lang.Object&nbsp;key)</code>&nbsp;</td>
 </tr>
-<tr id="i7" class="rowColor">
-<td class="colFirst"><code>private <a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.Entry.html" title="class in permafrost.tundra.org.springframework.util">ConcurrentReferenceHashMap.Entry</a>&lt;<a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html" title="type parameter in ConcurrentReferenceHashMap">K</a>,<a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html" title="type parameter in ConcurrentReferenceHashMap">V</a>&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html#getEntryIfAvailable-java.lang.Object-">getEntryIfAvailable</a></span>(java.lang.Object&nbsp;key)</code>&nbsp;</td>
-</tr>
-<tr id="i8" class="altColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>protected int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html#getHash-java.lang.Object-">getHash</a></span>(java.lang.Object&nbsp;o)</code>
 <div class="block">Get the hash for a given object, apply an additional hash function to reduce
  collisions.</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>protected float</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html#getLoadFactor--">getLoadFactor</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code><a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html" title="type parameter in ConcurrentReferenceHashMap">V</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html#getOrDefault-java.lang.Object-V-">getOrDefault</a></span>(java.lang.Object&nbsp;key,
             <a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html" title="type parameter in ConcurrentReferenceHashMap">V</a>&nbsp;defaultValue)</code>&nbsp;</td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>protected <a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.Reference.html" title="interface in permafrost.tundra.org.springframework.util">ConcurrentReferenceHashMap.Reference</a>&lt;<a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html" title="type parameter in ConcurrentReferenceHashMap">K</a>,<a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html" title="type parameter in ConcurrentReferenceHashMap">V</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html#getReference-java.lang.Object-permafrost.tundra.org.springframework.util.ConcurrentReferenceHashMap.Restructure-">getReference</a></span>(java.lang.Object&nbsp;key,
             <a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.Restructure.html" title="enum in permafrost.tundra.org.springframework.util">ConcurrentReferenceHashMap.Restructure</a>&nbsp;restructure)</code>
@@ -451,61 +331,51 @@ implements java.util.concurrent.ConcurrentMap&lt;K,V&gt;</pre>
  or <code>null</code> if not found.</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>protected <a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.Segment.html" title="class in permafrost.tundra.org.springframework.util">ConcurrentReferenceHashMap.Segment</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html#getSegment-int-">getSegment</a></span>(int&nbsp;index)</code>&nbsp;</td>
 </tr>
-<tr id="i13" class="rowColor">
-<td class="colFirst"><code>private <a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.Segment.html" title="class in permafrost.tundra.org.springframework.util">ConcurrentReferenceHashMap.Segment</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html#getSegmentForHash-int-">getSegmentForHash</a></span>(int&nbsp;hash)</code>&nbsp;</td>
-</tr>
-<tr id="i14" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>protected int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html#getSegmentsSize--">getSegmentsSize</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html#purgeUnreferencedEntries--">purgeUnreferencedEntries</a></span>()</code>
 <div class="block">Remove any entries that have been garbage collected and are no longer referenced.</div>
 </td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html" title="type parameter in ConcurrentReferenceHashMap">V</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html#put-K-V-">put</a></span>(<a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html" title="type parameter in ConcurrentReferenceHashMap">K</a>&nbsp;key,
    <a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html" title="type parameter in ConcurrentReferenceHashMap">V</a>&nbsp;value)</code>&nbsp;</td>
 </tr>
-<tr id="i17" class="rowColor">
-<td class="colFirst"><code>private <a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html" title="type parameter in ConcurrentReferenceHashMap">V</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html#put-K-V-boolean-">put</a></span>(<a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html" title="type parameter in ConcurrentReferenceHashMap">K</a>&nbsp;key,
-   <a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html" title="type parameter in ConcurrentReferenceHashMap">V</a>&nbsp;value,
-   boolean&nbsp;overwriteExisting)</code>&nbsp;</td>
-</tr>
-<tr id="i18" class="altColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code><a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html" title="type parameter in ConcurrentReferenceHashMap">V</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html#putIfAbsent-K-V-">putIfAbsent</a></span>(<a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html" title="type parameter in ConcurrentReferenceHashMap">K</a>&nbsp;key,
            <a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html" title="type parameter in ConcurrentReferenceHashMap">V</a>&nbsp;value)</code>&nbsp;</td>
 </tr>
-<tr id="i19" class="rowColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html" title="type parameter in ConcurrentReferenceHashMap">V</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html#remove-java.lang.Object-">remove</a></span>(java.lang.Object&nbsp;key)</code>&nbsp;</td>
 </tr>
-<tr id="i20" class="altColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html#remove-java.lang.Object-java.lang.Object-">remove</a></span>(java.lang.Object&nbsp;key,
       java.lang.Object&nbsp;value)</code>&nbsp;</td>
 </tr>
-<tr id="i21" class="rowColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html" title="type parameter in ConcurrentReferenceHashMap">V</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html#replace-K-V-">replace</a></span>(<a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html" title="type parameter in ConcurrentReferenceHashMap">K</a>&nbsp;key,
        <a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html" title="type parameter in ConcurrentReferenceHashMap">V</a>&nbsp;value)</code>&nbsp;</td>
 </tr>
-<tr id="i22" class="altColor">
+<tr id="i18" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html#replace-K-V-V-">replace</a></span>(<a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html" title="type parameter in ConcurrentReferenceHashMap">K</a>&nbsp;key,
        <a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html" title="type parameter in ConcurrentReferenceHashMap">V</a>&nbsp;oldValue,
        <a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html" title="type parameter in ConcurrentReferenceHashMap">V</a>&nbsp;newValue)</code>&nbsp;</td>
 </tr>
-<tr id="i23" class="rowColor">
+<tr id="i19" class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html#size--">size</a></span>()</code>&nbsp;</td>
 </tr>
@@ -546,138 +416,6 @@ implements java.util.concurrent.ConcurrentMap&lt;K,V&gt;</pre>
 <div class="details">
 <ul class="blockList">
 <li class="blockList">
-<!-- ============ FIELD DETAIL =========== -->
-<ul class="blockList">
-<li class="blockList"><a name="field.detail">
-<!--   -->
-</a>
-<h3>Field Detail</h3>
-<a name="DEFAULT_INITIAL_CAPACITY">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>DEFAULT_INITIAL_CAPACITY</h4>
-<pre>private static final&nbsp;int DEFAULT_INITIAL_CAPACITY</pre>
-<dl>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../../../constant-values.html#permafrost.tundra.org.springframework.util.ConcurrentReferenceHashMap.DEFAULT_INITIAL_CAPACITY">Constant Field Values</a></dd>
-</dl>
-</li>
-</ul>
-<a name="DEFAULT_LOAD_FACTOR">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>DEFAULT_LOAD_FACTOR</h4>
-<pre>private static final&nbsp;float DEFAULT_LOAD_FACTOR</pre>
-<dl>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../../../constant-values.html#permafrost.tundra.org.springframework.util.ConcurrentReferenceHashMap.DEFAULT_LOAD_FACTOR">Constant Field Values</a></dd>
-</dl>
-</li>
-</ul>
-<a name="DEFAULT_CONCURRENCY_LEVEL">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>DEFAULT_CONCURRENCY_LEVEL</h4>
-<pre>private static final&nbsp;int DEFAULT_CONCURRENCY_LEVEL</pre>
-<dl>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../../../constant-values.html#permafrost.tundra.org.springframework.util.ConcurrentReferenceHashMap.DEFAULT_CONCURRENCY_LEVEL">Constant Field Values</a></dd>
-</dl>
-</li>
-</ul>
-<a name="DEFAULT_REFERENCE_TYPE">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>DEFAULT_REFERENCE_TYPE</h4>
-<pre>private static final&nbsp;<a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.ReferenceType.html" title="enum in permafrost.tundra.org.springframework.util">ConcurrentReferenceHashMap.ReferenceType</a> DEFAULT_REFERENCE_TYPE</pre>
-</li>
-</ul>
-<a name="MAXIMUM_CONCURRENCY_LEVEL">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>MAXIMUM_CONCURRENCY_LEVEL</h4>
-<pre>private static final&nbsp;int MAXIMUM_CONCURRENCY_LEVEL</pre>
-<dl>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../../../constant-values.html#permafrost.tundra.org.springframework.util.ConcurrentReferenceHashMap.MAXIMUM_CONCURRENCY_LEVEL">Constant Field Values</a></dd>
-</dl>
-</li>
-</ul>
-<a name="MAXIMUM_SEGMENT_SIZE">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>MAXIMUM_SEGMENT_SIZE</h4>
-<pre>private static final&nbsp;int MAXIMUM_SEGMENT_SIZE</pre>
-<dl>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../../../constant-values.html#permafrost.tundra.org.springframework.util.ConcurrentReferenceHashMap.MAXIMUM_SEGMENT_SIZE">Constant Field Values</a></dd>
-</dl>
-</li>
-</ul>
-<a name="segments">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>segments</h4>
-<pre>private final&nbsp;<a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.Segment.html" title="class in permafrost.tundra.org.springframework.util">ConcurrentReferenceHashMap.Segment</a>[] segments</pre>
-<div class="block">Array of segments indexed using the high order bits from the hash.</div>
-</li>
-</ul>
-<a name="loadFactor">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>loadFactor</h4>
-<pre>private final&nbsp;float loadFactor</pre>
-<div class="block">When the average number of references per table exceeds this value resize will be attempted.</div>
-</li>
-</ul>
-<a name="referenceType">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>referenceType</h4>
-<pre>private final&nbsp;<a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.ReferenceType.html" title="enum in permafrost.tundra.org.springframework.util">ConcurrentReferenceHashMap.ReferenceType</a> referenceType</pre>
-<div class="block">The reference type: SOFT or WEAK.</div>
-</li>
-</ul>
-<a name="shift">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>shift</h4>
-<pre>private final&nbsp;int shift</pre>
-<div class="block">The shift value used to calculate the size of the segments array and an index from the hash.</div>
-</li>
-</ul>
-<a name="entrySet">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>entrySet</h4>
-<pre>private&nbsp;java.util.Set&lt;java.util.Map.Entry&lt;<a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html" title="type parameter in ConcurrentReferenceHashMap">K</a>,<a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html" title="type parameter in ConcurrentReferenceHashMap">V</a>&gt;&gt; entrySet</pre>
-<div class="block">Late binding entry set.</div>
-</li>
-</ul>
-</li>
-</ul>
 <!-- ========= CONSTRUCTOR DETAIL ======== -->
 <ul class="blockList">
 <li class="blockList"><a name="constructor.detail">
@@ -916,15 +654,6 @@ implements java.util.concurrent.ConcurrentMap&lt;K,V&gt;</pre>
 </dl>
 </li>
 </ul>
-<a name="getEntryIfAvailable-java.lang.Object-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getEntryIfAvailable</h4>
-<pre>private&nbsp;<a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.Entry.html" title="class in permafrost.tundra.org.springframework.util">ConcurrentReferenceHashMap.Entry</a>&lt;<a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html" title="type parameter in ConcurrentReferenceHashMap">K</a>,<a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html" title="type parameter in ConcurrentReferenceHashMap">V</a>&gt;&nbsp;getEntryIfAvailable(java.lang.Object&nbsp;key)</pre>
-</li>
-</ul>
 <a name="getReference-java.lang.Object-permafrost.tundra.org.springframework.util.ConcurrentReferenceHashMap.Restructure-">
 <!--   -->
 </a>
@@ -978,19 +707,6 @@ implements java.util.concurrent.ConcurrentMap&lt;K,V&gt;</pre>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code>putIfAbsent</code>&nbsp;in interface&nbsp;<code>java.util.Map&lt;<a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html" title="type parameter in ConcurrentReferenceHashMap">K</a>,<a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html" title="type parameter in ConcurrentReferenceHashMap">V</a>&gt;</code></dd>
 </dl>
-</li>
-</ul>
-<a name="put-java.lang.Object-java.lang.Object-boolean-">
-<!--   -->
-</a><a name="put-K-V-boolean-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>put</h4>
-<pre>private&nbsp;<a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html" title="type parameter in ConcurrentReferenceHashMap">V</a>&nbsp;put(<a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html" title="type parameter in ConcurrentReferenceHashMap">K</a>&nbsp;key,
-              <a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html" title="type parameter in ConcurrentReferenceHashMap">V</a>&nbsp;value,
-              boolean&nbsp;overwriteExisting)</pre>
 </li>
 </ul>
 <a name="remove-java.lang.Object-">
@@ -1119,25 +835,6 @@ implements java.util.concurrent.ConcurrentMap&lt;K,V&gt;</pre>
 </dl>
 </li>
 </ul>
-<a name="doTask-java.lang.Object-permafrost.tundra.org.springframework.util.ConcurrentReferenceHashMap.Task-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>doTask</h4>
-<pre>private&nbsp;&lt;T&gt;&nbsp;T&nbsp;doTask(java.lang.Object&nbsp;key,
-                     <a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.Task.html" title="class in permafrost.tundra.org.springframework.util">ConcurrentReferenceHashMap.Task</a>&lt;T&gt;&nbsp;task)</pre>
-</li>
-</ul>
-<a name="getSegmentForHash-int-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getSegmentForHash</h4>
-<pre>private&nbsp;<a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.Segment.html" title="class in permafrost.tundra.org.springframework.util">ConcurrentReferenceHashMap.Segment</a>&nbsp;getSegmentForHash(int&nbsp;hash)</pre>
-</li>
-</ul>
 <a name="calculateShift-int-int-">
 <!--   -->
 </a>
@@ -1184,8 +881,8 @@ implements java.util.concurrent.ConcurrentMap&lt;K,V&gt;</pre>
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../../permafrost/tundra/org/springframework/util/CollectionUtils.MultiValueMapAdapter.html" title="class in permafrost.tundra.org.springframework.util"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li><a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.Entries.html" title="class in permafrost.tundra.org.springframework.util"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../../../permafrost/tundra/org/springframework/util/CollectionUtils.html" title="class in permafrost.tundra.org.springframework.util"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../../../permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.Entry.html" title="class in permafrost.tundra.org.springframework.util"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../../index.html?permafrost/tundra/org/springframework/util/ConcurrentReferenceHashMap.html" target="_top">Frames</a></li>
@@ -1210,13 +907,13 @@ implements java.util.concurrent.ConcurrentMap&lt;K,V&gt;</pre>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li><a href="#nested.class.summary">Nested</a>&nbsp;|&nbsp;</li>
-<li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>

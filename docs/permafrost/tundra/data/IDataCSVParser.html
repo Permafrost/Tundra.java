@@ -542,7 +542,9 @@ extends <a href="../../../permafrost/tundra/data/IDataParser.html" title="class 
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>delimiter</code> - The delimiter character to use.</dd>
+<dd><code>escape</code> - The escape character to use.</dd>
 <dd><code>quote</code> - The quote character to use.</dd>
+<dd><code>quoteMode</code> - The quote mode to use.</dd>
 <dd><code>contentType</code> - The content type to use.</dd>
 <dd><code>hasHeader</code> - Whether to use a header row.</dd>
 <dd><code>columns</code> - The column names to use.</dd>
@@ -580,7 +582,9 @@ extends <a href="../../../permafrost/tundra/data/IDataParser.html" title="class 
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>delimiter</code> - The delimiter character to use.</dd>
+<dd><code>escape</code> - The escape character to use.</dd>
 <dd><code>quote</code> - The quote character to use.</dd>
+<dd><code>quoteMode</code> - The quote mode to use.</dd>
 <dd><code>contentType</code> - The content type to use.</dd>
 <dd><code>hasHeader</code> - Whether to use a header row.</dd>
 <dd><code>columns</code> - The column names to use.</dd>
@@ -650,6 +654,9 @@ extends <a href="../../../permafrost/tundra/data/IDataParser.html" title="class 
 <pre>protected static&nbsp;&lt;K,V&gt;&nbsp;java.util.Map&lt;V,K&gt;&nbsp;flip(java.util.Map&lt;K,V&gt;&nbsp;map)</pre>
 <div class="block">Flips the given map.</div>
 <dl>
+<dt><span class="paramLabel">Type Parameters:</span></dt>
+<dd><code>K</code> - The key class.</dd>
+<dd><code>V</code> - The value class.</dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>map</code> - The map to flip.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -698,6 +705,7 @@ extends <a href="../../../permafrost/tundra/data/IDataParser.html" title="class 
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>character</code> - The String to retrieve the delimiter character from.</dd>
+<dd><code>defaultValue</code> - The default value returned if the given character is null or has zero length.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The first character of the given String.</dd>
 </dl>

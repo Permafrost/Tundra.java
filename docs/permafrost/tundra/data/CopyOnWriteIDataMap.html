@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":9,"i3":10,"i4":42,"i5":42,"i6":10,"i7":42,"i8":9,"i9":9,"i10":9};
+var methods = {"i0":10,"i1":9,"i2":10,"i3":42,"i4":42,"i5":10,"i6":42,"i7":9,"i8":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -48,7 +48,7 @@ var activeTableTab = "activeTableTab";
 <div class="subNav">
 <ul class="navList">
 <li><a href="../../../permafrost/tundra/data/ConcurrentMapIData.html" title="class in permafrost.tundra.data"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li><a href="../../../permafrost/tundra/data/CopyOnWriteIDataMap.CopyOnWriteIDataCursor.html" title="class in permafrost.tundra.data"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../permafrost/tundra/data/CriteriaBasedIDataComparator.html" title="class in permafrost.tundra.data"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../index.html?permafrost/tundra/data/CopyOnWriteIDataMap.html" target="_top">Frames</a></li>
@@ -72,7 +72,7 @@ var activeTableTab = "activeTableTab";
 <div>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
-<li><a href="#nested.class.summary">Nested</a>&nbsp;|&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
 <li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
@@ -152,37 +152,6 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <!--   -->
 </a>
 <h3>Nested Class Summary</h3>
-<table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Nested Class Summary table, listing nested classes, and an explanation">
-<caption><span>Nested Classes</span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier and Type</th>
-<th class="colLast" scope="col">Class and Description</th>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private class&nbsp;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/data/CopyOnWriteIDataMap.CopyOnWriteIDataCursor.html" title="class in permafrost.tundra.data">CopyOnWriteIDataMap.CopyOnWriteIDataCursor</a></span></code>
-<div class="block">Copy on write wrapper for an IDataCursor.</div>
-</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>private class&nbsp;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/data/CopyOnWriteIDataMap.CopyOnWriteIDataSharedCursor.html" title="class in permafrost.tundra.data">CopyOnWriteIDataMap.CopyOnWriteIDataSharedCursor</a></span></code>
-<div class="block">Copy on write wrapper for an IDataSharedCursor.</div>
-</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private static class&nbsp;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/data/CopyOnWriteIDataMap.PositionCommand.html" title="class in permafrost.tundra.data">CopyOnWriteIDataMap.PositionCommand</a></span></code>
-<div class="block">Represents a single position command for an IDataCursor.</div>
-</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>private static class&nbsp;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/data/CopyOnWriteIDataMap.PositionCommandType.html" title="enum in permafrost.tundra.data">CopyOnWriteIDataMap.PositionCommandType</a></span></code>
-<div class="block">The different types of position commands possible with an IDataCursor.</div>
-</td>
-</tr>
-</table>
 <ul class="blockList">
 <li class="blockList"><a name="nested.classes.inherited.from.class.java.util.Map">
 <!--   -->
@@ -209,10 +178,6 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/data/CopyOnWriteIDataMap.html#copied">copied</a></span></code>
 <div class="block">Whether this object has been written to.</div>
 </td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>private static long</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/data/CopyOnWriteIDataMap.html#serialVersionUID">serialVersionUID</a></span></code>&nbsp;</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -333,61 +298,48 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code>private boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/data/CopyOnWriteIDataMap.html#copyOnWrite--">copyOnWrite</a></span>()</code>
-<div class="block">Updates document to be a copy of itself the first time this method is called, subsequent calls do nothing.</div>
-</td>
-</tr>
-<tr id="i2" class="altColor">
 <td class="colFirst"><code>static com.wm.data.IData</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/data/CopyOnWriteIDataMap.html#create--">create</a></span>()</code>
 <div class="block">Returns a newly created IData object.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>com.wm.data.IDataCursor</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/data/CopyOnWriteIDataMap.html#getCursor--">getCursor</a></span>()</code>
 <div class="block">Returns an IDataCursor for this IData object.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>com.wm.data.IDataHashCursor</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/data/CopyOnWriteIDataMap.html#getHashCursor--">getHashCursor</a></span>()</code>
 <div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;&nbsp;</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>com.wm.data.IDataIndexCursor</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/data/CopyOnWriteIDataMap.html#getIndexCursor--">getIndexCursor</a></span>()</code>
 <div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;&nbsp;</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>com.wm.data.IDataSharedCursor</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/data/CopyOnWriteIDataMap.html#getSharedCursor--">getSharedCursor</a></span>()</code>
 <div class="block">Returns an IDataSharedCursor for this IData object.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>com.wm.data.IDataTreeCursor</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/data/CopyOnWriteIDataMap.html#getTreeCursor--">getTreeCursor</a></span>()</code>
 <div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;&nbsp;</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
-<td class="colFirst"><code>private static java.lang.Object</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/data/CopyOnWriteIDataMap.html#normalize-java.lang.Object-">normalize</a></span>(java.lang.Object&nbsp;value)</code>
-<div class="block">Converts the given value if it is an IData or IData[] compatible object to a CopyOnWriteIDataMap or
- CopyOnWriteIDataMap[] respectively.</div>
-</td>
-</tr>
-<tr id="i9" class="rowColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>static <a href="../../../permafrost/tundra/data/CopyOnWriteIDataMap.html" title="class in permafrost.tundra.data">CopyOnWriteIDataMap</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/data/CopyOnWriteIDataMap.html#of-com.wm.data.IData-">of</a></span>(com.wm.data.IData&nbsp;document)</code>
 <div class="block">Returns a new CopyOnWriteIDataMap wrapping the given IData document.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>static <a href="../../../permafrost/tundra/data/CopyOnWriteIDataMap.html" title="class in permafrost.tundra.data">CopyOnWriteIDataMap</a>[]</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/data/CopyOnWriteIDataMap.html#of-com.wm.data.IData:A-">of</a></span>(com.wm.data.IData[]&nbsp;array)</code>
 <div class="block">Returns a new CopyOnWriteIDataMap[] representation of the given IData[] document list.</div>
@@ -450,19 +402,6 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <!--   -->
 </a>
 <h3>Field Detail</h3>
-<a name="serialVersionUID">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>serialVersionUID</h4>
-<pre>private static final&nbsp;long serialVersionUID</pre>
-<dl>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../constant-values.html#permafrost.tundra.data.CopyOnWriteIDataMap.serialVersionUID">Constant Field Values</a></dd>
-</dl>
-</li>
-</ul>
 <a name="copied">
 <!--   -->
 </a>
@@ -671,39 +610,6 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 </dl>
 </li>
 </ul>
-<a name="normalize-java.lang.Object-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>normalize</h4>
-<pre>private static&nbsp;java.lang.Object&nbsp;normalize(java.lang.Object&nbsp;value)</pre>
-<div class="block">Converts the given value if it is an IData or IData[] compatible object to a CopyOnWriteIDataMap or
- CopyOnWriteIDataMap[] respectively.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>value</code> - The value to be normalized.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>If the value is an IData or IData[] compatible object, a new CopyOnWriteIDataMap or
-              CopyOnWriteIDataMap[] respectively is returned which wraps the given value, otherwise
-              the value itself is returned unmodified.</dd>
-</dl>
-</li>
-</ul>
-<a name="copyOnWrite--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>copyOnWrite</h4>
-<pre>private&nbsp;boolean&nbsp;copyOnWrite()</pre>
-<div class="block">Updates document to be a copy of itself the first time this method is called, subsequent calls do nothing.</div>
-<dl>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>True if a copy was made, false otherwise.</dd>
-</dl>
-</li>
-</ul>
 <a name="getCursor--">
 <!--   -->
 </a>
@@ -863,7 +769,7 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <div class="subNav">
 <ul class="navList">
 <li><a href="../../../permafrost/tundra/data/ConcurrentMapIData.html" title="class in permafrost.tundra.data"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li><a href="../../../permafrost/tundra/data/CopyOnWriteIDataMap.CopyOnWriteIDataCursor.html" title="class in permafrost.tundra.data"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../permafrost/tundra/data/CriteriaBasedIDataComparator.html" title="class in permafrost.tundra.data"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../index.html?permafrost/tundra/data/CopyOnWriteIDataMap.html" target="_top">Frames</a></li>
@@ -887,7 +793,7 @@ implements java.lang.Cloneable, java.io.Serializable</pre>
 <div>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
-<li><a href="#nested.class.summary">Nested</a>&nbsp;|&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
 <li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>

@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":9,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":9,"i21":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":9,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -146,43 +146,37 @@ implements com.wm.util.coder.IDataCodable</pre>
 </td>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>private static java.util.regex.Pattern</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/net/http/route/HTTPRoute.html#KEY_EQUALS_VALUE_PATTERN">KEY_EQUALS_VALUE_PATTERN</a></span></code>
-<div class="block">Regular expression pattern for matching key=value URI template constants</div>
-</td>
-</tr>
-<tr class="rowColor">
 <td class="colFirst"><code>protected <a href="../../../../../permafrost/tundra/net/http/HTTPMethod.html" title="enum in permafrost.tundra.net.http">HTTPMethod</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/net/http/route/HTTPRoute.html#method">method</a></span></code>
 <div class="block">The HTTP method used for matching against HTTP requests.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>protected com.wm.lang.ns.NSName</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/net/http/route/HTTPRoute.html#service">service</a></span></code>
 <div class="block">The service to be invoked when this routing instruction matches an HTTP request.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>protected static java.util.regex.Pattern</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/net/http/route/HTTPRoute.html#SERVICE_PATTERN">SERVICE_PATTERN</a></span></code>
 <div class="block">A regular expression used to determine if the target is a service or a document.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>protected java.io.File</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/net/http/route/HTTPRoute.html#source">source</a></span></code>
 <div class="block">The source file / package configuration file the routing instruction was loaded from.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>protected java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/net/http/route/HTTPRoute.html#target">target</a></span></code>
 <div class="block">The target which is invoked/redirected to when an HTTP request matching the route's method and URI template is
  received.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>protected <a href="../../../../../permafrost/tundra/org/springframework/web/util/UriTemplate.html" title="class in permafrost.tundra.org.springframework.web.util">UriTemplate</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/net/http/route/HTTPRoute.html#uri">uri</a></span></code>
 <div class="block">The URI template used for matching against HTTP request URIs.</div>
@@ -381,12 +375,6 @@ implements com.wm.util.coder.IDataCodable</pre>
 </td>
 </tr>
 <tr id="i20" class="altColor">
-<td class="colFirst"><code>private static com.wm.data.IData</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/net/http/route/HTTPRoute.html#normalize-java.util.Map-">normalize</a></span>(java.util.Map&lt;java.lang.String,java.lang.String&gt;&nbsp;results)</code>
-<div class="block">Converts a UriTemplate result set to an IData document.</div>
-</td>
-</tr>
-<tr id="i21" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../permafrost/tundra/net/http/route/HTTPRoute.html#setIData-com.wm.data.IData-">setIData</a></span>(com.wm.data.IData&nbsp;document)</code>
 <div class="block">Initializes this HTTP routing instruction.</div>
@@ -488,21 +476,11 @@ implements com.wm.util.coder.IDataCodable</pre>
 <a name="source">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>source</h4>
 <pre>protected&nbsp;java.io.File source</pre>
 <div class="block">The source file / package configuration file the routing instruction was loaded from.</div>
-</li>
-</ul>
-<a name="KEY_EQUALS_VALUE_PATTERN">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>KEY_EQUALS_VALUE_PATTERN</h4>
-<pre>private static final&nbsp;java.util.regex.Pattern KEY_EQUALS_VALUE_PATTERN</pre>
-<div class="block">Regular expression pattern for matching key=value URI template constants</div>
 </li>
 </ul>
 </li>
@@ -773,23 +751,6 @@ implements com.wm.util.coder.IDataCodable</pre>
 <dd><code>uri</code> - The URI to match.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>An IData document containing the matched URI template parameters, or null if not matched.</dd>
-</dl>
-</li>
-</ul>
-<a name="normalize-java.util.Map-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>normalize</h4>
-<pre>private static&nbsp;com.wm.data.IData&nbsp;normalize(java.util.Map&lt;java.lang.String,java.lang.String&gt;&nbsp;results)</pre>
-<div class="block">Converts a UriTemplate result set to an IData document. Supports converting URI template variables specified in
- the form {key=value} to key value tuples in resulting IData.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>results</code> - The UriTemplate matched result set.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>An IData representing the matched results.</dd>
 </dl>
 </li>
 </ul>

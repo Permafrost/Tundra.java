@@ -6,6 +6,7 @@ permafrost.tundra.data.transform
 permafrost.tundra.data.transform.html
 permafrost.tundra.data.transform.math
 permafrost.tundra.data.transform.net.uri
+permafrost.tundra.data.transform.string
 permafrost.tundra.data.transform.time
 permafrost.tundra.data.transform.xml
 permafrost.tundra.flow

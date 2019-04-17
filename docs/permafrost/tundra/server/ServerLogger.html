@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9,"i11":9,"i12":9,"i13":9,"i14":9,"i15":9,"i16":9,"i17":9,"i18":9,"i19":9};
+var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9,"i11":9,"i12":9,"i13":9,"i14":9,"i15":9,"i16":9,"i17":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -74,13 +74,13 @@ var activeTableTab = "activeTableTab";
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
 </div>
@@ -116,27 +116,6 @@ extends java.lang.Object</pre>
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
-<!-- ======== CONSTRUCTOR SUMMARY ======== -->
-<ul class="blockList">
-<li class="blockList"><a name="constructor.summary">
-<!--   -->
-</a>
-<h3>Constructor Summary</h3>
-<table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Constructor Summary table, listing constructors, and an explanation">
-<caption><span>Constructors</span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier</th>
-<th class="colLast" scope="col">Constructor and Description</th>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private </code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/ServerLogger.html#ServerLogger--">ServerLogger</a></span>()</code>
-<div class="block">Disallow instantiation of this class.</div>
-</td>
-</tr>
-</table>
-</li>
-</ul>
 <!-- ========== METHOD SUMMARY =========== -->
 <ul class="blockList">
 <li class="blockList"><a name="method.summary">
@@ -195,25 +174,13 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr id="i6" class="altColor">
-<td class="colFirst"><code>private static int</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/ServerLogger.html#getLevel-org.apache.log4j.Level-">getLevel</a></span>(org.apache.log4j.Level&nbsp;level)</code>
-<div class="block">Returns the log level as an integer given the level as an enumeration value.</div>
-</td>
-</tr>
-<tr id="i7" class="rowColor">
-<td class="colFirst"><code>private static int</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/ServerLogger.html#getLevel-java.lang.String-">getLevel</a></span>(java.lang.String&nbsp;levelString)</code>
-<div class="block">Returns the log level as an integer given the level as a String.</div>
-</td>
-</tr>
-<tr id="i8" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/ServerLogger.html#info-java.lang.String-java.lang.Object...-">info</a></span>(java.lang.String&nbsp;message,
     java.lang.Object...&nbsp;arguments)</code>
 <div class="block">Logs the given message formatted with the given arguments at the info level.</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/ServerLogger.html#info-java.lang.String-java.lang.String-java.lang.Object...-">info</a></span>(java.lang.String&nbsp;function,
     java.lang.String&nbsp;message,
@@ -221,7 +188,7 @@ extends java.lang.Object</pre>
 <div class="block">Logs the given message formatted with the given arguments against the given function at the info level.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/ServerLogger.html#log-int-java.lang.String-java.lang.Object...-">log</a></span>(int&nbsp;level,
    java.lang.String&nbsp;message,
@@ -229,7 +196,7 @@ extends java.lang.Object</pre>
 <div class="block">Logs the given message formatted with the given arguments at the given level.</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/ServerLogger.html#log-int-java.lang.String-java.lang.String-java.lang.Object...-">log</a></span>(int&nbsp;level,
    java.lang.String&nbsp;function,
@@ -238,7 +205,7 @@ extends java.lang.Object</pre>
 <div class="block">Logs the given message formatted with the given arguments against the given function at the given level.</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/ServerLogger.html#log-org.apache.log4j.Level-java.lang.String-java.lang.Object...-">log</a></span>(org.apache.log4j.Level&nbsp;level,
    java.lang.String&nbsp;message,
@@ -246,7 +213,7 @@ extends java.lang.Object</pre>
 <div class="block">Logs the given message formatted with the given arguments at the given level.</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/ServerLogger.html#log-org.apache.log4j.Level-java.lang.String-java.lang.String-java.lang.Object...-">log</a></span>(org.apache.log4j.Level&nbsp;level,
    java.lang.String&nbsp;function,
@@ -255,7 +222,7 @@ extends java.lang.Object</pre>
 <div class="block">Logs the given message formatted with the given arguments against the given function at the given level.</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/ServerLogger.html#log-java.lang.String-java.lang.String-java.lang.Object...-">log</a></span>(java.lang.String&nbsp;level,
    java.lang.String&nbsp;message,
@@ -263,7 +230,7 @@ extends java.lang.Object</pre>
 <div class="block">Logs the given message formatted with the given arguments function at the given level.</div>
 </td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/ServerLogger.html#log-java.lang.String-java.lang.String-java.lang.String-java.lang.Object...-">log</a></span>(java.lang.String&nbsp;level,
    java.lang.String&nbsp;function,
@@ -272,14 +239,14 @@ extends java.lang.Object</pre>
 <div class="block">Logs the given message formatted with the given arguments against the given function at the given level.</div>
 </td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/ServerLogger.html#trace-java.lang.String-java.lang.Object...-">trace</a></span>(java.lang.String&nbsp;message,
      java.lang.Object...&nbsp;arguments)</code>
 <div class="block">Logs the given message formatted with the given arguments at the trace level.</div>
 </td>
 </tr>
-<tr id="i17" class="rowColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/ServerLogger.html#trace-java.lang.String-java.lang.String-java.lang.Object...-">trace</a></span>(java.lang.String&nbsp;function,
      java.lang.String&nbsp;message,
@@ -287,14 +254,14 @@ extends java.lang.Object</pre>
 <div class="block">Logs the given message formatted with the given arguments against the given function at the trace level.</div>
 </td>
 </tr>
-<tr id="i18" class="altColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/ServerLogger.html#warn-java.lang.String-java.lang.Object...-">warn</a></span>(java.lang.String&nbsp;message,
     java.lang.Object...&nbsp;arguments)</code>
 <div class="block">Logs the given message formatted with the given arguments at the warn level.</div>
 </td>
 </tr>
-<tr id="i19" class="rowColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/ServerLogger.html#warn-java.lang.String-java.lang.String-java.lang.Object...-">warn</a></span>(java.lang.String&nbsp;function,
     java.lang.String&nbsp;message,
@@ -318,24 +285,6 @@ extends java.lang.Object</pre>
 <div class="details">
 <ul class="blockList">
 <li class="blockList">
-<!-- ========= CONSTRUCTOR DETAIL ======== -->
-<ul class="blockList">
-<li class="blockList"><a name="constructor.detail">
-<!--   -->
-</a>
-<h3>Constructor Detail</h3>
-<a name="ServerLogger--">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>ServerLogger</h4>
-<pre>private&nbsp;ServerLogger()</pre>
-<div class="block">Disallow instantiation of this class.</div>
-</li>
-</ul>
-</li>
-</ul>
 <!-- ============ METHOD DETAIL ========== -->
 <ul class="blockList">
 <li class="blockList"><a name="method.detail">
@@ -643,7 +592,7 @@ extends java.lang.Object</pre>
 <a name="log-int-java.lang.String-java.lang.String-java.lang.Object...-">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>log</h4>
 <pre>public static&nbsp;void&nbsp;log(int&nbsp;level,
@@ -657,38 +606,6 @@ extends java.lang.Object</pre>
 <dd><code>function</code> - The function against which the message is being logged.</dd>
 <dd><code>message</code> - The message to be logged.</dd>
 <dd><code>arguments</code> - The arguments to be included when formatting the message.</dd>
-</dl>
-</li>
-</ul>
-<a name="getLevel-org.apache.log4j.Level-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getLevel</h4>
-<pre>private static&nbsp;int&nbsp;getLevel(org.apache.log4j.Level&nbsp;level)</pre>
-<div class="block">Returns the log level as an integer given the level as an enumeration value.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>level</code> - The logging level to convert.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>The integer representation of the given level.</dd>
-</dl>
-</li>
-</ul>
-<a name="getLevel-java.lang.String-">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>getLevel</h4>
-<pre>private static&nbsp;int&nbsp;getLevel(java.lang.String&nbsp;levelString)</pre>
-<div class="block">Returns the log level as an integer given the level as a String.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>levelString</code> - The logging level to convert.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>The integer representation of the given level.</dd>
 </dl>
 </li>
 </ul>
@@ -746,13 +663,13 @@ extends java.lang.Object</pre>
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
 </div>

@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9,"i11":9,"i12":9};
+var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -74,13 +74,13 @@ var activeTableTab = "activeTableTab";
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
 </div>
@@ -116,27 +116,6 @@ extends java.lang.Object</pre>
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
-<!-- ======== CONSTRUCTOR SUMMARY ======== -->
-<ul class="blockList">
-<li class="blockList"><a name="constructor.summary">
-<!--   -->
-</a>
-<h3>Constructor Summary</h3>
-<table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Constructor Summary table, listing constructors, and an explanation">
-<caption><span>Constructors</span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier</th>
-<th class="colLast" scope="col">Constructor and Description</th>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private </code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../permafrost/tundra/xml/dom/NodeHelper.html#NodeHelper--">NodeHelper</a></span>()</code>
-<div class="block">Disallow instantiation of this class.</div>
-</td>
-</tr>
-</table>
-</li>
-</ul>
 <!-- ========== METHOD SUMMARY =========== -->
 <ul class="blockList">
 <li class="blockList"><a name="method.summary">
@@ -163,39 +142,25 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr id="i2" class="altColor">
-<td class="colFirst"><code>private static java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../permafrost/tundra/xml/dom/NodeHelper.html#getNodeName-org.w3c.dom.Node-javax.xml.namespace.NamespaceContext-">getNodeName</a></span>(org.w3c.dom.Node&nbsp;node,
-           javax.xml.namespace.NamespaceContext&nbsp;namespaceContext)</code>
-<div class="block">Returns the node name using the prefixes defined in the given namespace context rather than
- the prefixes used in the parsed XML.</div>
-</td>
-</tr>
-<tr id="i3" class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../permafrost/tundra/xml/dom/NodeHelper.html#getValue-org.w3c.dom.Node-">getValue</a></span>(org.w3c.dom.Node&nbsp;node)</code>
 <div class="block">Returns the value of the given node.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
-<td class="colFirst"><code>private static java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../permafrost/tundra/xml/dom/NodeHelper.html#nodeTypeToString-int-">nodeTypeToString</a></span>(int&nbsp;nodeType)</code>
-<div class="block">Returns a String representation of the given Node type.</div>
-</td>
-</tr>
-<tr id="i5" class="rowColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>static com.wm.data.IData</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../permafrost/tundra/xml/dom/NodeHelper.html#parse-org.w3c.dom.Node-">parse</a></span>(org.w3c.dom.Node&nbsp;node)</code>
 <div class="block">Returns an IData representation of the given Node.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>static com.wm.data.IData</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../permafrost/tundra/xml/dom/NodeHelper.html#parse-org.w3c.dom.Node-javax.xml.namespace.NamespaceContext-">parse</a></span>(org.w3c.dom.Node&nbsp;node,
      javax.xml.namespace.NamespaceContext&nbsp;namespaceContext)</code>
 <div class="block">Returns an IData representation of the given Node.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>static com.wm.data.IData</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../permafrost/tundra/xml/dom/NodeHelper.html#parse-org.w3c.dom.Node-javax.xml.namespace.NamespaceContext-boolean-">parse</a></span>(org.w3c.dom.Node&nbsp;node,
      javax.xml.namespace.NamespaceContext&nbsp;namespaceContext,
@@ -203,16 +168,7 @@ extends java.lang.Object</pre>
 <div class="block">Returns an IData representation of the given Node.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
-<td class="colFirst"><code>private static void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../permafrost/tundra/xml/dom/NodeHelper.html#parse-org.w3c.dom.Node-javax.xml.namespace.NamespaceContext-permafrost.tundra.data.IDataMap-boolean-">parse</a></span>(org.w3c.dom.Node&nbsp;node,
-     javax.xml.namespace.NamespaceContext&nbsp;namespaceContext,
-     <a href="../../../../permafrost/tundra/data/IDataMap.html" title="class in permafrost.tundra.data">IDataMap</a>&nbsp;output,
-     boolean&nbsp;recurse)</code>
-<div class="block">Creates an IData representation of the given Node in the given IDataMap.</div>
-</td>
-</tr>
-<tr id="i9" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>static com.wm.data.IData[]</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../permafrost/tundra/xml/dom/NodeHelper.html#reflect-org.w3c.dom.NamedNodeMap-javax.xml.namespace.NamespaceContext-boolean-">reflect</a></span>(org.w3c.dom.NamedNodeMap&nbsp;namedNodeMap,
        javax.xml.namespace.NamespaceContext&nbsp;namespaceContext,
@@ -220,7 +176,7 @@ extends java.lang.Object</pre>
 <div class="block">Returns an IData[] representation of the given NamedNodeMap.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>static com.wm.data.IData[]</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../permafrost/tundra/xml/dom/NodeHelper.html#reflect-org.w3c.dom.NodeList-javax.xml.namespace.NamespaceContext-boolean-">reflect</a></span>(org.w3c.dom.NodeList&nbsp;nodeList,
        javax.xml.namespace.NamespaceContext&nbsp;namespaceContext,
@@ -228,14 +184,14 @@ extends java.lang.Object</pre>
 <div class="block">Returns an IData[] representation of the given NodeList object.</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>static com.wm.data.IData</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../permafrost/tundra/xml/dom/NodeHelper.html#reflect-org.w3c.dom.Node-javax.xml.namespace.NamespaceContext-">reflect</a></span>(org.w3c.dom.Node&nbsp;node,
        javax.xml.namespace.NamespaceContext&nbsp;namespaceContext)</code>
 <div class="block">Returns an IData representation of the given Node object.</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>static com.wm.data.IData</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../permafrost/tundra/xml/dom/NodeHelper.html#reflect-org.w3c.dom.Node-javax.xml.namespace.NamespaceContext-boolean-">reflect</a></span>(org.w3c.dom.Node&nbsp;node,
        javax.xml.namespace.NamespaceContext&nbsp;namespaceContext,
@@ -259,24 +215,6 @@ extends java.lang.Object</pre>
 <div class="details">
 <ul class="blockList">
 <li class="blockList">
-<!-- ========= CONSTRUCTOR DETAIL ======== -->
-<ul class="blockList">
-<li class="blockList"><a name="constructor.detail">
-<!--   -->
-</a>
-<h3>Constructor Detail</h3>
-<a name="NodeHelper--">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>NodeHelper</h4>
-<pre>private&nbsp;NodeHelper()</pre>
-<div class="block">Disallow instantiation of this class.</div>
-</li>
-</ul>
-</li>
-</ul>
 <!-- ============ METHOD DETAIL ========== -->
 <ul class="blockList">
 <li class="blockList"><a name="method.detail">
@@ -377,45 +315,6 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
-<a name="parse-org.w3c.dom.Node-javax.xml.namespace.NamespaceContext-permafrost.tundra.data.IDataMap-boolean-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>parse</h4>
-<pre>private static&nbsp;void&nbsp;parse(org.w3c.dom.Node&nbsp;node,
-                          javax.xml.namespace.NamespaceContext&nbsp;namespaceContext,
-                          <a href="../../../../permafrost/tundra/data/IDataMap.html" title="class in permafrost.tundra.data">IDataMap</a>&nbsp;output,
-                          boolean&nbsp;recurse)</pre>
-<div class="block">Creates an IData representation of the given Node in the given IDataMap.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>node</code> - The Node to be parsed.</dd>
-<dd><code>namespaceContext</code> - Any namespace declarations used in the XML content.</dd>
-<dd><code>output</code> - The IDataMap in which the IData representation is created.</dd>
-<dd><code>recurse</code> - If true, child elements will be recursed and returned also.</dd>
-</dl>
-</li>
-</ul>
-<a name="getNodeName-org.w3c.dom.Node-javax.xml.namespace.NamespaceContext-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getNodeName</h4>
-<pre>private static&nbsp;java.lang.String&nbsp;getNodeName(org.w3c.dom.Node&nbsp;node,
-                                            javax.xml.namespace.NamespaceContext&nbsp;namespaceContext)</pre>
-<div class="block">Returns the node name using the prefixes defined in the given namespace context rather than
- the prefixes used in the parsed XML.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>node</code> - The node to return the name of.</dd>
-<dd><code>namespaceContext</code> - The namespace context to use for prefixing qualified names.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>The name of the node.</dd>
-</dl>
-</li>
-</ul>
 <a name="reflect-org.w3c.dom.Node-javax.xml.namespace.NamespaceContext-">
 <!--   -->
 </a>
@@ -474,22 +373,6 @@ extends java.lang.Object</pre>
 <dd><code>node</code> - A node to return the value of.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The value of the given node.</dd>
-</dl>
-</li>
-</ul>
-<a name="nodeTypeToString-int-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>nodeTypeToString</h4>
-<pre>private static&nbsp;java.lang.String&nbsp;nodeTypeToString(int&nbsp;nodeType)</pre>
-<div class="block">Returns a String representation of the given Node type.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>nodeType</code> - A Node type.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>A String representation of the given Node type.</dd>
 </dl>
 </li>
 </ul>
@@ -593,13 +476,13 @@ extends java.lang.Object</pre>
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
 </div>

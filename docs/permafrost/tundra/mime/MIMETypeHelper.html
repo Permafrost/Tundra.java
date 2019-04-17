@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9,"i11":9,"i12":9,"i13":9,"i14":9,"i15":9,"i16":9};
+var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9,"i11":9,"i12":9,"i13":9,"i14":9,"i15":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -74,13 +74,13 @@ var activeTableTab = "activeTableTab";
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
 <li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
-<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
-<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
 </div>
@@ -131,33 +131,6 @@ extends java.lang.Object</pre>
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/mime/MIMETypeHelper.html#DEFAULT_MIME_TYPE_STRING">DEFAULT_MIME_TYPE_STRING</a></span></code>
 <div class="block">The default MIME media type for arbitrary content as a string.</div>
-</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>private static java.util.Map&lt;java.lang.String,java.util.Set&lt;java.lang.String&gt;&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/mime/MIMETypeHelper.html#FILE_EXTENSIONS_BY_MIME_TYPE">FILE_EXTENSIONS_BY_MIME_TYPE</a></span></code>
-<div class="block">A Map of file extensions to MIME type.</div>
-</td>
-</tr>
-</table>
-</li>
-</ul>
-<!-- ======== CONSTRUCTOR SUMMARY ======== -->
-<ul class="blockList">
-<li class="blockList"><a name="constructor.summary">
-<!--   -->
-</a>
-<h3>Constructor Summary</h3>
-<table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Constructor Summary table, listing constructors, and an explanation">
-<caption><span>Constructors</span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier</th>
-<th class="colLast" scope="col">Constructor and Description</th>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private </code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/mime/MIMETypeHelper.html#MIMETypeHelper--">MIMETypeHelper</a></span>()</code>
-<div class="block">Disallow instantiation of this class.</div>
 </td>
 </tr>
 </table>
@@ -226,55 +199,49 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr id="i8" class="altColor">
-<td class="colFirst"><code>private static java.util.Map&lt;java.lang.String,java.util.Set&lt;java.lang.String&gt;&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/mime/MIMETypeHelper.html#getFileExtensionsByMimeType--">getFileExtensionsByMimeType</a></span>()</code>
-<div class="block">Returns a Map whose keys are the registered MIME types and values are a set of associated file extensions.</div>
-</td>
-</tr>
-<tr id="i9" class="rowColor">
 <td class="colFirst"><code>static javax.activation.MimeType</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/mime/MIMETypeHelper.html#normalize-javax.activation.MimeType-">normalize</a></span>(javax.activation.MimeType&nbsp;type)</code>
 <div class="block">Returns the given MimeType if not null, otherwise the default MimeType.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/mime/MIMETypeHelper.html#normalize-java.lang.String-">normalize</a></span>(java.lang.String&nbsp;string)</code>
 <div class="block">Normalizes a MIME type string by removing extraneous whitespace characters, and listing parameters in
  alphabetical order.</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>static javax.activation.MimeType</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/mime/MIMETypeHelper.html#of-java.lang.String-">of</a></span>(java.lang.String&nbsp;string)</code>
 <div class="block">Returns a new MimeType object given a MIME media type string.</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>static com.wm.data.IData</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/mime/MIMETypeHelper.html#parse-java.lang.String-">parse</a></span>(java.lang.String&nbsp;string)</code>
 <div class="block">Parses the given MIME type string to an IData representation.</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>static com.wm.data.IData</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/mime/MIMETypeHelper.html#toIData-javax.activation.MimeType-">toIData</a></span>(javax.activation.MimeType&nbsp;mimeType)</code>
 <div class="block">Converts a MimeType to an IData representation.</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>static com.wm.data.IData</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/mime/MIMETypeHelper.html#toIData-javax.activation.MimeTypeParameterList-">toIData</a></span>(javax.activation.MimeTypeParameterList&nbsp;mimeTypeParameterList)</code>
 <div class="block">Converts a MimeTypeParameterList to an IData representation.</div>
 </td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>static boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/mime/MIMETypeHelper.html#validate-java.lang.String-">validate</a></span>(java.lang.String&nbsp;string)</code>
 <div class="block">Returns true if the given string is a valid MIME type.</div>
 </td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code>static boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/mime/MIMETypeHelper.html#validate-java.lang.String-boolean-">validate</a></span>(java.lang.String&nbsp;string,
         boolean&nbsp;raise)</code>
@@ -307,39 +274,11 @@ extends java.lang.Object</pre>
 <a name="DEFAULT_MIME_TYPE_STRING">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>DEFAULT_MIME_TYPE_STRING</h4>
 <pre>public static final&nbsp;java.lang.String DEFAULT_MIME_TYPE_STRING</pre>
 <div class="block">The default MIME media type for arbitrary content as a string.</div>
-</li>
-</ul>
-<a name="FILE_EXTENSIONS_BY_MIME_TYPE">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>FILE_EXTENSIONS_BY_MIME_TYPE</h4>
-<pre>private static final&nbsp;java.util.Map&lt;java.lang.String,java.util.Set&lt;java.lang.String&gt;&gt; FILE_EXTENSIONS_BY_MIME_TYPE</pre>
-<div class="block">A Map of file extensions to MIME type.</div>
-</li>
-</ul>
-</li>
-</ul>
-<!-- ========= CONSTRUCTOR DETAIL ======== -->
-<ul class="blockList">
-<li class="blockList"><a name="constructor.detail">
-<!--   -->
-</a>
-<h3>Constructor Detail</h3>
-<a name="MIMETypeHelper--">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>MIMETypeHelper</h4>
-<pre>private&nbsp;MIMETypeHelper()</pre>
-<div class="block">Disallow instantiation of this class.</div>
 </li>
 </ul>
 </li>
@@ -350,20 +289,6 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="getFileExtensionsByMimeType--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getFileExtensionsByMimeType</h4>
-<pre>private static&nbsp;java.util.Map&lt;java.lang.String,java.util.Set&lt;java.lang.String&gt;&gt;&nbsp;getFileExtensionsByMimeType()</pre>
-<div class="block">Returns a Map whose keys are the registered MIME types and values are a set of associated file extensions.</div>
-<dl>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>a Map whose keys are the registered MIME types and values are a set of associated file extensions.</dd>
-</dl>
-</li>
-</ul>
 <a name="of-java.lang.String-">
 <!--   -->
 </a>
@@ -694,13 +619,13 @@ extends java.lang.Object</pre>
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
 <li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
-<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
-<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
 </div>

@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9,"i11":9,"i12":9,"i13":9,"i14":9,"i15":9,"i16":9,"i17":9,"i18":9,"i19":9,"i20":9,"i21":9,"i22":9,"i23":9,"i24":9,"i25":9,"i26":9,"i27":9,"i28":9,"i29":9,"i30":9,"i31":9};
+var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9,"i11":9,"i12":9,"i13":9,"i14":9,"i15":9,"i16":9,"i17":9,"i18":9,"i19":9,"i20":9,"i21":9,"i22":9,"i23":9,"i24":9,"i25":9,"i26":9,"i27":9,"i28":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -74,13 +74,13 @@ var activeTableTab = "activeTableTab";
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
 </div>
@@ -116,27 +116,6 @@ extends java.lang.Object</pre>
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
-<!-- ======== CONSTRUCTOR SUMMARY ======== -->
-<ul class="blockList">
-<li class="blockList"><a name="constructor.summary">
-<!--   -->
-</a>
-<h3>Constructor Summary</h3>
-<table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Constructor Summary table, listing constructors, and an explanation">
-<caption><span>Constructors</span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier</th>
-<th class="colLast" scope="col">Constructor and Description</th>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private </code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/collection/ListHelper.html#ListHelper--">ListHelper</a></span>()</code>
-<div class="block">Disallow instantiation of this class.</div>
-</td>
-</tr>
-</table>
-</li>
-</ul>
 <!-- ========== METHOD SUMMARY =========== -->
 <ul class="blockList">
 <li class="blockList"><a name="method.summary">
@@ -182,68 +161,46 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr id="i4" class="altColor">
-<td class="colFirst"><code>private static &lt;E&gt;&nbsp;int</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/collection/ListHelper.html#calculateMinimumCapacity-java.util.List-E...-">calculateMinimumCapacity</a></span>(java.util.List&lt;E&gt;&nbsp;list,
-                        E...&nbsp;items)</code>
-<div class="block">Returns the minimum capacity required of a list to hold the given items.</div>
-</td>
-</tr>
-<tr id="i5" class="rowColor">
-<td class="colFirst"><code>private static &lt;E&gt;&nbsp;int</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/collection/ListHelper.html#calculateMinimumCapacity-java.util.List-int-E...-">calculateMinimumCapacity</a></span>(java.util.List&lt;E&gt;&nbsp;list,
-                        int&nbsp;index,
-                        E...&nbsp;items)</code>
-<div class="block">Returns the minimum capacity required of a list to hold the given items.</div>
-</td>
-</tr>
-<tr id="i6" class="altColor">
 <td class="colFirst"><code>static &lt;E&gt;&nbsp;java.util.List&lt;E&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/collection/ListHelper.html#clear-java.util.List-java.lang.Class-">clear</a></span>(java.util.List&lt;E&gt;&nbsp;list,
      java.lang.Class&lt;E&gt;&nbsp;klass)</code>
 <div class="block">Removes all items from the given list, or returns a new list if the given list is null.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>static &lt;E&gt;&nbsp;java.util.List&lt;E&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/collection/ListHelper.html#create--">create</a></span>()</code>
 <div class="block">Creates a new list.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>static &lt;E&gt;&nbsp;java.util.List&lt;E&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/collection/ListHelper.html#create-int-">create</a></span>(int&nbsp;initialCapacity)</code>
 <div class="block">Creates a new list with the given initial capacity.</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
-<td class="colFirst"><code>private static &lt;E&gt;&nbsp;java.util.List&lt;E&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/collection/ListHelper.html#createOrGrow-java.util.List-int-">createOrGrow</a></span>(java.util.List&lt;E&gt;&nbsp;list,
-            int&nbsp;minCapacity)</code>
-<div class="block">Grows the given list to the given capacity, or creates a new list if the given list is null.</div>
-</td>
-</tr>
-<tr id="i10" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>static &lt;E&gt;&nbsp;java.util.List&lt;E&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/collection/ListHelper.html#difference-java.util.List-java.util.List-">difference</a></span>(java.util.List&lt;E&gt;&nbsp;firstList,
           java.util.List&lt;E&gt;&nbsp;secondList)</code>
 <div class="block">Returns the set difference of the given lists.</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>static &lt;E&gt;&nbsp;boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/collection/ListHelper.html#exists-java.util.List-int-">exists</a></span>(java.util.List&lt;E&gt;&nbsp;list,
       int&nbsp;index)</code>
 <div class="block">Returns true if an item exists at the given index in the given list.</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>static &lt;E&gt;&nbsp;E</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/collection/ListHelper.html#get-java.util.List-int-">get</a></span>(java.util.List&lt;E&gt;&nbsp;list,
    int&nbsp;index)</code>
 <div class="block">Returns the item at the given index from the given list.</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>static &lt;E&gt;&nbsp;java.util.List&lt;E&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/collection/ListHelper.html#insert-java.util.List-boolean-int-E...-">insert</a></span>(java.util.List&lt;E&gt;&nbsp;list,
       boolean&nbsp;includeNulls,
@@ -252,7 +209,7 @@ extends java.lang.Object</pre>
 <div class="block">Inserts the given items at the given index, shifting the existing items if any to the right.</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>static &lt;E&gt;&nbsp;java.util.List&lt;E&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/collection/ListHelper.html#insert-java.util.List-int-boolean-int-E...-">insert</a></span>(java.util.List&lt;E&gt;&nbsp;list,
       int&nbsp;minCapacity,
@@ -262,7 +219,7 @@ extends java.lang.Object</pre>
 <div class="block">Inserts the given items at the given index, shifting the existing items if any to the right.</div>
 </td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>static &lt;E&gt;&nbsp;java.util.List&lt;E&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/collection/ListHelper.html#insert-java.util.List-int-E...-">insert</a></span>(java.util.List&lt;E&gt;&nbsp;list,
       int&nbsp;index,
@@ -270,7 +227,7 @@ extends java.lang.Object</pre>
 <div class="block">Inserts the given items at the given index, shifting the existing items if any to the right.</div>
 </td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>static &lt;E&gt;&nbsp;java.util.List&lt;E&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/collection/ListHelper.html#insert-java.util.List-int-int-E...-">insert</a></span>(java.util.List&lt;E&gt;&nbsp;list,
       int&nbsp;minCapacity,
@@ -279,46 +236,46 @@ extends java.lang.Object</pre>
 <div class="block">Inserts the given items at the given index, shifting the existing items if any to the right.</div>
 </td>
 </tr>
-<tr id="i17" class="rowColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>static &lt;E&gt;&nbsp;java.util.List&lt;E&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/collection/ListHelper.html#intersect-java.util.List...-">intersect</a></span>(java.util.List&lt;E&gt;...&nbsp;lists)</code>
 <div class="block">Returns a set intersection of the given lists.</div>
 </td>
 </tr>
-<tr id="i18" class="altColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code>static &lt;E&gt;&nbsp;java.util.List&lt;E&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/collection/ListHelper.html#listify-E:A-java.lang.Class-">listify</a></span>(E[]&nbsp;array,
        java.lang.Class&lt;E&gt;&nbsp;klass)</code>
 <div class="block">Converts the given array to a list.</div>
 </td>
 </tr>
-<tr id="i19" class="rowColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code>static &lt;T&gt;&nbsp;java.util.List&lt;T&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/collection/ListHelper.html#of-boolean-java.util.Collection-">of</a></span>(boolean&nbsp;returnEmpty,
   java.util.Collection&lt;T&gt;&nbsp;collection)</code>
 <div class="block">Returns a new Set containing the given items.</div>
 </td>
 </tr>
-<tr id="i20" class="altColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code>static &lt;T&gt;&nbsp;java.util.List&lt;T&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/collection/ListHelper.html#of-boolean-T...-">of</a></span>(boolean&nbsp;returnEmpty,
   T...&nbsp;items)</code>
 <div class="block">Returns a new List containing the given items.</div>
 </td>
 </tr>
-<tr id="i21" class="rowColor">
+<tr id="i18" class="altColor">
 <td class="colFirst"><code>static &lt;T&gt;&nbsp;java.util.List&lt;T&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/collection/ListHelper.html#of-java.util.Collection-">of</a></span>(java.util.Collection&lt;T&gt;&nbsp;collection)</code>
 <div class="block">Returns a new List containing the items in the given collection.</div>
 </td>
 </tr>
-<tr id="i22" class="altColor">
+<tr id="i19" class="rowColor">
 <td class="colFirst"><code>static &lt;T&gt;&nbsp;java.util.List&lt;T&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/collection/ListHelper.html#of-T...-">of</a></span>(T...&nbsp;items)</code>
 <div class="block">Returns a new List containing the given items.</div>
 </td>
 </tr>
-<tr id="i23" class="rowColor">
+<tr id="i20" class="altColor">
 <td class="colFirst"><code>static &lt;E&gt;&nbsp;java.util.List&lt;E&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/collection/ListHelper.html#prepend-java.util.List-boolean-E...-">prepend</a></span>(java.util.List&lt;E&gt;&nbsp;list,
        boolean&nbsp;includeNulls,
@@ -326,14 +283,14 @@ extends java.lang.Object</pre>
 <div class="block">Prepends the given items to the front of the given list, shifting the existing items if any to the right.</div>
 </td>
 </tr>
-<tr id="i24" class="altColor">
+<tr id="i21" class="rowColor">
 <td class="colFirst"><code>static &lt;E&gt;&nbsp;java.util.List&lt;E&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/collection/ListHelper.html#prepend-java.util.List-E...-">prepend</a></span>(java.util.List&lt;E&gt;&nbsp;list,
        E...&nbsp;items)</code>
 <div class="block">Prepends the given items to the front of the given list, shifting the existing items if any to the right.</div>
 </td>
 </tr>
-<tr id="i25" class="rowColor">
+<tr id="i22" class="altColor">
 <td class="colFirst"><code>static &lt;E&gt;&nbsp;java.util.List&lt;E&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/collection/ListHelper.html#prepend-java.util.List-int-boolean-E...-">prepend</a></span>(java.util.List&lt;E&gt;&nbsp;list,
        int&nbsp;minCapacity,
@@ -342,7 +299,7 @@ extends java.lang.Object</pre>
 <div class="block">Prepends the given items to the front of the given list, shifting the existing items if any to the right.</div>
 </td>
 </tr>
-<tr id="i26" class="altColor">
+<tr id="i23" class="rowColor">
 <td class="colFirst"><code>static &lt;E&gt;&nbsp;java.util.List&lt;E&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/collection/ListHelper.html#prepend-java.util.List-int-E...-">prepend</a></span>(java.util.List&lt;E&gt;&nbsp;list,
        int&nbsp;minCapacity,
@@ -350,20 +307,20 @@ extends java.lang.Object</pre>
 <div class="block">Prepends the given items to the front of the given list, shifting the existing items if any to the right.</div>
 </td>
 </tr>
-<tr id="i27" class="rowColor">
+<tr id="i24" class="altColor">
 <td class="colFirst"><code>static &lt;E&gt;&nbsp;E</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/collection/ListHelper.html#remove-java.util.List-int-">remove</a></span>(java.util.List&lt;E&gt;&nbsp;list,
       int&nbsp;index)</code>
 <div class="block">Removes the item at the given index in the given list.</div>
 </td>
 </tr>
-<tr id="i28" class="altColor">
+<tr id="i25" class="rowColor">
 <td class="colFirst"><code>static &lt;E&gt;&nbsp;java.util.List&lt;E&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/collection/ListHelper.html#reverse-java.util.List-">reverse</a></span>(java.util.List&lt;E&gt;&nbsp;list)</code>
 <div class="block">Returns a new list with the items in the given list in reverse order.</div>
 </td>
 </tr>
-<tr id="i29" class="rowColor">
+<tr id="i26" class="altColor">
 <td class="colFirst"><code>static &lt;E&gt;&nbsp;E</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/collection/ListHelper.html#set-java.util.List-int-E-">set</a></span>(java.util.List&lt;E&gt;&nbsp;list,
    int&nbsp;index,
@@ -371,14 +328,14 @@ extends java.lang.Object</pre>
 <div class="block">Replaces the value of the item at the given index in the given list.</div>
 </td>
 </tr>
-<tr id="i30" class="altColor">
+<tr id="i27" class="rowColor">
 <td class="colFirst"><code>static &lt;E&gt;&nbsp;java.util.List&lt;E&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/collection/ListHelper.html#take-java.util.List-int-">take</a></span>(java.util.List&lt;E&gt;&nbsp;list,
     int&nbsp;count)</code>
 <div class="block">Removes and returns the given count of items from the head of the given list.</div>
 </td>
 </tr>
-<tr id="i31" class="rowColor">
+<tr id="i28" class="altColor">
 <td class="colFirst"><code>static &lt;E&gt;&nbsp;java.util.List&lt;E&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/collection/ListHelper.html#unique-java.util.List-">unique</a></span>(java.util.List&lt;E&gt;&nbsp;list)</code>
 <div class="block">Returns a new list with all duplicate items removed.</div>
@@ -400,24 +357,6 @@ extends java.lang.Object</pre>
 <div class="details">
 <ul class="blockList">
 <li class="blockList">
-<!-- ========= CONSTRUCTOR DETAIL ======== -->
-<ul class="blockList">
-<li class="blockList"><a name="constructor.detail">
-<!--   -->
-</a>
-<h3>Constructor Detail</h3>
-<a name="ListHelper--">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>ListHelper</h4>
-<pre>private&nbsp;ListHelper()</pre>
-<div class="block">Disallow instantiation of this class.</div>
-</li>
-</ul>
-</li>
-</ul>
 <!-- ============ METHOD DETAIL ========== -->
 <ul class="blockList">
 <li class="blockList"><a name="method.detail">
@@ -520,52 +459,6 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
-<a name="calculateMinimumCapacity-java.util.List-java.lang.Object:A-">
-<!--   -->
-</a><a name="calculateMinimumCapacity-java.util.List-E...-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>calculateMinimumCapacity</h4>
-<pre>private static&nbsp;&lt;E&gt;&nbsp;int&nbsp;calculateMinimumCapacity(java.util.List&lt;E&gt;&nbsp;list,
-                                                E...&nbsp;items)</pre>
-<div class="block">Returns the minimum capacity required of a list to hold the given items.</div>
-<dl>
-<dt><span class="paramLabel">Type Parameters:</span></dt>
-<dd><code>E</code> - The component type of the list.</dd>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>list</code> - The list whose minimum capacity is to be calculated.</dd>
-<dd><code>items</code> - The items to be added to the list.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>The minimum capacity required of the given list to hold the given items.</dd>
-</dl>
-</li>
-</ul>
-<a name="calculateMinimumCapacity-java.util.List-int-java.lang.Object:A-">
-<!--   -->
-</a><a name="calculateMinimumCapacity-java.util.List-int-E...-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>calculateMinimumCapacity</h4>
-<pre>private static&nbsp;&lt;E&gt;&nbsp;int&nbsp;calculateMinimumCapacity(java.util.List&lt;E&gt;&nbsp;list,
-                                                int&nbsp;index,
-                                                E...&nbsp;items)</pre>
-<div class="block">Returns the minimum capacity required of a list to hold the given items.</div>
-<dl>
-<dt><span class="paramLabel">Type Parameters:</span></dt>
-<dd><code>E</code> - The component type of the list.</dd>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>list</code> - The list whose minimum capacity is to be calculated.</dd>
-<dd><code>index</code> - The index at which the items will be inserted.</dd>
-<dd><code>items</code> - The items to be added to the list.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>The minimum capacity required of the given list to hold the given items.</dd>
-</dl>
-</li>
-</ul>
 <a name="clear-java.util.List-java.lang.Class-">
 <!--   -->
 </a>
@@ -617,26 +510,6 @@ extends java.lang.Object</pre>
 <dd><code>initialCapacity</code> - The initial capacity of the new list.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A new list.</dd>
-</dl>
-</li>
-</ul>
-<a name="createOrGrow-java.util.List-int-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>createOrGrow</h4>
-<pre>private static&nbsp;&lt;E&gt;&nbsp;java.util.List&lt;E&gt;&nbsp;createOrGrow(java.util.List&lt;E&gt;&nbsp;list,
-                                                  int&nbsp;minCapacity)</pre>
-<div class="block">Grows the given list to the given capacity, or creates a new list if the given list is null.</div>
-<dl>
-<dt><span class="paramLabel">Type Parameters:</span></dt>
-<dd><code>E</code> - The component type of the list.</dd>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>list</code> - The list to be grown, or null.</dd>
-<dd><code>minCapacity</code> - The capacity to grow the list to.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>Either the given list grown to the given capacity, or a new list.</dd>
 </dl>
 </li>
 </ul>
@@ -1175,13 +1048,13 @@ extends java.lang.Object</pre>
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
 </div>

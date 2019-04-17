@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9};
+var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -47,7 +47,7 @@ var activeTableTab = "activeTableTab";
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../permafrost/tundra/server/PackageNameComparator.Holder.html" title="class in permafrost.tundra.server"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../permafrost/tundra/server/PackageNameComparator.html" title="class in permafrost.tundra.server"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
 <li><a href="../../../permafrost/tundra/server/SchedulerHelper.html" title="class in permafrost.tundra.server"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
@@ -74,13 +74,13 @@ var activeTableTab = "activeTableTab";
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
 </div>
@@ -116,27 +116,6 @@ extends java.lang.Object</pre>
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
-<!-- ======== CONSTRUCTOR SUMMARY ======== -->
-<ul class="blockList">
-<li class="blockList"><a name="constructor.summary">
-<!--   -->
-</a>
-<h3>Constructor Summary</h3>
-<table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Constructor Summary table, listing constructors, and an explanation">
-<caption><span>Constructors</span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier</th>
-<th class="colLast" scope="col">Constructor and Description</th>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>private </code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/ScheduleHelper.html#ScheduleHelper--">ScheduleHelper</a></span>()</code>
-<div class="block">Disallow instantiation of this class.</div>
-</td>
-</tr>
-</table>
-</li>
-</ul>
 <!-- ========== METHOD SUMMARY =========== -->
 <ul class="blockList">
 <li class="blockList"><a name="method.summary">
@@ -181,19 +160,13 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr id="i5" class="rowColor">
-<td class="colFirst"><code>private static java.lang.String[]</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/ScheduleHelper.html#list-boolean-">list</a></span>(boolean&nbsp;running)</code>
-<div class="block">Returns all scheduled task IDs, or only those that are currently running if the given flag is true.</div>
-</td>
-</tr>
-<tr id="i6" class="altColor">
 <td class="colFirst"><code>static com.wm.data.IData[]</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/ScheduleHelper.html#list-java.lang.String-com.wm.data.IData-">list</a></span>(java.lang.String&nbsp;filter,
     com.wm.data.IData&nbsp;pipeline)</code>
 <div class="block">Returns all scheduled tasks matching the given filter condition.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>static com.wm.data.IData[]</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/ScheduleHelper.html#list-java.lang.String-java.lang.String-com.wm.data.IData-">list</a></span>(java.lang.String&nbsp;service,
     java.lang.String&nbsp;filter,
@@ -201,25 +174,13 @@ extends java.lang.Object</pre>
 <div class="block">Returns all scheduled tasks matching the given service, and filter condition.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>static com.wm.data.IData[]</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/ScheduleHelper.html#list-java.lang.String-java.lang.String-java.lang.String-com.wm.data.IData-">list</a></span>(java.lang.String&nbsp;name,
     java.lang.String&nbsp;service,
     java.lang.String&nbsp;filter,
     com.wm.data.IData&nbsp;pipeline)</code>
 <div class="block">Returns all scheduled tasks matching the given name, service, and filter condition.</div>
-</td>
-</tr>
-<tr id="i9" class="rowColor">
-<td class="colFirst"><code>private static java.lang.String[]</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/ScheduleHelper.html#listAll--">listAll</a></span>()</code>
-<div class="block">Returns all scheduled task IDs.</div>
-</td>
-</tr>
-<tr id="i10" class="altColor">
-<td class="colFirst"><code>private static java.lang.String[]</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/ScheduleHelper.html#listRunning--">listRunning</a></span>()</code>
-<div class="block">Returns currently running scheduled task IDs.</div>
 </td>
 </tr>
 </table>
@@ -238,24 +199,6 @@ extends java.lang.Object</pre>
 <div class="details">
 <ul class="blockList">
 <li class="blockList">
-<!-- ========= CONSTRUCTOR DETAIL ======== -->
-<ul class="blockList">
-<li class="blockList"><a name="constructor.detail">
-<!--   -->
-</a>
-<h3>Constructor Detail</h3>
-<a name="ScheduleHelper--">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>ScheduleHelper</h4>
-<pre>private&nbsp;ScheduleHelper()</pre>
-<div class="block">Disallow instantiation of this class.</div>
-</li>
-</ul>
-</li>
-</ul>
 <!-- ============ METHOD DETAIL ========== -->
 <ul class="blockList">
 <li class="blockList"><a name="method.detail">
@@ -410,7 +353,7 @@ extends java.lang.Object</pre>
 <a name="list-java.lang.String-java.lang.String-java.lang.String-com.wm.data.IData-">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>list</h4>
 <pre>public static&nbsp;com.wm.data.IData[]&nbsp;list(java.lang.String&nbsp;name,
@@ -432,59 +375,6 @@ extends java.lang.Object</pre>
 <dd>The scheduled tasks that match the given name, service, and filter condition.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code>com.wm.app.b2b.server.ServiceException</code> - If an error occurs when retrieving scheduled tasks or evaluating filter conditions.</dd>
-</dl>
-</li>
-</ul>
-<a name="listAll--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>listAll</h4>
-<pre>private static&nbsp;java.lang.String[]&nbsp;listAll()
-                                   throws com.wm.app.b2b.server.ServiceException</pre>
-<div class="block">Returns all scheduled task IDs.</div>
-<dl>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>All scheduled task IDs.</dd>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>com.wm.app.b2b.server.ServiceException</code> - If an error is encountered while retrieving the schedule IDs.</dd>
-</dl>
-</li>
-</ul>
-<a name="listRunning--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>listRunning</h4>
-<pre>private static&nbsp;java.lang.String[]&nbsp;listRunning()
-                                       throws com.wm.app.b2b.server.ServiceException</pre>
-<div class="block">Returns currently running scheduled task IDs.</div>
-<dl>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>Currently running scheduled task IDs.</dd>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>com.wm.app.b2b.server.ServiceException</code> - If an error is encountered while retrieving the schedule IDs.</dd>
-</dl>
-</li>
-</ul>
-<a name="list-boolean-">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>list</h4>
-<pre>private static&nbsp;java.lang.String[]&nbsp;list(boolean&nbsp;running)
-                                throws com.wm.app.b2b.server.ServiceException</pre>
-<div class="block">Returns all scheduled task IDs, or only those that are currently running if the given flag is true.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>running</code> - If true, only schedules currently running are returned, otherwise all are returned.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>The resulting list of scheduled task IDs.</dd>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>com.wm.app.b2b.server.ServiceException</code> - If an error is encountered while retrieving the schedule IDs.</dd>
 </dl>
 </li>
 </ul>
@@ -515,7 +405,7 @@ extends java.lang.Object</pre>
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../permafrost/tundra/server/PackageNameComparator.Holder.html" title="class in permafrost.tundra.server"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../permafrost/tundra/server/PackageNameComparator.html" title="class in permafrost.tundra.server"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
 <li><a href="../../../permafrost/tundra/server/SchedulerHelper.html" title="class in permafrost.tundra.server"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
@@ -542,13 +432,13 @@ extends java.lang.Object</pre>
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
 </div>
