@@ -146,6 +146,7 @@ public abstract class IDataParser extends IDataCoder {
      *
      * @param document      The IData document to be serialized.
      * @param returnClass   Whether to return a String, byte[], or InputStream.
+     * @param <T>           The desired class of object to be returned.
      * @return              A serialized representation of the given IData document.
      * @throws IOException  If an I/O error occurs.
      */
@@ -158,6 +159,8 @@ public abstract class IDataParser extends IDataCoder {
      *
      * @param document      The IData document to be serialized.
      * @param charset       The character set to use when serializing the IData document.
+     * @param returnClass   Whether to return a String, byte[], or InputStream.
+     * @param <T>           The desired class of object to be returned.
      * @return              A serialized representation of the given IData document.
      * @throws IOException  If an I/O error occurs.
      */
