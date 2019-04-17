@@ -2914,17 +2914,6 @@ public final class IDataHelper {
      * @param key       The key literal to be added.
      * @param value     The value to be associated with the given key.
      */
-    public static <T> void put(IDataCursor cursor, String key, Class<T> klass, Object value) {
-        put(cursor, key, ObjectHelper.convert(value, klass), true, true);
-    }
-
-    /**
-     * Associates the given key with the given value in an IDataCursor.
-     *
-     * @param cursor    The IDataCursor to add the key value association to.
-     * @param key       The key literal to be added.
-     * @param value     The value to be associated with the given key.
-     */
     public static void put(IDataCursor cursor, String key, Object value) {
         put(cursor, key, value, true);
     }
