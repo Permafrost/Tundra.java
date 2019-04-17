@@ -97,6 +97,7 @@ public class CaseInsensitiveElement<V> extends KeyAliasElement<String, V> implem
      * @param key       The key for the element.
      * @param value     The value for the element.
      * @param locale    The locale used for case comparison.
+     * @param aliases   The list of aliases for this element's key.
      */
     public CaseInsensitiveElement(String key, V value, Locale locale, String ...aliases) {
         this(key, value, locale, ListHelper.of(aliases));
@@ -108,6 +109,7 @@ public class CaseInsensitiveElement<V> extends KeyAliasElement<String, V> implem
      * @param key       The key for the element.
      * @param value     The value for the element.
      * @param locale    The locale used for case comparison.
+     * @param aliases   The list of aliases for this element's key.
      */
     public CaseInsensitiveElement(String key, V value, Locale locale, Collection<String> aliases) {
         super(key, value, aliases);
