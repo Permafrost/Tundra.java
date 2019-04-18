@@ -240,6 +240,40 @@ public final class ScheduleHelper {
     }
 
     /**
+     * Returns true if the scheduled task with the given identity is runnable on this server, that is if the scheduled
+     * task has a state of ready or running AND the task scheduler itself is running and not paused.
+     *
+     * @param identity  The identity of a scheduled task.
+     * @return          True if the scheduled task is runnable on this server.
+     */
+    public static boolean isRunnable(String identity) {
+        boolean isRunnable = false;
+
+        if (SchedulerHelper.status() == SchedulerStatus.STARTED) {
+            if (identity == null) {
+                isRunnable = true;
+            } else {
+                try {
+                    ScheduledTask task = ScheduleManager.getTask(identity);
+
+                    if (task != null) {
+                        switch (task.getState()) {
+                            case ScheduledTask.STATE_READY:
+                            case ScheduledTask.STATE_RUNNING:
+                                isRunnable = true;
+                                break;
+                        }
+                    }
+                } catch (SQLException ex) {
+                    // don't run on this server if schedule doesn't exist of there is a database issue
+                }
+            }
+        }
+
+        return isRunnable;
+    }
+
+    /**
      * Returns the scheduled task identified by the given task name, or null if no task for that name exists.
      *
      * @param name              The name of the task to be returned.
