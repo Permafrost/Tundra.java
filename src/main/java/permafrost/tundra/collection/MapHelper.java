@@ -27,7 +27,6 @@ package permafrost.tundra.collection;
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import permafrost.tundra.data.MapIData;
-import permafrost.tundra.lang.ArrayHelper;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
@@ -196,6 +195,20 @@ public final class MapHelper {
         }
 
         return map;
+    }
+
+    /**
+     * Returns an IData document that represents the given map.
+     *
+     * @param map   A map to convert to an IData document.
+     * @param <K>   The class of keys in the map.
+     * @param <V>   The class of values in the map.
+     * @return      An IData document representing the given map.
+     */
+    @SuppressWarnings("unchecked")
+    public static <K, V> IData documentify(Map<K, V> map) {
+        if (map == null) return null;
+        return new MapIData(map);
     }
 
     /**
