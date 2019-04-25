@@ -45,7 +45,6 @@ public class SetHelper {
      * @param <T>       The class of the items in the Set.
      * @return          A new Set containing the given items, or null if items was null.
      */
-    @SuppressWarnings("unchecked")
     public static <T> Set<T> of(T... items) {
         return of(false, items);
     }
@@ -62,7 +61,11 @@ public class SetHelper {
         Set<T> set;
 
         if (items == null) {
-            set = new HashSet<T>();
+            if (returnEmpty) {
+                set = new HashSet<T>();
+            } else {
+                set = null;
+            }
         } else {
             set = new HashSet<T>(Arrays.asList(items));
         }
@@ -77,7 +80,6 @@ public class SetHelper {
      * @param <T>           The class of the items in the Set.
      * @return              A new Set containing the given items, or null if items was null.
      */
-    @SuppressWarnings("unchecked")
     public static <T> Set<T> of(Collection<T> collection) {
         return of(false, collection);
     }
@@ -94,7 +96,11 @@ public class SetHelper {
         Set<T> set;
 
         if (collection == null) {
-            set = new HashSet<T>();
+            if (returnEmpty) {
+                set = new HashSet<T>();
+            } else {
+                set = null;
+            }
         } else {
             set = new HashSet<T>(collection);
         }

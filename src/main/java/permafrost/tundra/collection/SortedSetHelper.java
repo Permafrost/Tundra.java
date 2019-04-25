@@ -45,7 +45,6 @@ public class SortedSetHelper {
      * @param <T>       The class of the items in the SortedSet.
      * @return          A new SortedSet containing the given items, or null if items was null.
      */
-    @SuppressWarnings("unchecked")
     public static <T> SortedSet<T> of(T... items) {
         return of(false, items);
     }
@@ -62,7 +61,11 @@ public class SortedSetHelper {
         SortedSet<T> set;
 
         if (items == null) {
-            set = new TreeSet<T>();
+            if (returnEmpty) {
+                set = new TreeSet<T>();
+            } else {
+                set = null;
+            }
         } else {
             set = new TreeSet<T>(Arrays.asList(items));
         }
@@ -77,7 +80,6 @@ public class SortedSetHelper {
      * @param <T>           The class of the items in the SortedSet.
      * @return              A new SortedSet containing the given items, or null if items was null.
      */
-    @SuppressWarnings("unchecked")
     public static <T> SortedSet<T> of(Collection<T> collection) {
         return of(false, collection);
     }
@@ -95,7 +97,11 @@ public class SortedSetHelper {
         SortedSet<T> set;
 
         if (collection == null) {
-            set = new TreeSet<T>();
+            if (returnEmpty) {
+                set = new TreeSet<T>();
+            } else {
+                set = null;
+            }
         } else {
             set = new TreeSet<T>(collection);
         }
