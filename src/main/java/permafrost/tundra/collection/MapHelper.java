@@ -205,10 +205,9 @@ public final class MapHelper {
      * @param <V>   The class of values in the map.
      * @return      An IData document representing the given map.
      */
-    @SuppressWarnings("unchecked")
     public static <K, V> IData documentify(Map<K, V> map) {
         if (map == null) return null;
-        return new MapIData(map);
+        return new MapIData<K, V>(map);
     }
 
     /**
