@@ -73,7 +73,6 @@ public final class ConcurrentMapHelper {
      * @return                      A newly created Map which contains the top-level key value elements from the
      *                              given document.
      */
-    @SuppressWarnings("unchecked")
     public static ConcurrentMap<String, Object> mapify(IData document) {
         return mapify(document, false);
     }
@@ -86,7 +85,6 @@ public final class ConcurrentMapHelper {
      * @return                      A newly created Map which contains the top-level key value elements from the
      *                              given document.
      */
-    @SuppressWarnings("unchecked")
     public static ConcurrentMap<String, Object> mapify(IData document, boolean sorted) {
         return mapify(document, sorted, Object.class);
     }
@@ -100,7 +98,6 @@ public final class ConcurrentMapHelper {
      * @return                      A newly created Map which contains the top-level key value elements from the
      *                              given document.
      */
-    @SuppressWarnings("unchecked")
     public static <V> ConcurrentMap<String, V> mapify(IData document, Class<V> klass) {
         return mapify(document, false, klass);
     }
@@ -134,6 +131,19 @@ public final class ConcurrentMapHelper {
         }
 
         return map;
+    }
+
+    /**
+     * Returns an IData document that represents the given map.
+     *
+     * @param map   A map to convert to an IData document.
+     * @param <K>   The class of keys in the map.
+     * @param <V>   The class of values in the map.
+     * @return      An IData document representing the given map.
+     */
+    public static <K, V> IData documentify(ConcurrentMap<K, V> map) {
+        if (map == null) return null;
+        return new ConcurrentMapIData<K, V>(map);
     }
 
     /**

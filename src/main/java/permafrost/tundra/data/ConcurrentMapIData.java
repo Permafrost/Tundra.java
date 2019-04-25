@@ -151,7 +151,6 @@ public class ConcurrentMapIData<K, V> extends AbstractConcurrentMap<K, V> implem
      * @param array     The IData[] to clone.
      * @return          A ConcurrentMapIData[] clone of the given array.
      */
-    @SuppressWarnings("unchecked")
     public static ConcurrentMapIData<String, Object>[] of(IData[] array) {
         return of(array, false);
     }
@@ -167,7 +166,7 @@ public class ConcurrentMapIData<K, V> extends AbstractConcurrentMap<K, V> implem
     public static ConcurrentMapIData<String, Object>[] of(IData[] array, boolean sorted) {
         if (array == null) return null;
 
-        ConcurrentMapIData[] output = new ConcurrentMapIData[array.length];
+        ConcurrentMapIData<String, Object>[] output = new ConcurrentMapIData[array.length];
 
         for (int i = 0; i < array.length; i++) {
             output[i] = of(array[i], sorted);
