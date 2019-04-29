@@ -1451,6 +1451,7 @@ public final class IDataHelper {
                 IDataCursor cursor = amendments[i].getCursor();
                 String key = IDataUtil.getString(cursor, "key");
                 String value = IDataUtil.getString(cursor, "value");
+                String action = IDataUtil.getString(cursor, "action");
                 String condition = IDataUtil.getString(cursor, "condition");
                 cursor.destroy();
 
@@ -1458,7 +1459,11 @@ public final class IDataHelper {
                 value = SubstitutionHelper.substitute(value, scope);
 
                 if ((condition == null) || ConditionEvaluator.evaluate(condition, scope)) {
-                    output = IDataHelper.put(output, key, value);
+                    if (action == null || action.equals("merge") || (action.equals("update") && IDataHelper.exists(output, key)) || (action.equals("create") && !IDataHelper.exists(output, key))) {
+                        output = IDataHelper.put(output, key, value);
+                    } else if (action.equals("delete")) {
+                        IDataHelper.remove(output, key);
+                    }
                 }
             }
         }
