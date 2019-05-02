@@ -77,7 +77,9 @@ public final class GlobalVariableHelper {
                     if (variable.isSecure()) {
                         PasswordManager passwordManager = OutboundPasswordStore.getStore();
                         WmSecureString password = passwordManager.retrievePassword(value);
-                        value = password.toString();
+                        if (password != null) {
+                            value = password.toString();
+                        }
                     }
                 }
             } catch (Exception ex) {
