@@ -35,7 +35,7 @@ public class BaseException extends ServiceException implements IDataCodable {
      * Constructs a new BaseException.
      */
     public BaseException() {
-        super("");
+        super();
     }
 
     /**
@@ -44,7 +44,7 @@ public class BaseException extends ServiceException implements IDataCodable {
      * @param message A message describing why the BaseException was thrown.
      */
     public BaseException(String message) {
-        super(message == null ? "" : message);
+        super(message);
     }
 
     /**
