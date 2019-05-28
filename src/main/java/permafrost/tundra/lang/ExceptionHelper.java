@@ -27,6 +27,8 @@ package permafrost.tundra.lang;
 import com.wm.app.b2b.server.ServiceException;
 import com.wm.data.IData;
 import org.xml.sax.SAXParseException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -207,5 +209,25 @@ public final class ExceptionHelper {
     public static IData[] getStackTrace(Throwable exception) {
         if (exception == null) return null;
         return StackTraceElementHelper.toIDataArray(exception.getStackTrace());
+    }
+
+    /**
+     * Returns the printed stack trace for the given exception as a string.
+     *
+     * @param exception The exception to print the stack trace for.
+     * @return          A string containing the printed stack trace for the given exception.
+     */
+    public static String getStackTraceString(Throwable exception) {
+        if (exception == null) return null;
+
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter printWriter = new PrintWriter(stringWriter);
+
+        exception.printStackTrace(printWriter);
+
+        printWriter.flush();
+        printWriter.close();
+
+        return stringWriter.toString();
     }
 }
