@@ -57,7 +57,7 @@ public final class DeferHelper {
         /**
          * Singleton instance of executor service for invoking deferred services.
          */
-        private static final ExecutorService DEFER_EXECUTOR = Executors.newSingleThreadExecutor(new ServerThreadFactory("Tundra/Defer Thread", InvokeState.getCurrentState()));
+        private static final ExecutorService DEFER_EXECUTOR = Executors.newSingleThreadExecutor(new ServerThreadFactory("Tundra/Defer Worker", InvokeState.getCurrentState()));
     }
 
     /**
