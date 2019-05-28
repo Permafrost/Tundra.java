@@ -24,8 +24,10 @@
 
 package permafrost.tundra.server;
 
+import com.wm.app.b2b.server.InvokeState;
 import com.wm.app.b2b.server.Service;
 import com.wm.app.b2b.server.Session;
+import com.wm.app.b2b.server.StateManager;
 import com.wm.app.b2b.server.User;
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;
@@ -69,6 +71,23 @@ public final class SessionHelper {
         cursor.destroy();
 
         return document;
+    }
+
+    /**
+     * Creates a new session object which does not replace the current session, and can therefore be used in another
+     * thread context.
+     *
+     * @param name  The name of the session.
+     * @param user  The user the session is for.
+     * @return      A new session.
+     */
+    public static Session create(String name, User user) {
+        Session currentSession = InvokeState.getCurrentSession();
+        Session newSession = StateManager.createContext(Integer.MAX_VALUE, name, user);
+        // restore the current session that was overwritten by creating the above new session
+        InvokeState.setCurrentSession(currentSession);
+
+        return newSession;
     }
 
     /**
