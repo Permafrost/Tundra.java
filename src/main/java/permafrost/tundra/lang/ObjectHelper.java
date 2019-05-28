@@ -523,8 +523,6 @@ public final class ObjectHelper {
                 value = (T)ShortHelper.normalize(object);
             } else if (klass.isAssignableFrom(Byte.class)) {
                 value = (T)ByteHelper.normalize(object);
-            } else if (klass.isAssignableFrom(Byte.class)) {
-                value = (T)ByteHelper.normalize(object);
             } else if (klass.isAssignableFrom(Class.class)) {
                 value = (T)ClassHelper.normalize(object);
             } else if (klass.isEnum()) {
