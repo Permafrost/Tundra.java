@@ -148,7 +148,14 @@ public final class SessionHelper {
      * @return The current user's name.
      */
     public static String getCurrentUserName() {
-        return getCurrentUser().getName();
+        String name = null;
+
+        User user = getCurrentUser();
+        if (user != null) {
+            name = user.getName();
+        }
+
+        return name;
     }
 
     /**
@@ -157,6 +164,13 @@ public final class SessionHelper {
      * @return The current user.
      */
     public static User getCurrentUser() {
-        return getCurrentSession().getUser();
+        User user = null;
+
+        Session session = getCurrentSession();
+        if (session != null) {
+            user = session.getUser();
+        }
+
+        return user;
     }
 }
