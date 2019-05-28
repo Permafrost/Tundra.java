@@ -142,7 +142,11 @@ public class ServerThreadFactory implements ThreadFactory {
             thread.setName(String.format("%s #%03d ThreadContext=%s", threadNamePrefix, threadCount, threadContext));
         }
 
-        thread.setInvokeState(InvokeStateHelper.clone(invokeState));
+        InvokeState state = InvokeStateHelper.clone(invokeState);
+        state.setSession(SessionHelper.create(thread.getName(), invokeState.getUser()));
+        state.setCheckAccess(false);
+
+        thread.setInvokeState(state);
         thread.setUncaughtExceptionHandler(UncaughtExceptionLogger.getInstance());
         thread.setPriority(threadPriority);
         thread.setDaemon(daemon);
