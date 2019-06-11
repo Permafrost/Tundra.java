@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9};
+var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -158,19 +158,25 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr id="i2" class="altColor">
+<td class="colFirst"><code>static &lt;K,V&gt;&nbsp;com.wm.data.IData</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/collection/ConcurrentMapHelper.html#documentify-java.util.concurrent.ConcurrentMap-">documentify</a></span>(java.util.concurrent.ConcurrentMap&lt;K,V&gt;&nbsp;map)</code>
+<div class="block">Returns an IData document that represents the given map.</div>
+</td>
+</tr>
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>static java.util.concurrent.ConcurrentMap&lt;java.lang.String,java.lang.Object&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/collection/ConcurrentMapHelper.html#mapify-com.wm.data.IData-">mapify</a></span>(com.wm.data.IData&nbsp;document)</code>
 <div class="block">Converts the given IData document to a Map.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>static java.util.concurrent.ConcurrentMap&lt;java.lang.String,java.lang.Object&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/collection/ConcurrentMapHelper.html#mapify-com.wm.data.IData-boolean-">mapify</a></span>(com.wm.data.IData&nbsp;document,
       boolean&nbsp;sorted)</code>
 <div class="block">Converts the given IData document to a Map.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>static &lt;V&gt;&nbsp;java.util.concurrent.ConcurrentMap&lt;java.lang.String,V&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/collection/ConcurrentMapHelper.html#mapify-com.wm.data.IData-boolean-java.lang.Class-">mapify</a></span>(com.wm.data.IData&nbsp;document,
       boolean&nbsp;sorted,
@@ -178,14 +184,14 @@ extends java.lang.Object</pre>
 <div class="block">Converts the given IData document to a Map.</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>static &lt;V&gt;&nbsp;java.util.concurrent.ConcurrentMap&lt;java.lang.String,V&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/collection/ConcurrentMapHelper.html#mapify-com.wm.data.IData-java.lang.Class-">mapify</a></span>(com.wm.data.IData&nbsp;document,
       java.lang.Class&lt;V&gt;&nbsp;klass)</code>
 <div class="block">Converts the given IData document to a Map.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>static &lt;K,V&gt;&nbsp;V</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/collection/ConcurrentMapHelper.html#putIfAbsent-java.util.concurrent.ConcurrentMap-K-V-">putIfAbsent</a></span>(java.util.concurrent.ConcurrentMap&lt;K,V&gt;&nbsp;map,
            K&nbsp;key,
@@ -193,7 +199,7 @@ extends java.lang.Object</pre>
 <div class="block">If the specified key is not already associated with a value, associate it with the given value.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>static &lt;K,V&gt;&nbsp;boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/collection/ConcurrentMapHelper.html#remove-java.util.concurrent.ConcurrentMap-K-V-">remove</a></span>(java.util.concurrent.ConcurrentMap&lt;K,V&gt;&nbsp;map,
       K&nbsp;key,
@@ -201,7 +207,7 @@ extends java.lang.Object</pre>
 <div class="block">Removes the entry for a key only if currently mapped to a given value.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>static &lt;K,V&gt;&nbsp;V</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/collection/ConcurrentMapHelper.html#replace-java.util.concurrent.ConcurrentMap-K-V-">replace</a></span>(java.util.concurrent.ConcurrentMap&lt;K,V&gt;&nbsp;map,
        K&nbsp;key,
@@ -209,7 +215,7 @@ extends java.lang.Object</pre>
 <div class="block">Replaces the entry for a key only if currently mapped to some value.</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>static &lt;K,V&gt;&nbsp;boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/collection/ConcurrentMapHelper.html#replace-java.util.concurrent.ConcurrentMap-K-V-V-">replace</a></span>(java.util.concurrent.ConcurrentMap&lt;K,V&gt;&nbsp;map,
        K&nbsp;key,
@@ -370,6 +376,25 @@ extends java.lang.Object</pre>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A newly created Map which contains the top-level key value elements from the
                               given document.</dd>
+</dl>
+</li>
+</ul>
+<a name="documentify-java.util.concurrent.ConcurrentMap-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>documentify</h4>
+<pre>public static&nbsp;&lt;K,V&gt;&nbsp;com.wm.data.IData&nbsp;documentify(java.util.concurrent.ConcurrentMap&lt;K,V&gt;&nbsp;map)</pre>
+<div class="block">Returns an IData document that represents the given map.</div>
+<dl>
+<dt><span class="paramLabel">Type Parameters:</span></dt>
+<dd><code>K</code> - The class of keys in the map.</dd>
+<dd><code>V</code> - The class of values in the map.</dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>map</code> - A map to convert to an IData document.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>An IData document representing the given map.</dd>
 </dl>
 </li>
 </ul>

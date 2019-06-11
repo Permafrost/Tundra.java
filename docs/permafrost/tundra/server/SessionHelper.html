@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9};
+var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -129,49 +129,57 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
+<td class="colFirst"><code>static com.wm.app.b2b.server.Session</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/SessionHelper.html#create-java.lang.String-com.wm.app.b2b.server.User-">create</a></span>(java.lang.String&nbsp;name,
+      com.wm.app.b2b.server.User&nbsp;user)</code>
+<div class="block">Creates a new session object which does not replace the current session, and can therefore be used in another
+ thread context.</div>
+</td>
+</tr>
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code>static java.lang.Object</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/SessionHelper.html#get-java.lang.String-">get</a></span>(java.lang.String&nbsp;key)</code>
 <div class="block">Returns the value associated with the given key from the current session state.</div>
 </td>
 </tr>
-<tr id="i1" class="rowColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>static com.wm.app.b2b.server.Session</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/SessionHelper.html#getCurrentSession--">getCurrentSession</a></span>()</code>
 <div class="block">Returns the current session.</div>
 </td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>static com.wm.data.IData</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/SessionHelper.html#getCurrentSessionAsIData--">getCurrentSessionAsIData</a></span>()</code>
 <div class="block">Returns the current session in an IData document representation.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>static com.wm.app.b2b.server.User</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/SessionHelper.html#getCurrentUser--">getCurrentUser</a></span>()</code>
 <div class="block">Returns the current user.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/SessionHelper.html#getCurrentUserName--">getCurrentUserName</a></span>()</code>
 <div class="block">Returns the current user's name.</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/SessionHelper.html#put-java.lang.String-java.lang.Object-">put</a></span>(java.lang.String&nbsp;key,
    java.lang.Object&nbsp;value)</code>
 <div class="block">Stores the given key and value in current session state.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>static java.lang.Object</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/SessionHelper.html#remove-java.lang.String-">remove</a></span>(java.lang.String&nbsp;key)</code>
 <div class="block">Removes the element associated with the given key from current session state.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>static com.wm.data.IData</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../permafrost/tundra/server/SessionHelper.html#toIData-com.wm.app.b2b.server.Session-">toIData</a></span>(com.wm.app.b2b.server.Session&nbsp;session)</code>
 <div class="block">Converts the given session object to an IData representation.</div>
@@ -212,6 +220,25 @@ extends java.lang.Object</pre>
 <dd><code>session</code> - The session to be converted.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The IData representation of the given session.</dd>
+</dl>
+</li>
+</ul>
+<a name="create-java.lang.String-com.wm.app.b2b.server.User-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>create</h4>
+<pre>public static&nbsp;com.wm.app.b2b.server.Session&nbsp;create(java.lang.String&nbsp;name,
+                                                   com.wm.app.b2b.server.User&nbsp;user)</pre>
+<div class="block">Creates a new session object which does not replace the current session, and can therefore be used in another
+ thread context.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>name</code> - The name of the session.</dd>
+<dd><code>user</code> - The user the session is for.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>A new session.</dd>
 </dl>
 </li>
 </ul>
