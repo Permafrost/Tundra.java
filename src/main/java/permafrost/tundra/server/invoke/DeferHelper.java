@@ -25,12 +25,10 @@
 package permafrost.tundra.server.invoke;
 
 import com.wm.app.b2b.server.InvokeState;
-import com.wm.app.b2b.server.Service;
 import com.wm.data.IData;
-import com.wm.data.IDataUtil;
 import com.wm.lang.ns.NSName;
 import permafrost.tundra.data.IDataHelper;
-import permafrost.tundra.server.ServerThreadFactory;
+import permafrost.tundra.server.CountingServerThreadFactory;
 import permafrost.tundra.server.service.CallableService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -57,7 +55,7 @@ public final class DeferHelper {
         /**
          * Singleton instance of executor service for invoking deferred services.
          */
-        private static final ExecutorService DEFER_EXECUTOR = Executors.newSingleThreadExecutor(new ServerThreadFactory("Tundra/Defer Worker", InvokeState.getCurrentState()));
+        private static final ExecutorService DEFER_EXECUTOR = Executors.newSingleThreadExecutor(new CountingServerThreadFactory("Tundra/Defer Worker", InvokeState.getCurrentState()));
     }
 
     /**

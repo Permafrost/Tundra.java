@@ -70,7 +70,7 @@ public class ServerThreadPoolExecutor extends ThreadPoolExecutor {
      * @param handler          The policy used to handle when a submitted job is rejected due to resource exhaustion.
      */
     public ServerThreadPoolExecutor(int threadPoolSize, String threadNamePrefix, String threadNameSuffix, int threadPriority, boolean threadDaemon, InvokeState invokeState, BlockingQueue<Runnable> workQueue, RejectedExecutionHandler handler) {
-        super(threadPoolSize, threadPoolSize, DEFAULT_THREAD_KEEP_ALIVE_TIMEOUT_SECONDS, TimeUnit.SECONDS, workQueue, new ServerThreadFactory(threadNamePrefix, threadNameSuffix, threadPriority, threadDaemon, invokeState), handler);
+        super(threadPoolSize, threadPoolSize, DEFAULT_THREAD_KEEP_ALIVE_TIMEOUT_SECONDS, TimeUnit.SECONDS, workQueue, new CountingServerThreadFactory(threadNamePrefix, threadNameSuffix, invokeState, threadPriority, threadDaemon), handler);
     }
 
     /**
