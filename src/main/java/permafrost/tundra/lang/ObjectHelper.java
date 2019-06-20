@@ -69,7 +69,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
-import java.util.TreeSet;
 import javax.activation.MimeType;
 import javax.xml.datatype.Duration;
 
@@ -203,7 +202,7 @@ public final class ObjectHelper {
      * @return True if the given object is an instance of the given class.
      */
     public static boolean instance(Object object, Class klass) {
-        return object != null && klass != null && klass.isInstance(object);
+        return klass != null && klass.isInstance(object);
     }
 
     /**
@@ -311,7 +310,7 @@ public final class ObjectHelper {
      * @return All the ancestor classes from nearest to furthest for the class of the given object.
      */
     public static Set<Class<?>> getAncestors(Object object) {
-        return object == null ? new TreeSet<Class<?>>() : ClassHelper.getAncestors(object.getClass());
+        return object == null ? new LinkedHashSet<Class<?>>() : ClassHelper.getAncestors(object.getClass());
     }
 
     /**
@@ -492,7 +491,9 @@ public final class ObjectHelper {
             } else if (klass == null) {
                 throw new NullPointerException("klass must not be null");
             }
-        } else if (object == null || klass == null) return null;
+        } else if (object == null || klass == null) {
+            return null;
+        }
 
         T value = null;
 
