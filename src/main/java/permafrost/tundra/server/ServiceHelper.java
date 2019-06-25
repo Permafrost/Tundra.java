@@ -50,7 +50,6 @@ import permafrost.tundra.lang.BytesHelper;
 import permafrost.tundra.lang.ExceptionHelper;
 import permafrost.tundra.lang.StringHelper;
 import permafrost.tundra.math.IntegerHelper;
-import permafrost.tundra.math.gauss.Estimator;
 import permafrost.tundra.math.gauss.ServiceEstimator;
 import permafrost.tundra.mime.MIMETypeHelper;
 import permafrost.tundra.net.http.HTTPHelper;
