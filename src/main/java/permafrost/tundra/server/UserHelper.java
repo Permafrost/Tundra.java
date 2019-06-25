@@ -24,6 +24,7 @@
 
 package permafrost.tundra.server;
 
+import com.wm.app.b2b.server.InvokeState;
 import com.wm.app.b2b.server.User;
 import com.wm.app.b2b.server.UserManager;
 
@@ -47,11 +48,33 @@ public class UserHelper {
     }
 
     /**
-     * Returns the built-in administrator user.
+     * Returns the current user, or null if there is no current user.
      *
-     * @return the built-in administrator user.
+     * @return the current user, or null if there is no current user.
      */
-    public static User administrator() {
-        return get("Administrator");
+    public static User getCurrent() {
+        User currentUser = null;
+        InvokeState currentState = InvokeState.getCurrentState();
+        if (currentState != null) {
+            currentUser = currentState.getUser();
+        }
+
+        return currentUser;
+    }
+
+    /**
+     * Returns the current user name, or null if there is no current user.
+     *
+     * @return the current user name, or null if there is no current user.
+     */
+    public static String getCurrentName() {
+        String currentName = null;
+        User currentUser = getCurrent();
+
+        if (currentUser != null) {
+            currentName = currentUser.getName();
+        }
+
+        return currentName;
     }
 }

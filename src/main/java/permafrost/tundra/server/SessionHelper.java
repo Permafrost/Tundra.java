@@ -96,7 +96,12 @@ public final class SessionHelper {
      * @return The current session.
      */
     public static Session getCurrentSession() {
-        return Service.getSession();
+        Session currentSession = null;
+        InvokeState currentState = InvokeState.getCurrentState();
+        if (currentState != null) {
+            currentSession = currentState.getSession();
+        }
+        return currentSession;
     }
 
     /**
@@ -140,37 +145,5 @@ public final class SessionHelper {
     public static Object remove(String key) {
         if (key == null) return null;
         return getCurrentSession().remove(key);
-    }
-
-    /**
-     * Returns the current user's name.
-     *
-     * @return The current user's name.
-     */
-    public static String getCurrentUserName() {
-        String name = null;
-
-        User user = getCurrentUser();
-        if (user != null) {
-            name = user.getName();
-        }
-
-        return name;
-    }
-
-    /**
-     * Returns the current user.
-     *
-     * @return The current user.
-     */
-    public static User getCurrentUser() {
-        User user = null;
-
-        Session session = getCurrentSession();
-        if (session != null) {
-            user = session.getUser();
-        }
-
-        return user;
     }
 }
