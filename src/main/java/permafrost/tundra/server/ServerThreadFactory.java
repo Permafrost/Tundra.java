@@ -1,7 +1,32 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2019 Lachlan Dowding
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package permafrost.tundra.server;
 
 import com.wm.app.b2b.server.InvokeState;
 import com.wm.app.b2b.server.ServerThread;
+import com.wm.app.b2b.server.Session;
 import permafrost.tundra.id.UUIDHelper;
 import permafrost.tundra.lang.ThreadHelper;
 
@@ -70,11 +95,13 @@ public class ServerThreadFactory implements ThreadFactory {
         ServerThread thread = new ServerThread(runnable);
         thread.setName(newThreadName());
 
-        InvokeState state = InvokeStateHelper.clone(invokeState);
-        state.setSession(SessionHelper.create(thread.getName(), invokeState.getUser()));
-        state.setCheckAccess(false);
+        InvokeState invokeState = InvokeStateHelper.clone(this.invokeState);
+        Session session = new Session(UUIDHelper.generate(), Long.MAX_VALUE, thread.getName());
+        session.setUser(invokeState.getUser());
+        invokeState.setSession(session);
+        invokeState.setCheckAccess(false);
+        thread.setInvokeState(invokeState);
 
-        thread.setInvokeState(state);
         thread.setUncaughtExceptionHandler(UncaughtExceptionLogger.getInstance());
         thread.setPriority(threadPriority);
         thread.setDaemon(daemon);
@@ -93,9 +120,9 @@ public class ServerThreadFactory implements ThreadFactory {
         String threadContext = UUIDHelper.generate();
 
         if (threadNameSuffix != null) {
-            threadName = String.format("%s Thread=%s %s", threadNamePrefix, threadContext, threadNameSuffix);
+            threadName = String.format("%s %s %s", threadNamePrefix, threadContext, threadNameSuffix);
         } else {
-            threadName = String.format("%s Thread=%s", threadNamePrefix, threadContext);
+            threadName = String.format("%s %s", threadNamePrefix, threadContext);
         }
 
         return threadName;

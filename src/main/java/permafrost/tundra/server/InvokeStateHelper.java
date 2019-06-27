@@ -25,8 +25,6 @@
 package permafrost.tundra.server;
 
 import com.wm.app.b2b.server.InvokeState;
-import com.wm.lang.ns.NSService;
-import java.util.Stack;
 
 /**
  * A collection of convenience methods for working with InvokeState objects.

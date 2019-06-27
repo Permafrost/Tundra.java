@@ -82,8 +82,21 @@ public final class SessionHelper {
      * @return      A new session.
      */
     public static Session create(String name, User user) {
+        return create(name, user, Long.MAX_VALUE);
+    }
+
+    /**
+     * Creates a new session object which does not replace the current session, and can therefore be used in another
+     * thread context.
+     *
+     * @param name      The name of the session.
+     * @param user      The user the session is for.
+     * @param timeout   The timeout for the session.
+     * @return          A new session.
+     */
+    public static Session create(String name, User user, long timeout) {
         Session currentSession = InvokeState.getCurrentSession();
-        Session newSession = StateManager.createContext(Integer.MAX_VALUE, name, user);
+        Session newSession = StateManager.createContext(timeout, name, user);
         // restore the current session that was overwritten by creating the above new session
         InvokeState.setCurrentSession(currentSession);
 
