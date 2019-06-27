@@ -127,36 +127,81 @@ public final class SessionHelper {
     }
 
     /**
-     * Stores the given key and value in current session state.
+     * Stores the given key and value in current session's state.
      *
-     * @param key   The key to be stored in current session state.
-     * @param value The value to be associated with the given key.
+     * @param key       The key to be stored in current session state.
+     * @param value     The value to be associated with the given key.
      */
     public static void put(String key, Object value) {
+        put(getCurrentSession(), key, value);
+    }
+
+    /**
+     * Stores the given key and value in given session's state.
+     *
+     * @param session   The session whose state is to be updated.
+     * @param key       The key to be stored in current session state.
+     * @param value     The value to be associated with the given key.
+     */
+    public static void put(Session session, String key, Object value) {
         if (key != null) {
-            getCurrentSession().put(key, value);
+            if (session != null) {
+                session.put(key, value);
+            }
         }
     }
 
     /**
-     * Returns the value associated with the given key from the current session state.
+     * Returns the value associated with the given key from the current session's state.
      *
-     * @param key The key whose value is to be retrieved.
-     * @return The value associated with the given key, or null if the key does not exist.
+     * @param key       The key whose value is to be retrieved.
+     * @return          The value associated with the given key, or null if the key does not exist.
      */
     public static Object get(String key) {
-        if (key == null) return null;
-        return getCurrentSession().get(key);
+        return get(getCurrentSession(), key);
     }
 
     /**
-     * Removes the element associated with the given key from current session state.
+     * Returns the value associated with the given key from the given session's state.
      *
-     * @param key The key whose associated element is to be removed.
-     * @return The value associated with the removed element.
+     * @param session   The session whose state is to be updated.
+     * @param key       The key whose value is to be retrieved.
+     * @return          The value associated with the given key, or null if the key does not exist.
+     */
+    public static Object get(Session session, String key) {
+        Object value = null;
+        if (key != null) {
+            if (session != null) {
+                value = session.get(key);
+            }
+        }
+        return value;
+    }
+
+    /**
+     * Removes the element associated with the given key from current session's state.
+     *
+     * @param key       The key whose associated element is to be removed.
+     * @return          The value associated with the removed element.
      */
     public static Object remove(String key) {
-        if (key == null) return null;
-        return getCurrentSession().remove(key);
+        return remove(getCurrentSession(), key);
+    }
+
+    /**
+     * Removes the element associated with the given key from the given session's state.
+     *
+     * @param session   The session whose state is to be updated.
+     * @param key       The key whose associated element is to be removed.
+     * @return          The value associated with the removed element.
+     */
+    public static Object remove(Session session, String key) {
+        Object value = null;
+        if (key != null) {
+            if (session != null) {
+                value = session.remove(key);
+            }
+        }
+        return value;
     }
 }
