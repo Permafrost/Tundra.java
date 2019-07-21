@@ -33,8 +33,7 @@ public abstract class AbstractPrioritized implements Prioritized {
     /**
      * The default sequencer.
      */
-    protected AtomicLong DEFAULT_SEQUENCER = new AtomicLong();
-
+    protected static AtomicLong DEFAULT_SEQUENCER = new AtomicLong();
     /**
      * The priority of this object, where larger values are higher priority, and with a nominal range of 1..10.
      */
