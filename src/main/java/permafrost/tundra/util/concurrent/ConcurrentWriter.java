@@ -126,6 +126,15 @@ public class ConcurrentWriter extends FilterWriter implements Startable {
     }
 
     /**
+     * Restarts this object.
+     */
+    @Override
+    public synchronized void restart() {
+        stop();
+        start();
+    }
+
+    /**
      * Returns true if the object is started.
      *
      * @return True if the object is started.

@@ -61,6 +61,7 @@ public abstract class AbstractInvokeChainProcessor implements InvokeChainProcess
      *
      * @return True if this processor is started.
      */
+    @Override
     public boolean isStarted() {
         return started;
     }
@@ -68,6 +69,7 @@ public abstract class AbstractInvokeChainProcessor implements InvokeChainProcess
     /**
      * Registers this class as an invocation handler and starts processing.
      */
+    @Override
     public synchronized void start() {
         if (!started) {
             started = true;
@@ -78,10 +80,20 @@ public abstract class AbstractInvokeChainProcessor implements InvokeChainProcess
     /**
      * Unregisters this class as an invocation handler and stops processing.
      */
+    @Override
     public synchronized void stop() {
         if (started) {
             started = false;
             InvokeManager.getDefault().unregisterProcessor(this);
         }
+    }
+
+    /**
+     * Restarts this object.
+     */
+    @Override
+    public synchronized void restart() {
+        stop();
+        start();
     }
 }

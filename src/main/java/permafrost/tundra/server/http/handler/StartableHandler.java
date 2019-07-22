@@ -56,6 +56,15 @@ public abstract class StartableHandler extends Handler implements Startable {
     }
 
     /**
+     * Restarts this object.
+     */
+    @Override
+    public synchronized void restart() {
+        stop();
+        start();
+    }
+
+    /**
      * Returns true if the object is started.
      * @return true if the object is started.
      */

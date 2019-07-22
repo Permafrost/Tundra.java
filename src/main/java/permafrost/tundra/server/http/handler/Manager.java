@@ -189,6 +189,14 @@ public class Manager implements Startable, HTTPHandler {
     }
 
     /**
+     * Restarts the HTTP handler manager.
+     */
+    public synchronized void restart() {
+        stop();
+        start();
+    }
+
+    /**
      * Returns the currently registered Integration Server HTTP handlers as a Map.
      *
      * @return The currently registered Integration Server HTTP handlers as a Map.

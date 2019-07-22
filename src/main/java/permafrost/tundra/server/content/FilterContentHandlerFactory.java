@@ -58,6 +58,15 @@ public abstract class FilterContentHandlerFactory extends ContentHandlerFactory 
     }
 
     /**
+     * Restarts logging content.
+     */
+    @Override
+    public synchronized void restart() {
+        stop();
+        start();
+    }
+
+    /**
      * Returns true if content logging is started.
      *
      * @return True if content logging is started.

@@ -39,6 +39,11 @@ public interface Startable {
     void stop();
 
     /**
+     * Restarts the object.
+     */
+    void restart();
+
+    /**
      * Returns true if the object is started.
      *
      * @return True if the object is started.
