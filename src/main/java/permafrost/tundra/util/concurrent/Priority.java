@@ -25,13 +25,6 @@
 package permafrost.tundra.util.concurrent;
 
 /**
- * An interface for objects that can be prioritized.
+ * An interface representing a priority used for prioritizing objects.
  */
-public interface Prioritized extends Comparable<Prioritized> {
-    /**
-     * Returns the priority of this object.
-     *
-     * @return the priority of this object.
-     */
-    Priority getPriority();
-}
+public interface Priority extends Comparable<Priority> {}

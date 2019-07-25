@@ -24,43 +24,22 @@
 
 package permafrost.tundra.util.concurrent;
 
-import java.util.concurrent.atomic.AtomicLong;
-
 /**
  * Base class for prioritized objects.
  */
 public abstract class AbstractPrioritized implements Prioritized {
     /**
-     * The default sequencer.
-     */
-    protected static AtomicLong DEFAULT_SEQUENCER = new AtomicLong();
-    /**
      * The priority of this object, where larger values are higher priority, and with a nominal range of 1..10.
      */
-    protected volatile double priority = DEFAULT_PRIORITY;
-    /**
-     * The sequence of this object, in order of object creation.
-     */
-    protected volatile long sequence = DEFAULT_SEQUENCER.incrementAndGet();
-
+    protected volatile Priority priority;
     /**
      * Returns the priority of this object, where larger values are higher priority, and with a nominal range of 1..10.
      *
      * @return the priority of this object, where larger values are higher priority, and with a nominal range of 1..10.
      */
     @Override
-    public double getPriority() {
+    public Priority getPriority() {
         return priority;
-    }
-
-    /**
-     * Returns the sequence of this object, used for tie-breaking ordering of two objects with the same priority.
-     *
-     * @return the sequence of this object, used for tie-breaking ordering of two objects with the same priority.
-     */
-    @Override
-    public long getSequence() {
-        return sequence;
     }
 
     /**
@@ -71,12 +50,30 @@ public abstract class AbstractPrioritized implements Prioritized {
      */
     @Override
     public int compareTo(Prioritized other) {
-        // larger values are higher priority, so reverse the default comparison for doubles
-        int comparison = Double.compare(other.getPriority(), getPriority());
+        return AbstractPrioritized.compareTo(this, other);
+    }
 
-        // use sequence to break ties
-        if (comparison == 0) {
-            comparison = Long.valueOf(getSequence()).compareTo(other.getSequence());
+
+    /**
+     * Compares the priority of this object with another object.
+     *
+     * @param other The other object to be compared to.
+     * @return      Whether this object is less than, equal to, or greater than the other object.
+     */
+    public static int compareTo(Prioritized self, Prioritized other) {
+        Priority selfPriority = self.getPriority();
+        Priority otherPriority = other.getPriority();
+
+        int comparison;
+
+        if (selfPriority != null && otherPriority != null) {
+            comparison = selfPriority.compareTo(otherPriority);
+        } else if (selfPriority == null && otherPriority == null) {
+            comparison = 0;
+        } else if (selfPriority != null) {
+            comparison = -1;
+        } else {
+            comparison = 1;
         }
 
         return comparison;
