@@ -35,7 +35,7 @@ public class BaseException extends ServiceException implements IDataCodable {
      * Constructs a new BaseException.
      */
     public BaseException() {
-        super();
+        super("");
     }
 
     /**
