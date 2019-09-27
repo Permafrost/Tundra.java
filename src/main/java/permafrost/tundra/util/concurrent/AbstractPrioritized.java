@@ -32,6 +32,7 @@ public abstract class AbstractPrioritized implements Prioritized {
      * The priority of this object, where larger values are higher priority, and with a nominal range of 1..10.
      */
     protected volatile Priority priority;
+
     /**
      * Returns the priority of this object, where larger values are higher priority, and with a nominal range of 1..10.
      *
@@ -52,7 +53,6 @@ public abstract class AbstractPrioritized implements Prioritized {
     public int compareTo(Prioritized other) {
         return AbstractPrioritized.compareTo(this, other);
     }
-
 
     /**
      * Compares the priority of this object with another object.

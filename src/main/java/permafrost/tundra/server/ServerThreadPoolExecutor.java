@@ -25,15 +25,16 @@
 package permafrost.tundra.server;
 
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.RejectedExecutionHandler;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import com.wm.app.b2b.server.InvokeState;
+import permafrost.tundra.util.concurrent.PrioritizedThreadPoolExecutor;
 
 /**
  * A Integration Server Thread Executor.
  */
-public class ServerThreadPoolExecutor extends ThreadPoolExecutor {
+public class ServerThreadPoolExecutor extends PrioritizedThreadPoolExecutor {
     /**
      * How long an idle thread is kept alive in the pool.
      */
