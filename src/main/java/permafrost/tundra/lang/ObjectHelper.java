@@ -206,6 +206,18 @@ public final class ObjectHelper {
     }
 
     /**
+     * Returns true if the given object is a primitive or an array of primitives.
+     *
+     * @param object    An object to check.
+     * @return          True if the given object is a primitive or an array of primitives.
+     */
+    public static boolean isPrimitive(Object object) {
+        if (object == null) return false;
+        Class klass = object.getClass();
+        return klass.isPrimitive() || (klass.isArray() && !(object instanceof Object[]));
+    }
+
+    /**
      * Returns a string representation of the given object.
      *
      * @param object The object to stringify.
