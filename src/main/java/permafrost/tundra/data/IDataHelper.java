@@ -46,6 +46,7 @@ import permafrost.tundra.lang.ArrayHelper;
 import permafrost.tundra.lang.Sanitization;
 import permafrost.tundra.lang.ObjectHelper;
 import permafrost.tundra.lang.TableHelper;
+import permafrost.tundra.server.ServiceHelper;
 import permafrost.tundra.util.regex.PatternHelper;
 import permafrost.tundra.xml.dom.NodeHelper;
 import permafrost.tundra.xml.dom.Nodes;
@@ -4262,6 +4263,178 @@ public final class IDataHelper {
         }
 
         return output;
+    }
+
+    /**
+     * Invokes the given service for each key value pair in the given IData document.
+     *
+     * @param input             The IData document to iterate over.
+     * @param service           The service to invoke on each iteration.
+     * @param pipeline          The input pipeline for the service.
+     * @param keyInput          The input argument name to use for the key, defaults to "$key".
+     * @param valueInput        The input argument name to use for the value, defaults to "$value".
+     * @param valueClass        If specified, only values that are instances of this class will be iterated over.
+     * @param recurse           Whether to recursively interate over child IData and IData[] objects.
+     * @throws ServiceException If an error occurs when invoking the service.
+     */
+    public static void each(IData input, String service, IData pipeline, String keyInput, String valueInput, Class valueClass, boolean recurse) throws ServiceException {
+        map(input, service, pipeline, keyInput, null, valueInput, null, valueClass, recurse);
+    }
+
+    /**
+     * Visits each element in the given IData document, calls the given service to convert the element, and creates a
+     * new IData document with the resulting elements.
+     *
+     * @param input             The IData document to iterate over.
+     * @param service           The service to invoke on each iteration.
+     * @param pipeline          The input pipeline for the service.
+     * @param keyInput          The input argument name to use for the key, defaults to "$key".
+     * @param keyOutput         The output argument name used for the key, defaults to "$key".
+     * @param valueInput        The input argument name to use for the value, defaults to "$value".
+     * @param valueOutput       The output argument name used for the value, defaults to "$value".
+     * @param valueClass        If specified, only values that are instances of this class will be iterated over.
+     * @param recurse           Whether to recursively interate over child IData and IData[] objects.
+     * @return                  The resulting converted IData document.
+     * @throws ServiceException If an error occurs when invoking the service.
+     */
+    public static IData map(IData input, String service, IData pipeline, String keyInput, String keyOutput, String valueInput, String valueOutput, Class valueClass, boolean recurse) throws ServiceException {
+        IData output;
+
+        if (input != null && service != null) {
+            IDataCursor ic = input.getCursor();
+            output = IDataFactory.create();
+            IDataCursor oc = output.getCursor();
+
+            if (keyInput == null) keyInput = "$key";
+            if (keyOutput == null) keyOutput = keyInput;
+            if (valueInput == null) valueInput = "$value";
+            if (valueOutput == null) valueOutput = valueInput;
+            if (pipeline == null) pipeline = IDataFactory.create();
+
+            try {
+                while(ic.next()) {
+                    Tuple<Object> tuple = new Tuple<Object>(ic.getKey(), ic.getValue());
+
+                    if (recurse && tuple.value != null) {
+                        if (tuple.value instanceof IData) {
+                            tuple.value = map((IData)tuple.value, service, pipeline, keyInput, keyOutput, valueInput, valueOutput, valueClass, recurse);
+                        } else if (tuple.value instanceof IData[] || tuple.value instanceof com.wm.util.Table) {
+                            IData[] iary = tuple.value instanceof IData[] ? (IData[])tuple.value : ((com.wm.util.Table)tuple.value).getValues();
+                            IData[] oary = new IData[iary.length];
+                            for (int i = 0; i < iary.length; i++) {
+                                oary[i] = map(iary[i], service, pipeline, keyInput, keyOutput, valueInput, valueOutput, valueClass, recurse);
+                            }
+                            tuple.value = oary;
+                        } else if (tuple.value instanceof String[][]) {
+                            String[][] iary = (String[][])tuple.value;
+                            String[][] oary = new String[iary.length][];
+                            for (int i = 0; i < iary.length; i++) {
+                                if (iary[i] != null) {
+                                    oary[i] = new String[iary[i].length];
+                                    for (int j = 0; j < iary[i].length; j++) {
+                                        Tuple<String> t = map(new Tuple<String>(tuple.key, iary[i][j]), service, pipeline, keyInput, keyOutput, valueInput, valueOutput, valueClass);
+                                        oary[i][j] = t.value;
+                                    }
+                                }
+                            }
+                            tuple.value = oary;
+                        } else if (tuple.value instanceof String[]) {
+                            String[] iary = (String[])tuple.value;
+                            String[] oary = new String[iary.length];
+                            for (int i = 0; i < iary.length; i++) {
+                                Tuple<String> t = map(new Tuple<String>(tuple.key, iary[i]), service, pipeline, keyInput, keyOutput, valueInput, valueOutput, valueClass);
+                                oary[i] = t.value;
+                            }
+                            tuple.value = oary;
+                        } else if (tuple.value instanceof Object[]) {
+                            Object[] iary = (Object[])tuple.value;
+                            Object[] oary = new Object[iary.length];
+                            for (int i = 0; i < iary.length; i++) {
+                                Tuple<Object> t = map(new Tuple<Object>(tuple.key, iary[i]), service, pipeline, keyInput, keyOutput, valueInput, valueOutput, valueClass);
+                                oary[i] = t.value;
+                            }
+                            tuple.value = oary;
+                        }
+                    }
+
+                    tuple = map(tuple, service, pipeline, keyInput, keyOutput, valueInput, valueOutput, valueClass);
+
+                    IDataHelper.put(oc, tuple.key, tuple.value);
+                }
+            } finally {
+                ic.destroy();
+                oc.destroy();
+            }
+        } else {
+            output = IDataHelper.duplicate(input, recurse);
+        }
+
+        return output;
+    }
+
+    /**
+     * Converts the given element by calling the given service, and returns the result.
+     *
+     * @param tuple             The key value pair to be converted.
+     * @param service           The service invoked to convert the key value pair.
+     * @param pipeline          The input pipeline used when invoking the service.
+     * @param keyInput          The input argument name used for the key, defaults to "$key".
+     * @param keyOutput         The output argument name used for the key, defaults to "$key".
+     * @param valueInput        The input argument name used for the value, defaults to "$value".
+     * @param valueOutput       The output argument name used for the value, defaults to "$value".
+     * @param valueClass        If specified, the value will only be converted if it is an instance of this class.
+     * @param <T>               The class of the value in the key value pair.
+     * @return                  The converted key value pair.
+     * @throws ServiceException If an error occurs invoking the service.
+     */
+    @SuppressWarnings("unchecked")
+    private static <T> Tuple<T> map(Tuple<T> tuple, String service, IData pipeline, String keyInput, String keyOutput, String valueInput, String valueOutput, Class valueClass) throws ServiceException {
+        if (tuple.value == null || valueClass == null || valueClass.isInstance(tuple.value)) {
+            IDataCursor cursor = pipeline.getCursor();
+            IDataHelper.put(cursor, keyInput, tuple.key);
+            IDataHelper.put(cursor, valueInput, tuple.value);
+            cursor.destroy();
+
+            pipeline = ServiceHelper.invoke(service, pipeline);
+
+            // clean up the input pipeline
+            cursor = pipeline.getCursor();
+            tuple.key = IDataHelper.get(cursor, keyOutput, String.class);
+            tuple.value = (T)IDataHelper.get(cursor, valueOutput);
+            IDataHelper.remove(cursor, keyInput);
+            if (!keyInput.equals(keyOutput)) IDataHelper.remove(cursor, keyOutput);
+            IDataHelper.remove(cursor, valueInput);
+            if (!valueInput.equals(valueOutput)) IDataHelper.remove(cursor, valueOutput);
+            cursor.destroy();
+        }
+        return tuple;
+    }
+
+    /**
+     * A wrapper class for key value pairs.
+     *
+     * @param <T>   The class of the value in the pair.
+     */
+    private static class Tuple<T> {
+        /**
+         * The key component of the tuple.
+         */
+        public String key;
+        /**
+         * The value component of the tuple.
+         */
+        public T value;
+
+        /**
+         * Create a new Tuple object.
+         *
+         * @param key   The key component of the tuple.
+         * @param value The value component of the tuple.
+         */
+        public Tuple(String key, T value) {
+            this.key = key;
+            this.value = value;
+        }
     }
 
     /**
