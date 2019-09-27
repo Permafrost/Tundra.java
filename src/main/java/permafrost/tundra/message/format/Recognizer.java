@@ -38,6 +38,15 @@ import java.util.TreeMap;
  */
 public class Recognizer {
     /**
+     * Initialization on demand holder idiom.
+     */
+    private static class Holder {
+        /**
+         * The singleton instance of the class.
+         */
+        private static final Recognizer INSTANCE = new Recognizer();
+    }
+    /**
      * List of all registered content format definitions by name.
      */
     private volatile Map<String, Format> formats = Collections.emptyMap();
@@ -50,6 +59,15 @@ public class Recognizer {
      * Create a new Recognizer with no registered formats.
      */
     public Recognizer() {}
+
+    /**
+     * Returns the singleton instance of this class.
+     *
+     * @return The singleton instance of this class.
+     */
+    public static Recognizer getInstance() {
+        return Holder.INSTANCE;
+    }
 
     /**
      * Create a new Recognizer initialized with the given formats.
