@@ -218,6 +218,17 @@ public final class ExceptionHelper {
      * @return          A string containing the printed stack trace for the given exception.
      */
     public static String getStackTraceString(Throwable exception) {
+        return getStackTraceString(exception, -1);
+    }
+
+    /**
+     * Returns the printed stack trace for the given exception as a string.
+     *
+     * @param exception The exception to print the stack trace for.
+     * @param level     How many levels of the stack trace to include.
+     * @return          A string containing the printed stack trace for the given exception.
+     */
+    public static String getStackTraceString(Throwable exception, int level) {
         if (exception == null) return null;
 
         StringWriter stringWriter = new StringWriter();
@@ -228,6 +239,27 @@ public final class ExceptionHelper {
         printWriter.flush();
         printWriter.close();
 
-        return stringWriter.toString();
+        String stackTrace;
+        if (level < 0) {
+            stackTrace = stringWriter.toString();
+        } else {
+            String[] lines = StringHelper.lines(stringWriter.toString());
+            StringBuilder builder = new StringBuilder();
+            if (lines != null) {
+                for (int i = 0; i < level + 1; i++) {
+                    if (i < lines.length) {
+                        builder.append(lines[i]);
+                    } else {
+                        break;
+                    }
+                }
+                if (level < lines.length - 1) {
+                    builder.append("\t... ").append(lines.length - level - 1).append(" more\r");
+                }
+            }
+            stackTrace = builder.toString();
+        }
+
+        return stackTrace;
     }
 }
