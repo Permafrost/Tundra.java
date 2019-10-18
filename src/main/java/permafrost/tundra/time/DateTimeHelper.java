@@ -513,7 +513,7 @@ public final class DateTimeHelper {
                     output.set(year, month - 1, day, hour, minute, second);
                     output.set(Calendar.MILLISECOND, microsecond / 1000);
                 } else {
-                    throw new ParseException(MessageFormat.format("Unparseable date: \"{0}\"", input), 0);
+                    throw new ParseException(MessageFormat.format("Unparseable date: {0}", input), 0);
                 }
             } else if (pattern.equals("date") || pattern.equals("date.xml")) {
                 output = DatatypeConverter.parseDate(input);
@@ -533,7 +533,7 @@ public final class DateTimeHelper {
 
             if (timezone != null) output = TimeZoneHelper.replace(output, timezone);
         } catch(Exception ex) {
-            throw new IllegalArgumentException(MessageFormat.format("Unparseable datetime: \"{0}\" does not conform to the specified pattern \"{1}\"", input, pattern), ex);
+            throw new IllegalArgumentException(MessageFormat.format("Unparseable datetime: {0} does not conform to the specified pattern {1}", input, pattern), ex);
         }
 
         return output;

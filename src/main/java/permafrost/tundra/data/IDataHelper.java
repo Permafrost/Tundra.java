@@ -2644,7 +2644,7 @@ public final class IDataHelper {
         }
 
         if (value == null && required) {
-            throw new RuntimeException(new NoSuchFieldException(MessageFormat.format("Key \"{0}\" either does not exist or is associated with a null value", key)));
+            throw new RuntimeException(new NoSuchFieldException(MessageFormat.format("Key {0} either does not exist or is associated with a null value", key)));
         }
 
         return value;
