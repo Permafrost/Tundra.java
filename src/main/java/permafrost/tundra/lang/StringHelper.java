@@ -1294,7 +1294,7 @@ public final class StringHelper {
      * @return The array of lines from the given string.
      */
     public static String[] lines(String string) {
-        return split(string, "\n");
+        return split(string, "\r?\n");
     }
 
     /**

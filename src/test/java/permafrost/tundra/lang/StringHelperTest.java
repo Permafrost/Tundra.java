@@ -113,6 +113,11 @@ public class StringHelperTest {
     }
 
     @Test
+    public void testLinesWithCRLF() throws Exception {
+        assertArrayEquals(new String[] { "abc", "def" }, StringHelper.lines("abc\r\ndef"));
+    }
+
+    @Test
     public void testSplitWithNull() throws Exception {
         assertArrayEquals(null, StringHelper.split(null, (String)null));
         assertArrayEquals(null, StringHelper.split(null, "a"));
