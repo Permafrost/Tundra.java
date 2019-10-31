@@ -105,7 +105,7 @@ public final class CollectionHelper {
      * @param <E>           The component type of the collection and resulting array.
      * @return              The collection converted to an array with a component type matching the given template.
      */
-    public static <E> E[] arrayify(Collection<E> collection, E[] template) {
+    public static <E> E[] arrayify(Collection<? extends E> collection, E[] template) {
         if (collection == null || template == null) return null;
         return collection.toArray(Arrays.copyOf(template, 0));
     }
@@ -118,7 +118,7 @@ public final class CollectionHelper {
      * @param <E>           The component type of the collection and resulting array.
      * @return              An array representation of the given collection.
      */
-    public static <E> E[] arrayify(Collection<E> collection, Class<E> klass) {
+    public static <E> E[] arrayify(Collection<? extends E> collection, Class<E> klass) {
         if (collection == null) return null;
         return collection.toArray(ArrayHelper.instantiate(klass, 0));
     }
