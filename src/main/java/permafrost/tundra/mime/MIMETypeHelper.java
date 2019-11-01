@@ -117,6 +117,27 @@ public final class MIMETypeHelper {
     }
 
     /**
+     * Returns true if the given MimeType is a type of text content.
+     *
+     * @param type  The MimeType in question.
+     * @return      Whether the given MimeType represents text content.
+     */
+    public static boolean isText(MimeType type) {
+        boolean isText = false;
+
+        if ("text".equals(type.getPrimaryType())) {
+            isText = true;
+        } else {
+            String classification = MIMETypeHelper.classify(type);
+            if ("xml".equals(classification) || "json".equals(classification) || "yaml".equals(classification) || "csv".equals(classification) || "tsv".equals(classification) || "psv".equals(classification)) {
+                isText = true;
+            }
+        }
+
+        return isText;
+    }
+
+    /**
      * Returns the given MimeType if not null, otherwise the default MimeType.
      *
      * @param type The MimeType to be normalized.
@@ -222,8 +243,7 @@ public final class MIMETypeHelper {
      * @throws MimeTypeParseException If the given MIME type string is malformed.
      */
     public static IData parse(String string) throws MimeTypeParseException {
-        if (string == null) return null;
-        return toIData(new MimeType(string));
+        return toIData(of(string));
     }
 
     /**
