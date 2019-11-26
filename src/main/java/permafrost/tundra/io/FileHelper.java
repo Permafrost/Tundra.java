@@ -190,6 +190,8 @@ public final class FileHelper {
             try {
                 if (mode == null || mode.equalsIgnoreCase("read")) {
                     stream = InputStreamHelper.normalize(new FileInputStream(file));
+                } else if (mode.equalsIgnoreCase("create") && FileHelper.exists(file)) {
+                    throw new IOException("file already exists and will not be overwritten or appended to: " + file);
                 } else {
                     if (!FileHelper.exists(file)) FileHelper.create(file);
                     stream = OutputStreamHelper.normalize(new FileOutputStream(file, mode.equalsIgnoreCase("append")));
