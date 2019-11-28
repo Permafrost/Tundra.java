@@ -32,6 +32,8 @@ import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
 import com.wm.data.IDataUtil;
 import permafrost.tundra.data.IDataHelper;
+import permafrost.tundra.io.filter.FilenameFilterType;
+import permafrost.tundra.io.filter.InclusionFilenameFilter;
 import permafrost.tundra.io.filter.RegularExpressionFilenameFilter;
 import permafrost.tundra.io.filter.WildcardFilenameFilter;
 import permafrost.tundra.lang.BooleanHelper;
@@ -43,6 +45,7 @@ import permafrost.tundra.mime.MIMETypeHelper;
 import permafrost.tundra.net.uri.URIHelper;
 import permafrost.tundra.server.ServiceHelper;
 import permafrost.tundra.time.DateTimeHelper;
+import javax.xml.datatype.Duration;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
@@ -50,12 +53,15 @@ import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipEntry;
@@ -682,6 +688,64 @@ public final class FileHelper {
         } else {
             throw new IOException("Unable to gzip file because it does not exist: " + normalize(source));
         }
+    }
+
+    /**
+     * Deletes all files that match the given file pattern older than the given duration.
+     *
+     * @param  file                     The file pattern to be purged.
+     * @param  duration                 The age files must be before they are deleted.
+     * @return                          The number of files deleted.
+     * @throws FileNotFoundException    If the parent directory does not exist.
+     */
+    public static long purge(String file, FilenameFilterType filterType, Duration duration) throws FileNotFoundException {
+        return purge(FileHelper.construct(file), filterType, duration);
+    }
+
+    /**
+     * Deletes all files that match the given file pattern older than the given duration.
+     *
+     * @param  file                     The file pattern to be purged.
+     * @param  duration                 The age files must be before they are deleted.
+     * @return                          The number of files deleted.
+     * @throws FileNotFoundException    If the parent directory does not exist.
+     */
+    public static long purge(File file, FilenameFilterType filterType, Duration duration) throws FileNotFoundException {
+        return purge(file, filterType, duration == null ? null : DateTimeHelper.earlier(duration));
+    }
+
+    /**
+     * Deletes all files that match the given file pattern older than the given calendar.
+     *
+     * @param  file                     The file pattern to be purged.
+     * @param  olderThan                Only files modified prior to this datetime will be deleted.
+     * @return                          The number of files deleted.
+     * @throws FileNotFoundException    If the parent directory does not exist.
+     */
+    public static long purge(File file, FilenameFilterType filterType, Calendar olderThan) throws FileNotFoundException {
+        long count = 0;
+
+        if (file != null) {
+            FilenameFilter filter = new InclusionFilenameFilter(FilenameFilterType.normalize(filterType), file.getName());
+            File parent = file.getParentFile();
+
+            for (String item : DirectoryHelper.list(parent)) {
+                File child = new File(parent, item);
+                if (exists(child) && filter.accept(parent, item)) {
+                    boolean shouldPurge = true;
+
+                    if (olderThan != null) {
+                        Calendar modified = Calendar.getInstance();
+                        modified.setTime(new Date(child.lastModified()));
+                        shouldPurge = modified.compareTo(olderThan) <= 0;
+                    }
+
+                    if (shouldPurge && child.delete()) count += 1;
+                }
+            }
+        }
+
+        return count;
     }
 
     /**
