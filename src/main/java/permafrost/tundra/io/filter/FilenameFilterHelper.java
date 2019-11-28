@@ -75,4 +75,50 @@ public class FilenameFilterHelper {
 
         return filters;
     }
+
+    /**
+     * Combines the given list of filters using a logical AND operation.
+     *
+     * @param filters   The list of filters to be combined.
+     * @return          A filter that combines all the given filters with a logical AND operation.
+     */
+    public static FilenameFilter and(FilenameFilter ...filters) {
+        AndFilenameFilter combinedFilter = null;
+
+        if (filters != null) {
+            for (FilenameFilter filter : filters) {
+                if (filter != null) {
+                    if (combinedFilter == null) {
+                        combinedFilter = new AndFilenameFilter();
+                    }
+                    combinedFilter.add(filter);
+                }
+            }
+        }
+
+        return combinedFilter;
+    }
+
+    /**
+     * Combines the given list of filters using a logical OR operation.
+     *
+     * @param filters   The list of filters to be combined.
+     * @return          A filter that combines all the given filters with a logical OR operation.
+     */
+    public static FilenameFilter or(FilenameFilter ...filters) {
+        OrFilenameFilter combinedFilter = null;
+
+        if (filters != null) {
+            for (FilenameFilter filter : filters) {
+                if (filter != null) {
+                    if (combinedFilter == null) {
+                        combinedFilter = new OrFilenameFilter();
+                    }
+                    combinedFilter.add(filter);
+                }
+            }
+        }
+
+        return combinedFilter;
+    }
 }
