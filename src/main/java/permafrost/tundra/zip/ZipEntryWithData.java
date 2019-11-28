@@ -119,13 +119,20 @@ public class ZipEntryWithData extends ZipEntry implements IDataCodable {
         IDataMap map = new IDataMap();
         map.put("name", getName());
 
-        Object outputData;
-        try {
-            outputData = ObjectHelper.convert(getData(), charset, mode);
-        } catch (IOException ex) {
-            throw new RuntimeException(ex);
+        byte[] data = getData();
+        if (data != null) {
+            Object outputData;
+            try {
+                outputData = ObjectHelper.convert(data, charset, mode);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            map.put("content", outputData);
+            map.put("length", data.length);
+        } else {
+            map.put("length", 0);
         }
-        map.put("content", outputData);
+
         return map;
     }
 
