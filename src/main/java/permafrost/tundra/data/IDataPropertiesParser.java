@@ -25,6 +25,7 @@
 package permafrost.tundra.data;
 
 import com.wm.data.IData;
+import permafrost.tundra.lang.CharsetHelper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -56,7 +57,7 @@ public final class IDataPropertiesParser extends IDataParser {
     @Override
     public IData parse(InputStream inputStream, Charset charset) throws IOException {
         Properties properties = new Properties();
-        properties.load(new InputStreamReader(inputStream, charset));
+        properties.load(new InputStreamReader(inputStream, CharsetHelper.normalize(charset)));
         return IDataHelper.toIData(properties);
     }
 
@@ -80,6 +81,6 @@ public final class IDataPropertiesParser extends IDataParser {
             }
         }
 
-        properties.store(new OutputStreamWriter(outputStream, charset), null);
+        properties.store(new OutputStreamWriter(outputStream, CharsetHelper.normalize(charset)), null);
     }
 }
