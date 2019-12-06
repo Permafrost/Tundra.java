@@ -32,6 +32,7 @@ import com.wm.data.IDataUtil;
 import permafrost.tundra.data.IDataHelper;
 import permafrost.tundra.data.IDataMap;
 import permafrost.tundra.lang.ExceptionHelper;
+import permafrost.tundra.server.NodeHelper;
 import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -125,12 +126,22 @@ public final class MIMETypeHelper {
     public static boolean isText(MimeType type) {
         boolean isText = false;
 
-        if ("text".equals(type.getPrimaryType())) {
-            isText = true;
-        } else {
-            String classification = MIMETypeHelper.classify(type);
-            if ("xml".equals(classification) || "json".equals(classification) || "yaml".equals(classification) || "csv".equals(classification) || "tsv".equals(classification) || "psv".equals(classification)) {
+        if (type != null) {
+            if ("text".equals(type.getPrimaryType())) {
                 isText = true;
+            } else {
+                switch(MIMETypeHelper.classify(type)) {
+                    case XML:
+                    case JSON:
+                    case PLAIN:
+                    case CSV:
+                    case TSV:
+                    case PSV:
+                    case YAML:
+                    case HJSON:
+                        isText = true;
+                        break;
+                }
             }
         }
 
@@ -167,28 +178,46 @@ public final class MIMETypeHelper {
      * @param type  The MIME type to classify.
      * @return      The classification of the MIME type, or null if unclassifiable.
      */
-    public static String classify(MimeType type) {
-        if (type == null) return null;
+    public static MIMEClassification classify(MimeType type) {
+        return classify(type, null);
+    }
 
-        String subType = type.getSubType();
-        String classification = null;
+    /**
+     * Classifies the given mime type into one of the following classifications: xml, json, yaml, csv, tsv, psv.
+     *
+     * @param type          The MIME type to classify.
+     * @param contentSchema Optional fully-qualified name of the schema or document reference to use when parsing
+     *                      content with this type.
+     * @return              The classification of the MIME type, or null if unclassifiable.
+     */
+    public static MIMEClassification classify(MimeType type, String contentSchema) {
+        MIMEClassification classification = MIMEClassification.DEFAULT_MIME_CLASSIFICATION;
 
-        if (subType.equals("xml") || subType.endsWith("+xml")) {
-            classification = "xml";
-        } else if (subType.equals("json") || subType.endsWith("+json")) {
-            classification = "json";
-        } else if (subType.equals("csv") || subType.endsWith("+csv") || subType.equals("comma-separated-values") || subType.endsWith("+comma-separated-values")) {
-            classification = "csv";
-        } else if (subType.equals("yaml") || subType.endsWith("+yaml") || subType.equals("x-yaml") || subType.endsWith("+x-yaml")) {
-            classification = "yaml";
-        } else if (subType.equals("tsv") || subType.endsWith("+tsv") || subType.equals("tab-separated-values") || subType.endsWith("+tab-separated-values")) {
-            classification = "tsv";
-        } else if (subType.equals("psv") || subType.endsWith("+psv") || subType.equals("pipe-separated-values") || subType.endsWith("+pipe-separated-values")) {
-            classification = "psv";
-        } else if (subType.equals("vnd.ms-excel")) {
-            classification = "xls";
-        } else if (subType.equals("vnd.openxmlformats-officedocument.spreadsheetml.sheet")) {
-            classification = "xlsx";
+        if (contentSchema != null && NodeHelper.exists(contentSchema) && "Flat File Schema".equals(NodeHelper.getNodeType(contentSchema).toString())) {
+            classification = MIMEClassification.PLAIN;
+        } else if (type != null) {
+            String subType = type.getSubType();
+            if ("text".equals(type.getPrimaryType()) && "plain".equals(subType)) {
+                classification = MIMEClassification.PLAIN;
+            } else if (subType.equals("xml") || subType.endsWith("+xml")) {
+                classification = MIMEClassification.XML;
+            } else if (subType.equals("json") || subType.endsWith("+json")) {
+                classification = MIMEClassification.JSON;
+            } else if (subType.equals("csv") || subType.endsWith("+csv") || subType.equals("comma-separated-values") || subType.endsWith("+comma-separated-values")) {
+                classification = MIMEClassification.CSV;
+            } else if (subType.equals("yaml") || subType.endsWith("+yaml") || subType.equals("x-yaml") || subType.endsWith("+x-yaml")) {
+                classification = MIMEClassification.YAML;
+            } else if (subType.equals("tsv") || subType.endsWith("+tsv") || subType.equals("tab-separated-values") || subType.endsWith("+tab-separated-values")) {
+                classification = MIMEClassification.TSV;
+            } else if (subType.equals("psv") || subType.endsWith("+psv") || subType.equals("pipe-separated-values") || subType.endsWith("+pipe-separated-values")) {
+                classification = MIMEClassification.PSV;
+            } else if (subType.equals("vnd.ms-excel")) {
+                classification = MIMEClassification.XLS;
+            } else if (subType.equals("vnd.openxmlformats-officedocument.spreadsheetml.sheet")) {
+                classification = MIMEClassification.XLSX;
+            } else if (subType.equals("hjson") || subType.endsWith("+hjson")) {
+                classification = MIMEClassification.HJSON;
+            }
         }
 
         return classification;
