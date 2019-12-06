@@ -116,6 +116,17 @@ public final class CharsetHelper {
     }
 
     /**
+     * Returns the charset for the given display name.
+     *
+     * @param charsetName   The name of the charset to return.
+     * @return              The charset with the given display name.
+     */
+    public static Charset of(String charsetName) {
+        if (charsetName == null) return null;
+        return Charset.forName(charsetName);
+    }
+
+    /**
      * Returns a new byte[] by converting the given byte[] from the input charset to the output charset, unless the two
      * charsets are equal in which case the given byte[] is returned as is.
      *
