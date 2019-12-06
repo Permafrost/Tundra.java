@@ -28,8 +28,9 @@ import com.wm.data.IData;
 import com.wm.util.coder.IDataCoder;
 import permafrost.tundra.io.InputStreamHelper;
 import permafrost.tundra.lang.BytesHelper;
-import permafrost.tundra.lang.CharsetHelper;
 import permafrost.tundra.lang.StringHelper;
+import permafrost.tundra.mime.MIMETypeHelper;
+import javax.activation.MimeType;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,7 +44,7 @@ public abstract class IDataParser extends IDataCoder {
     /**
      * The content type that this parser handles.
      */
-    protected String contentType;
+    protected MimeType contentType;
 
     /**
      * Construct a new IDataParser.
@@ -51,7 +52,16 @@ public abstract class IDataParser extends IDataCoder {
      * @param contentType   The content type this parser handles.
      */
     public IDataParser(String contentType) {
-        this.contentType = contentType;
+        this(MIMETypeHelper.of(contentType));
+    }
+
+    /**
+     * Construct a new IDataParser.
+     *
+     * @param contentType   The content type this parser handles.
+     */
+    public IDataParser(MimeType contentType) {
+        this.contentType = MIMETypeHelper.normalize(contentType);
     }
 
     /**
@@ -73,7 +83,7 @@ public abstract class IDataParser extends IDataCoder {
      * @throws IOException  If an I/O error occurs.
      */
     public IData parse(InputStream inputStream) throws IOException {
-        return parse(inputStream, CharsetHelper.DEFAULT_CHARSET);
+        return parse(inputStream, null);
     }
 
     /**
@@ -94,7 +104,7 @@ public abstract class IDataParser extends IDataCoder {
      * @throws IOException  If an I/O error occurs.
      */
     public void emit(OutputStream outputStream, IData document) throws IOException {
-        emit(outputStream, document, CharsetHelper.DEFAULT_CHARSET);
+        emit(outputStream, document, null);
     }
 
     /**
@@ -126,7 +136,7 @@ public abstract class IDataParser extends IDataCoder {
      * @throws IOException  If an I/O error occurs.
      */
     public final InputStream emit(IData document) throws IOException {
-        return emit(document, CharsetHelper.DEFAULT_CHARSET);
+        return emit(document, (Charset)null);
     }
 
     /**
@@ -151,7 +161,7 @@ public abstract class IDataParser extends IDataCoder {
      * @throws IOException  If an I/O error occurs.
      */
     public final <T> T emit(IData document, Class<T> returnClass) throws IOException {
-        return emit(document, CharsetHelper.DEFAULT_CHARSET, returnClass);
+        return emit(document, null, returnClass);
     }
 
     /**
@@ -228,6 +238,6 @@ public abstract class IDataParser extends IDataCoder {
      */
     @Override
     public String getContentType() {
-        return contentType;
+        return contentType.toString();
     }
 }
