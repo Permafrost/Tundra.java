@@ -262,4 +262,20 @@ public final class ExceptionHelper {
 
         return stackTrace;
     }
+
+    /**
+     * Returns the innermost cause of the given exception, or itself if it has no cause.
+     *
+     * @param exception The exception to return the initial cause of.
+     * @return          The initial cause of the exception, or itself if it has no cause.
+     */
+    public static Throwable getInitialCause(Throwable exception) {
+        if (exception != null) {
+            Throwable cause;
+            while ((cause = exception.getCause()) != null) {
+                exception = cause;
+            }
+        }
+        return exception;
+    }
 }
