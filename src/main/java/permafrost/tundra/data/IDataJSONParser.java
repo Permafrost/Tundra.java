@@ -166,7 +166,7 @@ public class IDataJSONParser extends IDataParser {
             writer.write(structure);
             writer.close();
 
-            InputOutputHelper.copy(InputStreamHelper.normalize(stringWriter.toString().trim()), outputStream);
+            InputOutputHelper.copy(InputStreamHelper.normalize(stringWriter.toString().trim(), charset), outputStream);
         } finally {
             cursor.destroy();
         }
