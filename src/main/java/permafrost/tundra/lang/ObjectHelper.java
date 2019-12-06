@@ -185,13 +185,41 @@ public final class ObjectHelper {
     /**
      * Returns true if the given object is an instance of the given class.
      *
-     * @param object    The object to be checked against the given class.
-     * @param className The name of the class the given object will be tested against.
-     * @return True if the given object is an instance of the given class.
-     * @throws ClassNotFoundException If the given class name is not found.
+     * @param object                    The object to be checked against the given class.
+     * @param className                 The name of the class the given object will be tested against.
+     * @return                          True if the given object is an instance of the given class.
      */
-    public static boolean instance(Object object, String className) throws ClassNotFoundException {
-        return className != null && instance(object, Class.forName(className));
+    public static boolean instance(Object object, String className) {
+        boolean isInstance;
+
+        try {
+            isInstance = instance(object, className, false);
+        } catch(ClassNotFoundException ex) {
+            isInstance = false;
+        }
+
+        return isInstance;
+    }
+
+    /**
+     * Returns true if the given object is an instance of the given class.
+     *
+     * @param object                    The object to be checked against the given class.
+     * @param className                 The name of the class the given object will be tested against.
+     * @param raise                     If true, throws an exception if the class with the given name does not exist.
+     * @return                          True if the given object is an instance of the given class.
+     * @throws ClassNotFoundException   If the given class name is not found.
+     */
+    public static boolean instance(Object object, String className, boolean raise) throws ClassNotFoundException {
+        try {
+            return className != null && instance(object, Class.forName(className));
+        } catch(ClassNotFoundException ex) {
+            if (raise) {
+                throw ex;
+            } else {
+                return false;
+            }
+        }
     }
 
     /**
