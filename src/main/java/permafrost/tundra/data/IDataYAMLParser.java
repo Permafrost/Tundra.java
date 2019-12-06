@@ -37,6 +37,7 @@ import permafrost.tundra.io.CloseableHelper;
 import permafrost.tundra.io.InputOutputHelper;
 import permafrost.tundra.lang.ArrayHelper;
 import permafrost.tundra.lang.BytesHelper;
+import permafrost.tundra.lang.CharsetHelper;
 import permafrost.tundra.lang.StringHelper;
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
@@ -72,7 +73,7 @@ public class IDataYAMLParser extends IDataParser {
      */
     @Override
     public void emit(OutputStream outputStream, IData document, Charset charset) throws IOException {
-        Writer writer = new BufferedWriter(new OutputStreamWriter(outputStream), InputOutputHelper.DEFAULT_BUFFER_SIZE);
+        Writer writer = new BufferedWriter(new OutputStreamWriter(outputStream, CharsetHelper.normalize(charset)), InputOutputHelper.DEFAULT_BUFFER_SIZE);
         IDataCursor cursor = document.getCursor();
 
         try {
