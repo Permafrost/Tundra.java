@@ -54,7 +54,10 @@ public final class MIMETypeHelper {
      * The default MIME media type for arbitrary content as a string.
      */
     public static final String DEFAULT_MIME_TYPE_STRING = System.getProperty("watt.server.content.type.default", "application/octet-stream");
-
+    /**
+     * The default MIME media type for arbitrary content.
+     */
+    public static final MimeType DEFAULT_MIME_TYPE = of(DEFAULT_MIME_TYPE_STRING);
     /**
      * A Map of file extensions to MIME type.
      */
