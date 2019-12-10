@@ -231,6 +231,8 @@ public final class ExceptionHelper {
     public static String getStackTraceString(Throwable exception, int level) {
         if (exception == null) return null;
 
+        final String linePrefix = "\t", lineSuffix = "\n";
+
         StringWriter stringWriter = new StringWriter();
         PrintWriter printWriter = new PrintWriter(stringWriter);
 
@@ -248,13 +250,15 @@ public final class ExceptionHelper {
             if (lines != null) {
                 for (int i = 0; i < level + 1; i++) {
                     if (i < lines.length) {
-                        builder.append(lines[i]);
+                        if (lines[i] != null) {
+                            builder.append(linePrefix).append(lines[i].trim()).append(lineSuffix);
+                        }
                     } else {
                         break;
                     }
                 }
                 if (level < lines.length - 1) {
-                    builder.append("\t... ").append(lines.length - level - 1).append(" more\r");
+                    builder.append(linePrefix).append("...").append(lines.length - level - 1).append(" more").append(lineSuffix);
                 }
             }
             stackTrace = builder.toString();
