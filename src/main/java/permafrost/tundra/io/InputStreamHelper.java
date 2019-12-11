@@ -132,17 +132,15 @@ public final class InputStreamHelper {
      * @return          An InputStream representation of the given object.
      */
     public static InputStream normalize(Object object, Charset charset) {
-        if (object == null) return null;
+        InputStream output = null;
 
-        InputStream output;
-
-        if (object instanceof byte[]) {
+        if (object instanceof InputStream) {
+            output = normalize((InputStream) object);
+        } else if (object instanceof byte[]) {
             output = normalize((byte[])object);
         } else if (object instanceof String) {
             output = normalize((String)object, charset);
-        } else if (object instanceof InputStream) {
-            output = normalize((InputStream)object);
-        } else {
+        } else if (object != null){
             throw new IllegalArgumentException("object must be a String, byte[], or java.io.InputStream");
         }
 
