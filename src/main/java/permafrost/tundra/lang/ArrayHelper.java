@@ -1132,6 +1132,19 @@ public final class ArrayHelper {
     }
 
     /**
+     * Dynamically instantiates a new multi-dimensional array of the given class with the given dimensions.
+     *
+     * @param componentClass    The class of items to be stored in the array.
+     * @param dimensions        The desired dimensions of the returned array.
+     * @param <T>               The class of items to be stored in the array.
+     * @return                  A new array of the given class with the given dimensions.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> Object instantiate(Class<T> componentClass, int... dimensions) {
+        return Array.newInstance(componentClass, dimensions);
+    }
+
+    /**
      * Converts a Collection to an array.
      *
      * @param input A Collection to be converted to an array.
