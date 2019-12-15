@@ -24,7 +24,6 @@
 
 package permafrost.tundra.flow.variable;
 
-import com.wm.app.b2b.server.ServiceException;
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
@@ -34,8 +33,9 @@ import com.wm.util.Table;
 import com.wm.util.coder.IDataCodable;
 import com.wm.util.coder.ValuesCodable;
 import permafrost.tundra.data.IDataHelper;
+import permafrost.tundra.lang.ArrayHelper;
+import permafrost.tundra.lang.ObjectHelper;
 import permafrost.tundra.util.regex.ReplacementHelper;
-import java.util.EnumSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -67,101 +67,82 @@ public final class SubstitutionHelper {
 
     /**
      * Performs variable substitution on the given string by replacing all occurrences of substrings matching "%key%"
-     * with the associated value from the given scope.
-     *
-     * @param substitutionString A string to perform variable substitution on.
-     * @param scopes             One or more IData documents containing the variables being substituted.
-     * @return                   The string after variable substitution has been performed.
-     * @throws ServiceException  If an error occurs retrieving a global variable.
-     */
-    public static String substitute(String substitutionString, IData... scopes) throws ServiceException {
-        return substitute(substitutionString, null, scopes);
-    }
-
-    /**
-     * Performs variable substitution on the given string by replacing all occurrences of substrings matching "%key%"
      * with the associated value from the given scope; if the key has no value, the given defaultValue (if not null) is
      * used instead.
      *
      * @param substitutionString A string to perform variable substitution on.
-     * @param defaultValue       A default value to be substituted when the variable being substituted has a value of
-     *                           null.
-     * @param scopes             One or more IData documents containing the variables being substituted.
-     * @return                   The string after variable substitution has been performed.
-     * @throws ServiceException  If an error occurs retrieving a global variable.
-     */
-    public static String substitute(String substitutionString, String defaultValue, IData... scopes) throws ServiceException {
-        return substitute(substitutionString, defaultValue, SubstitutionType.DEFAULT_SUBSTITUTION_SET, scopes);
-    }
-
-    /**
-     * Performs variable substitution on the given string by replacing all occurrences of substrings matching "%key%"
-     * with the associated value from the given scope; if the key has no value, the given defaultValue (if not null) is
-     * used instead.
-     *
-     * @param substitutionString A string to perform variable substitution on.
+     * @param valueClass         The class of value to be returned.
      * @param defaultValue       A default value to be substituted when the variable being substituted has a value of
      *                           null.
      * @param substitutionType   The type of substitution to perform.
      * @param scopes             One or more IData documents containing the variables being substituted.
-     * @return                   The string after variable substitution has been performed.
-     * @throws ServiceException  If an error occurs retrieving a global variable.
+     * @param <T>                The class of value to be returned.
+     * @return                   The result of the variable substitution.
      */
-    public static String substitute(String substitutionString, String defaultValue, SubstitutionType substitutionType, IData... scopes) throws ServiceException {
-        return substitute(substitutionString, defaultValue, SubstitutionType.normalize(substitutionType), scopes);
-    }
-
-    /**
-     * Performs variable substitution on the given string by replacing all occurrences of substrings matching "%key%"
-     * with the associated value from the given scope; if the key has no value, the given defaultValue (if not null) is
-     * used instead.
-     *
-     * @param substitutionString A string to perform variable substitution on.
-     * @param defaultValue       A default value to be substituted when the variable being substituted has a value of
-     *                           null.
-     * @param substitutionTypes  The type of substitutions to perform.
-     * @param scopes             One or more IData documents containing the variables being substituted.
-     * @return                   The string after variable substitution has been performed.
-     * @throws ServiceException  If an error occurs retrieving a global variable.
-     */
-    public static String substitute(String substitutionString, String defaultValue, EnumSet<SubstitutionType> substitutionTypes, IData... scopes) throws ServiceException {
-        if (substitutionString == null || scopes == null || scopes.length == 0) return substitutionString;
-        substitutionTypes = SubstitutionType.normalize(substitutionTypes);
+    @SuppressWarnings("unchecked")
+    public static <T> T substitute(String substitutionString, Class<T> valueClass, Object defaultValue, SubstitutionType substitutionType, IData... scopes) {
+        if (valueClass == null) throw new NullPointerException("valueClass must not be null");
+        if (substitutionString == null || scopes == null || scopes.length == 0) return null;
 
         Matcher matcher = matcher(substitutionString);
-        StringBuffer output = new StringBuffer();
+        T output = null;
 
-        while (matcher.find()) {
-            String key = matcher.group(1);
-            String value = null;
+        if (matcher.matches()) {
+            output = getValue(matcher.group(1), valueClass, substitutionType, scopes);
+            if (output == null) output = ObjectHelper.convert(defaultValue, valueClass);
+        } else if (valueClass.isAssignableFrom(String.class)) {
+            StringBuffer buffer = new StringBuffer();
 
-            if (substitutionTypes.contains(SubstitutionType.GLOBAL)) {
-                String globalValue = GlobalVariableHelper.get(key);
-                if (globalValue != null) value = globalValue;
-            }
+            matcher.reset();
 
-            if (substitutionTypes.contains(SubstitutionType.LOCAL)) {
-                for (IData scope : scopes) {
-                    String localValue = IDataHelper.get(scope, key, String.class);
-                    if (localValue != null) {
-                        value = localValue;
-                        break;
-                    }
+            while (matcher.find()) {
+                String value = getValue(matcher.group(1), String.class, substitutionType, scopes);
+                if (value != null) {
+                    matcher.appendReplacement(buffer, ReplacementHelper.quote(value));
+                } else if (defaultValue != null) {
+                    matcher.appendReplacement(buffer, ReplacementHelper.quote(ObjectHelper.convert(defaultValue, String.class)));
+                } else {
+                    matcher.appendReplacement(buffer, ReplacementHelper.quote(matcher.group(0)));
                 }
             }
+            matcher.appendTail(buffer);
+            output = (T)buffer.toString();
+        }
 
-            if (value != null) {
-                matcher.appendReplacement(output, ReplacementHelper.quote(value));
-            } else if (defaultValue != null) {
-                matcher.appendReplacement(output, ReplacementHelper.quote(defaultValue));
-            } else {
-                matcher.appendReplacement(output, ReplacementHelper.quote(matcher.group(0)));
+        return output;
+    }
+
+    /**
+     * Returns the value for the given key based on the specified variable substitution types and scopes.
+     *
+     * @param key                The key whose value is to be returned.
+     * @param valueClass         The class of value to be returned.
+     * @param substitutionType   The type of variable substitution being performed.
+     * @param scopes             The scopes against which local variable substitution is resolved.
+     * @param <T>                The class of value to be returned.
+     * @return                   The value associated with the given key.
+     */
+    @SuppressWarnings("unchecked")
+    private static <T> T getValue(String key, Class<T> valueClass, SubstitutionType substitutionType, IData... scopes) {
+        substitutionType = SubstitutionType.normalize(substitutionType);
+
+        Object value = null;
+
+        if (substitutionType == SubstitutionType.ALL || substitutionType == SubstitutionType.LOCAL) {
+            for (IData scope : scopes) {
+                Object localValue = IDataHelper.get(scope, key);
+                if (localValue != null) {
+                    value = localValue;
+                    break;
+                }
             }
         }
 
-        matcher.appendTail(output);
+        if (value == null && (substitutionType == SubstitutionType.ALL || substitutionType == SubstitutionType.GLOBAL)) {
+            value = GlobalVariableHelper.get(key);
+        }
 
-        return output.toString();
+        return ObjectHelper.convert(value, valueClass);
     }
 
     /**
@@ -170,53 +151,21 @@ public final class SubstitutionHelper {
      * used instead.
      *
      * @param array                 A String[] to perform variable substitution on.
-     * @param defaultValue          A default value to be substituted when the variable being substituted has a value
-     *                              of null.
-     * @param scopes             One or more IData documents containing the variables being substituted.
-     * @return                      The String[] after variable substitution has been performed.
-     * @throws ServiceException     If an error occurs retrieving a global variable.
-     */
-    public static String[] substitute(String[] array, String defaultValue, IData... scopes) throws ServiceException {
-        return substitute(array, defaultValue, SubstitutionType.DEFAULT_SUBSTITUTION_SET, scopes);
-    }
-
-    /**
-     * Performs variable substitution on the given String[] by replacing all occurrences of substrings matching "%key%"
-     * with the associated value from the given scope; if the key has no value, the given defaultValue (if not null) is
-     * used instead.
-     *
-     * @param array                 A String[] to perform variable substitution on.
+     * @param valueClass            The class of value to be returned.
      * @param defaultValue          A default value to be substituted when the variable being substituted has a value
      *                              of null.
      * @param substitutionType      The type of substitution to be performed.
      * @param scopes                One or more IData documents containing the variables being substituted.
+     * @param <T>                   The class of value to be returned.
      * @return                      The String[] after variable substitution has been performed.
-     * @throws ServiceException     If an error occurs retrieving a global variable.
      */
-    public static String[] substitute(String[] array, String defaultValue, SubstitutionType substitutionType, IData... scopes) throws ServiceException {
-        return substitute(array, defaultValue, SubstitutionType.normalize(substitutionType), scopes);
-    }
-
-    /**
-     * Performs variable substitution on the given String[] by replacing all occurrences of substrings matching "%key%"
-     * with the associated value from the given scope; if the key has no value, the given defaultValue (if not null) is
-     * used instead.
-     *
-     * @param array                 A String[] to perform variable substitution on.
-     * @param defaultValue          A default value to be substituted when the variable being substituted has a value
-     *                              of null.
-     * @param substitutionTypes     The type of substitutions to be performed.
-     * @param scopes                One or more IData documents containing the variables being substituted.
-     * @return                      The String[] after variable substitution has been performed.
-     * @throws ServiceException     If an error occurs retrieving a global variable.
-     */
-    public static String[] substitute(String[] array, String defaultValue, EnumSet<SubstitutionType> substitutionTypes, IData... scopes) throws ServiceException {
+    public static <T> T[] substitute(String[] array, Class<T> valueClass, Object defaultValue, SubstitutionType substitutionType, IData... scopes) {
         if (array == null) return null;
 
-        String[] output = new String[array.length];
+        T[] output = ArrayHelper.instantiate(valueClass, array.length);
 
         for (int i = 0; i < array.length; i++) {
-            output[i] = substitute(array[i], defaultValue, substitutionTypes, scopes);
+            output[i] = substitute(array[i], valueClass, defaultValue, substitutionType, scopes);
         }
 
         return output;
@@ -228,51 +177,21 @@ public final class SubstitutionHelper {
      * null) is used instead.
      *
      * @param table                 A String[][] to perform variable substitution on.
-     * @param defaultValue          A default value to be substituted when the variable being substituted has a value
-     *                              of null.
-     * @param scopes                One or more IData documents containing the variables being substituted.
-     * @return                      The String[][] after variable substitution has been performed.
-     * @throws ServiceException     If an error occurs retrieving a global variable.
-     */
-    public static String[][] substitute(String[][] table, String defaultValue, IData... scopes) throws ServiceException {
-        return substitute(table, defaultValue, SubstitutionType.DEFAULT_SUBSTITUTION_SET, scopes);
-    }
-
-    /**
-     * Performs variable substitution on the given String[][] by replacing all occurrences of substrings matching
-     * "%key%" with the associated value from the given scope; if the key has no value, the given defaultValue (if not
-     * null) is used instead.
-     *
-     * @param table                 A String[][] to perform variable substitution on.
+     * @param valueClass            The class of value to be returned.
      * @param defaultValue          A default value to be substituted when the variable being substituted has a value of null.
      * @param substitutionType      The type of substitution to be performed.
      * @param scopes                One or more IData documents containing the variables being substituted.
-     * @return                      The String[][] after variable substitution has been performed.
-     * @throws ServiceException     If an error occurs retrieving a global variable.
+     * @param <T>                   The class of value to be returned.
+     * @return                      The result of the variable substitution.
      */
-    public static String[][] substitute(String[][] table, String defaultValue, SubstitutionType substitutionType, IData... scopes) throws ServiceException {
-        return substitute(table, defaultValue, SubstitutionType.normalize(substitutionType), scopes);
-    }
-
-    /**
-     * Performs variable substitution on the given String[][] by replacing all occurrences of substrings matching
-     * "%key%" with the associated value from the given scope; if the key has no value, the given defaultValue (if not
-     * null) is used instead.
-     *
-     * @param table                 A String[][] to perform variable substitution on.
-     * @param defaultValue          A default value to be substituted when the variable being substituted has a value of null.
-     * @param substitutionTypes     The type of substitutions to be performed.
-     * @param scopes                One or more IData documents containing the variables being substituted.
-     * @return                      The String[][] after variable substitution has been performed.
-     * @throws ServiceException     If an error occurs retrieving a global variable.
-     */
-    public static String[][] substitute(String[][] table, String defaultValue, EnumSet<SubstitutionType> substitutionTypes, IData... scopes) throws ServiceException {
+    @SuppressWarnings("unchecked")
+    public static <T> T[][] substitute(String[][] table, Class<T> valueClass, Object defaultValue, SubstitutionType substitutionType, IData... scopes) {
         if (table == null) return null;
 
-        String[][] output = new String[table.length][];
+        T[][] output = (T[][])ArrayHelper.instantiate(valueClass, table.length, 0);
 
         for (int i = 0; i < table.length; i++) {
-            output[i] = substitute(table[i], defaultValue, substitutionTypes, scopes);
+            output[i] = substitute(table[i], valueClass, defaultValue, substitutionType, scopes);
         }
 
         return output;
@@ -281,72 +200,16 @@ public final class SubstitutionHelper {
     /**
      * Performs variable substitution on all elements of the given IData input document.
      *
-     * @param document          The IData document to perform variable substitution on.
-     * @return                  The variable substituted IData.
-     * @throws ServiceException If an error occurs.
-     */
-    public static IData substitute(IData document) throws ServiceException {
-        return substitute(document, true);
-    }
-
-    /**
-     * Performs variable substitution on all elements of the given IData input document.
-     *
-     * @param document          The IData document to perform variable substitution on.
-     * @param recurse           Whether embedded IData and IData[] should have variable substitution recursively
-     *                          performed on them.
-     * @param scopes            One or more IData documents containing the variables being substituted.
-     * @return                  The variable substituted IData.
-     * @throws ServiceException If an error occurs.
-     */
-    public static IData substitute(IData document, boolean recurse, IData... scopes) throws ServiceException {
-        return substitute(document, null, recurse, scopes);
-    }
-
-    /**
-     * Performs variable substitution on all elements of the given IData input document.
-     *
-     * @param document          The IData document to perform variable substitution on.
-     * @param defaultValue      The value to substitute if a variable cannot be resolved.
-     * @param recurse           Whether embedded IData and IData[] should have variable substitution recursively
-     *                          performed on them.
-     * @param scopes            One or more IData documents containing the variables being substituted.
-     * @return                  The variable substituted IData.
-     * @throws ServiceException If an error occurs.
-     */
-    public static IData substitute(IData document, String defaultValue, boolean recurse, IData... scopes) throws ServiceException {
-        return substitute(document, defaultValue, recurse, SubstitutionType.DEFAULT_SUBSTITUTION_SET, scopes);
-    }
-
-    /**
-     * Performs variable substitution on all elements of the given IData input document.
-     *
      * @param document              The IData document to perform variable substitution on.
      * @param defaultValue          The value to substitute if a variable cannot be resolved.
      * @param recurse               Whether embedded IData and IData[] should have variable substitution recursively
      *                              performed on them.
+     * @param includeNulls          Whether null values should be included in the output document.
      * @param substitutionType      The type of substitution to be performed.
      * @param scopes                One or more IData documents containing the variables being substituted.
      * @return                      The variable substituted IData.
-     * @throws ServiceException     If an error occurs retrieving a global variable.
      */
-    public static IData substitute(IData document, String defaultValue, boolean recurse, SubstitutionType substitutionType, IData... scopes) throws ServiceException {
-        return substitute(document, defaultValue, recurse, SubstitutionType.normalize(substitutionType), scopes);
-    }
-
-    /**
-     * Performs variable substitution on all elements of the given IData input document.
-     *
-     * @param document              The IData document to perform variable substitution on.
-     * @param defaultValue          The value to substitute if a variable cannot be resolved.
-     * @param recurse               Whether embedded IData and IData[] should have variable substitution recursively
-     *                              performed on them.
-     * @param substitutionTypes     The type of substitutions to be performed.
-     * @param scopes                One or more IData documents containing the variables being substituted.
-     * @return                      The variable substituted IData.
-     * @throws ServiceException     If an error occurs retrieving a global variable.
-     */
-    public static IData substitute(IData document, String defaultValue, boolean recurse, EnumSet<SubstitutionType> substitutionTypes, IData... scopes) throws ServiceException {
+    public static IData substitute(IData document, Object defaultValue, boolean recurse, boolean includeNulls, SubstitutionType substitutionType, IData... scopes) {
         if (document == null) return null;
         if (scopes == null || scopes.length == 0) {
             scopes = new IData[1];
@@ -357,28 +220,33 @@ public final class SubstitutionHelper {
         IDataCursor inputCursor = document.getCursor();
         IDataCursor outputCursor = output.getCursor();
 
-        while (inputCursor.next()) {
-            String key = inputCursor.getKey();
-            Object value = inputCursor.getValue();
+        try {
+            while (inputCursor.next()) {
+                String key = inputCursor.getKey();
+                Object value = inputCursor.getValue();
 
-            if (value != null) {
-                if (recurse && (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[])) {
-                    value = substitute(IDataHelper.toIDataArray(value), defaultValue, recurse, substitutionTypes, scopes);
-                } else if (recurse && (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable)) {
-                    value = substitute(IDataHelper.toIData(value), defaultValue, recurse, substitutionTypes, scopes);
-                } else if (value instanceof String) {
-                    value = substitute((String)value, defaultValue, substitutionTypes, scopes);
-                } else if (value instanceof String[]) {
-                    value = substitute((String[])value, defaultValue, substitutionTypes, scopes);
-                } else if (value instanceof String[][]) {
-                    value = substitute((String[][])value, defaultValue, substitutionTypes, scopes);
+                if (value != null) {
+                    if (recurse && (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[])) {
+                        value = substitute(IDataHelper.toIDataArray(value), defaultValue, recurse, includeNulls, substitutionType, scopes);
+                    } else if (recurse && (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable)) {
+                        value = substitute(IDataHelper.toIData(value), defaultValue, recurse, includeNulls, substitutionType, scopes);
+                    } else if (value instanceof String) {
+                        value = substitute((String) value, String.class, defaultValue, substitutionType, scopes);
+                    } else if (value instanceof String[]) {
+                        value = substitute((String[]) value, String.class, defaultValue, substitutionType, scopes);
+                    } else if (value instanceof String[][]) {
+                        value = substitute((String[][]) value, String.class, defaultValue, substitutionType, scopes);
+                    }
+                }
+
+                if (value != null || includeNulls) {
+                    IDataUtil.put(outputCursor, key, value);
                 }
             }
-            IDataUtil.put(outputCursor, key, value);
+        } finally {
+            inputCursor.destroy();
+            outputCursor.destroy();
         }
-
-        inputCursor.destroy();
-        outputCursor.destroy();
 
         return output;
     }
@@ -386,53 +254,22 @@ public final class SubstitutionHelper {
     /**
      * Performs variable substitution on all elements of the given IData[].
      *
-     * @param array             The IData[] to perform variable substitution on.
-     * @param defaultValue      The value to substitute if a variable cannot be resolved.
-     * @param recurse           Whether embedded IData and IData[] should have variable substitution recursively
-     *                          performed on them.
-     * @param scopes            One or more IData documents containing the variables being substituted.
-     * @return                  The variable substituted IData[].
-     * @throws ServiceException If an error occurs.
-     */
-    public static IData[] substitute(IData[] array, String defaultValue, boolean recurse, IData... scopes) throws ServiceException {
-        return substitute(array, defaultValue, recurse, SubstitutionType.DEFAULT_SUBSTITUTION_SET, scopes);
-    }
-
-    /**
-     * Performs variable substitution on all elements of the given IData[].
-     *
      * @param array                 The IData[] to perform variable substitution on.
      * @param defaultValue          The value to substitute if a variable cannot be resolved.
      * @param recurse               Whether embedded IData and IData[] should have variable substitution recursively
      *                              performed on them.
+     * @param includeNulls          Whether null values should be included in the output document.
      * @param substitutionType      The type of substitution to be performed.
      * @param scopes                One or more IData documents containing the variables being substituted.
      * @return                      The variable substituted IData[].
-     * @throws ServiceException     If an error occurs retrieving a global variable.
      */
-    public static IData[] substitute(IData[] array, String defaultValue, boolean recurse, SubstitutionType substitutionType, IData... scopes) throws ServiceException {
-        return substitute(array, defaultValue, recurse, SubstitutionType.normalize(substitutionType), scopes);
-    }
-
-    /**
-     * Performs variable substitution on all elements of the given IData[].
-     *
-     * @param array                 The IData[] to perform variable substitution on.
-     * @param defaultValue          The value to substitute if a variable cannot be resolved.
-     * @param recurse               Whether embedded IData and IData[] should have variable substitution recursively
-     *                              performed on them.
-     * @param substitutionTypes     The type of substitutions to be performed.
-     * @param scopes                One or more IData documents containing the variables being substituted.
-     * @return                      The variable substituted IData[].
-     * @throws ServiceException     If an error occurs retrieving a global variable.
-     */
-    public static IData[] substitute(IData[] array, String defaultValue, boolean recurse, EnumSet<SubstitutionType> substitutionTypes, IData... scopes) throws ServiceException {
+    public static IData[] substitute(IData[] array, Object defaultValue, boolean recurse, boolean includeNulls, SubstitutionType substitutionType, IData... scopes) {
         if (array == null) return null;
 
         IData[] output = new IData[array.length];
 
         for (int i = 0; i < array.length; i++) {
-            output[i] = substitute(array[i], defaultValue, recurse, substitutionTypes, scopes);
+            output[i] = substitute(array[i], defaultValue, recurse, includeNulls, substitutionType, scopes);
         }
 
         return output;

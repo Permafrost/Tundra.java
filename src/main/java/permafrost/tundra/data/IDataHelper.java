@@ -1440,9 +1440,8 @@ public final class IDataHelper {
      * @param amendments        The list of key value pairs to amend the document with.
      * @param scope             The scope against which to resolve variable substitution statements.
      * @return                  The amended IData document.
-     * @throws ServiceException If an error occurs.
      */
-    public static IData amend(IData document, IData[] amendments, IData scope) throws ServiceException {
+    public static IData amend(IData document, IData[] amendments, IData scope) {
         if (amendments == null || amendments.length == 0) return document;
 
         IData output = duplicate(document);
@@ -1450,14 +1449,14 @@ public final class IDataHelper {
         for (int i = 0; i < amendments.length; i++) {
             if (amendments[i] != null) {
                 IDataCursor cursor = amendments[i].getCursor();
-                String key = IDataUtil.getString(cursor, "key");
-                String value = IDataUtil.getString(cursor, "value");
-                String action = IDataUtil.getString(cursor, "action");
-                String condition = IDataUtil.getString(cursor, "condition");
+                String key = IDataHelper.get(cursor, "key", String.class);
+                Object value = IDataHelper.get(cursor, "value", String.class);
+                String action = IDataHelper.get(cursor, "action", String.class);
+                String condition = IDataHelper.get(cursor, "condition", String.class);
                 cursor.destroy();
 
-                key = SubstitutionHelper.substitute(key, scope);
-                value = SubstitutionHelper.substitute(value, scope);
+                key = SubstitutionHelper.substitute(key, String.class, null, null, scope);
+                value = SubstitutionHelper.substitute((String)value, Object.class, null, null, scope);
 
                 if ((condition == null) || ConditionEvaluator.evaluate(condition, scope)) {
                     if (action == null || action.equals("merge") || (action.equals("update") && IDataHelper.exists(output, key)) || (action.equals("create") && !IDataHelper.exists(output, key))) {

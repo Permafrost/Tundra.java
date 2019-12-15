@@ -323,11 +323,10 @@ public final class URIHelper {
      * @param uri                   The URI string to perform variable substitution on.
      * @param scope                 The scope variables are resolved against.
      * @return                      The resulting URI string after variable substitution.
-     * @throws ServiceException     If an error occurs during substitution.
      * @throws URISyntaxException   If the given string is not a valid URI.
      */
-    public static String substitute(String uri, IData scope) throws ServiceException, URISyntaxException {
-        return emit(SubstitutionHelper.substitute(parse(uri), true, scope));
+    public static String substitute(String uri, IData scope) throws URISyntaxException {
+        return emit(SubstitutionHelper.substitute(parse(uri), null, true, false, null, scope));
     }
 
     /**

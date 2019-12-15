@@ -183,7 +183,7 @@ public class ConfigurationManager {
                     scope.put("$system", SystemHelper.reflect(refresh));
 
                     // substitute %key% strings with the associated global variable or other configuration values if they exist
-                    configuration = SubstitutionHelper.substitute(configuration, null, true, EnumSet.of(SubstitutionType.LOCAL), scope, configuration);
+                    configuration = SubstitutionHelper.substitute(configuration, null, true, true, null, scope, configuration);
 
                     // cache the configuration in-memory to optimise performance
                     if (updateCache) CONFIGURATIONS.put(packageName, configuration);

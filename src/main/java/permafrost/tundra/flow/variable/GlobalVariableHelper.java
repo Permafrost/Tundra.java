@@ -60,9 +60,8 @@ public final class GlobalVariableHelper {
      *
      * @param key               The key for the value to be returned.
      * @return                  The global variable value associated with the given key.
-     * @throws ServiceException If a password decryption or global variable error occurs.
      */
-    public static String get(String key) throws ServiceException {
+    public static String get(String key) {
         String value = null;
 
         if (isSupported() && key != null) {
@@ -85,7 +84,7 @@ public final class GlobalVariableHelper {
                     }
                 }
             } catch (Exception ex) {
-                ExceptionHelper.raise(ex);
+                ExceptionHelper.raiseUnchecked(ex);
             }
         }
         return value;
@@ -95,9 +94,8 @@ public final class GlobalVariableHelper {
      * Returns all global variables as an IData document.
      *
      * @return                  All global variables as an IData document.
-     * @throws ServiceException If a password decryption or global variable error occurs.
      */
-    public static IData list() throws ServiceException {
+    public static IData list() {
         IDataMap output = new IDataMap();
 
         if (isSupported()) {
