@@ -577,7 +577,7 @@ public final class ObjectHelper {
             } else if (klass.isAssignableFrom(Duration.class) && object instanceof String) {
                 value = (T)DurationHelper.parse((String)object);
             } else if (klass.isAssignableFrom(Charset.class) && object instanceof String) {
-                value = (T)CharsetHelper.normalize((String)object);
+                value = (T)CharsetHelper.of((String)object);
             } else if (klass.isAssignableFrom(MimeType.class) && object instanceof String) {
                 value = (T)MIMETypeHelper.of((String)object);
             } else if (klass.isAssignableFrom(NodePermission.class) && object instanceof String) {
