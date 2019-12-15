@@ -102,6 +102,16 @@ public final class ServiceHelper {
     }
 
     /**
+     * Returns the top-level service that initiated this call, or null if unknown.
+     *
+     * @return the top-level service that initiated this call, or null if unknown.
+     */
+    public static NSService getInitiator() {
+        List<NSService> stack = getCallStack();
+        return stack.size() > 0 ? stack.get(0) : null;
+    }
+
+    /**
      * Creates a new service in the given package with the given name.
      *
      * @param packageName The name of the package to create the service in.
