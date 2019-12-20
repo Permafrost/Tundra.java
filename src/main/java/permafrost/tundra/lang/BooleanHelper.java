@@ -24,6 +24,8 @@
 
 package permafrost.tundra.lang;
 
+import com.wm.data.MBoolean;
+
 /**
  * A collection of convenience methods for working with booleans.
  */
@@ -44,6 +46,8 @@ public final class BooleanHelper {
 
         if (object instanceof Boolean) {
             value = (Boolean)object;
+        } else if (object instanceof MBoolean) {
+            value = ((MBoolean)object).booleanValue();
         } else if (object instanceof String) {
             value = parse((String)object);
         }
