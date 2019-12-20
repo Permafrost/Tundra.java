@@ -2840,7 +2840,7 @@ public final class IDataHelper {
     /**
      * Returns the value associated with the given key from the IDataCursor, if it is an instance of the given class.
      *
-     * @param cursor        The IDataCursor to add the key value association to.
+     * @param cursor        The IDataCursor to retrieve the value from.
      * @param key           The key whose associated value is to be returned.
      * @param klass         The class the returned value is required to be an instance of.
      * @param defaultValue  The value to return if the associated value is null or the key does not exist.
@@ -2852,6 +2852,33 @@ public final class IDataHelper {
     public static <T> T getOrDefault(IDataCursor cursor, String key, Class<T> klass, T defaultValue) {
         T value = get(cursor, key, klass, false);
         return value == null ? defaultValue : value;
+    }
+
+    /**
+     * Returns the value associated with the given key from the IData, if it is an instance of the given class.
+     *
+     * @param document      The IData document to retrieve the value from.
+     * @param key           The key whose associated value is to be returned.
+     * @param klass         The class the returned value is required to be an instance of.
+     * @param defaultValue  The value to return if the associated value is null or the key does not exist.
+     * @param <T>           The class the returned value is required to be an instance of.
+     * @return              The value associated with the given key, if one exists that is an instance of the given
+     *                      class.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T getOrDefault(IData document, String key, Class<T> klass, T defaultValue) {
+        if (document == null) return null;
+
+        T value;
+
+        IDataCursor cursor = document.getCursor();
+        try {
+            value = getOrDefault(cursor, key, klass, defaultValue);
+        } finally {
+            cursor.destroy();
+        }
+
+        return value;
     }
 
     /**
