@@ -30,6 +30,8 @@ import com.wm.data.IDataHashCursor;
 import com.wm.data.IDataIndexCursor;
 import com.wm.data.IDataSharedCursor;
 import com.wm.data.IDataTreeCursor;
+import permafrost.tundra.lang.ExceptionHelper;
+import java.io.IOException;
 
 /**
  * Provides a skeleton implementation of the IData interface.
@@ -88,5 +90,22 @@ public abstract class AbstractIData implements IData {
     @Override
     public IDataHashCursor getHashCursor() {
         throw new UnsupportedOperationException("getHashCursor not implemented");
+    }
+
+    /**
+     * Returns a string representation of this object.
+     *
+     * @return a string representation of this object.
+     */
+    @Override
+    public String toString() {
+        String output = null;
+        try {
+            IDataJSONParser parser = new IDataJSONParser(false);
+            output = parser.emit(this, String.class);
+        } catch(IOException ex) {
+            ExceptionHelper.raiseUnchecked(ex);
+        }
+        return output;
     }
 }
