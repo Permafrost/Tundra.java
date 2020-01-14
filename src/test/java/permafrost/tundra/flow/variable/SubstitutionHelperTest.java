@@ -83,4 +83,11 @@ public class SubstitutionHelperTest {
         Object result = SubstitutionHelper.substitute(testCase, Object.class, null, null, scope);
         assertEquals(4, result);
     }
+
+    @Test
+    public void testNonexistentSubstitution() {
+        String testCase = "%unknown%";
+        Object result = SubstitutionHelper.substitute(testCase, Object.class, null, null, scope);
+        assertEquals(testCase, result);
+    }
 }

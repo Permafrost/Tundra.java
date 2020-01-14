@@ -56,6 +56,27 @@ public final class GlobalVariableHelper {
     }
 
     /**
+     * Returns true if a global variable with given key exists.
+     *
+     * @param key   The key to check existence of.
+     * @return      True if a global variable with the given key exists.
+     */
+    public static boolean exists(String key) {
+        boolean exists = false;
+
+        if (isSupported() && key != null) {
+            try {
+                GlobalVariablesManager globalVariablesManager = GlobalVariablesManager.getInstance();
+                exists = globalVariablesManager.globalVariableExists(key);
+            } catch (Exception ex) {
+                ExceptionHelper.raiseUnchecked(ex);
+            }
+        }
+
+        return exists;
+    }
+
+    /**
      * Returns the global variable value associated with the given key.
      *
      * @param key               The key for the value to be returned.

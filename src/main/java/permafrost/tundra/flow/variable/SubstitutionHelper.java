@@ -88,8 +88,15 @@ public final class SubstitutionHelper {
         T output = null;
 
         if (matcher.matches()) {
-            output = getValue(matcher.group(1), valueClass, substitutionType, scopes);
-            if (output == null) output = ObjectHelper.convert(defaultValue, valueClass);
+            String key = matcher.group(1);
+            if (exists(key, substitutionType, scopes)) {
+                output = getValue(key, valueClass, substitutionType, scopes);
+                if (output == null && defaultValue != null) {
+                    output = ObjectHelper.convert(defaultValue, valueClass);
+                }
+            } else {
+                output = ObjectHelper.convert(substitutionString, valueClass);
+            }
         } else if (valueClass.isAssignableFrom(String.class)) {
             StringBuffer buffer = new StringBuffer();
 
@@ -110,6 +117,36 @@ public final class SubstitutionHelper {
         }
 
         return output;
+    }
+
+    /**
+     * Returns true if the given key exists in the specified variable substitution types and scopes.
+     *
+     * @param key                The key to check existence of.
+     * @param substitutionType   The type of variable substitution being performed.
+     * @param scopes             The scopes against which local variable substitution is resolved.
+     * @return                   True if the given key exists.
+     */
+    private static boolean exists(String key, SubstitutionType substitutionType, IData... scopes) {
+        substitutionType = SubstitutionType.normalize(substitutionType);
+
+        boolean exists = false;
+
+        if (substitutionType == SubstitutionType.ALL || substitutionType == SubstitutionType.LOCAL) {
+            for (IData scope : scopes) {
+                boolean localExists = IDataHelper.exists(scope, key);
+                if (localExists) {
+                    exists = localExists;
+                    break;
+                }
+            }
+        }
+
+        if (!exists && (substitutionType == SubstitutionType.ALL || substitutionType == SubstitutionType.GLOBAL)) {
+            exists = GlobalVariableHelper.exists(key);
+        }
+
+        return exists;
     }
 
     /**
