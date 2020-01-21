@@ -63,6 +63,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
@@ -574,6 +575,8 @@ public final class ObjectHelper {
                 value = (T)Character.valueOf(((String)object).charAt(0));
             } else if (klass.isAssignableFrom(Calendar.class) && object instanceof String) {
                 value = (T)DateTimeHelper.parse((String)object);
+            } else if (klass.isAssignableFrom(Date.class) && object instanceof String) {
+                value = (T)DateTimeHelper.parse((String)object).getTime();
             } else if (klass.isAssignableFrom(Duration.class) && object instanceof String) {
                 value = (T)DurationHelper.parse((String)object);
             } else if (klass.isAssignableFrom(Charset.class) && object instanceof String) {
