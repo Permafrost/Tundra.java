@@ -256,21 +256,34 @@ public final class FileHelper {
      * @throws IOException  If the file cannot be created.
      */
     public static void touch(File file) throws IOException {
-        if (file.exists()) {
-            file.setLastModified((new Date()).getTime());
-        } else {
-            create(file);
-        }
+        touch(file, null);
     }
 
     /**
-     * Update the modified time of the given file to the current time, or create it if it does not exist.
+     * Update the modified time of the given file to the given time, or create it if it does not exist.
      *
-     * @param filename      The name of the file to be touched.
-     * @throws IOException  If the filename is unparseable.
+     * @param file          The file to be touched.
+     * @param lastModified  Optional time to set the file's last modified time to. If null, current time is used.
+     * @throws IOException  If the file cannot be created.
      */
-    public static void touch(String filename) throws IOException {
-        touch(construct(filename));
+    public static void touch(File file, Calendar lastModified) throws IOException {
+        touch(file, lastModified == null ? System.currentTimeMillis() : lastModified.getTimeInMillis());
+    }
+
+    /**
+     * Update the modified time of the given file to the given time, or create it if it does not exist.
+     *
+     * @param file          The file to be touched.
+     * @param lastModified  Optional time to set the file's last modified time to.
+     * @throws IOException  If the file cannot be created.
+     */
+    public static void touch(File file, long lastModified) throws IOException {
+        if (file != null) {
+            if (!file.exists()) {
+                create(file);
+            }
+            file.setLastModified(lastModified);
+        }
     }
 
     /**
