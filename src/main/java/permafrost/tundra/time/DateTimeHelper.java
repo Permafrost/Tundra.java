@@ -1193,4 +1193,31 @@ public final class DateTimeHelper {
 
         return calendar;
     }
+
+    /**
+     * Returns true if the given datetime instance is within the given datetime range.
+     *
+     * @param instance  The datetime instance to determine if within the given range.
+     * @param start     Optional datetime range start. If null, this is a beginless range.
+     * @param end       Optional datetime range end. If null, this is an endless range.
+     * @return          True if the given datetime instance is within the given datetime range.
+     */
+    public static boolean within(Calendar instance, Calendar start, Calendar end) {
+        boolean within = false;
+        if (instance != null) {
+            if (start == null) {
+                // beginless range
+                within = DateTimeHelper.compare(instance, end) <= 0;
+            } else if (end == null) {
+                // endless range
+                within = DateTimeHelper.compare(instance, start) >= 0;
+            } else {
+                if (DateTimeHelper.compare(start, end) > 0) {
+                    throw new IllegalArgumentException("datetime range start " + emit(start) + " is required to be before range end " + emit(end));
+                }
+                within = DateTimeHelper.compare(instance, start) >= 0 && DateTimeHelper.compare(instance, end) <= 0;
+            }
+        }
+        return within;
+    }
 }
