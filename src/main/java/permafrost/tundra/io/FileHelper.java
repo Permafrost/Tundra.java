@@ -256,18 +256,30 @@ public final class FileHelper {
      * @throws IOException  If the file cannot be created.
      */
     public static void touch(File file) throws IOException {
-        touch(file, null);
+        touch(file, true);
+    }
+
+    /**
+     * Update the modified time of the given file to the current time, or create it if it does not exist.
+     *
+     * @param file          The file to be touched.
+     * @param createMissing Whether to create the file if it does not already exist.
+     * @throws IOException  If the file cannot be created.
+     */
+    public static void touch(File file, boolean createMissing) throws IOException {
+        touch(file, createMissing, null);
     }
 
     /**
      * Update the modified time of the given file to the given time, or create it if it does not exist.
      *
      * @param file          The file to be touched.
+     * @param createMissing Whether to create the file if it does not already exist.
      * @param lastModified  Optional time to set the file's last modified time to. If null, current time is used.
      * @throws IOException  If the file cannot be created.
      */
-    public static void touch(File file, Calendar lastModified) throws IOException {
-        touch(file, lastModified == null ? System.currentTimeMillis() : lastModified.getTimeInMillis());
+    public static void touch(File file, boolean createMissing, Calendar lastModified) throws IOException {
+        touch(file, createMissing, lastModified == null ? System.currentTimeMillis() : lastModified.getTimeInMillis());
     }
 
     /**
@@ -277,9 +289,9 @@ public final class FileHelper {
      * @param lastModified  Optional time to set the file's last modified time to.
      * @throws IOException  If the file cannot be created.
      */
-    public static void touch(File file, long lastModified) throws IOException {
+    public static void touch(File file, boolean createMissing, long lastModified) throws IOException {
         if (file != null) {
-            if (!file.exists()) {
+            if (createMissing && !file.exists()) {
                 create(file);
             }
             file.setLastModified(lastModified);
