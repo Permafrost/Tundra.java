@@ -853,6 +853,52 @@ public final class IDataHelper {
     }
 
     /**
+     * Creates a new IData document.
+     *
+     * @return a new IData document.
+     */
+    public static IData create() {
+        return IDataFactory.create();
+    }
+
+    /**
+     * Returns the given IData document if it is not null, otherwise returns a newly created IData document.
+     *
+     * @param document An IData document.
+     * @return         The IData document if it is not null, otherwise a newly created IData document.
+     */
+    public static IData returnOrCreate(IData document) {
+        return document == null ? create() : document;
+    }
+
+    /**
+     * Returns a duplicate of the given IData document if it is not null, otherwise returns a newly created IData
+     * document.
+     *
+     * @param document An IData document.
+     * @return         A duplicate of the IData document if it is not null, otherwise a newly created IData document.
+     */
+    public static IData duplicateOrCreate(IData document) {
+        return duplicateOrCreate(document, true);
+    }
+
+    /**
+     * Returns a duplicate of the given IData document if it is not null, otherwise returns a newly created IData
+     * document.
+     *
+     * @param document  An IData document.
+     * @param recurse   When true, nested IData documents and IData[] document lists will also be duplicated.
+     * @return          A duplicate of the IData document if it is not null, otherwise a newly created IData document.
+     */
+    public static IData duplicateOrCreate(IData document, boolean recurse) {
+        if (document == null) {
+            return create();
+        } else {
+            return duplicate(document, recurse);
+        }
+    }
+
+    /**
      * Returns a recursive clone of the given IData document.
      *
      * @param document  An IData document to be duplicated.
