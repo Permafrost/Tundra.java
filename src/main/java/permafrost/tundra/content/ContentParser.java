@@ -96,14 +96,7 @@ public class ContentParser extends IDataParser {
     public ContentParser(MimeType contentType, Charset charset, String schema, IData namespace, boolean validate, IData pipeline) {
         super(contentType == null ? DEFAULT_CONTENT_TYPE : contentType);
 
-        if (charset == null) {
-            String charsetParameter = this.contentType.getParameter("charset");
-            this.charset = CharsetHelper.of(charsetParameter);
-        } else {
-            this.charset = charset;
-            this.contentType.setParameter("charset", charset.displayName());
-        }
-
+        this.charset = CharsetHelper.normalize(charset, contentType, true);
         this.schema = schema;
         this.namespace = namespace;
         this.validate = validate;
