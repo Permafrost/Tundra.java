@@ -55,10 +55,6 @@ public final class MIMETypeHelper {
      */
     public static final String DEFAULT_MIME_TYPE_STRING = System.getProperty("watt.server.content.type.default", "application/octet-stream");
     /**
-     * The default MIME media type for arbitrary content.
-     */
-    public static final MimeType DEFAULT_MIME_TYPE = of(DEFAULT_MIME_TYPE_STRING);
-    /**
      * A Map of file extensions to MIME type.
      */
     private static final Map<String, Set<String>> FILE_EXTENSIONS_BY_MIME_TYPE = getFileExtensionsByMimeType();
@@ -154,12 +150,12 @@ public final class MIMETypeHelper {
     /**
      * Returns the given MimeType if not null, otherwise the default MimeType.
      *
-     * @param type The MimeType to be normalized.
-     * @return     The given MimeType if not null, otherwise the default MimeType.
+     * @param type      The MimeType to be normalized.
+     * @return          The given MimeType if not null, otherwise the default MimeType.
      */
     public static MimeType normalize(MimeType type) {
         if (type == null) return getDefault();
-        return type;
+        return duplicate(type);
     }
 
     /**
@@ -170,6 +166,21 @@ public final class MIMETypeHelper {
     public static MimeType getDefault() {
         try {
             return new MimeType(DEFAULT_MIME_TYPE_STRING);
+        } catch(MimeTypeParseException ex) {
+            throw new IllegalArgumentException(ex);
+        }
+    }
+
+    /**
+     * Returns a duplicate of the given MimeType.
+     *
+     * @param type  The MimeType to duplicate.
+     * @return      A duplicate of the given MimeType.
+     */
+    public static MimeType duplicate(MimeType type) {
+        if (type == null) return null;
+        try {
+            return new MimeType(type.toString());
         } catch(MimeTypeParseException ex) {
             throw new IllegalArgumentException(ex);
         }
