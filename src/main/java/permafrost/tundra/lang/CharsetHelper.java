@@ -25,6 +25,7 @@
 package permafrost.tundra.lang;
 
 import permafrost.tundra.io.InputStreamHelper;
+import javax.activation.MimeType;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -112,6 +113,46 @@ public final class CharsetHelper {
      */
     public static Charset normalize(Charset charset, Charset defaultCharset) {
         if (charset == null) charset = defaultCharset;
+        return charset;
+    }
+
+    /**
+     * Returns the given charset if not null, otherwise the charset specified in the given content type, otherwise
+     * the default charset.
+     *
+     * @param charset               The charset to normalize.
+     * @param contentType           The content type that could contain a charset parameter.
+     * @param setCharsetParameter   Whether to update the content type to include the charset as a parameter.
+     * @return                      The normalized charset.
+     */
+    public static Charset normalize(Charset charset, MimeType contentType, boolean setCharsetParameter) {
+        return normalize(charset, contentType, setCharsetParameter, DEFAULT_CHARSET);
+    }
+
+    /**
+     * Returns the given charset if not null, otherwise the charset specified in the given content type, otherwise
+     * the default charset.
+     *
+     * @param charset               The charset to normalize.
+     * @param contentType           The content type that could contain a charset parameter.
+     * @param setCharsetParameter   Whether to update the content type to include the charset as a parameter.
+     * @param defaultCharset        The default charset if no other charset is specified.
+     * @return                      The normalized charset.
+     */
+    public static Charset normalize(Charset charset, MimeType contentType, boolean setCharsetParameter, Charset defaultCharset) {
+        if (charset == null && contentType != null) {
+            String charsetParameter = contentType.getParameter("charset");
+            if (charsetParameter != null) {
+                charset = of(charsetParameter);
+            }
+        }
+
+        charset = normalize(charset, defaultCharset);
+
+        if (setCharsetParameter && contentType != null && charset != null) {
+            contentType.setParameter("charset", charset.displayName());
+        }
+
         return charset;
     }
 
