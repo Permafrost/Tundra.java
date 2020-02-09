@@ -15,16 +15,6 @@ public class ServerLogger {
     private ServerLogger() {}
 
     /**
-     * Logs the given message formatted with the given arguments at the fatal level.
-     *
-     * @param message   The message to be logged.
-     * @param arguments The arguments to be included when formatting the message.
-     */
-    public static void fatal(String message, Object... arguments) {
-        log(Level.FATAL, null, message, arguments);
-    }
-
-    /**
      * Logs the given message formatted with the given arguments against the given function at the fatal level.
      *
      * @param function  The function against which the message is being logged.
@@ -33,16 +23,6 @@ public class ServerLogger {
      */
     public static void fatal(String function, String message, Object... arguments) {
         log(Level.FATAL, function, message, arguments);
-    }
-
-    /**
-     * Logs the given message formatted with the given arguments at the error level.
-     *
-     * @param message   The message to be logged.
-     * @param arguments The arguments to be included when formatting the message.
-     */
-    public static void error(String message, Object... arguments) {
-        log(Level.ERROR, null, message, arguments);
     }
 
     /**
@@ -57,16 +37,6 @@ public class ServerLogger {
     }
 
     /**
-     * Logs the given message formatted with the given arguments at the warn level.
-     *
-     * @param message   The message to be logged.
-     * @param arguments The arguments to be included when formatting the message.
-     */
-    public static void warn(String message, Object... arguments) {
-        log(Level.WARN, null, message, arguments);
-    }
-
-    /**
      * Logs the given message formatted with the given arguments against the given function at the warn level.
      *
      * @param function  The function against which the message is being logged.
@@ -75,16 +45,6 @@ public class ServerLogger {
      */
     public static void warn(String function, String message, Object... arguments) {
         log(Level.WARN, function, message, arguments);
-    }
-
-    /**
-     * Logs the given message formatted with the given arguments at the info level.
-     *
-     * @param message   The message to be logged.
-     * @param arguments The arguments to be included when formatting the message.
-     */
-    public static void info(String message, Object... arguments) {
-        log(Level.INFO, null, message, arguments);
     }
 
     /**
@@ -99,16 +59,6 @@ public class ServerLogger {
     }
 
     /**
-     * Logs the given message formatted with the given arguments at the debug level.
-     *
-     * @param message   The message to be logged.
-     * @param arguments The arguments to be included when formatting the message.
-     */
-    public static void debug(String message, Object... arguments) {
-        log(Level.DEBUG, null, message, arguments);
-    }
-
-    /**
      * Logs the given message formatted with the given arguments against the given function at the debug level.
      *
      * @param function  The function against which the message is being logged.
@@ -120,16 +70,6 @@ public class ServerLogger {
     }
 
     /**
-     * Logs the given message formatted with the given arguments at the trace level.
-     *
-     * @param message   The message to be logged.
-     * @param arguments The arguments to be included when formatting the message.
-     */
-    public static void trace(String message, Object... arguments) {
-        log(Level.TRACE, null, message, arguments);
-    }
-
-    /**
      * Logs the given message formatted with the given arguments against the given function at the trace level.
      *
      * @param function  The function against which the message is being logged.
@@ -138,17 +78,6 @@ public class ServerLogger {
      */
     public static void trace(String function, String message, Object... arguments) {
         log(Level.TRACE, function, message, arguments);
-    }
-
-    /**
-     * Logs the given message formatted with the given arguments function at the given level.
-     *
-     * @param level     The logging level to use.
-     * @param message   The message to be logged.
-     * @param arguments The arguments to be included when formatting the message.
-     */
-    public static void log(String level, String message, Object... arguments) {
-        log(level, null, message, arguments);
     }
 
     /**
@@ -164,17 +93,6 @@ public class ServerLogger {
     }
 
     /**
-     * Logs the given message formatted with the given arguments at the given level.
-     *
-     * @param level     The logging level to use.
-     * @param message   The message to be logged.
-     * @param arguments The arguments to be included when formatting the message.
-     */
-    public static void log(Level level, String message, Object... arguments) {
-        log(level, null, message, arguments);
-    }
-
-    /**
      * Logs the given message formatted with the given arguments against the given function at the given level.
      *
      * @param level     The logging level to use.
@@ -184,17 +102,6 @@ public class ServerLogger {
      */
     public static void log(Level level, String function, String message, Object... arguments) {
         log(getLevel(level), function, message, arguments);
-    }
-
-    /**
-     * Logs the given message formatted with the given arguments at the given level.
-     *
-     * @param level     The logging level to use.
-     * @param message   The message to be logged.
-     * @param arguments The arguments to be included when formatting the message.
-     */
-    public static void log(int level, String message, Object... arguments) {
-        log(level, null, message, arguments);
     }
 
     /**
