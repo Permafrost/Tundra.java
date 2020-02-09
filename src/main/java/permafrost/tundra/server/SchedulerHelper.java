@@ -25,6 +25,7 @@
 package permafrost.tundra.server;
 
 import com.wm.app.b2b.server.scheduler.ScheduleManager;
+import permafrost.tundra.lang.ExceptionHelper;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
@@ -38,6 +39,43 @@ public final class SchedulerHelper {
     private SchedulerHelper() {}
 
     /**
+     * Static references to the reflected methods required to provide the following methods.
+     */
+    private static Method isPausedMethod = null, isRunningMethod = null, pauseMethod = null, resumeMethod = null;
+    /**
+     * Static references to the reflected fields required to provide the following methods.
+     */
+    private static Field gRunningField = null;
+
+    /**
+     * Reflect on ScheduleManager class to get references to the methods and fields required for the following methods.
+     */
+    static {
+        try {
+            isPausedMethod = ScheduleManager.class.getDeclaredMethod("isPaused");
+            pauseMethod = ScheduleManager.class.getDeclaredMethod("pause");
+            resumeMethod = ScheduleManager.class.getDeclaredMethod("resume");
+        } catch(NoSuchMethodException ex) {
+            // ignore exception
+        } catch(Exception ex) {
+            ExceptionHelper.raiseUnchecked(ex);
+        }
+
+        try {
+            isRunningMethod = ScheduleManager.class.getDeclaredMethod("isRunning");
+        } catch(NoSuchMethodException ex) {
+            try {
+                gRunningField = ScheduleManager.class.getDeclaredField("gRunning");
+                gRunningField.setAccessible(true);
+            } catch(NoSuchFieldException err) {
+                // ignore exception
+            }
+        } catch(Exception ex) {
+            ExceptionHelper.raiseUnchecked(ex);
+        }
+    }
+
+    /**
      * @return the current status of the Integration Server user task scheduler.
      */
     public static SchedulerStatus status() {
@@ -49,15 +87,14 @@ public final class SchedulerHelper {
      */
     @SuppressWarnings("unchecked")
     public static boolean isPaused() {
-        boolean isPaused;
+        boolean isPaused = false;
 
-        try {
-            Method isPausedMethod = ScheduleManager.class.getDeclaredMethod("isPaused");
-            isPaused = (Boolean)isPausedMethod.invoke(null);
-        } catch(NoSuchMethodException ex) {
-            isPaused = false;
-        } catch(Exception ex) {
-            throw new RuntimeException(ex);
+        if (isPausedMethod != null) {
+            try {
+                isPaused = (Boolean)isPausedMethod.invoke(null);
+            } catch (Exception ex) {
+                ExceptionHelper.raiseUnchecked(ex);
+            }
         }
 
         return isPaused;
@@ -68,21 +105,20 @@ public final class SchedulerHelper {
      */
     @SuppressWarnings("unchecked")
     public static boolean isRunning() {
-        boolean isRunning;
+        boolean isRunning = true;
 
-        try {
-            Method isRunningMethod = ScheduleManager.class.getDeclaredMethod("isRunning");
-            isRunning = (Boolean)isRunningMethod.invoke(null);
-        } catch(NoSuchMethodException ex) {
+        if (isRunningMethod != null) {
             try {
-                Field gRunning = ScheduleManager.class.getDeclaredField("gRunning");
-                gRunning.setAccessible(true);
-                isRunning = gRunning.getBoolean(null);
-            } catch(Exception exception) {
-                throw new RuntimeException(exception);
+                isRunning = (Boolean)isRunningMethod.invoke(null);
+            } catch(Exception ex) {
+                ExceptionHelper.raiseUnchecked(ex);
             }
-        } catch(Exception ex) {
-            throw new RuntimeException(ex);
+        } else if (gRunningField != null) {
+            try {
+                isRunning = gRunningField.getBoolean(null);
+            } catch(Exception ex) {
+                ExceptionHelper.raiseUnchecked(ex);
+            }
         }
 
         return isRunning;
@@ -95,7 +131,7 @@ public final class SchedulerHelper {
         try {
             ScheduleManager.init();
         } catch(Exception ex) {
-            throw new RuntimeException(ex);
+            ExceptionHelper.raiseUnchecked(ex);
         }
     }
 
@@ -119,13 +155,14 @@ public final class SchedulerHelper {
      * stops the scheduler instead as the pause function is not supported on that version.
      */
     public static void pause() {
-        try {
-            Method pause = ScheduleManager.class.getDeclaredMethod("pause");
-            pause.invoke(null);
-        } catch(NoSuchMethodException ex) {
+        if (pauseMethod == null) {
             stop();
-        } catch(Exception ex) {
-            throw new RuntimeException(ex);
+        } else {
+            try {
+                pauseMethod.invoke(null);
+            } catch (Exception ex) {
+                ExceptionHelper.raiseUnchecked(ex);
+            }
         }
     }
 
@@ -134,13 +171,14 @@ public final class SchedulerHelper {
      * starts the scheduler instead as the resume function is not supported on that version.
      */
     public static void resume() {
-        try {
-            Method resume = ScheduleManager.class.getDeclaredMethod("resume");
-            resume.invoke(null);
-        } catch(NoSuchMethodException ex) {
+        if (resumeMethod == null) {
             start();
-        } catch(Exception ex) {
-            throw new RuntimeException(ex);
+        } else {
+            try {
+                resumeMethod.invoke(null);
+            } catch (Exception ex) {
+                ExceptionHelper.raiseUnchecked(ex);
+            }
         }
     }
 
@@ -152,7 +190,7 @@ public final class SchedulerHelper {
         try {
             name = ScheduleManager.getNodeName();
         } catch(Exception ex) {
-            throw new RuntimeException(ex);
+            ExceptionHelper.raiseUnchecked(ex);
         }
         return name;
     }
