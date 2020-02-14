@@ -136,7 +136,7 @@ public class IDataHTMLParser extends IDataParser {
                 appendable.append("<table class=\"IData\">");
 
                 // thead
-                appendable.append("<thead>");
+                appendable.append("<thead class=\"IData-Head\">");
                 appendable.append("<tr>");
                 appendable.append("<th>Key</th>");
                 appendable.append("<th>Value</th>");
@@ -144,7 +144,7 @@ public class IDataHTMLParser extends IDataParser {
                 appendable.append("</thead>");
 
                 // tbody
-                appendable.append("<tbody>");
+                appendable.append("<tbody class=\"IData-Body\">");
 
                 cursor = input.getCursor();
 
@@ -209,7 +209,7 @@ public class IDataHTMLParser extends IDataParser {
             appendable.append("<table class=\"IDataArray\">");
 
             // thead
-            appendable.append("<thead>");
+            appendable.append("<thead class=\"IDataArray-Head\">");
             appendable.append("<tr>");
             for (String key : keys) {
                 appendable.append("<th>");
@@ -220,7 +220,7 @@ public class IDataHTMLParser extends IDataParser {
             appendable.append("</thead>");
 
             // tbody
-            appendable.append("<tbody>");
+            appendable.append("<tbody class=\"IDataArray-Body\">");
             for (IData document : input) {
                 if (document != null) {
                     IDataCursor cursor = document.getCursor();
