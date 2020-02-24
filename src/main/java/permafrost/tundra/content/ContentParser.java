@@ -216,7 +216,6 @@ public class ContentParser extends IDataParser {
                         String quoteCharacter = IDataHelper.get(cursor, "$content.quote.character", String.class);
                         QuoteMode quoteMode = IDataHelper.get(cursor, "$content.quote.mode", QuoteMode.class);
                         boolean hasHeader = IDataHelper.firstOrDefault(cursor, Boolean.class, true, "$content.header?", "$header?");
-                        String[] columns = IDataHelper.first(cursor, String[].class, "$content.headings", "$columns");
 
                         if (delimiterCharacter == null) {
                             if (classification == MIMEClassification.PSV) {
@@ -226,7 +225,7 @@ public class ContentParser extends IDataParser {
                             }
                         }
 
-                        parser = new IDataCSVParser(delimiterCharacter, escapeCharacter, quoteCharacter, quoteMode, null, hasHeader, columns);
+                        parser = new IDataCSVParser(delimiterCharacter, escapeCharacter, quoteCharacter, quoteMode, null, hasHeader, null);
                         document = parser.parse(inputStream, charset);
                         break;
 

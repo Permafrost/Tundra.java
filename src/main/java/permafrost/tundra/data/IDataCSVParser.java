@@ -103,7 +103,7 @@ public class IDataCSVParser extends IDataParser {
      * @param delimiter   The delimiter character to use.
      */
     public IDataCSVParser(Character delimiter) {
-        this(delimiter, DEFAULT_CONTENT_TYPE, true);
+        this(delimiter, DEFAULT_CONTENT_TYPE, true, null);
     }
 
     /**
@@ -114,7 +114,7 @@ public class IDataCSVParser extends IDataParser {
      * @param hasHeader   Whether to use a header row.
      * @param columns     The column names to use.
      */
-    public IDataCSVParser(Character delimiter, String contentType, boolean hasHeader, String... columns) {
+    public IDataCSVParser(Character delimiter, String contentType, boolean hasHeader, String[] columns) {
         this(delimiter, DEFAULT_ESCAPE_CHARACTER, DEFAULT_QUOTE_CHARACTER, DEFAULT_QUOTE_MODE, contentType, hasHeader, columns);
     }
 
@@ -129,7 +129,7 @@ public class IDataCSVParser extends IDataParser {
      * @param hasHeader   Whether to use a header row.
      * @param columns     The column names to use.
      */
-    public IDataCSVParser(Character delimiter, Character escape, Character quote, QuoteMode quoteMode, String contentType, boolean hasHeader, String... columns) {
+    public IDataCSVParser(Character delimiter, Character escape, Character quote, QuoteMode quoteMode, String contentType, boolean hasHeader, String[] columns) {
         super(contentType);
         if (delimiter == null) throw new NullPointerException("delimiter must not be null");
         this.delimiter = delimiter;
@@ -146,7 +146,7 @@ public class IDataCSVParser extends IDataParser {
      * @param delimiter   The delimiter character to use.
      */
     public IDataCSVParser(String delimiter) {
-        this(delimiter, null, null, null, DEFAULT_CONTENT_TYPE, true);
+        this(delimiter, null, null, null, DEFAULT_CONTENT_TYPE, true, null);
     }
 
     /**
@@ -160,7 +160,7 @@ public class IDataCSVParser extends IDataParser {
      * @param hasHeader   Whether to use a header row.
      * @param columns     The column names to use.
      */
-    public IDataCSVParser(String delimiter, String escape, String quote, QuoteMode quoteMode, String contentType, boolean hasHeader, String... columns) {
+    public IDataCSVParser(String delimiter, String escape, String quote, QuoteMode quoteMode, String contentType, boolean hasHeader, String[] columns) {
         this(toCharacter(delimiter, DEFAULT_DELIMITER_CHARACTER), toCharacter(escape, DEFAULT_ESCAPE_CHARACTER), toCharacter(quote, DEFAULT_QUOTE_CHARACTER), quoteMode, contentType, hasHeader, columns);
     }
 
