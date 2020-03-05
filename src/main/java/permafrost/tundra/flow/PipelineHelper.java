@@ -72,7 +72,7 @@ public class PipelineHelper {
         ValidationResult result = ValidationResult.VALID;
 
         // we can only validate the pipeline when not debugging
-        if (!"wm.server.flow:stepFlow".equals(service.getNSName().getFullName())) {
+        if (service != null && !"wm.server.flow:stepFlow".equals(service.getNSName().getFullName())) {
             NSRecord record;
             if (direction == InputOutputSignature.INPUT) {
                 record = service.getSignature().getInput();
@@ -105,6 +105,49 @@ public class PipelineHelper {
         }
 
         return result;
+    }
+
+    /**
+     * Sanitizes the given pipeline against the current service's input or output signature by dropping all undeclared
+     * variables from the top-level of the pipeline.
+     *
+     * @param pipeline  The pipeline to be sanitized.
+     * @param direction Whether to sanitize using the input or output signature.
+     */
+    public static void sanitize(IData pipeline, InputOutputSignature direction) {
+        sanitize(ServiceHelper.self(), pipeline, direction);
+    }
+
+    /**
+     * Sanitizes the given pipeline against the given service's input or output signature by dropping all undeclared
+     * variables from the top-level of the pipeline.
+     *
+     * @param service   The service whose signature is used to sanitized against.
+     * @param pipeline  The pipeline to be sanitized.
+     * @param direction Whether to sanitize using the input or output signature.
+     */
+    public static void sanitize(NSService service, IData pipeline, InputOutputSignature direction) {
+        // we can only sanitize the pipeline when not debugging
+        if (service != null && !"wm.server.flow:stepFlow".equals(service.getNSName().getFullName())) {
+            NSRecord record;
+            if (direction == InputOutputSignature.INPUT) {
+                record = service.getSignature().getInput();
+            } else {
+                record = service.getSignature().getOutput();
+            }
+
+            if (record != null) {
+                NSField[] fields = record.getFields();
+                if (fields != null) {
+                    String[] names = new String[fields.length];
+                    for (int i = 0; i < fields.length; i++) {
+                        names[i] = fields[i].getName();
+                    }
+
+                    IDataHelper.clear(pipeline, names);
+                }
+            }
+        }
     }
 
     /**
