@@ -150,12 +150,22 @@ public class ValidationHelper {
         return result;
     }
 
+    /**
+     * Returns a ValidationResult for the given inputs.
+     *
+     * @param contentSchema The schema against which the content was validated.
+     * @param isValid       Whether the validation succeeded or failed.
+     * @param errors        Optional list of errors describing why the validation failed.
+     * @return              A ValidationResult object representing the given inputs.
+     */
     public static ValidationResult buildResult(String contentSchema, boolean isValid, IData[] errors) {
         ValidationResult result = ValidationResult.VALID;
 
         if (!isValid) {
             StringBuilder errorMessage = new StringBuilder();
-            errorMessage.append("Content failed validation against schema ").append(contentSchema);
+            errorMessage.append("Content validation against schema ")
+                    .append(contentSchema)
+                    .append(" failed");
 
             if (errors != null && errors.length > 0) {
                 errorMessage.append(": ");
@@ -171,7 +181,7 @@ public class ValidationHelper {
                 }
             }
 
-            result = new ValidationResult(false, errorMessage.toString());
+            result = new ValidationResult(false, errorMessage.toString(), errors);
         }
         return result;
     }

@@ -24,6 +24,8 @@
 
 package permafrost.tundra.content;
 
+import com.wm.data.IData;
+
 /**
  * Convenience class for returning the result from validating content.
  */
@@ -40,6 +42,10 @@ public class ValidationResult {
      * Message describing why the content is invalid.
      */
     protected String message;
+    /**
+     * The validation error details describing why the content is invalid.
+     */
+    protected IData[] errors;
 
     /**
      * Constructs a new ValdiationResult object.
@@ -57,8 +63,20 @@ public class ValidationResult {
      * @param message   Message describing why the content is invalid.
      */
     public ValidationResult(boolean isValid, String message) {
+        this(isValid, message, null);
+    }
+
+    /**
+     * Constructs a new ValdiationResult object.
+     *
+     * @param isValid   Whether the content is valid.
+     * @param message   Message describing why the content is invalid.
+     * @param errors    The validation error details describing why the content is invalid.
+     */
+    public ValidationResult(boolean isValid, String message, IData[] errors) {
         this.isValid = isValid;
         this.message = message;
+        this.errors = errors;
     }
 
     /**
@@ -77,6 +95,15 @@ public class ValidationResult {
      */
     public String getMessage() {
         return message;
+    }
+
+    /**
+     * Returns the validation error details describing why the content is invalid.
+     *
+     * @return the validation error details describing why the content is invalid.
+     */
+    public IData[] getErrors() {
+        return errors;
     }
 
     /**
