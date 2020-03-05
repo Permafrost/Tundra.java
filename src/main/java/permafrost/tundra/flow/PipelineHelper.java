@@ -27,18 +27,16 @@ package permafrost.tundra.flow;
 import com.wm.app.b2b.server.InvokeState;
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;
-import com.wm.data.IDataFactory;
 import com.wm.lang.ns.NSField;
 import com.wm.lang.ns.NSRecord;
 import com.wm.lang.ns.NSService;
 import com.wm.lang.schema.Validator;
 import com.wm.lang.xml.WMDocumentException;
+import permafrost.tundra.content.ValidationHelper;
 import permafrost.tundra.content.ValidationResult;
 import permafrost.tundra.data.IDataHelper;
-import permafrost.tundra.data.IDataJSONParser;
 import permafrost.tundra.lang.ExceptionHelper;
 import permafrost.tundra.server.ServiceHelper;
-import java.io.IOException;
 
 /**
  * Convenience services for working with the invoke pipeline.
@@ -94,7 +92,7 @@ public class PipelineHelper {
 
                     if (!isValid) {
                         IData[] errors = IDataHelper.get(cursor, "errors", IData[].class);
-                        result = buildResult(direction, isValid, errors);
+                        result = ValidationHelper.buildResult(direction, isValid, errors, pipeline);
                     }
                 } catch (WMDocumentException ex) {
                     ExceptionHelper.raiseUnchecked(ex);
@@ -155,43 +153,5 @@ public class PipelineHelper {
      */
     public enum InputOutputSignature {
         INPUT, OUTPUT;
-    }
-
-    /**
-     * Returns a ValidationResult for the given inputs.
-     *
-     * @param direction The signature direction that was validated against.
-     * @param isValid   Whether the validation succeeded or failed.
-     * @param errors    Optional list of errors describing why the validation failed.
-     * @return          A ValidationResult object representing the given inputs.
-     */
-    public static ValidationResult buildResult(InputOutputSignature direction, boolean isValid, IData[] errors) {
-        ValidationResult result;
-
-        if (isValid) {
-            result = ValidationResult.VALID;
-        } else {
-            StringBuilder errorMessage = new StringBuilder();
-            errorMessage.append("Pipeline validation against ")
-                    .append(direction.toString().toLowerCase())
-                    .append(" signature failed");
-
-            if (errors != null && errors.length > 0) {
-                errorMessage.append(": ");
-
-                IData errorDetails = IDataFactory.create();
-                IDataHelper.put(errorDetails, "recordWithNoID", errors);
-
-                IDataJSONParser parser = new IDataJSONParser(false);
-                try {
-                    parser.emit(errorMessage, errorDetails);
-                } catch(IOException ex) {
-                    // ignore exception
-                }
-            }
-
-            result = new ValidationResult(false, errorMessage.toString(), errors);
-        }
-        return result;
     }
 }

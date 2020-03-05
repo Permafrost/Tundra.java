@@ -29,11 +29,13 @@ import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
 import permafrost.tundra.data.IDataHelper;
-import permafrost.tundra.data.IDataJSONParser;
+import permafrost.tundra.flow.PipelineHelper;
 import permafrost.tundra.lang.ExceptionHelper;
+import permafrost.tundra.lang.StringHelper;
 import permafrost.tundra.server.NodeHelper;
 import permafrost.tundra.server.ServiceHelper;
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Helper methods for content validation.
@@ -168,21 +170,134 @@ public class ValidationHelper {
                     .append(" failed");
 
             if (errors != null && errors.length > 0) {
-                errorMessage.append(": ");
-
-                IData errorDetails = IDataFactory.create();
-                IDataHelper.put(errorDetails, "recordWithNoID", errors);
-
-                IDataJSONParser parser = new IDataJSONParser(false);
-                try {
-                    parser.emit(errorMessage, errorDetails);
-                } catch(IOException ex) {
-                    // ignore exception
-                }
+                errorMessage.append(":\n").append(errorsToString(errors));
             }
 
-            result = new ValidationResult(false, errorMessage.toString(), errors);
+            result = new ValidationResult(false, errorMessage.toString(), normalize(errors));
         }
         return result;
+    }
+
+    /**
+     * Returns a ValidationResult for the given inputs.
+     *
+     * @param direction The signature direction that was validated against.
+     * @param isValid   Whether the validation succeeded or failed.
+     * @param errors    Optional list of errors describing why the validation failed.
+     * @param pipeline  The pipeline against which error keys are resolved.
+     * @return          A ValidationResult object representing the given inputs.
+     */
+    public static ValidationResult buildResult(PipelineHelper.InputOutputSignature direction, boolean isValid, IData[] errors, IData pipeline) {
+        ValidationResult result;
+
+        if (isValid) {
+            result = ValidationResult.VALID;
+        } else {
+            StringBuilder errorMessage = new StringBuilder();
+            errorMessage.append("Pipeline validation against ")
+                    .append(direction.toString().toLowerCase())
+                    .append(" signature failed");
+
+            if (errors != null && errors.length > 0) {
+                errorMessage.append(":\n").append(errorsToString(errors));
+            }
+
+            result = new ValidationResult(false, errorMessage.toString(), normalize(errors, pipeline));
+        }
+        return result;
+    }
+
+    /**
+     * Converts the given errors array to a string.
+     *
+     * @param errors    The errors to be converted to a string.
+     * @return          A string representation of the given errors.
+     */
+    private static String errorsToString(IData[] errors) {
+        if (errors == null) return null;
+
+        StringBuilder builder = new StringBuilder();
+
+        for (int i = 0; i < errors.length; i++) {
+            if (errors[i] != null) {
+                IDataCursor errorCursor = errors[i].getCursor();
+
+                try {
+                    String pathName = IDataHelper.get(errorCursor, "pathName", String.class);
+                    String errorMessage = IDataHelper.get(errorCursor, "errorMessage", String.class);
+
+                    if (builder.length() > 0) builder.append("\n");
+
+                    builder.append("[")
+                            .append(i + 1)
+                            .append("] ")
+                            .append(StringHelper.slice(errorMessage, 16, errorMessage.length()))
+                            .append(": ")
+                            .append(StringHelper.slice(pathName, 1, pathName.length()));
+                } finally {
+                    errorCursor.destroy();
+                }
+            }
+        }
+
+        return builder.toString();
+    }
+
+    /**
+     * Normalize the errors array to include the key as well as the error message.
+     *
+     * @param errors    The errors to normalize.
+     * @return          The normalized errors.
+     */
+    private static IData[] normalize(IData[] errors) {
+        return normalize(errors, null);
+    }
+
+    /**
+     * Normalize the errors array to include the key and value as well as the error message.
+     *
+     * @param errors    The errors to normalize.
+     * @param pipeline  The pipeline against which keys will be resolved.
+     * @return          The normalized errors.
+     */
+    private static IData[] normalize(IData[] errors, IData pipeline) {
+        if (errors == null || errors.length == 0) return errors;
+
+        List<IData> normalizedErrors = new ArrayList<IData>(errors.length);
+
+        for (IData error : errors) {
+            if (error != null) {
+                IData normalizedError = IDataFactory.create();
+
+                IDataCursor errorCursor = error.getCursor();
+                IDataCursor normalizedErrorCursor = normalizedError.getCursor();
+
+                try {
+                    String pathName = IDataHelper.get(errorCursor, "pathName", String.class);
+                    String errorCode = IDataHelper.get(errorCursor, "errorCode", String.class);
+                    String errorMessage = IDataHelper.get(errorCursor, "errorMessage", String.class);
+
+                    if (pathName != null && errorCode != null && errorMessage != null) {
+                        String key = StringHelper.slice(pathName, 1, pathName.length());
+                        normalizedErrorCursor.insertAfter("code", errorCode);
+                        normalizedErrorCursor.insertAfter("message", errorMessage);
+                        normalizedErrorCursor.insertAfter("key", key);
+
+                        if  (pipeline != null) {
+                            Object value = IDataHelper.get(pipeline, key);
+                            if (value != null) normalizedErrorCursor.insertAfter("value", value);
+                        }
+
+                        normalizedErrors.add(normalizedError);
+                    }
+                } finally {
+                    errorCursor.destroy();
+                    normalizedErrorCursor.destroy();
+                }
+
+            }
+        }
+
+        return normalizedErrors.toArray(new IData[0]);
     }
 }
