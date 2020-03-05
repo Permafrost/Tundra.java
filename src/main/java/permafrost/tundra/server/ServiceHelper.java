@@ -47,6 +47,7 @@ import permafrost.tundra.collection.ListHelper;
 import permafrost.tundra.data.IDataHelper;
 import permafrost.tundra.data.IDataMap;
 import permafrost.tundra.lang.BytesHelper;
+import permafrost.tundra.lang.CharsetHelper;
 import permafrost.tundra.lang.ExceptionHelper;
 import permafrost.tundra.lang.StringHelper;
 import permafrost.tundra.math.IntegerHelper;
@@ -338,6 +339,9 @@ public final class ServiceHelper {
                 // service was not invoked via HTTP, so throw an exception for HTTP statuses >= 400
                 if (code >= 400) ExceptionHelper.raise(StringHelper.normalize(content, charset));
             } else {
+                if (charset == null && MIMETypeHelper.isText(MIMETypeHelper.of(contentType))) {
+                    charset = CharsetHelper.DEFAULT_CHARSET;
+                }
                 setResponseStatus(response, code, message);
                 setContentType(response, contentType, charset);
                 setHeaders(response, headers);
