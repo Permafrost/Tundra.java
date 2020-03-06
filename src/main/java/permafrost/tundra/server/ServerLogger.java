@@ -1,9 +1,15 @@
 package permafrost.tundra.server;
 
 import com.wm.app.log.impl.sc.LevelTranslator;
+import com.wm.data.IData;
+import com.wm.lang.ns.NSService;
 import com.wm.util.JournalLogger;
 import org.apache.log4j.Level;
+import permafrost.tundra.data.IDataJSONParser;
+import permafrost.tundra.lang.IterableHelper;
+import java.io.IOException;
 import java.text.MessageFormat;
+import java.util.List;
 
 /**
  * Convenience methods for logging to the Integration Server server log.
@@ -13,6 +19,57 @@ public class ServerLogger {
      * Disallow instantiation of this class.
      */
     private ServerLogger() {}
+
+    /**
+     * Logs the given message and context automatically prefixed by the current user and callstack.
+     *
+     * @param level     The logging level to use.
+     * @param message   The message to be logged.
+     * @param context   The optional context to be logged.
+     */
+    public static void log(String level, String message, IData context) {
+        String user = UserHelper.getCurrentName();
+
+        if (context != null) {
+            try {
+                IDataJSONParser parser = new IDataJSONParser(false);
+                String contextString = parser.emit(context, String.class);
+
+                if (message == null || message.equals("")) {
+                    message = contextString;
+                } else {
+                    message = message + " -- " + contextString;
+                }
+            } catch(IOException ex) {
+                // do nothing, we should never get this exception
+            }
+        }
+
+        if (message == null) message = "";
+
+        String callstack = null;
+        List<NSService> callers = ServiceHelper.getCallStack();
+        if (callers != null) {
+            if (callers.size() > 1) {
+                callers.remove(callers.size() - 1);
+            }
+            callstack = IterableHelper.join(callers, " → ", false);
+        }
+
+        String function = null;
+        if (user != null && callstack != null) {
+            function = user + " -- " + callstack;
+        } else if (callstack != null) {
+            function = callstack;
+        } else if (user != null) {
+            function = user;
+        } else {
+            function = "";
+        }
+
+
+        log(level, function, message);
+    }
 
     /**
      * Logs the given message formatted with the given arguments against the given function at the fatal level.
@@ -134,10 +191,14 @@ public class ServerLogger {
      */
     private static int getLevel(String levelString) {
         int level;
-        try {
-            level = Integer.parseInt(levelString);
-        } catch(NumberFormatException ex) {
-            level = LevelTranslator.findISLevelCode(Level.toLevel(levelString));
+        if (levelString != null) {
+            try {
+                level = Integer.parseInt(levelString);
+            } catch (NumberFormatException ex) {
+                level = LevelTranslator.findISLevelCode(Level.toLevel(levelString));
+            }
+        } else {
+            level = LevelTranslator.findISLevelCode(Level.FATAL);
         }
         return level;
     }
