@@ -170,7 +170,7 @@ public class ValidationHelper {
                     .append(" failed");
 
             if (errors != null && errors.length > 0) {
-                errorMessage.append(":\n").append(errorsToString(errors));
+                errorMessage.append(": ").append(errorsToString(errors));
             }
 
             result = new ValidationResult(false, errorMessage.toString(), normalize(errors));
@@ -199,7 +199,7 @@ public class ValidationHelper {
                     .append(" signature failed");
 
             if (errors != null && errors.length > 0) {
-                errorMessage.append(":\n").append(errorsToString(errors));
+                errorMessage.append(": ").append(errorsToString(errors));
             }
 
             result = new ValidationResult(false, errorMessage.toString(), normalize(errors, pipeline));
@@ -226,14 +226,21 @@ public class ValidationHelper {
                     String pathName = IDataHelper.get(errorCursor, "pathName", String.class);
                     String errorMessage = IDataHelper.get(errorCursor, "errorMessage", String.class);
 
-                    if (builder.length() > 0) builder.append("\n");
+                    if (builder.length() > 0) {
+                        builder.append(", ");
+                        if (i == errors.length - 1) builder.append("and ");
+                    }
 
-                    builder.append("[")
-                            .append(i + 1)
-                            .append("] ")
-                            .append(StringHelper.slice(errorMessage, 16, errorMessage.length()))
-                            .append(": ")
-                            .append(StringHelper.slice(pathName, 1, pathName.length()));
+                    if (errors.length > 1) {
+                        builder.append("(")
+                               .append(i + 1)
+                               .append(") ");
+                    }
+
+                    builder.append("`")
+                           .append(StringHelper.slice(pathName, 1, pathName.length()))
+                           .append("` ")
+                           .append(StringHelper.slice(errorMessage, 16, errorMessage.length()).toLowerCase().trim());
                 } finally {
                     errorCursor.destroy();
                 }
