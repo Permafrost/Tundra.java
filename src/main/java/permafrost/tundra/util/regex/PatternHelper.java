@@ -24,7 +24,6 @@
 
 package permafrost.tundra.util.regex;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -54,7 +53,17 @@ public final class PatternHelper {
      * @return        The compiled pattern.
      */
     public static Pattern compile(String pattern, boolean literal) {
-        return pattern == null ? null : Pattern.compile(quote(pattern, literal));
+        Pattern compiledPattern = null;
+
+        if (pattern != null) {
+            if (literal) {
+                compiledPattern = Pattern.compile(pattern, Pattern.LITERAL);
+            } else {
+                compiledPattern = Pattern.compile(pattern);
+            }
+        }
+
+        return compiledPattern;
     }
 
     /**
