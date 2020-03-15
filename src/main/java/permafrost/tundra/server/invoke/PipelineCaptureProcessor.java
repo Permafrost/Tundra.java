@@ -300,7 +300,7 @@ public class PipelineCaptureProcessor extends AbstractInvokeChainProcessor imple
     /**
      * Thread factory that names the returned threads.
      */
-    private class NamedThreadFactory implements ThreadFactory {
+    private static class NamedThreadFactory implements ThreadFactory {
         public Thread newThread(Runnable runnable) {
             Thread thread = new Thread(runnable);
             thread.setName("Tundra/PipelineCaptureProcessor#" + thread.getId());
