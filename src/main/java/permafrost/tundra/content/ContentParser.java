@@ -87,16 +87,16 @@ public class ContentParser extends IDataParser {
      *
      * @param contentType       The MIME media type of the data format to serialize the document in.
      * @param charset           The character set to serialize with.
-     * @param schema     The fully-qualified document reference or flat file schema to use to serialize XML or
+     * @param schema            The fully-qualified document reference or flat file schema to use to serialize XML or
      *                          flat file content respectively.
-     * @param namespace  Optional XML namespace prefixes and URIs to use when serializing to XML.
+     * @param namespace         Optional XML namespace prefixes and URIs to use when serializing to XML.
      * @param validate          Whether the content should be validated against the given schema.
      * @param pipeline          Additional arbitrary inputs for the various serialization types.
      */
     public ContentParser(MimeType contentType, Charset charset, String schema, IData namespace, boolean validate, IData pipeline) {
         super(contentType == null ? DEFAULT_CONTENT_TYPE : contentType);
 
-        this.charset = CharsetHelper.normalize(charset, contentType, true);
+        this.charset = CharsetHelper.normalize(charset, contentType, MIMETypeHelper.isText(this.contentType));
         this.schema = schema;
         this.namespace = namespace;
         this.validate = validate;
