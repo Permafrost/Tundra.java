@@ -290,20 +290,26 @@ public class IDataCSVParser extends IDataParser {
     }
 
     /**
-     * @return A new CSV getRecordsFormatter configured with this parser's settings.
+     * @return A new CSVFormatter configured with this parser's settings.
      */
     protected CSVFormat getValuesFormatter() {
         return getRecordsFormatter(null).withSkipHeaderRecord().withRecordSeparator("");
     }
 
     /**
-     * Returns a new CSV getRecordsFormatter configured with this parser's settings.
+     * Returns a new CSVFormatter configured with this parser's settings.
      *
      * @param columns   The column names to use.
      * @return          A new CSV getRecordsFormatter configured with this parser's settings.
      */
     protected CSVFormat getRecordsFormatter(String[] columns) {
-        return CSVFormat.DEFAULT.withHeader(columns).withSkipHeaderRecord(!hasHeader).withDelimiter(delimiter).withEscape(escape).withQuote(quote).withQuoteMode(quoteMode).withNullString("").withAllowMissingColumnNames();
+        CSVFormat format;
+        if (columns == null) {
+            format = CSVFormat.DEFAULT.withHeader();
+        } else {
+            format = CSVFormat.DEFAULT.withHeader(columns);
+        }
+        return format.withSkipHeaderRecord(!hasHeader).withDelimiter(delimiter).withEscape(escape).withQuote(quote).withQuoteMode(quoteMode).withNullString("").withAllowMissingColumnNames();
     }
 
     /**

@@ -39,8 +39,11 @@ public class MediaRangeTest {
 
         assertEquals("application/atom+xml", match("application/atom+xml", supportedTypes));
         assertEquals("application/atom+xml", match("application/atom+xml; q=1", supportedTypes));
+        assertNull(match("application/atom+xml; q=0", supportedTypes));
         assertEquals("application/xml", match("application/xml; q=1", supportedTypes));
+        assertEquals("application/xml", match("application/atom+xml; q=0, application/xml; q=1", supportedTypes));
         assertEquals("application/atom+xml", match("application/*; q=1", supportedTypes));
+        assertEquals("application/atom+xml", match("application/atom+xml; q=0, application/*; q=1", supportedTypes));
         assertEquals("application/atom+xml", match("*/*", supportedTypes));
 
         supportedTypes = MIMETypeHelper.of("application/xml", "text/xml");
@@ -58,7 +61,6 @@ public class MediaRangeTest {
         assertEquals("application/vnd.example+json", match("application/json, application/xml, text/javascript, */*", supportedTypes));
         assertEquals("application/vnd.example+xml", match("application/xml, text/xml;q=0.9", supportedTypes));
         assertNull(match("text/xml;q=0.9", supportedTypes));
-
     }
 
     protected String match(String acceptedTypes, List<MimeType> supportedTypes) {
