@@ -80,6 +80,15 @@ public final class InvokeStateHelper {
     }
 
     /**
+     * Returns true if the given InvokeState has a response body set.
+     *
+     * @return true if the given InvokeState has a response body set.
+     */
+    public static boolean hasResponseBody(InvokeState invokeState) {
+        return invokeState != null && (invokeState.getPrivateData("$msgBytesOut") != null || invokeState.getPrivateData("$msgStreamOut") != null);
+    }
+
+    /**
      * Returns the transport information associated with the given invoke state.
      *
      * @param invokeState   The invoke state to retrieve the transport information from.
