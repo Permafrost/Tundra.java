@@ -34,8 +34,10 @@ import permafrost.tundra.data.IDataMap;
 import permafrost.tundra.lang.ExceptionHelper;
 import permafrost.tundra.server.NodeHelper;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -114,6 +116,25 @@ public final class MIMETypeHelper {
         } catch(MimeTypeParseException ex) {
             throw new IllegalArgumentException(ex);
         }
+    }
+
+    /**
+     * Returns a list of MimeType objects given a list of MIME media type strings.
+     *
+     * @param strings   List of MIME media type strings.
+     * @return          List of MimeType objects.
+     */
+    public static List<MimeType> of(String ...strings) {
+        if (strings == null) return Collections.emptyList();
+
+        List<MimeType> mimeTypes = new ArrayList<MimeType>(strings.length);
+        for (String string : strings) {
+            if (string != null) {
+                mimeTypes.add(of(string));
+            }
+        }
+
+        return mimeTypes;
     }
 
     /**
