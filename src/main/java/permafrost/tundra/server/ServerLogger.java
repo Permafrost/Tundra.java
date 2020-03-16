@@ -10,6 +10,7 @@ import permafrost.tundra.lang.IterableHelper;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Convenience methods for logging to the Integration Server server log.
@@ -217,7 +218,7 @@ public class ServerLogger {
      * @return      The Level that represents this string.
      */
     public static Level toLevel(String level) {
-        return Level.toLevel(level, DEFAULT_LOG_LEVEL);
+        return Level.toLevel(level == null ? null : level.toUpperCase(Locale.ENGLISH), DEFAULT_LOG_LEVEL);
     }
 
     /**

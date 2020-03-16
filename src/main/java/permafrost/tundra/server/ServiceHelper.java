@@ -43,19 +43,23 @@ import com.wm.lang.ns.NSNode;
 import com.wm.lang.ns.NSService;
 import com.wm.lang.ns.NSServiceType;
 import com.wm.net.HttpHeader;
+import org.apache.log4j.Level;
 import permafrost.tundra.collection.ListHelper;
+import permafrost.tundra.content.ValidationResult;
 import permafrost.tundra.data.IDataHelper;
 import permafrost.tundra.data.IDataMap;
+import permafrost.tundra.flow.PipelineHelper;
 import permafrost.tundra.lang.BytesHelper;
 import permafrost.tundra.lang.CharsetHelper;
 import permafrost.tundra.lang.ExceptionHelper;
+import permafrost.tundra.lang.IterableHelper;
 import permafrost.tundra.lang.StringHelper;
 import permafrost.tundra.math.IntegerHelper;
 import permafrost.tundra.math.gauss.ServiceEstimator;
 import permafrost.tundra.mime.MIMETypeHelper;
 import permafrost.tundra.net.http.HTTPHelper;
+import permafrost.tundra.server.invoke.RestServiceProcessor;
 import javax.activation.MimeType;
-import javax.activation.MimeTypeParseException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -91,6 +95,25 @@ public final class ServiceHelper {
         } else {
             return new ArrayList<NSService>(stack);
         }
+    }
+
+    public static String getCallStackString() {
+        return getCallStackString(true);
+    }
+
+    public static String getCallStackString(boolean removeTail) {
+        String callstack;
+        List<NSService> callers = ServiceHelper.getCallStack();
+        if (callers != null) {
+            if (removeTail && callers.size() > 1) {
+                callers.remove(callers.size() - 1);
+            }
+            callstack = IterableHelper.join(callers, " → ", false);
+        } else {
+            NSService self = self();
+            callstack = self == null ? "" : self.toString();
+        }
+        return callstack;
     }
 
     /**
@@ -166,12 +189,12 @@ public final class ServiceHelper {
         IData output = IDataFactory.create();
         IDataCursor cursor = output.getCursor();
 
-        IDataUtil.put(cursor, "name", serviceName);
-        IDataUtil.put(cursor, "type", service.getServiceType().getType());
-        IDataUtil.put(cursor, "package", service.getPackageName());
+        IDataHelper.put(cursor, "name", serviceName);
+        IDataHelper.put(cursor, "type", service.getServiceType().getType());
+        IDataHelper.put(cursor, "package", service.getPackageName());
         IDataHelper.put(cursor, "description", service.getComment(), false);
-        IDataUtil.put(cursor, "references", getReferences(service.getNSName().getFullName()));
-        IDataUtil.put(cursor, "dependents", getDependents(service.getNSName().getFullName()));
+        IDataHelper.put(cursor, "references", getReferences(service.getNSName().getFullName()));
+        IDataHelper.put(cursor, "dependents", getDependents(service.getNSName().getFullName()));
 
         cursor.destroy();
 
@@ -320,6 +343,25 @@ public final class ServiceHelper {
     }
 
     /**
+     * Marks the currently running service as restful, so that the input and output pipeline is sanitized and validated
+     * automatically and the output pipeline is automatically serialized in the negotiated response content type, or
+     * when an error occurs the exception is caught and serialized to the response automatically with an appropriate
+     * HTTP response status code.
+     *
+     * @param pipeline          The current pipeline.
+     * @throws ServiceException If an error occurs.
+     */
+    public static void restful(IData pipeline) throws ServiceException {
+        RestServiceProcessor processor = RestServiceProcessor.getInstance();
+        if (processor.isStarted()) {
+            processor.register(pipeline);
+            PipelineHelper.sanitize(pipeline, PipelineHelper.InputOutputSignature.INPUT);
+            ValidationResult result = PipelineHelper.validate(pipeline, PipelineHelper.InputOutputSignature.INPUT);
+            result.raiseIfInvalid();
+        }
+    }
+
+    /**
      * Sets the HTTP response status, headers, and body for the current service invocation.
      *
      * @param code        The HTTP response status code to be returned.
@@ -332,6 +374,22 @@ public final class ServiceHelper {
      * @throws ServiceException If an I/O error occurs.
      */
     public static void respond(int code, String message, IData headers, InputStream content, String contentType, Charset charset) throws ServiceException {
+        respond(code, message, headers, content, MIMETypeHelper.of(contentType), charset);
+    }
+
+    /**
+     * Sets the HTTP response status, headers, and body for the current service invocation.
+     *
+     * @param code        The HTTP response status code to be returned.
+     * @param message     The HTTP response status message to be returned; if null, the standard message for the given
+     *                    code will be used.
+     * @param headers     The HTTP headers to be returned; if null, no custom headers will be added to the response.
+     * @param content     The HTTP response body to be returned.
+     * @param contentType The MIME content type of the response body being returned.
+     * @param charset     The character set used if a text response is being returned.
+     * @throws ServiceException If an I/O error occurs.
+     */
+    public static void respond(int code, String message, IData headers, InputStream content, MimeType contentType, Charset charset) throws ServiceException {
         try {
             HttpHeader response = Service.getHttpResponseHeader();
 
@@ -339,7 +397,7 @@ public final class ServiceHelper {
                 // service was not invoked via HTTP, so throw an exception for HTTP statuses >= 400
                 if (code >= 400) ExceptionHelper.raise(StringHelper.normalize(content, charset));
             } else {
-                if (charset == null && MIMETypeHelper.isText(MIMETypeHelper.of(contentType))) {
+                if (charset == null && MIMETypeHelper.isText(contentType)) {
                     charset = CharsetHelper.DEFAULT_CHARSET;
                 }
                 setResponseStatus(response, code, message);
@@ -392,17 +450,14 @@ public final class ServiceHelper {
      * @param charset     The character set used by the content, or null if not applicable.
      * @throws ServiceException If the MIME content type is malformed.
      */
-    private static void setContentType(HttpHeader response, String contentType, Charset charset) throws ServiceException {
-        if (contentType == null) contentType = MIMETypeHelper.DEFAULT_MIME_TYPE_STRING;
-
-        try {
-            MimeType mimeType = new MimeType(contentType);
-            if (charset != null) mimeType.setParameter("charset", charset.displayName());
-
-            setHeader(response, "Content-Type", mimeType);
-        } catch (MimeTypeParseException ex) {
-            ExceptionHelper.raise(ex);
+    private static void setContentType(HttpHeader response, MimeType contentType, Charset charset) throws ServiceException {
+        contentType = MIMETypeHelper.normalize(contentType);
+        if (charset != null && MIMETypeHelper.isText(contentType)) {
+            contentType.setParameter("charset", charset.displayName());
+        } else {
+            contentType.removeParameter("charset");
         }
+        setHeader(response, "Content-Type", contentType);
     }
 
     /**

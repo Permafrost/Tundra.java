@@ -165,7 +165,7 @@ public class ValidationHelper {
 
         if (!isValid) {
             StringBuilder errorMessage = new StringBuilder();
-            errorMessage.append("Content validation against schema ")
+            errorMessage.append("Validation against schema ")
                     .append(contentSchema)
                     .append(" failed");
 
@@ -194,7 +194,7 @@ public class ValidationHelper {
             result = ValidationResult.VALID;
         } else {
             StringBuilder errorMessage = new StringBuilder();
-            errorMessage.append("Pipeline validation against ")
+            errorMessage.append("Validation against ")
                     .append(direction.toString().toLowerCase())
                     .append(" signature failed");
 

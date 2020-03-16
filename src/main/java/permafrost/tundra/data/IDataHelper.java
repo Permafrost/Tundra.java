@@ -2515,7 +2515,7 @@ public final class IDataHelper {
                 } else if (keyPart.hasKeyIndex()) {
                     value = get(document, keyPart.getKey(), keyPart.getIndex(), klass);
                 } else {
-                    value = IDataUtil.get(cursor, keyPart.getKey());
+                    value = get(cursor, keyPart.getKey(), klass);
                 }
             }
 
