@@ -158,9 +158,9 @@ public class IDataJSONParser extends IDataParser {
             JsonStructure structure;
 
             if (array != null) {
-                structure = toJsonArray(array);
+                structure = toJsonArray(provider, array);
             } else {
-                structure = toJsonObject(document);
+                structure = toJsonObject(provider, document);
             }
 
             writer.write(structure);
@@ -280,7 +280,7 @@ public class IDataJSONParser extends IDataParser {
      * @param input An IData document.
      * @return A JSON object.
      */
-    protected JsonObject toJsonObject(IData input) {
+    public static JsonObject toJsonObject(JsonProvider provider, IData input) {
         JsonObjectBuilder builder = provider.createObjectBuilder();
 
         if (input != null) {
@@ -293,11 +293,11 @@ public class IDataJSONParser extends IDataParser {
                 if (value == null) {
                     builder.addNull(key);
                 } else if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
-                    builder.add(key, toJsonArray(IDataHelper.toIDataArray(value)));
+                    builder.add(key, toJsonArray(provider, IDataHelper.toIDataArray(value)));
                 } else if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
-                    builder.add(key, toJsonObject(IDataHelper.toIData(value)));
+                    builder.add(key, toJsonObject(provider, IDataHelper.toIData(value)));
                 } else if (value instanceof Object[]) {
-                    builder.add(key, toJsonArray((Object[])value));
+                    builder.add(key, toJsonArray(provider, (Object[])value));
                 } else if (value instanceof Boolean) {
                     builder.add(key, ((Boolean)value));
                 } else if (value instanceof Integer) {
@@ -327,7 +327,7 @@ public class IDataJSONParser extends IDataParser {
      * @param input An Object[] to be converted.
      * @return A JSON array.
      */
-    protected JsonArray toJsonArray(Object[] input) {
+    public static JsonArray toJsonArray(JsonProvider provider, Object[] input) {
         JsonArrayBuilder builder = provider.createArrayBuilder();
 
         if (input != null) {
@@ -335,11 +335,11 @@ public class IDataJSONParser extends IDataParser {
                 if (value == null) {
                     builder.addNull();
                 } else if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
-                    builder.add(toJsonArray(IDataHelper.toIDataArray(value)));
+                    builder.add(toJsonArray(provider, IDataHelper.toIDataArray(value)));
                 } else if (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
-                    builder.add(toJsonObject(IDataHelper.toIData(value)));
+                    builder.add(toJsonObject(provider, IDataHelper.toIData(value)));
                 } else if (value instanceof Object[]) {
-                    builder.add(toJsonArray((Object[])value));
+                    builder.add(toJsonArray(provider, (Object[])value));
                 } else if (value instanceof Boolean) {
                     builder.add(((Boolean)value));
                 } else if (value instanceof Integer) {
