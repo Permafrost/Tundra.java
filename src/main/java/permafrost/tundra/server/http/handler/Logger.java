@@ -25,25 +25,11 @@
 package permafrost.tundra.server.http.handler;
 
 import com.wm.app.b2b.server.AccessException;
-import com.wm.app.b2b.server.HTTPResponse;
 import com.wm.app.b2b.server.ProtocolState;
-import com.wm.net.HttpHeader;
-import org.glassfish.json.JsonProviderImpl;
-import permafrost.tundra.math.IntegerHelper;
 import permafrost.tundra.server.ConcurrentLogWriter;
-import permafrost.tundra.time.DateTimeHelper;
-import permafrost.tundra.time.DurationHelper;
-import permafrost.tundra.time.DurationPattern;
-import javax.json.JsonObjectBuilder;
-import javax.json.JsonWriter;
-import javax.json.JsonWriterFactory;
-import javax.json.spi.JsonProvider;
+import permafrost.tundra.server.ProtocolStateHelper;
 import java.io.IOException;
-import java.io.StringWriter;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * Logs HTTP requests and responses to a log file.
@@ -53,14 +39,6 @@ public class Logger extends StartableHandler {
      * The logger to use when logging requests.
      */
     protected ConcurrentLogWriter logger;
-    /**
-     * Factory for created JSON writers.
-     */
-    private JsonWriterFactory jsonWriterFactory;
-    /**
-     * Implementation class used for JSON parsing and emitting.
-     */
-    private JsonProvider provider;
     /**
      * Initialization on demand holder idiom.
      */
@@ -82,12 +60,7 @@ public class Logger extends StartableHandler {
     /**
      * Creates a new Logger.
      */
-    private Logger() {
-        // using the org.glassfish.json implementation directly improves performance by avoiding disk access and thread
-        // contention caused by the class loading in the javax.json.spi.JsonProvider.provider() method
-        provider = new JsonProviderImpl();
-        jsonWriterFactory = provider.createWriterFactory(new HashMap<String, Object>(0));
-    }
+    private Logger() {}
 
     /**
      * Processes an HTTP request.
@@ -108,141 +81,13 @@ public class Logger extends StartableHandler {
                 result = next(context, handlers);
             } finally {
                 long end = System.nanoTime(), endTime = System.currentTimeMillis();
-                log(context, end - start, startTime, endTime);
+                logger.log(ProtocolStateHelper.serialize(context, end - start, startTime, endTime, null, null));
             }
         } else {
             result = next(context, handlers);
         }
 
         return result;
-    }
-
-    /**
-     * Logs the HTTP request.
-     *
-     * @param context   The HTTP request to be logged.
-     * @param duration  The measured duration for processing the request in nanoseconds.
-     * @param startTime The datetime the request was received.
-     * @param endTime   The datetime the response was generated.
-     */
-    protected void log(ProtocolState context, long duration, long startTime, long endTime) {
-        try {
-            StringWriter stringWriter = new StringWriter();
-            JsonWriter writer = jsonWriterFactory.createWriter(stringWriter);
-            JsonObjectBuilder builder = provider.createObjectBuilder();
-
-            builder.add("client", encodeClient(context));
-            builder.add("request", encodeRequest(context, startTime));
-            builder.add("response", encodeResponse(context, endTime));
-            builder.add("duration", DurationHelper.format(duration / 1000000000.0, DurationPattern.XML_NANOSECONDS));
-
-            writer.write(builder.build());
-            writer.close();
-
-            logger.log(stringWriter.toString());
-        } catch(Exception ex) {
-            // do nothing
-        }
-    }
-
-    /**
-     * Returns a JsonObjectBuilder representing the client of the HTTP request.
-     *
-     * @param context   The HTTP request context.
-     * @return          The JsonObjectBuilder representing the client.
-     */
-    protected JsonObjectBuilder encodeClient(ProtocolState context) {
-        JsonObjectBuilder client = provider.createObjectBuilder();
-
-        try {
-            client.add("host", context.getRemoteHost());
-            client.add("port", context.getRemotePort());
-            client.add("user", context.getInvokeState().getUser().toString());
-        } catch(Exception ex) {
-            // do nothing
-        }
-
-        return client;
-    }
-
-    /**
-     * Returns a JsonObjectBuilder representing the HTTP request.
-     *
-     * @param context   The HTTP request context.
-     * @param datetime  The datetime the request was received.
-     * @return          The JsonObjectBuilder representing the request.
-     */
-    protected JsonObjectBuilder encodeRequest(ProtocolState context, long datetime) {
-        JsonObjectBuilder request = provider.createObjectBuilder();
-
-        try {
-            request.add("datetime", DateTimeHelper.format(datetime));
-            request.add("method", HttpHeader.reqStrType[context.getRequestType()]);
-            request.add("uri", context.getRequestUrl());
-
-            JsonObjectBuilder headers = provider.createObjectBuilder();
-            Map<String, String> map = new TreeMap<String, String>(context.getRequestHeader().getFieldsMap());
-            for (Map.Entry<String, String> entry : map.entrySet()) {
-                String key = entry.getKey();
-                String value = entry.getValue();
-                if (key != null && value != null) {
-                    if (key.equalsIgnoreCase("Authorization")) {
-                        value = "REDACTED";
-                    }
-                    headers.add(key, value);
-                }
-            }
-
-            request.add("headers", headers);
-        } catch(Exception ex) {
-            // do nothing
-        }
-
-        return request;
-    }
-
-    /**
-     * Returns a JsonObjectBuilder representing the response to the HTTP request.
-     *
-     * @param context   The HTTP request context.
-     * @param datetime  The datetime the response was generated.
-     * @return          The JsonObjectBuilder representing the response.
-     */
-    protected JsonObjectBuilder encodeResponse(ProtocolState context, long datetime) {
-        JsonObjectBuilder response = provider.createObjectBuilder();
-
-        try {
-            response.add("datetime", DateTimeHelper.format(datetime));
-
-            JsonObjectBuilder status = provider.createObjectBuilder();
-            status.add("code", context.getResponseCode());
-            status.add("message", context.getResponseMessage());
-            response.add("status", status);
-
-            JsonObjectBuilder headers = provider.createObjectBuilder();
-            Map<String, String> map = new TreeMap<String, String>(context.getResponseHeader().getFieldsMap());
-
-            if (!map.containsKey("Content-Length")) {
-                // add content length, if it hasn't been added to the response headers yet
-                HTTPResponse httpResponse = context.getResponse();
-                int responseSize = httpResponse.getOutputSize();
-                map.put("Content-Length", IntegerHelper.emit(responseSize));
-            }
-
-            for (Map.Entry<String, String> entry : map.entrySet()) {
-                String key = entry.getKey();
-                String value = entry.getValue();
-                if (key != null && value != null) {
-                    headers.add(entry.getKey(), entry.getValue());
-                }
-            }
-
-            response.add("headers", headers);
-        } catch(Exception ex) {
-            // do nothing
-        }
-
-        return response;
     }
 
     /**
