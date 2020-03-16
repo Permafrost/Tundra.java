@@ -16,6 +16,11 @@ import java.util.List;
  */
 public class ServerLogger {
     /**
+     * The default logging level when none is specified.
+     */
+    public static final Level DEFAULT_LOG_LEVEL = Level.DEBUG;
+
+    /**
      * Disallow instantiation of this class.
      */
     private ServerLogger() {}
@@ -28,6 +33,28 @@ public class ServerLogger {
      * @param context   The optional context to be logged.
      */
     public static void log(String level, String message, IData context) {
+        log(fromLevel(level), message, context);
+    }
+
+    /**
+     * Logs the given message and context automatically prefixed by the current user and callstack.
+     *
+     * @param level     The logging level to use.
+     * @param message   The message to be logged.
+     * @param context   The optional context to be logged.
+     */
+    public static void log(Level level, String message, IData context) {
+        log(fromLevel(level), message, context);
+    }
+
+    /**
+     * Logs the given message and context automatically prefixed by the current user and callstack.
+     *
+     * @param level     The logging level to use.
+     * @param message   The message to be logged.
+     * @param context   The optional context to be logged.
+     */
+    public static void log(int level, String message, IData context) {
         String user = UserHelper.getCurrentName();
 
         if (context != null) {
@@ -146,7 +173,7 @@ public class ServerLogger {
      * @param arguments The arguments to be included when formatting the message.
      */
     public static void log(String level, String function, String message, Object... arguments) {
-        log(getLevel(level), function, message, arguments);
+        log(fromLevel(level), function, message, arguments);
     }
 
     /**
@@ -158,7 +185,7 @@ public class ServerLogger {
      * @param arguments The arguments to be included when formatting the message.
      */
     public static void log(Level level, String function, String message, Object... arguments) {
-        log(getLevel(level), function, message, arguments);
+        log(fromLevel(level), function, message, arguments);
     }
 
     /**
@@ -174,12 +201,32 @@ public class ServerLogger {
     }
 
     /**
+     * Returns the logging Level for the given integer.
+     *
+     * @param level The integer logging level.
+     * @return      The Level that represents this integer.
+     */
+    public static Level toLevel(int level) {
+        return LevelTranslator.findLog4jLevel(level);
+    }
+
+    /**
+     * Returns the logging Level for the given string.
+     *
+     * @param level The string logging level.
+     * @return      The Level that represents this string.
+     */
+    public static Level toLevel(String level) {
+        return Level.toLevel(level, DEFAULT_LOG_LEVEL);
+    }
+
+    /**
      * Returns the log level as an integer given the level as an enumeration value.
      *
      * @param level The logging level to convert.
      * @return      The integer representation of the given level.
      */
-    private static int getLevel(Level level) {
+    public static int fromLevel(Level level) {
         return LevelTranslator.findISLevelCode(level);
     }
 
@@ -189,16 +236,16 @@ public class ServerLogger {
      * @param levelString The logging level to convert.
      * @return            The integer representation of the given level.
      */
-    private static int getLevel(String levelString) {
+    public static int fromLevel(String levelString) {
         int level;
         if (levelString != null) {
             try {
                 level = Integer.parseInt(levelString);
             } catch (NumberFormatException ex) {
-                level = LevelTranslator.findISLevelCode(Level.toLevel(levelString));
+                level = fromLevel(toLevel(levelString));
             }
         } else {
-            level = LevelTranslator.findISLevelCode(Level.FATAL);
+            level = fromLevel(toLevel(levelString));
         }
         return level;
     }
