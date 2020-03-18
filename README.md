@@ -14,39 +14,13 @@ Networks] 7.1 and higher respectively.
 
 ## Dependencies
 
-[Tundra.java] is compiled for Java 1.6, and is dependent on the
-following [webMethods Integration Server] [JAR] libraries, which are
-required to be included on the project's classpath:
+[Tundra.java] is compiled for Java 1.6 as this is the latest version 
+supported by [webMethods Integration Server] 7.1, and is dependent on 
+the following [webMethods Integration Server] [JAR] libraries, which
+are required to be included on the project's classpath:
 
 * `./common/lib/wm-isclient.jar`
 * `./IntegrationServer/lib/wm-isserver.jar`
-
-It is also dependent on the following open source libraries, which
-are required to be included on the project's classpath:
-
-* `axis2-kernel-1.7.9.jar` - http://axis.apache.org/axis2/java/core/
-* `commons-collections4-4.1.jar` - https://commons.apache.org/proper/commons-collections/
-* `commons-compress-1.12.jar` - https://commons.apache.org/proper/commons-compress/
-* `commons-csv-1.4.jar` - https://commons.apache.org/proper/commons-csv/
-* `hjson-2.1.1.jar` - https://github.com/Permafrost/hjson-java
-* `htmlcompressor-1.5.3.jar` - https://code.google.com/p/htmlcompressor
-* `jakarta-oro-2.0.8.jar` - http://archive.apache.org/dist/jakarta/oro/
-* `javax.json-1.0.jar` - https://jsonp.java.net
-* `jscience-4.3.1.jar` - http://jscience.org
-* `log4j-1.2.17.jar` - https://logging.apache.org/log4j/1.2/
-* `poi-3.17.jar` - https://poi.apache.org/
-* `poi-ooxml-3.17.jar` - https://poi.apache.org/
-* `poi-ooxml-schemas-3.17.jar` - https://poi.apache.org/
-* `snakeyaml-1.18.jar` - http://www.snakeyaml.org
-* `unbescape-1.1.6.RELEASE.jar` - http://www.unbescape.org/
-* `xmlsec-1.5.8.jar` - http://santuario.apache.org
-
-[JUnit] 4 is required for the unit tests in the project. The
-following libraries are required to be included on the test
-classpath:
-
-* `junit.jar`
-* `hamcrest-core.jar`
 
 ## Contributions
 
