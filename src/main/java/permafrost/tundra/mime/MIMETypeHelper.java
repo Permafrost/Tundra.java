@@ -252,6 +252,14 @@ public final class MIMETypeHelper {
                 classification = MIMEClassification.XLSX;
             } else if (subType.equals("hjson") || subType.endsWith("+hjson")) {
                 classification = MIMEClassification.HJSON;
+            } else {
+                MIMEClassification[] values = MIMEClassification.values();
+                for (MIMEClassification value : values) {
+                    if (type.match(value.getAssociatedType())) {
+                        classification = value;
+                        break;
+                    }
+                }
             }
         }
 

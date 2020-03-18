@@ -32,6 +32,8 @@ import org.apache.commons.csv.QuoteMode;
 import org.w3c.dom.Node;
 import permafrost.tundra.data.IDataCSVParser;
 import permafrost.tundra.data.IDataExcelParser;
+import permafrost.tundra.data.IDataHTMLFormParser;
+import permafrost.tundra.data.IDataHTMLParser;
 import permafrost.tundra.data.IDataHelper;
 import permafrost.tundra.data.IDataHjsonParser;
 import permafrost.tundra.data.IDataJSONParser;
@@ -245,6 +247,11 @@ public class ContentParser extends IDataParser {
                         document = parser.parse(inputStream, charset);
                         break;
 
+                    case HTML_FORM:
+                        parser = new IDataHTMLFormParser();
+                        document = parser.parse(inputStream, charset);
+                        break;
+
                     default:
                         throw new UnsupportedOperationException("Unsupported content type cannot be parsed: " + contentType.toString());
                 }
@@ -343,7 +350,6 @@ public class ContentParser extends IDataParser {
                         if (validate) {
                             ValidationHelper.validate(flatFileData, schema).raiseIfInvalid();
                         }
-
                         break;
 
                     case CSV:
@@ -383,6 +389,15 @@ public class ContentParser extends IDataParser {
                         parser = new IDataHjsonParser();
                         parser.emit(outputStream, document, charset);
                         break;
+
+                    case HTML:
+                        parser = new IDataHTMLParser(false);
+                        parser.emit(outputStream, document, charset);
+                        break;
+
+                    case HTML_FORM:
+                        parser = new IDataHTMLFormParser();
+                        parser.emit(outputStream, document, charset);
 
                     default:
                         throw new UnsupportedOperationException("Unsupported content type cannot be parsed: " + contentType.toString());

@@ -41,6 +41,8 @@ public enum MIMEClassification {
     XLS("application/vnd.ms-excel"),
     XLSX("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"),
     HJSON("application/hjson"),
+    HTML("text/html"),
+    HTML_FORM("application/x-www-form-urlencoded"),
     UNKNOWN("application/octet-stream");
 
     /**
