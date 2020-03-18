@@ -288,6 +288,7 @@ public class ServiceUsageProcessor extends AbstractInvokeChainProcessor implemen
          * @param currentDepth  The current depth of the clone.
          * @return              A clone of the given IData.
          */
+        @SuppressWarnings("deprecation")
         private static IData cloneWithDepth(IData source, int maxLength, int maxDepth, int currentDepth) {
             if (source == null) return null;
             IData destination = IDataFactory.create();

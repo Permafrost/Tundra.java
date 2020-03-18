@@ -280,6 +280,7 @@ public class IDataJSONParser extends IDataParser {
      * @param input An IData document.
      * @return A JSON object.
      */
+    @SuppressWarnings("deprecation")
     public static JsonObject toJsonObject(JsonProvider provider, IData input) {
         JsonObjectBuilder builder = provider.createObjectBuilder();
 
@@ -327,6 +328,7 @@ public class IDataJSONParser extends IDataParser {
      * @param input An Object[] to be converted.
      * @return A JSON array.
      */
+    @SuppressWarnings("deprecation")
     public static JsonArray toJsonArray(JsonProvider provider, Object[] input) {
         JsonArrayBuilder builder = provider.createArrayBuilder();
 

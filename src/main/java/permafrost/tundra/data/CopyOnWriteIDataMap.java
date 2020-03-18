@@ -98,6 +98,7 @@ public class CopyOnWriteIDataMap extends IDataMap implements Cloneable, Serializ
      *
      * @param portable The IDataPortable object to be wrapped.
      */
+    @SuppressWarnings("deprecation")
     public CopyOnWriteIDataMap(IDataPortable portable) {
         super(portable);
     }
@@ -108,6 +109,7 @@ public class CopyOnWriteIDataMap extends IDataMap implements Cloneable, Serializ
      * @param portable   The IDataPortable object to be wrapped.
      * @param comparator The IDataComparator to be used to compare IData objects.
      */
+    @SuppressWarnings("deprecation")
     public CopyOnWriteIDataMap(IDataPortable portable, IDataComparator comparator) {
         this(portable);
         setComparator(comparator);
@@ -191,6 +193,7 @@ public class CopyOnWriteIDataMap extends IDataMap implements Cloneable, Serializ
      *              CopyOnWriteIDataMap[] respectively is returned which wraps the given value, otherwise
      *              the value itself is returned unmodified.
      */
+    @SuppressWarnings("deprecation")
     private static Object normalize(Object value) {
         if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
             value = CopyOnWriteIDataMap.of(IDataHelper.toIDataArray(value));
@@ -255,6 +258,7 @@ public class CopyOnWriteIDataMap extends IDataMap implements Cloneable, Serializ
      * @deprecated
      */
     @Override
+    @Deprecated
     public IDataIndexCursor getIndexCursor() {
         throw new UnsupportedOperationException("getIndexCursor not implemented");
     }
@@ -267,6 +271,7 @@ public class CopyOnWriteIDataMap extends IDataMap implements Cloneable, Serializ
      * @deprecated
      */
     @Override
+    @Deprecated
     public IDataTreeCursor getTreeCursor() {
         throw new UnsupportedOperationException("getTreeCursor not implemented");
     }
@@ -279,6 +284,7 @@ public class CopyOnWriteIDataMap extends IDataMap implements Cloneable, Serializ
      * @deprecated
      */
     @Override
+    @Deprecated
     public IDataHashCursor getHashCursor() {
         throw new UnsupportedOperationException("getHashCursor not implemented");
     }
@@ -395,6 +401,7 @@ public class CopyOnWriteIDataMap extends IDataMap implements Cloneable, Serializ
          * @param value The value to be normalized.
          * @return      The normalized value.
          */
+        @SuppressWarnings("deprecation")
         private Object normalize(Object value) {
             if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[] || value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
                 if (copy()) {
@@ -725,6 +732,7 @@ public class CopyOnWriteIDataMap extends IDataMap implements Cloneable, Serializ
          * @return      The normalized value.
          * @throws DataException If an error occurs.
          */
+        @SuppressWarnings("deprecation")
         private Object normalize(Object value) throws DataException {
             if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[] || value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable) {
                 if (copy()) {

@@ -26,6 +26,7 @@ package permafrost.tundra.lang;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import org.junit.Test;
 
 public class ArrayHelperTest {
@@ -91,15 +92,15 @@ public class ArrayHelperTest {
     @Test
     public void testToStringArrayWithIntegerArray() throws Exception {
         Integer[] array = new Integer[2];
-        array[0] = new Integer(1);
-        array[1] = new Integer(2);
+        array[0] = 1;
+        array[1] = 2;
 
         assertArrayEquals(new String[] { "1", "2" }, ArrayHelper.toStringArray(array));
     }
 
     @Test
     public void testStringifyWithNull() throws Exception {
-        assertEquals(null, ArrayHelper.stringify(null));
+        assertNull(ArrayHelper.stringify(null));
     }
 
     @Test

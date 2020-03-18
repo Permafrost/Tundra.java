@@ -11,10 +11,10 @@ public class TableHelperTest {
         table[0] = new Integer[2];
         table[1] = new Integer[2];
 
-        table[0][0] = new Integer("1");
-        table[0][1] = new Integer("2");
-        table[1][0] = new Integer("3");
-        table[1][1] = new Integer("4");
+        table[0][0] = 1;
+        table[0][1] = 2;
+        table[1][0] = 3;
+        table[1][1] = 4;
 
         assertEquals("[[1, 2], [3, 4]]", TableHelper.stringify(table));
     }
@@ -44,10 +44,10 @@ public class TableHelperTest {
         table[0] = new Integer[2];
         table[1] = new Integer[2];
 
-        table[0][0] = new Integer("1");
-        table[0][1] = new Integer("2");
-        table[1][0] = new Integer("3");
-        table[1][1] = new Integer("4");
+        table[0][0] = 1;
+        table[0][1] = 2;
+        table[1][0] = 3;
+        table[1][1] = 4;
 
         assertArrayEquals(new String[][] { { "1", "2" }, { "3", "4" } }, TableHelper.toStringTable(table));
     }

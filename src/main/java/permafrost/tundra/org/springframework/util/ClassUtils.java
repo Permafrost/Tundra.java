@@ -1171,6 +1171,7 @@ public abstract class ClassUtils {
      * @return the merged interface as Class
      * @see java.lang.reflect.Proxy#getProxyClass
      */
+    @SuppressWarnings("deprecation")
     public static Class<?> createCompositeInterface(Class<?>[] interfaces, ClassLoader classLoader) {
         Assert.notEmpty(interfaces, "Interfaces must not be empty");
         return Proxy.getProxyClass(classLoader, interfaces);

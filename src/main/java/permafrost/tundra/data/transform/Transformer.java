@@ -124,7 +124,7 @@ public abstract class Transformer<V, T> {
      * @param document  The IData document whose elements are to be transformed.
      * @return          A new IData document containing the transformed elements from the given IData document.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "deprecation"})
     protected IData transformIData(IData document) {
         if (document == null) return null;
 

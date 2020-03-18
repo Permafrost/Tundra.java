@@ -207,7 +207,7 @@ public class ElementList<K, V> extends AbstractList<Element<K, V>> implements ID
      *              ElementList[] respectively is returned which wraps the given value, otherwise
      *              the value itself is returned unmodified.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "deprecation"})
     protected Object normalize(Object value) {
         if (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[]) {
             value = normalize(IDataHelper.toIDataArray(value));
@@ -295,6 +295,7 @@ public class ElementList<K, V> extends AbstractList<Element<K, V>> implements ID
      * @deprecated
      */
     @Override
+    @Deprecated
     public IDataIndexCursor getIndexCursor() {
         throw new UnsupportedOperationException("getIndexCursor not implemented");
     }
@@ -307,6 +308,7 @@ public class ElementList<K, V> extends AbstractList<Element<K, V>> implements ID
      * @deprecated
      */
     @Override
+    @Deprecated
     public IDataTreeCursor getTreeCursor() {
         throw new UnsupportedOperationException("getTreeCursor not implemented");
     }
@@ -319,6 +321,7 @@ public class ElementList<K, V> extends AbstractList<Element<K, V>> implements ID
      * @deprecated
      */
     @Override
+    @Deprecated
     public IDataHashCursor getHashCursor() {
         throw new UnsupportedOperationException("getHashCursor not implemented");
     }

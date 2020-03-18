@@ -246,6 +246,7 @@ public final class SubstitutionHelper {
      * @param scopes                One or more IData documents containing the variables being substituted.
      * @return                      The variable substituted IData.
      */
+    @SuppressWarnings("deprecation")
     public static IData substitute(IData document, Object defaultValue, boolean recurse, boolean includeNulls, SubstitutionType substitutionType, IData... scopes) {
         if (document == null) return null;
         if (scopes == null || scopes.length == 0) {

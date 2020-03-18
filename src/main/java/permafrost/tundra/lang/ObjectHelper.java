@@ -254,6 +254,7 @@ public final class ObjectHelper {
      * @param object The object to stringify.
      * @return A string representation of the given object.
      */
+    @SuppressWarnings("deprecation")
     public static String stringify(Object object) {
         if (object == null) return null;
 
@@ -526,7 +527,7 @@ public final class ObjectHelper {
      * @param <T>       The class to convert the object to.
      * @return          The given object converted to the given class.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "deprecation"})
     public static <T> T convert(Object object, Charset charset, Class<T> klass, boolean required) {
         if (required) {
             if (object == null) {

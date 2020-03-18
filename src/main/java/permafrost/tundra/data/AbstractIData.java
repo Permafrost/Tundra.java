@@ -52,6 +52,7 @@ public abstract class AbstractIData implements IData {
      * @return An IDataSharedCursor for this object.
      */
     @Override
+    @Deprecated
     public IDataSharedCursor getSharedCursor() {
         return new IDataSharedCursorAdapter(getCursor());
     }
@@ -64,6 +65,7 @@ public abstract class AbstractIData implements IData {
      * @deprecated
      */
     @Override
+    @Deprecated
     public IDataIndexCursor getIndexCursor() {
         throw new UnsupportedOperationException("getIndexCursor not implemented");
     }
@@ -76,6 +78,7 @@ public abstract class AbstractIData implements IData {
      * @deprecated
      */
     @Override
+    @Deprecated
     public IDataTreeCursor getTreeCursor() {
         throw new UnsupportedOperationException("getTreeCursor not implemented");
     }
@@ -88,6 +91,7 @@ public abstract class AbstractIData implements IData {
      * @deprecated
      */
     @Override
+    @Deprecated
     public IDataHashCursor getHashCursor() {
         throw new UnsupportedOperationException("getHashCursor not implemented");
     }

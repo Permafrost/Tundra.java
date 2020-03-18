@@ -98,6 +98,7 @@ public class IDataMap extends IDataAdapter implements Iterable<Map.Entry<String,
      *
      * @param portable The IDataPortable object to be wrapped.
      */
+    @SuppressWarnings("deprecation")
     public IDataMap(IDataPortable portable) {
         this(portable, null);
     }
@@ -108,6 +109,7 @@ public class IDataMap extends IDataAdapter implements Iterable<Map.Entry<String,
      * @param portable   The IDataPortable object to be wrapped.
      * @param comparator The IDataComparator to be used to compare IData objects.
      */
+    @SuppressWarnings("deprecation")
     public IDataMap(IDataPortable portable, IDataComparator comparator) {
         super(portable);
         setComparator(comparator);

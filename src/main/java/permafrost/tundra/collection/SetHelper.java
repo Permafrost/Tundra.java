@@ -45,6 +45,7 @@ public class SetHelper {
      * @param <T>       The class of the items in the Set.
      * @return          A new Set containing the given items, or null if items was null.
      */
+    @SafeVarargs
     public static <T> Set<T> of(T... items) {
         return of(false, items);
     }
@@ -57,6 +58,7 @@ public class SetHelper {
      * @param <T>           The class of the items in the Set.
      * @return              A new Set containing the given items.
      */
+    @SafeVarargs
     public static <T> Set<T> of(boolean returnEmpty, T... items) {
         Set<T> set;
 

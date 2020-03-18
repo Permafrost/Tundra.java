@@ -24,6 +24,7 @@
 
 package permafrost.tundra.lang;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
@@ -46,10 +47,10 @@ public class BasicObjectComparatorTest {
 
     @Test
     public void testCompareEqual() throws Exception {
-        Object object1 = new Integer(1);
-        Object object2 = new Integer(1);
+        Object object1 = 1;
+        Object object2 = 1;
 
-        assertTrue(new BasicObjectComparator().compare(object1, object2) == 0);
+        assertEquals(0, new BasicObjectComparator().compare(object1, object2));
     }
 
     @Test

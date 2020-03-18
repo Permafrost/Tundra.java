@@ -199,6 +199,7 @@ public class IDataHjsonParser extends IDataParser {
      * @param input An IData document.
      * @return      An Hjson object.
      */
+    @SuppressWarnings("deprecation")
     protected static JsonObject toJsonObject(IData input) {
         JsonObject object = new JsonObject();
 
@@ -246,6 +247,7 @@ public class IDataHjsonParser extends IDataParser {
      * @param input An Object[] to be converted.
      * @return      An Hjson array.
      */
+    @SuppressWarnings("deprecation")
     protected static JsonArray toJsonArray(Object[] input) {
         JsonArray array = new JsonArray();
 

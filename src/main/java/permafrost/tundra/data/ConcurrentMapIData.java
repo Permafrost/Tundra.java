@@ -119,6 +119,7 @@ public class ConcurrentMapIData<K, V> extends AbstractConcurrentMap<K, V> implem
      * @param sorted    Whether to sort by keys.
      * @return          A ConcurrentMapIData clone of the given document.
      */
+    @SuppressWarnings("deprecation")
     public static ConcurrentMapIData<String, Object> of(IData document, boolean sorted) {
         if (document == null) return null;
 

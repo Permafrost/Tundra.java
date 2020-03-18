@@ -59,7 +59,8 @@ public final class CollectionHelper {
      * @param <E>           The component type of the items stored in the collection.
      * @return              The given collection.
      */
-    public static <E> Collection append(Collection<E> collection, E ...items) {
+    @SafeVarargs
+    public static <E> Collection<E> append(Collection<E> collection, E ...items) {
         return append(collection, false, items);
     }
 
@@ -72,7 +73,8 @@ public final class CollectionHelper {
      * @param <E>           The component type of the items stored in the collection.
      * @return              The given collection.
      */
-    public static <E> Collection append(Collection<E> collection, boolean includeNulls, E ...items) {
+    @SafeVarargs
+    public static <E> Collection<E> append(Collection<E> collection, boolean includeNulls, E ...items) {
         if (collection != null && items != null) {
             for (E item : items) {
                 if (includeNulls || item != null) collection.add(item);
@@ -129,7 +131,7 @@ public final class CollectionHelper {
      * @param collection    The collection to be converted.
      * @return              An array representation of the given collection.
      */
-    public static Object[] arrayify(Collection collection) {
+    public static Object[] arrayify(Collection<?> collection) {
         return ArrayHelper.normalize(collection);
     }
 

@@ -42,6 +42,7 @@ import java.io.Serializable;
  * A convenience wrapper for an IData object, that implements the IData, IDataCodable, IDataPortable, and ValuesCodable
  * interfaces for maximum API compatibility.
  */
+@SuppressWarnings("deprecation")
 public class IDataAdapter extends ISMemDataImpl implements IData, IDataCodable, IDataPortable, ValuesCodable, Cloneable, Serializable {
     private static final long serialVersionUID = 1;
 
@@ -80,6 +81,7 @@ public class IDataAdapter extends ISMemDataImpl implements IData, IDataCodable, 
      *
      * @param portable The IDataPortable object to be wrapped.
      */
+    @SuppressWarnings("deprecation")
     public IDataAdapter(IDataPortable portable) {
         this(portable == null ? null : portable.getAsData());
     }
@@ -124,6 +126,7 @@ public class IDataAdapter extends ISMemDataImpl implements IData, IDataCodable, 
      * @deprecated Replaced by key-based methods in {@link IDataCursor}.
      */
     @Override
+    @Deprecated
     public IDataHashCursor getHashCursor() {
         return document.getHashCursor();
     }
@@ -136,6 +139,7 @@ public class IDataAdapter extends ISMemDataImpl implements IData, IDataCodable, 
      * @deprecated No replacement. See {@link IDataIndexCursor} for alternative sample code.
      */
     @Override
+    @Deprecated
     public IDataIndexCursor getIndexCursor() {
         return document.getIndexCursor();
     }
@@ -148,6 +152,7 @@ public class IDataAdapter extends ISMemDataImpl implements IData, IDataCodable, 
      * @deprecated No replacement.
      */
     @Override
+    @Deprecated
     public IDataTreeCursor getTreeCursor() {
         return document.getTreeCursor();
     }
@@ -158,6 +163,7 @@ public class IDataAdapter extends ISMemDataImpl implements IData, IDataCodable, 
      * @return The IData document this object wraps.
      */
     @Override
+    @Deprecated
     public IData getIData() {
         return document;
     }
@@ -182,6 +188,7 @@ public class IDataAdapter extends ISMemDataImpl implements IData, IDataCodable, 
      * @return The IData document this object wraps.
      */
     @Override
+    @SuppressWarnings("deprecation")
     public IData getAsData() {
         return getIData();
     }
@@ -192,6 +199,7 @@ public class IDataAdapter extends ISMemDataImpl implements IData, IDataCodable, 
      * @param document The IData document to be wrapped.
      */
     @Override
+    @SuppressWarnings("deprecation")
     public void setFromData(IData document) {
         setIData(document);
     }

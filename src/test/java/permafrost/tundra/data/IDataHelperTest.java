@@ -1455,7 +1455,7 @@ public class IDataHelperTest {
         IDataMap child = new IDataMap();
         child.put("c", "2");
         child.put("d", new String[] { "3", "4" });
-        child.put("e", new Integer("5"));
+        child.put("e", 5);
         child.put("f", "6");
 
         parent.put("b", child);
@@ -1475,7 +1475,7 @@ public class IDataHelperTest {
 
         IDataMap child = new IDataMap();
         child.put("d", "4");
-        child.put("e", new Integer("5"));
+        child.put("e", 5);
         child.put("f", "6");
 
         parent.put("c", child);
@@ -1496,7 +1496,7 @@ public class IDataHelperTest {
         IDataMap child = new IDataMap();
         child.put("c", "2");
         child.put("d", new String[] { "3", "4" });
-        child.put("e", new Integer("5"));
+        child.put("e", 5);
         child.put("f", "6");
         parent.put("b", child);
 
@@ -1506,7 +1506,7 @@ public class IDataHelperTest {
         child = new IDataMap();
         child.put("h", "7");
         child.put("i", new String[] { "8", "9" });
-        child.put("j", new Integer("10"));
+        child.put("j", 10);
         parent.put("g", child);
 
         array[1] = parent;
@@ -1585,10 +1585,10 @@ public class IDataHelperTest {
 
         cursor = document.getCursor();
         assertEquals("1", IDataHelper.get(cursor, "a", String.class));
-        assertEquals(new Integer(2), IDataHelper.get(cursor, "b", Integer.class));
-        assertEquals(new Long(2), IDataHelper.get(cursor, "b", Long.class));
-        assertEquals(new Float(3.14), IDataHelper.get(cursor, "c", Float.class));
-        assertEquals(new Double(new Float(3.14).doubleValue()), IDataHelper.get(cursor, "c", Double.class));
+        assertEquals(Integer.valueOf(2), IDataHelper.get(cursor, "b", Integer.class));
+        assertEquals(Long.valueOf(2), IDataHelper.get(cursor, "b", Long.class));
+        assertEquals(Float.valueOf(3.14f), IDataHelper.get(cursor, "c", Float.class));
+        assertEquals(Double.valueOf(3.14f), IDataHelper.get(cursor, "c", Double.class));
         assertEquals(true, IDataHelper.get(cursor, "d", Boolean.class));
         assertEquals(false, IDataHelper.getOrDefault(cursor, "e", Boolean.class, false));
         assertEquals(true, IDataHelper.getOrDefault(cursor, "e", Boolean.class, true));

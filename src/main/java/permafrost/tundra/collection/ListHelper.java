@@ -48,6 +48,7 @@ public final class ListHelper {
      * @param <E>           The component type of the list.
      * @return              The given list.
      */
+    @SafeVarargs
     public static <E> List<E> append(List<E> list, E ... items) {
         return append(list, false, items);
     }
@@ -61,6 +62,7 @@ public final class ListHelper {
      * @param <E>           The component type of the list.
      * @return              The given list.
      */
+    @SafeVarargs
     public static <E> List<E> append(List<E> list, boolean includeNulls, E ... items) {
         return append(list, calculateMinimumCapacity(list, items), includeNulls, items);
     }
@@ -74,6 +76,7 @@ public final class ListHelper {
      * @param <E>           The component type of the list.
      * @return              The given list.
      */
+    @SafeVarargs
     public static <E> List<E> append(List<E> list, int minCapacity, E ... items) {
         return append(list, minCapacity, false, items);
     }
@@ -90,7 +93,7 @@ public final class ListHelper {
      */
     @SuppressWarnings("unchecked")
     public static <E> List<E> append(List<E> list, int minCapacity, boolean includeNulls, E ... items) {
-        list = (List)CollectionHelper.append(createOrGrow(list, minCapacity), includeNulls, items);
+        list = (List<E>)CollectionHelper.append(createOrGrow(list, minCapacity), includeNulls, items);
         return list;
     }
 
@@ -102,6 +105,7 @@ public final class ListHelper {
      * @param <E>   The component type of the list.
      * @return      The minimum capacity required of the given list to hold the given items.
      */
+    @SafeVarargs
     private static <E> int calculateMinimumCapacity(List<E> list, E ... items) {
         return calculateMinimumCapacity(list, 0, items);
     }
@@ -115,6 +119,7 @@ public final class ListHelper {
      * @param <E>   The component type of the list.
      * @return      The minimum capacity required of the given list to hold the given items.
      */
+    @SafeVarargs
     private static <E> int calculateMinimumCapacity(List<E> list, int index, E ... items) {
         int minCapacity = 0;
         if (items != null && list != null) {
@@ -179,7 +184,7 @@ public final class ListHelper {
         if (list == null) {
             list = create(minCapacity);
         } else if (list instanceof ArrayList) {
-            ((ArrayList)list).ensureCapacity(minCapacity);
+            ((ArrayList<E>)list).ensureCapacity(minCapacity);
         }
         return list;
     }
@@ -192,6 +197,7 @@ public final class ListHelper {
      * @param <E>           The component type of the list.
      * @return              The given list.
      */
+    @SafeVarargs
     public static <E> List<E> prepend(List<E> list, E ...items) {
         return prepend(list, false, items);
     }
@@ -205,6 +211,7 @@ public final class ListHelper {
      * @param <E>           The component type of the list.
      * @return              The given list.
      */
+    @SafeVarargs
     public static <E> List<E> prepend(List<E> list, boolean includeNulls, E ...items) {
         return prepend(list, calculateMinimumCapacity(list, items), includeNulls, items);
     }
@@ -218,6 +225,7 @@ public final class ListHelper {
      * @param <E>           The component type of the list.
      * @return              The given list.
      */
+    @SafeVarargs
     public static <E> List<E> prepend(List<E> list, int minCapacity, E ...items) {
         return prepend(list, minCapacity, false, items);
     }
@@ -232,6 +240,7 @@ public final class ListHelper {
      * @param <E>           The component type of the list.
      * @return              The given list.
      */
+    @SafeVarargs
     public static <E> List<E> prepend(List<E> list, int minCapacity, boolean includeNulls, E ...items) {
         return insert(list, minCapacity, includeNulls, 0, items);
     }
@@ -245,6 +254,7 @@ public final class ListHelper {
      * @param <E>           The component type of the list.
      * @return              The given list.
      */
+    @SafeVarargs
     public static <E> List<E> insert(List<E> list, int index, E ...items) {
         return insert(list, false, index, items);
     }
@@ -259,6 +269,7 @@ public final class ListHelper {
      * @param <E>           The component type of the list.
      * @return              The given list.
      */
+    @SafeVarargs
     public static <E> List<E> insert(List<E> list, boolean includeNulls, int index, E ...items) {
         return insert(list, calculateMinimumCapacity(list, index, items), includeNulls, index, items);
     }
@@ -273,6 +284,7 @@ public final class ListHelper {
      * @param <E>           The component type of the list.
      * @return              The given list.
      */
+    @SafeVarargs
     public static <E> List<E> insert(List<E> list, int minCapacity, int index, E ...items) {
         return insert(list, minCapacity, false, index, items);
     }
@@ -288,6 +300,7 @@ public final class ListHelper {
      * @param <E>           The component type of the list.
      * @return              The given list.
      */
+    @SafeVarargs
     public static <E> List<E> insert(List<E> list, int minCapacity, boolean includeNulls, int index, E ...items) {
         list = createOrGrow(list, minCapacity);
 
@@ -390,6 +403,7 @@ public final class ListHelper {
      * @param <T>           The class of the items in the List.
      * @return              A new List containing the given items.
      */
+    @SafeVarargs
     public static <T> List<T> of(boolean returnEmpty, T... items) {
         List<T> list;
 
@@ -524,6 +538,7 @@ public final class ListHelper {
      * @param <E>   The component type of the lists.
      * @return      The set intersection of the given lists.
      */
+    @SafeVarargs
     public static <E> List<E> intersect(List<E> ... lists) {
         List<E> results = create();
 
@@ -570,12 +585,7 @@ public final class ListHelper {
     public static <E> List<E> unique(List<E> list) {
         if (list == null) return null;
 
-        Set<E> set = new LinkedHashSet<E>();
-
-        if (list != null) {
-            set.addAll(list);
-        }
-
+        Set<E> set = new LinkedHashSet<E>(list);
         List<E> results = create(set.size());
         results.addAll(set);
 

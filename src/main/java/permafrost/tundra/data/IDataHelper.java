@@ -56,6 +56,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -307,7 +308,7 @@ public final class IDataHelper {
      * @return           The list of top-level values that are IData compatible objects, including elements in IData[]
      *                   compatible arrays, from the given IData document
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "deprecation"})
     public static List<IData> getIDataValueList(IData document) {
         List<IData> values = new ArrayList<IData>(size(document));
 
@@ -628,6 +629,7 @@ public final class IDataHelper {
      * @param sources   One or more IData documents to be merged.
      * @return          The target IData document after being merged with the source IData documents.
      */
+    @SuppressWarnings("deprecation")
     public static IData mergeRecursivelyInto(IData target, Iterable<IData> sources) {
         if (sources != null) {
             for (IData source : sources) {
@@ -915,6 +917,7 @@ public final class IDataHelper {
      * @param recurse   When true, nested IData documents and IData[] document lists will also be duplicated.
      * @return          A new IData document which is a copy of the given IData document.
      */
+    @SuppressWarnings("deprecation")
     public static IData duplicate(IData document, boolean recurse) {
         if (document == null) return null;
 
@@ -1078,6 +1081,7 @@ public final class IDataHelper {
      *                              document comes after the second document according to the comparison of all the
      *                              keys and values in each document.
      */
+    @SuppressWarnings("deprecation")
     public static int compare(IData document1, IData document2, boolean isKeyOrderSignificant) {
         int result = 0;
 
@@ -1572,6 +1576,7 @@ public final class IDataHelper {
      * @param valueSeparator    The string to use to delimit key value pairs.
      * @param builder           The string builder to use when building the output.
      */
+    @SuppressWarnings("deprecation")
     private static void join(IData document, String itemSeparator, String listSeparator, String valueSeparator, StringBuilder builder) {
         if (document == null || builder == null) return;
 
@@ -1760,6 +1765,7 @@ public final class IDataHelper {
      * @param recurse   Whether embedded IData and IData[] objects should be recursively compacted.
      * @return          The compacted IData.
      */
+    @SuppressWarnings("deprecation")
     public static IData compact(IData document, boolean recurse) {
         if (document == null) return null;
 
@@ -1828,6 +1834,7 @@ public final class IDataHelper {
      * @param value An Object to be normalized.
      * @return      A new normalized version of the given Object.
      */
+    @SuppressWarnings("deprecation")
     private static Object normalize(Object value) {
         if (value instanceof Table) {
             value = normalize((Table)value);
@@ -1875,6 +1882,7 @@ public final class IDataHelper {
      * @param document  An IData document to be normalized.
      * @return          A new normalized version of the given IData document.
      */
+    @SuppressWarnings("deprecation")
     public static IData normalize(IData document) {
         if (document == null) return null;
 
@@ -1967,6 +1975,7 @@ public final class IDataHelper {
      * @param document  An IDataPortable object to be normalized.
      * @return          An IData representation for the given IDataPortable object.
      */
+    @SuppressWarnings("deprecation")
     public static IData normalize(IDataPortable document) {
         return normalize(toIData(document));
     }
@@ -1978,6 +1987,7 @@ public final class IDataHelper {
      * @param array An IDataPortable[] list to be normalized.
      * @return      A new normalized IData[] version of the given IDataPortable[] list.
      */
+    @SuppressWarnings("deprecation")
     public static IData[] normalize(IDataPortable[] array) {
         return normalize(toIDataArray(array));
     }
@@ -3273,6 +3283,7 @@ public final class IDataHelper {
      * @return          A Map representation of the given object if its type is compatible (IData, IDataCodable,
      *                  IDataPortable, ValuesCodable), otherwise null.
      */
+    @SuppressWarnings("deprecation")
     private static Map<String, Object> toMap(Object object) {
         if (object == null) return null;
 
@@ -3297,6 +3308,7 @@ public final class IDataHelper {
      * @param document  An IData object to be converted.
      * @return          A Map representation of the given IData object.
      */
+    @SuppressWarnings("deprecation")
     public static Map<String, Object> toMap(IData document) {
         if (document == null) return null;
 
@@ -3338,6 +3350,7 @@ public final class IDataHelper {
      * @param document  An IDataPortable object to be converted.
      * @return          A Map representation of the given IDataPortable object.
      */
+    @SuppressWarnings("deprecation")
     public static Map<String, Object> toMap(IDataPortable document) {
         return toMap(toIData(document));
     }
@@ -3359,6 +3372,7 @@ public final class IDataHelper {
      * @return          A List representation of the given object, if the object was a compatible type (IData[],
      *                  Table, IDataCodable[], IDataPortable[], ValuesCodable[]), otherwise null.
      */
+    @SuppressWarnings("deprecation")
     private static List<Map<String, Object>> toList(Object object) {
         if (object == null) return null;
 
@@ -3423,6 +3437,7 @@ public final class IDataHelper {
      * @param array An IDataPortable[] object to be converted.
      * @return      A List representation of the given IDataPortable[] object.
      */
+    @SuppressWarnings("deprecation")
     public static List<Map<String, Object>> toList(IDataPortable[] array) {
         return toList(toIDataArray(array));
     }
@@ -3444,6 +3459,7 @@ public final class IDataHelper {
      * @return          An IData representing the given object if its type is compatible (IData, IDataCodable,
      *                  IDataPortable, ValuesCodable), otherwise null.
      */
+    @SuppressWarnings("deprecation")
     public static IData toIData(Object object) {
         if (object == null) return null;
 
@@ -3481,6 +3497,7 @@ public final class IDataHelper {
      * @param document  The IDataPortable object to be converted to an IData object.
      * @return          An IData representation of the give IDataPortable object.
      */
+    @SuppressWarnings("deprecation")
     public static IData toIData(IDataPortable document) {
         if (document == null) return null;
         return document.getAsData();
@@ -3525,6 +3542,7 @@ public final class IDataHelper {
      * @return          An IData[] representation of the give object if the object was a compatible type (IData[],
      *                  Table, IDataCodable[], IDataPortable[], ValuesCodable[]), otherwise null.
      */
+    @SuppressWarnings("deprecation")
     public static IData[] toIDataArray(Object object) {
         if (object == null) return null;
 
@@ -3579,6 +3597,7 @@ public final class IDataHelper {
      * @param array The IDataPortable[] object to be converted to an IData[] object.
      * @return      An IData[] representation of the give IDataPortable[] object.
      */
+    @SuppressWarnings("deprecation")
     public static IData[] toIDataArray(IDataPortable[] array) {
         if (array == null) return null;
         IData[] output = new IData[array.length];
@@ -3649,7 +3668,7 @@ public final class IDataHelper {
      * @return          The union set of keys from the given IData[].
      */
     public static String[] getKeys(IData[] array, Pattern pattern) {
-        java.util.Set<String> keys = new java.util.LinkedHashSet<String>();
+        LinkedHashSet<String> keys = new LinkedHashSet<String>();
 
         if (array != null) {
             for (IData document : array) {
@@ -3678,6 +3697,7 @@ public final class IDataHelper {
      * @param recurse   Whether to recursively pivot embedded IData objects.
      * @return          The given IData document pivoted.
      */
+    @SuppressWarnings("deprecation")
     public static IData[] pivot(IData document, boolean recurse) {
         if (document == null) return null;
 
@@ -3789,6 +3809,7 @@ public final class IDataHelper {
      * @param outputCursor  The cursor to insert the denormalized items into.
      * @param path          The original path to the IData document being denormalized from the inputCursor, or null.
      */
+    @SuppressWarnings("deprecation")
     private static void denormalize(IDataCursor inputCursor, IDataCursor outputCursor, String path) {
         if (inputCursor == null || outputCursor == null) return;
 
@@ -3906,6 +3927,7 @@ public final class IDataHelper {
      * @return              A new IData document which is duplicate of the given input IData document but with its keys
      *                      sorted in natural ascending order.
      */
+    @SuppressWarnings("deprecation")
     public static IData sort(IData document, boolean recurse, boolean descending) {
         if (document == null) return null;
 
@@ -4108,6 +4130,7 @@ public final class IDataHelper {
      * @param recurse   Whether child IData and IData[] objects should also have their keys converted to lower case.
      * @return          The given IData duplicated with all keys converted to lower case.
      */
+    @SuppressWarnings("deprecation")
     public static IData keysToLowerCase(IData input, boolean recurse) {
         if (input == null) return null;
 
