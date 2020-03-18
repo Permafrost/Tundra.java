@@ -45,6 +45,7 @@ import permafrost.tundra.content.ValidationException;
 import permafrost.tundra.content.ValidationResult;
 import permafrost.tundra.data.IDataHelper;
 import permafrost.tundra.flow.PipelineHelper;
+import permafrost.tundra.io.InputStreamHelper;
 import permafrost.tundra.lang.CharsetHelper;
 import permafrost.tundra.lang.ExceptionHelper;
 import permafrost.tundra.lang.SecurityException;
@@ -188,13 +189,9 @@ public class RestServiceProcessor extends AbstractInvokeChainProcessor {
         }
     }
 
-    private static final Map<MimeType, MimeType> SUBSTITUTE_RESPONSE_CONTENT_TYPES;
-
-    static {
-        SUBSTITUTE_RESPONSE_CONTENT_TYPES = new HashMap<MimeType, MimeType>();
-        SUBSTITUTE_RESPONSE_CONTENT_TYPES.put(MIMETypeHelper.of("text/plain"),  MIMETypeHelper.of("text/yaml"));
-    }
-
+    /**
+     * List of automatically supported response body content types.
+     */
     private static final List<MimeType> SUPPORTED_RESPONSE_CONTENT_TYPES = Arrays.asList(
             MIMETypeHelper.of("application/json"),
             MIMETypeHelper.of("text/json"),
@@ -202,7 +199,8 @@ public class RestServiceProcessor extends AbstractInvokeChainProcessor {
             MIMETypeHelper.of("text/xml"),
             MIMETypeHelper.of("application/yaml"),
             MIMETypeHelper.of("text/yaml"),
-            MIMETypeHelper.of("text/plain")
+            MIMETypeHelper.of("application/x-www-form-urlencoded"),
+            MIMETypeHelper.of("text/html")
     );
 
     /**
@@ -215,9 +213,6 @@ public class RestServiceProcessor extends AbstractInvokeChainProcessor {
         String acceptedTypes = Service.getHttpHeaderField("Accept", Service.getHttpRequestHeader());
         MimeType responseContentType = MediaRange.resolve(MediaRange.parse(acceptedTypes), SUPPORTED_RESPONSE_CONTENT_TYPES);
         if (responseContentType == null) responseContentType = SUPPORTED_RESPONSE_CONTENT_TYPES.get(0);
-        if (SUBSTITUTE_RESPONSE_CONTENT_TYPES.containsKey(responseContentType)) {
-            responseContentType = SUBSTITUTE_RESPONSE_CONTENT_TYPES.get(responseContentType);
-        }
         return responseContentType;
     }
 
@@ -245,10 +240,25 @@ public class RestServiceProcessor extends AbstractInvokeChainProcessor {
 
             // serialize response body from output pipeline if not already explicitly set by the service
             if (isRestful && !InvokeStateHelper.hasResponseBody(InvokeStateHelper.current())) {
-                PipelineHelper.sanitize(baseService, pipeline, PipelineHelper.InputOutputSignature.OUTPUT);
-                ValidationResult result = PipelineHelper.validate(baseService, pipeline, PipelineHelper.InputOutputSignature.OUTPUT);
-                result.raiseIfInvalid();
-                respond(200, pipeline);
+                IData response = IDataHelper.get(pipeline, "$httpResponse", IData.class);
+                if (response == null) {
+                    PipelineHelper.sanitize(baseService, pipeline, PipelineHelper.InputOutputSignature.OUTPUT);
+                    ValidationResult result = PipelineHelper.validate(baseService, pipeline, PipelineHelper.InputOutputSignature.OUTPUT);
+                    result.raiseIfInvalid();
+                    respond(200, pipeline);
+                } else {
+                    IDataCursor responseCursor = response.getCursor();
+                    try {
+                        IData responseHeaders = IDataHelper.get(responseCursor, "headers", IData.class);
+                        int responseStatus = IDataHelper.getOrDefault(responseCursor, "responseCode", Integer.class, 200);
+                        String responseReason = IDataHelper.get(responseCursor, "reasonPhrase", String.class);
+                        Object responseBody = IDataHelper.first(responseCursor, Object.class, "responseString", "responseBytes", "responseStream");
+
+                        ServiceHelper.respond(responseStatus, responseReason, responseHeaders, InputStreamHelper.normalize(responseBody), (MimeType)null, null);
+                    } finally {
+                        responseCursor.destroy();
+                    }
+                }
             }
         } catch(Throwable ex) {
             exception = ex;
@@ -295,34 +305,38 @@ public class RestServiceProcessor extends AbstractInvokeChainProcessor {
      * @throws ServerException  If an error occurs.
      */
     protected void respond(Throwable exception, boolean isServerSide) throws ServerException {
-        int responseCode = 500;
+        try {
+            int responseCode = 500;
 
-        if (!isServerSide) {
-            if (exception instanceof SecurityException || "permafrost.tundra.lang.SecurityException".equals(exception.getClass().getName())) {
-                responseCode = 403;
-            } else if (exception instanceof UnsupportedException || "permafrost.tundra.content.UnsupportedException".equals(exception.getClass().getName())) {
-                responseCode = 406;
-            } else if (exception instanceof DuplicateException || "permafrost.tundra.content.DuplicateException".equals(exception.getClass().getName())) {
-                responseCode = 409;
-            } else if (exception instanceof ValidationException || "permafrost.tundra.content.ValidationException".equals(exception.getClass().getName())) {
-                responseCode = 422;
-            } else if (exception instanceof MalformedException || "permafrost.tundra.content.MalformedException".equals(exception.getClass().getName())) {
-                responseCode = 400;
+            if (!isServerSide) {
+                if (exception instanceof SecurityException || "permafrost.tundra.lang.SecurityException".equals(exception.getClass().getName())) {
+                    responseCode = 403;
+                } else if (exception instanceof UnsupportedException || "permafrost.tundra.content.UnsupportedException".equals(exception.getClass().getName())) {
+                    responseCode = 406;
+                } else if (exception instanceof DuplicateException || "permafrost.tundra.content.DuplicateException".equals(exception.getClass().getName())) {
+                    responseCode = 409;
+                } else if (exception instanceof ValidationException || "permafrost.tundra.content.ValidationException".equals(exception.getClass().getName())) {
+                    responseCode = 422;
+                } else if (exception instanceof MalformedException || "permafrost.tundra.content.MalformedException".equals(exception.getClass().getName())) {
+                    responseCode = 400;
+                }
             }
-        }
 
-        IData responseBody = null;
+            IData responseBody = null;
 
-        String errorMessage = exception.getMessage();
-        if (errorMessage == null || "".equals(errorMessage)) {
-            errorMessage = ExceptionHelper.getMessage(exception);
-        }
-        if (errorMessage != null && !"".equals(errorMessage)) {
-            responseBody = IDataHelper.create();
-            IDataHelper.put(responseBody, "error/message", errorMessage);
-        }
+            String errorMessage = exception.getMessage();
+            if (errorMessage == null || "".equals(errorMessage)) {
+                errorMessage = ExceptionHelper.getMessage(exception);
+            }
+            if (!"".equals(errorMessage)) {
+                responseBody = IDataHelper.create();
+                IDataHelper.put(responseBody, "error/message", errorMessage);
+            }
 
-        respond(responseCode, responseBody);
+            respond(responseCode, responseBody);
+        } catch(Throwable ex) {
+            respond(500, null);
+        }
     }
 
     /**
@@ -368,8 +382,8 @@ public class RestServiceProcessor extends AbstractInvokeChainProcessor {
             }
 
             ServiceHelper.respond(statusCode, null, null, responseBody, contentType, charset);
-        } catch(IOException ex) {
-            throw new ServerException(ex);
+        } catch(Throwable ex) {
+            respond(ex, true);
         }
     }
 
