@@ -240,24 +240,30 @@ public class RestServiceProcessor extends AbstractInvokeChainProcessor {
 
             // serialize response body from output pipeline if not already explicitly set by the service
             if (isRestful && !InvokeStateHelper.hasResponseBody(InvokeStateHelper.current())) {
-                IData response = IDataHelper.get(pipeline, "$httpResponse", IData.class);
-                if (response == null) {
-                    PipelineHelper.sanitize(baseService, pipeline, PipelineHelper.InputOutputSignature.OUTPUT);
-                    ValidationResult result = PipelineHelper.validate(baseService, pipeline, PipelineHelper.InputOutputSignature.OUTPUT);
-                    result.raiseIfInvalid();
-                    respond(200, pipeline);
-                } else {
-                    IDataCursor responseCursor = response.getCursor();
-                    try {
-                        IData responseHeaders = IDataHelper.get(responseCursor, "headers", IData.class);
-                        int responseStatus = IDataHelper.getOrDefault(responseCursor, "responseCode", Integer.class, 200);
-                        String responseReason = IDataHelper.get(responseCursor, "reasonPhrase", String.class);
-                        Object responseBody = IDataHelper.first(responseCursor, Object.class, "responseString", "responseBytes", "responseStream");
+                IDataCursor cursor = pipeline.getCursor();
+                try {
+                    IData response = IDataHelper.remove(cursor, "$httpResponse", IData.class);
+                    ServerLogger.log(Level.FATAL, null, pipeline);
+                    if (response == null) {
+                        PipelineHelper.sanitize(baseService, pipeline, PipelineHelper.InputOutputSignature.OUTPUT);
+                        ValidationResult result = PipelineHelper.validate(baseService, pipeline, PipelineHelper.InputOutputSignature.OUTPUT);
+                        result.raiseIfInvalid();
+                        respond(200, pipeline);
+                    } else {
+                        IDataCursor responseCursor = response.getCursor();
+                        try {
+                            IData responseHeaders = IDataHelper.get(responseCursor, "headers", IData.class);
+                            int responseStatus = IDataHelper.getOrDefault(responseCursor, "responseCode", Integer.class, 200);
+                            String responseReason = IDataHelper.get(responseCursor, "reasonPhrase", String.class);
+                            Object responseBody = IDataHelper.first(responseCursor, Object.class, "responseString", "responseBytes", "responseStream");
 
-                        ServiceHelper.respond(responseStatus, responseReason, responseHeaders, InputStreamHelper.normalize(responseBody), (MimeType)null, null);
-                    } finally {
-                        responseCursor.destroy();
+                            ServiceHelper.respond(responseStatus, responseReason, responseHeaders, InputStreamHelper.normalize(responseBody), (MimeType) null, null);
+                        } finally {
+                            responseCursor.destroy();
+                        }
                     }
+                } finally {
+                    cursor.destroy();
                 }
             }
         } catch(Throwable ex) {
