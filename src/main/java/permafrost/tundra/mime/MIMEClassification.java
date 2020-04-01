@@ -31,19 +31,19 @@ import javax.activation.MimeType;
  * content of that type.
  */
 public enum MIMEClassification {
-    XML("text/xml"),
-    PLAIN("text/plain"),
-    JSON("application/json"),
-    CSV("text/csv"),
-    TSV("text/tsv"),
-    PSV("text/psv"),
-    YAML("text/yaml"),
-    XLS("application/vnd.ms-excel"),
-    XLSX("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"),
-    HJSON("application/hjson"),
-    HTML("text/html"),
-    HTML_FORM("application/x-www-form-urlencoded"),
-    UNKNOWN("application/octet-stream");
+    XML("text/xml", "xml"),
+    PLAIN("text/plain", "txt"),
+    JSON("application/json", "json"),
+    CSV("text/csv", "csv"),
+    TSV("text/tsv", "tsv"),
+    PSV("text/psv", "psv"),
+    YAML("text/yaml", "yaml"),
+    XLS("application/vnd.ms-excel", "xls"),
+    XLSX("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "xlsx"),
+    HJSON("application/hjson", "hjson"),
+    HTML("text/html", "html"),
+    HTML_FORM("application/x-www-form-urlencoded", "txt"),
+    UNKNOWN("application/octet-stream", "dat");
 
     /**
      * The default classification used by Tundra.
@@ -54,23 +54,30 @@ public enum MIMEClassification {
      * The MimeType that is associated with the classification.
      */
     private MimeType associatedType;
+    /**
+     * The default file extension to use for this classification.
+     */
+    private String defaultFileExtension;
 
     /**
      * Constructs a new MIMEClassification object.
      *
-     * @param associatedType    The MimeType associated with this classification.
+     * @param associatedType        The MimeType associated with this classification.
+     * @param defaultFileExtension  The default file extension to use for files with this classification.
      */
-    MIMEClassification(String associatedType) {
-        this(MIMETypeHelper.of(associatedType));
+    MIMEClassification(String associatedType, String defaultFileExtension) {
+        this(MIMETypeHelper.of(associatedType), defaultFileExtension);
     }
 
     /**
      * Constructs a new MIMEClassification object.
      *
-     * @param associatedType    The MimeType associated with this classification.
+     * @param associatedType        The MimeType associated with this classification.
+     * @param defaultFileExtension  The default file extension to use for files with this classification.
      */
-    MIMEClassification(MimeType associatedType) {
+    MIMEClassification(MimeType associatedType, String defaultFileExtension) {
         this.associatedType = associatedType;
+        this.defaultFileExtension = defaultFileExtension;
     }
 
     /**
@@ -90,5 +97,14 @@ public enum MIMEClassification {
      */
     public MimeType getAssociatedType() {
         return associatedType;
+    }
+
+    /**
+     * Returns the default file extension to use for files with this classification.
+     *
+     * @return the default file extension to use for files with this classification.
+     */
+    public String getDefaultFileExtension() {
+        return defaultFileExtension;
     }
 }

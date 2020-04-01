@@ -29,6 +29,8 @@ import com.wm.app.b2b.server.ISRuntimeException;
 import com.wm.app.b2b.server.invoke.ServiceStatus;
 import com.wm.data.IData;
 import com.wm.util.ServerException;
+import permafrost.tundra.lang.RecoverableException;
+import permafrost.tundra.lang.UnrecoverableException;
 import java.util.Iterator;
 
 /**
@@ -76,11 +78,15 @@ public class TriggerRetryProcessor extends AbstractInvokeChainProcessor {
             try {
                 super.process(iterator, baseService, pipeline, serviceStatus);
             } catch(Throwable ex) {
-                // convert all exceptions to be instances of ISRuntimeException
-                if (ex instanceof ISRuntimeException) {
+                if (ex instanceof UnrecoverableException) {
+                    // do not retry unrecoverable exceptions
+                    throw (UnrecoverableException) ex;
+                } else if (ex instanceof ISRuntimeException) {
+                    // rethrow if exception is already recoverable
                     throw (ISRuntimeException)ex;
                 } else {
-                    throw new ISRuntimeException(ex);
+                    // convert all other exceptions to be instances of ISRuntimeException
+                    throw new RecoverableException(ex);
                 }
             }
         } else {

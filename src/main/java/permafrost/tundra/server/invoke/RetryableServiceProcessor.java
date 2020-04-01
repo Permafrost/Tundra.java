@@ -31,6 +31,7 @@ import com.wm.data.IData;
 import com.wm.lang.ns.NSService;
 import com.wm.util.ServerException;
 import permafrost.tundra.lang.RecoverableException;
+import permafrost.tundra.lang.UnrecoverableException;
 import permafrost.tundra.server.ServiceHelper;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
@@ -38,8 +39,8 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.regex.Pattern;
 
 /**
- * Converts any exceptions thrown by a registered service invocation to be instances of ISRuntimeException to support
- * being retried.
+ * Converts recoverable exceptions thrown by a registered service invocation to be instances of ISRuntimeException to
+ * support being retried.
  */
 public class RetryableServiceProcessor extends AbstractInvokeChainProcessor {
     /**
@@ -118,10 +119,14 @@ public class RetryableServiceProcessor extends AbstractInvokeChainProcessor {
             super.process(iterator, baseService, pipeline, serviceStatus);
         } catch(Throwable ex) {
             if (registry.remove(Thread.currentThread(), baseService.getNSName().getFullName()) && !EXCLUDED_EXCEPTION_MESSAGE_PATTERN.matcher(ex.getMessage()).find()) {
-                // convert all exceptions to be instances of ISRuntimeException
-                if (ex instanceof ISRuntimeException) {
+                if (ex instanceof UnrecoverableException) {
+                    // do not retry unrecoverable exceptions
+                    throw (UnrecoverableException) ex;
+                } else if (ex instanceof ISRuntimeException) {
+                    // rethrow if exception is already recoverable
                     throw (ISRuntimeException)ex;
                 } else {
+                    // convert all other exceptions to be instances of ISRuntimeException
                     throw new RecoverableException(ex);
                 }
             } else if (ex instanceof RuntimeException) {

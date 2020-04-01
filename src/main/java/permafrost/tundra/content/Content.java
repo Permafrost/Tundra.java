@@ -47,6 +47,10 @@ public class Content implements IDataCodable {
      * The MIME media type of the data held by this object.
      */
     protected MimeType type;
+    /**
+     * The size of the content in bytes.
+     */
+    protected int length;
 
     /**
      * Create a new Content object to hold arbitrary binary data.
@@ -83,6 +87,7 @@ public class Content implements IDataCodable {
     public Content(byte[] data, MimeType type) {
         this.data = data == null ? new byte[0] : data;
         this.type = MIMETypeHelper.normalize(type);
+        this.length = this.data.length;
     }
 
     /**
@@ -180,6 +185,15 @@ public class Content implements IDataCodable {
     }
 
     /**
+     * Returns the size in bytes of this content.
+     *
+     * @return The size in bytes of this content.
+     */
+    public int getLength() {
+        return length;
+    }
+
+    /**
      * Returns true if the content is empty.
      *
      * @return True if the content is empty.
@@ -199,6 +213,7 @@ public class Content implements IDataCodable {
         byte[] content = getData();
         map.put("$content", content);
         map.put("$content.type", getType().toString());
+        map.put("$content.length", Integer.toString(length));
 
         return map;
     }

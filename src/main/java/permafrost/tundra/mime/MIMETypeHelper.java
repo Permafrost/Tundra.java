@@ -37,11 +37,11 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.TreeSet;
 import javax.activation.MimeType;
 import javax.activation.MimeTypeParameterList;
 import javax.activation.MimeTypeParseException;
@@ -84,7 +84,7 @@ public final class MIMETypeHelper {
                     value = value.toLowerCase();
 
                     Set<String> extensions = fileExtensionsByMimeType.get(value);
-                    if (extensions == null) extensions = new TreeSet<String>();
+                    if (extensions == null) extensions = new LinkedHashSet<String>();
                     extensions.add(key);
                     fileExtensionsByMimeType.put(value, extensions);
                 }
@@ -304,7 +304,36 @@ public final class MIMETypeHelper {
      */
     public static Set<String> getFileExtensions(MimeType mimeType) {
         if (mimeType == null) return null;
-        return FILE_EXTENSIONS_BY_MIME_TYPE.get(mimeType.getBaseType().toLowerCase());
+        Set<String> extensions = FILE_EXTENSIONS_BY_MIME_TYPE.get(mimeType.getBaseType().toLowerCase());
+        if (extensions == null || extensions.size() == 0) {
+            extensions = Collections.singleton(classify(mimeType).getDefaultFileExtension());
+        }
+        return extensions;
+    }
+
+    /**
+     * Returns the first file extension associated with the given MIME type.
+     *
+     * @param mimeType  The MIME type whose associated file extension is to be returned.
+     * @return          The file extension associated with the given MIME type.
+     */
+    public static String getFileExtension(String mimeType) {
+        return getFileExtension(of(mimeType));
+    }
+
+    /**
+     * Returns the first file extension associated with the given MIME type.
+     *
+     * @param mimeType  The MIME type whose associated file extension is to be returned.
+     * @return          The file extension associated with the given MIME type.
+     */
+    public static String getFileExtension(MimeType mimeType) {
+        String extension = null;
+        Set<String> extensions = getFileExtensions(mimeType);
+        if (extensions != null && extensions.size() > 0) {
+            extension = extensions.toArray(new String[0])[0];
+        }
+        return extension;
     }
 
     /**
