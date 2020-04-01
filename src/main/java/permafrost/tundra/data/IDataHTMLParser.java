@@ -150,7 +150,7 @@ public class IDataHTMLParser extends IDataParser {
 
         if (currentDepth == 0 && !fragment) {
             appendable.append("<html><head><style>")
-                      .append("body{margin:.5em;font:400 28pt/36pt Helvetica,Arial,sans-serif;} table{border-collapse:collapse;margin:0 !important;} th,td{padding:.5em;text-align:left;vertical-align:text-top;border:.375em solid #f0f0f0;font-weight:normal;} th{font-weight:bold;} thead>tr>th{background-color:#f9f9f9;border-color:#f0f0f0;} td{word-wrap:break-word;word-break:break-all;overflow-wrap:break-word;overflow:hidden;} td th{word-wrap:normal;word-break:normal;overflow-wrap:normal;overflow:visible;}")
+                      .append("*{font:11pt/1.2 sans-serif}body{background-color:white;color:black;margin:1em}table{border-collapse:collapse;margin:0}td,th{background-color:white;border:0.375em solid #F0F0F0;font-weight:normal;padding:0.5em;text-align:left;vertical-align:text-top}th{background-color:#F9F9F9;font-weight:bold}")
                       .append("</style></head><body>");
         }
 
@@ -168,14 +168,6 @@ public class IDataHTMLParser extends IDataParser {
             } else {
                 // table
                 appendable.append("<table class=\"IData\">");
-
-                // thead
-                appendable.append("<thead class=\"IData-Head\">");
-                appendable.append("<tr>");
-                appendable.append("<th>Key</th>");
-                appendable.append("<th>Value</th>");
-                appendable.append("</tr>");
-                appendable.append("</thead>");
 
                 // tbody
                 appendable.append("<tbody class=\"IData-Body\">");
