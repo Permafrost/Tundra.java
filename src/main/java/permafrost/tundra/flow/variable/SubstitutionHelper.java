@@ -24,6 +24,7 @@
 
 package permafrost.tundra.flow.variable;
 
+import com.wm.app.b2b.server.ServiceException;
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
@@ -34,8 +35,14 @@ import com.wm.util.coder.IDataCodable;
 import com.wm.util.coder.ValuesCodable;
 import permafrost.tundra.data.IDataHelper;
 import permafrost.tundra.lang.ArrayHelper;
+import permafrost.tundra.lang.ExceptionHelper;
 import permafrost.tundra.lang.ObjectHelper;
+import permafrost.tundra.lang.StringHelper;
+import permafrost.tundra.net.uri.URIHelper;
+import permafrost.tundra.server.ServiceHelper;
 import permafrost.tundra.util.regex.ReplacementHelper;
+import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -94,6 +101,8 @@ public final class SubstitutionHelper {
                 if (output == null && defaultValue != null) {
                     output = ObjectHelper.convert(defaultValue, valueClass);
                 }
+            } else if (isInvoke(key)) {
+                output = invoke(key, valueClass);
             } else {
                 output = ObjectHelper.convert(substitutionString, valueClass);
             }
@@ -103,15 +112,26 @@ public final class SubstitutionHelper {
             matcher.reset();
 
             while (matcher.find()) {
-                String value = getValue(matcher.group(1), String.class, substitutionType, scopes);
-                if (value != null) {
-                    matcher.appendReplacement(buffer, ReplacementHelper.quote(value));
-                } else if (defaultValue != null) {
-                    matcher.appendReplacement(buffer, ReplacementHelper.quote(ObjectHelper.convert(defaultValue, String.class)));
-                } else {
-                    matcher.appendReplacement(buffer, ReplacementHelper.quote(matcher.group(0)));
+                String key = matcher.group(1);
+                String value = null;
+
+                if (exists(key, substitutionType, scopes)) {
+                    value = getValue(key, String.class, substitutionType, scopes);
+                } else if (isInvoke(key)) {
+                    value = invoke(key, String.class);
                 }
+
+                if (value == null) {
+                    if (defaultValue != null) {
+                        value = ObjectHelper.convert(defaultValue, String.class);
+                    } else {
+                        value = matcher.group(0);
+                    }
+                }
+
+                matcher.appendReplacement(buffer, ReplacementHelper.quote(value));
             }
+
             matcher.appendTail(buffer);
             output = (T)buffer.toString();
         }
@@ -147,6 +167,76 @@ public final class SubstitutionHelper {
         }
 
         return exists;
+    }
+
+    /**
+     * Returns true if this key represents an invoke URI.
+     *
+     * @param key   The key to check.
+     * @return      True if this key represents an invoke URI.
+     */
+    private static boolean isInvoke(String key) {
+        return key != null && key.startsWith("invoke:");
+    }
+
+    /**
+     * Processes the given key as an invoke URI.
+     *
+     * @param key           The key to invoke.
+     * @param valueClass    The return class for the result.
+     * @param <T>           The return class for the result.
+     * @return              The result of the service invocation.
+     */
+    private static<T> T invoke(String key, Class<T> valueClass) {
+        Object value = null;
+
+        try {
+            IData uri = URIHelper.parse(key);
+            if (uri != null) {
+                IDataCursor cursor = uri.getCursor();
+                try {
+                    String[] body = StringHelper.split(IDataHelper.get(cursor, "body", String.class), "/", true);
+                    IData pipeline = IDataHelper.get(cursor, "query", IData.class);
+
+                    if (body == null || body.length == 0) {
+                        throw new URISyntaxException(key, "service name to be invoked is required");
+                    } else {
+                        String service = body[0];
+                        String outputKey = null;
+                        if (body.length > 1) {
+                            outputKey = ArrayHelper.join(Arrays.copyOfRange(body, 1, body.length), "/");
+                        }
+                        if (pipeline == null) {
+                            pipeline = IDataFactory.create();
+                        }
+
+                        pipeline = ServiceHelper.invoke(service, pipeline);
+                        if (pipeline != null) {
+                            if (outputKey == null) {
+                                IDataCursor pipelineCursor = pipeline.getCursor();
+                                try {
+                                    if (pipelineCursor.first()) {
+                                        value = pipelineCursor.getValue();
+                                    }
+                                } finally {
+                                    pipelineCursor.destroy();
+                                }
+                            } else {
+                                value = IDataHelper.get(pipeline, outputKey);
+                            }
+                        }
+                    }
+                } catch(ServiceException ex) {
+                    ExceptionHelper.raiseUnchecked(ex);
+                } finally {
+                    cursor.destroy();
+                }
+            }
+        } catch(URISyntaxException ex) {
+            ExceptionHelper.raiseUnchecked(ex);
+        }
+
+        return ObjectHelper.convert(value, valueClass);
     }
 
     /**
