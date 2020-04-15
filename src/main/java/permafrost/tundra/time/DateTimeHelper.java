@@ -29,6 +29,7 @@ import permafrost.tundra.data.IDataHelper;
 import permafrost.tundra.data.transform.Transformer;
 import permafrost.tundra.data.transform.time.DateTimeFormatter;
 import permafrost.tundra.lang.ArrayHelper;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.MessageFormat;
@@ -287,14 +288,18 @@ public final class DateTimeHelper {
         if (input == null) return null;
         if (pattern == null) pattern = DEFAULT_DATETIME_PATTERN;
 
-        String output = null;
+        String output;
 
-        if (timezone != null) input = TimeZoneHelper.convert(input, timezone);
+        if (timezone != null) {
+            input = TimeZoneHelper.convert(input, timezone);
+        }
 
         if (pattern.equals("datetime") || pattern.equals("datetime.xml")) {
             output = DatatypeConverter.printDateTime(input);
         } else if (pattern.equals("milliseconds")) {
             output = "" + input.getTimeInMillis();
+        } else if (pattern.equals("seconds")) {
+            output = "" + (input.getTimeInMillis() / 1000L);
         } else {
             if (NAMED_PATTERNS.containsKey(pattern)) pattern = NAMED_PATTERNS.get(pattern);
             DateFormat formatter = new SimpleDateFormat(pattern);
@@ -477,6 +482,11 @@ public final class DateTimeHelper {
     }
 
     /**
+     * BigDecimal constant for the value 1,000, which is used to convert a fractional seconds value to a Calendar.
+     */
+    private static final BigDecimal BIG_DECIMAL_ONE_THOUSAND = BigDecimal.valueOf(1000L);
+
+    /**
      * Parses a datetime string that adheres to the given pattern and returns a Calendar object.
      *
      * @param input     The datetime string to be parsed.
@@ -521,7 +531,19 @@ public final class DateTimeHelper {
                 output = DatatypeConverter.parseTime(input);
             } else if (pattern.equals("milliseconds")) {
                 output = Calendar.getInstance();
-                output.setTimeInMillis(Long.parseLong(input));
+                if (isBigDecimal(input)) {
+                    output.setTimeInMillis(new BigDecimal(input).longValue());
+                } else {
+                    output.setTimeInMillis(Long.parseLong(input));
+                }
+            } else if (pattern.equals("seconds")) {
+                output = Calendar.getInstance();
+                if (isBigDecimal(input)) {
+                    BigDecimal seconds = new BigDecimal(input);
+                    output.setTimeInMillis(seconds.multiply(BIG_DECIMAL_ONE_THOUSAND).longValue());
+                } else {
+                    output.setTimeInMillis(Long.parseLong(input) * 1000L);
+                }
             } else {
                 if (NAMED_PATTERNS.containsKey(pattern)) pattern = NAMED_PATTERNS.get(pattern);
 
@@ -537,6 +559,16 @@ public final class DateTimeHelper {
         }
 
         return output;
+    }
+
+    /**
+     * Returns true if the given string is likely a BigDecimal rather than Long value.
+     *
+     * @param input The input string.
+     * @return      True if the given string is likely a BigDecimal rather than Long value.
+     */
+    private static boolean isBigDecimal(String input) {
+        return input.indexOf('.') >= 0 || input.indexOf('E') >= 0;
     }
 
     /**

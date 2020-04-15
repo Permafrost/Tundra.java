@@ -26,13 +26,14 @@ package permafrost.tundra.data.transform.time;
 
 import permafrost.tundra.data.transform.Transformer;
 import permafrost.tundra.data.transform.TransformerMode;
+import permafrost.tundra.lang.ObjectHelper;
 import permafrost.tundra.time.DateTimeHelper;
 import java.util.TimeZone;
 
 /**
  * Reformats datetime strings in IData documents and IData[] document lists.
  */
-public class DateTimeFormatter extends Transformer<String, String> {
+public class DateTimeFormatter extends Transformer<Object, String> {
     protected String inPattern;
     protected String[] inPatterns;
     protected String outPattern;
@@ -98,7 +99,7 @@ public class DateTimeFormatter extends Transformer<String, String> {
      * @param recurse       Whether to recursively transform child IData documents and IData[] document lists.
      */
     protected DateTimeFormatter(String inPattern, String[] inPatterns, TimeZone inTimeZone, String outPattern, TimeZone outTimeZone, boolean recurse) {
-        super(String.class, String.class, TransformerMode.VALUES, recurse, true, true, true);
+        super(Object.class, String.class, TransformerMode.VALUES, recurse, true, true, true);
         this.inPattern = inPattern;
         this.inPatterns = inPatterns;
         this.outPattern = outPattern;
@@ -114,13 +115,18 @@ public class DateTimeFormatter extends Transformer<String, String> {
      * @return      The transformed value.
      */
     @Override
-    protected String transformValue(String key, String value) {
-        String result;
-        if (inPatterns == null) {
-            result = DateTimeHelper.format(value, inPattern, inTimeZone, outPattern, outTimeZone);
+    protected String transformValue(String key, Object value) {
+        String inputValue, outputValue;
+        if (value instanceof String) {
+            inputValue = (String)value;
         } else {
-            result = DateTimeHelper.format(value, inPatterns, inTimeZone, outPattern, outTimeZone);
+            inputValue = ObjectHelper.stringify(value);
         }
-        return result;
+        if (inPatterns == null) {
+            outputValue = DateTimeHelper.format(inputValue, inPattern, inTimeZone, outPattern, outTimeZone);
+        } else {
+            outputValue = DateTimeHelper.format(inputValue, inPatterns, inTimeZone, outPattern, outTimeZone);
+        }
+        return outputValue;
     }
 }
