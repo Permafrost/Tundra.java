@@ -36,12 +36,15 @@ import permafrost.tundra.data.transform.net.uri.Encoder;
 import permafrost.tundra.flow.variable.SubstitutionHelper;
 import permafrost.tundra.lang.ArrayHelper;
 import permafrost.tundra.lang.CharsetHelper;
+import permafrost.tundra.util.regex.ReplacementHelper;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * A collection of convenience methods for working with URIs.
@@ -318,6 +321,11 @@ public final class URIHelper {
     }
 
     /**
+     * Regular expression pattern to match URI template style variables.
+     */
+    private static final Pattern URI_TEMPLATE_VARIABLE = Pattern.compile("\\{([^\\{\\}]+)\\}");
+
+    /**
      * Performs variable substitution on the components of the given URI string.
      *
      * @param uri                   The URI string to perform variable substitution on.
@@ -326,6 +334,22 @@ public final class URIHelper {
      * @throws URISyntaxException   If the given string is not a valid URI.
      */
     public static String substitute(String uri, IData scope) throws URISyntaxException {
+        if (uri != null) {
+            StringBuilder builder = new StringBuilder();
+            Matcher matcher = URI_TEMPLATE_VARIABLE.matcher(uri);
+            int start = 0;
+            while (matcher.find()) {
+                builder.append(uri, start, matcher.start());
+                builder.append("%25");
+                builder.append(encode(matcher.group(1)));
+                builder.append("%25");
+                start = matcher.end();
+            }
+            if (start > 0) {
+                builder.append(uri.substring(start));
+                uri = builder.toString();
+            }
+        }
         return emit(SubstitutionHelper.substitute(parse(uri), null, true, false, null, scope));
     }
 
