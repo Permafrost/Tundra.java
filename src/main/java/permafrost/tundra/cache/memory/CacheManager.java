@@ -130,18 +130,15 @@ public class CacheManager<K, V> {
      * @return          The value associated with the given key in the cache with the given name, or null if the key
      *                  does not exist.
      */
-    public V get(String cacheName, K cacheKey) {
+    public ExpiringValue<V> get(String cacheName, K cacheKey) {
         ConcurrentMap<K, ExpiringValue<V>> cache = getCache(cacheName);
         ExpiringValue<V> expiringValue = cache.get(cacheKey);
 
-        V value = null;
-        if (expiringValue != null) {
-            if (!expiringValue.isExpired()) {
-                value = expiringValue.getValue();
-            }
+        if (expiringValue != null && expiringValue.isExpired()) {
+            expiringValue = null;
         }
 
-        return value;
+        return expiringValue;
     }
 
     /**
@@ -154,7 +151,7 @@ public class CacheManager<K, V> {
      * @param onlyIfAbsent  If true, only associates the key with the given value if the key does not already exist.
      * @return              The value that is associated with the key.
      */
-    public V put(String cacheName, K cacheKey, V cacheValue, Duration expiry, boolean onlyIfAbsent) {
+    public ExpiringValue<V> put(String cacheName, K cacheKey, V cacheValue, Duration expiry, boolean onlyIfAbsent) {
         return put(cacheName, cacheKey, cacheValue, expiry == null ? null : DateTimeHelper.later(expiry), onlyIfAbsent);
     }
 
@@ -168,9 +165,8 @@ public class CacheManager<K, V> {
      * @param onlyIfAbsent  If true, only associates the key with the given value if the key does not already exist.
      * @return              The value that is associated with the key.
      */
-    public V put(String cacheName, K cacheKey, V cacheValue, Calendar expiry, boolean onlyIfAbsent) {
-        ExpiringValue<V> expiringValue = put(cacheName, cacheKey, new ExpiringValue<V>(cacheValue, expiry), onlyIfAbsent);
-        return expiringValue == null ? null : expiringValue.getValue();
+    public ExpiringValue<V> put(String cacheName, K cacheKey, V cacheValue, Calendar expiry, boolean onlyIfAbsent) {
+        return put(cacheName, cacheKey, new ExpiringValue<V>(cacheValue, expiry), onlyIfAbsent);
     }
 
     /**
@@ -289,8 +285,6 @@ public class CacheManager<K, V> {
         }
     }
 
-
-
     /**
      * Returns the cache with the given name.
      *
@@ -323,7 +317,7 @@ public class CacheManager<K, V> {
      *
      * @param <V>   The class of the wrapped value.
      */
-    private static class ExpiringValue<V> {
+    public static class ExpiringValue<V> {
         /**
          * When the value expires.
          */
@@ -360,6 +354,15 @@ public class CacheManager<K, V> {
          */
         public V getValue() {
             return value;
+        }
+
+        /**
+         * Returns when this value expires.
+         *
+         * @return when this value expires.
+         */
+        public Calendar getExpiry() {
+            return expiry;
         }
 
         /**
