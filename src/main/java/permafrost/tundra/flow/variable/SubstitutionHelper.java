@@ -95,45 +95,48 @@ public final class SubstitutionHelper {
         T output = null;
 
         if (matcher.matches()) {
-            String key = matcher.group(1);
-            if (exists(key, substitutionType, scopes)) {
-                output = getValue(key, valueClass, substitutionType, scopes);
-                if (output == null && defaultValue != null) {
-                    output = ObjectHelper.convert(defaultValue, valueClass);
-                }
-            } else if (isInvoke(key)) {
-                output = invoke(key, valueClass);
-            } else {
-                output = ObjectHelper.convert(substitutionString, valueClass);
-            }
+            output = resolve(matcher.group(1), valueClass, defaultValue == null ? matcher.group(0) : defaultValue, substitutionType, scopes);
         } else if (valueClass.isAssignableFrom(String.class)) {
             StringBuffer buffer = new StringBuffer();
-
             matcher.reset();
-
             while (matcher.find()) {
-                String key = matcher.group(1);
-                String value = null;
-
-                if (exists(key, substitutionType, scopes)) {
-                    value = getValue(key, String.class, substitutionType, scopes);
-                } else if (isInvoke(key)) {
-                    value = invoke(key, String.class);
-                }
-
-                if (value == null) {
-                    if (defaultValue != null) {
-                        value = ObjectHelper.convert(defaultValue, String.class);
-                    } else {
-                        value = matcher.group(0);
-                    }
-                }
-
-                matcher.appendReplacement(buffer, ReplacementHelper.quote(value));
+                matcher.appendReplacement(buffer, ReplacementHelper.quote(resolve(matcher.group(1), String.class, defaultValue == null ? matcher.group(0) : defaultValue, substitutionType, scopes)));
             }
-
             matcher.appendTail(buffer);
             output = (T)buffer.toString();
+        }
+
+        return output;
+    }
+
+    /**
+     * Resolves the given key by replacing it with the associated value from the given scope; if the key has no value,
+     * the given defaultValue (if not null) is used instead.
+     *
+     * @param key                The key whose associated value is to be returned.
+     * @param valueClass         The class of value to be returned.
+     * @param defaultValue       A default value to be substituted when the variable being substituted has a value of
+     *                           null.
+     * @param substitutionType   The type of substitution to perform.
+     * @param scopes             One or more IData documents containing the variables being substituted.
+     * @param <T>                The class of value to be returned.
+     * @return                   The result of the variable substitution.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T resolve(String key, Class<T> valueClass, Object defaultValue, SubstitutionType substitutionType, IData... scopes) {
+        if (valueClass == null) throw new NullPointerException("valueClass must not be null");
+        if (key == null || scopes == null || scopes.length == 0) return null;
+
+        T output = null;
+
+        if (exists(key, substitutionType, scopes)) {
+            output = getValue(key, valueClass, substitutionType, scopes);
+        } else if (isInvoke(key)) {
+            output = invoke(key, valueClass);
+        }
+
+        if (output == null && defaultValue != null) {
+            output = ObjectHelper.convert(defaultValue, valueClass);
         }
 
         return output;

@@ -24,7 +24,6 @@
 
 package permafrost.tundra.net.uri;
 
-import com.wm.app.b2b.server.ServiceException;
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
@@ -36,7 +35,6 @@ import permafrost.tundra.data.transform.net.uri.Encoder;
 import permafrost.tundra.flow.variable.SubstitutionHelper;
 import permafrost.tundra.lang.ArrayHelper;
 import permafrost.tundra.lang.CharsetHelper;
-import permafrost.tundra.util.regex.ReplacementHelper;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -321,11 +319,6 @@ public final class URIHelper {
     }
 
     /**
-     * Regular expression pattern to match URI template style variables.
-     */
-    private static final Pattern URI_TEMPLATE_VARIABLE = Pattern.compile("\\{([^\\{\\}]+)\\}");
-
-    /**
      * Performs variable substitution on the components of the given URI string.
      *
      * @param uri                   The URI string to perform variable substitution on.
@@ -334,23 +327,49 @@ public final class URIHelper {
      * @throws URISyntaxException   If the given string is not a valid URI.
      */
     public static String substitute(String uri, IData scope) throws URISyntaxException {
-        if (uri != null) {
+        // possible URI template
+        if (uri.contains("{")) {
+            uri = expandTemplate(uri, scope);
+        }
+
+        IData parsedURI = parse(uri);
+
+        // possible variable substitution strings
+        if (uri.contains("%25")) {
+            parsedURI = SubstitutionHelper.substitute(parsedURI, null, true, false, null, scope);
+        }
+
+        return emit(parsedURI);
+    }
+
+    /**
+     * Regular expression pattern to match URI template style variables.
+     */
+    private static final Pattern URI_TEMPLATE_VARIABLE = Pattern.compile("\\{([^\\{\\}]+)\\}");
+
+    /**
+     * Expands the given URI template using the given variable scope.
+     *
+     * @param template  The URI template to expand.
+     * @param scope     The scope against which variable references in the template are resolved.
+     * @return          The expanded URI template where variable references have been resolved against the given scope.
+     */
+    private static String expandTemplate(String template, IData scope) {
+        if (template != null) {
             StringBuilder builder = new StringBuilder();
-            Matcher matcher = URI_TEMPLATE_VARIABLE.matcher(uri);
-            int start = 0;
+            Matcher matcher = URI_TEMPLATE_VARIABLE.matcher(template);
+            int index = 0;
             while (matcher.find()) {
-                builder.append(uri, start, matcher.start());
-                builder.append("%25");
-                builder.append(encode(matcher.group(1)));
-                builder.append("%25");
-                start = matcher.end();
+                builder.append(template, index, matcher.start());
+                builder.append(encode(SubstitutionHelper.resolve(matcher.group(1), String.class, matcher.group(0), null, scope)));
+                index = matcher.end();
             }
-            if (start > 0) {
-                builder.append(uri.substring(start));
-                uri = builder.toString();
+            if (index > 0) {
+                builder.append(template.substring(index));
+                template = builder.toString();
             }
         }
-        return emit(SubstitutionHelper.substitute(parse(uri), null, true, false, null, scope));
+        return template;
     }
 
     /**
@@ -470,7 +489,7 @@ public final class URIHelper {
     public static URI fromIData(IData input) throws URISyntaxException {
         if (input == null) return null;
 
-        URI uri = null;
+        URI uri;
         IDataCursor cursor = input.getCursor();
 
         try {

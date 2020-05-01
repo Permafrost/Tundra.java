@@ -83,12 +83,60 @@ public class URIHelperTest {
     }
 
     @Test
-    public void testSubstituteOpaqueWithQuery() throws Exception {
+    public void testSubstituteOpaque() throws Exception {
         String string = "sap+idoc:sap_r3%25a%25";
         IDataMap map = new IDataMap();
         map.put("a", "1");
         String result = URIHelper.substitute(string, map);
         assertEquals("sap+idoc:sap_r31", result);
+    }
+
+    @Test
+    public void testSubstituteOpaqueTemplate() throws Exception {
+        String string = "sap+idoc:sap_r3{a}";
+        IDataMap map = new IDataMap();
+        map.put("a", "1");
+        String result = URIHelper.substitute(string, map);
+        assertEquals("sap+idoc:sap_r31", result);
+    }
+
+    @Test
+    public void testSubstituteOpaqueTemplateWithFullyQualifiedKey() throws Exception {
+        String string = "sap+idoc:sap_r3{a/b}";
+        IDataMap map = new IDataMap();
+        IDataMap a = new IDataMap();
+        a.put("b", "1");
+        map.put("a", a);
+        String result = URIHelper.substitute(string, map);
+        assertEquals("sap+idoc:sap_r31", result);
+    }
+
+    @Test
+    public void testSubstituteNonOpaqueTemplateWithMissingVariable() throws Exception {
+        String string = "sap+idoc://{user}:{password}@{host}?client={client}&language={language}&queue={queue}";
+
+        IDataMap map = new IDataMap();
+        map.put("user", "aladdin");
+        map.put("password", "opensesame");
+        map.put("host", "sappr3");
+        map.put("client", "200");
+        map.put("queue", "x:yz");
+
+        assertEquals("sap+idoc://aladdin:opensesame@sappr3?client=200&language=%7Blanguage%7D&queue=x:yz", URIHelper.substitute(string, map));
+    }
+
+    @Test
+    public void testSubstituteNonOpaqueURIWithMissingVariable() throws Exception {
+        String string = "sap+idoc://%25user%25:%25password%25@%25host%25?client=%25client%25&language=%25language%25&queue=%25queue%25";
+
+        IDataMap map = new IDataMap();
+        map.put("user", "aladdin");
+        map.put("password", "opensesame");
+        map.put("host", "sappr3");
+        map.put("client", "200");
+        map.put("queue", "x:yz");
+
+        assertEquals("sap+idoc://aladdin:opensesame@sappr3?client=200&language=%25language%25&queue=x:yz", URIHelper.substitute(string, map));
     }
 
     @Test
