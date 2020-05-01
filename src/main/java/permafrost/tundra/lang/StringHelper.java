@@ -164,6 +164,8 @@ public final class StringHelper {
             value = ReaderHelper.read((Reader)object);
         } else if (object instanceof Class) {
             value = ((Class)object).getName();
+        } else if (object instanceof Charset) {
+            value = ((Charset)object).displayName();
         } else if (object != null) {
             value = object.toString();
         }
