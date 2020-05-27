@@ -568,11 +568,25 @@ public final class ServiceHelper {
      * @throws ServiceException If raise is true and the service throws an exception while being invoked.
      */
     public static IData invoke(String service, IData pipeline, boolean raise, boolean clone, boolean logError) throws ServiceException {
-        if (service != null) {
-            if (pipeline == null) pipeline = IDataFactory.create();
+        return invoke(NSName.create(service), pipeline, raise, clone, logError);
+    }
 
+    /**
+     * Invokes the given service with the given pipeline synchronously.
+     *
+     * @param service           The service to be invoked.
+     * @param pipeline          The input pipeline used when invoking the service.
+     * @param raise             If true will rethrow exceptions thrown by the invoked service.
+     * @param clone             If true the pipeline will first be cloned before being used by the invocation.
+     * @param logError          Logs a caught exception if true and raise is false, otherwise exception is not logged.
+     * @return                  The output pipeline returned by the service invocation.
+     * @throws ServiceException If raise is true and the service throws an exception while being invoked.
+     */
+    public static IData invoke(NSName service, IData pipeline, boolean raise, boolean clone, boolean logError) throws ServiceException {
+        if (service != null) {
+            pipeline = normalize(pipeline, clone);
             try {
-                IDataUtil.merge(Service.doInvoke(NSName.create(service), normalize(pipeline, clone)), pipeline);
+                IDataUtil.merge(Service.doInvoke(service, pipeline), pipeline);
             } catch (Exception exception) {
                 if (raise) {
                     ExceptionHelper.raise(exception);
@@ -582,7 +596,37 @@ public final class ServiceHelper {
                 }
             }
         }
+        return pipeline;
+    }
 
+    /**
+     * A thread-synchronized invoke of the given service.
+     *
+     * @param service           The service to be invoked.
+     * @param pipeline          The input pipeline used when invoking the service.
+     * @param clone             If true the pipeline will first be cloned before being used by the invocation.
+     * @return                  The output pipeline returned by the service invocation.
+     * @throws ServiceException If raise is true and the service throws an exception while being invoked.
+     */
+    public static IData synchronize(String service, IData pipeline, boolean clone) throws ServiceException {
+        return synchronize(NSName.create(service), pipeline, clone);
+    }
+
+    /**
+     * A thread-synchronized invoke of the given service.
+     *
+     * @param service           The service to be invoked.
+     * @param pipeline          The input pipeline used when invoking the service.
+     * @param clone             If true the pipeline will first be cloned before being used by the invocation.
+     * @return                  The output pipeline returned by the service invocation.
+     * @throws ServiceException If raise is true and the service throws an exception while being invoked.
+     */
+    public static IData synchronize(NSName service, IData pipeline, boolean clone) throws ServiceException {
+        if (service != null) {
+            synchronized(service) {
+                pipeline = invoke(service, pipeline, true, clone, true);
+            }
+        }
         return pipeline;
     }
 
