@@ -428,8 +428,6 @@ public final class URIHelper {
                                 }
                                 IDataHelper.put(sc, "user", user, false);
                                 IDataHelper.put(sc, "password", password, false);
-
-
                                 IDataHelper.put(sc, "host", host, false);
 
                                 // if port is -1, then it wasn't specified in the URI
