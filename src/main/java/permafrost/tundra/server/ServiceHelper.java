@@ -97,10 +97,21 @@ public final class ServiceHelper {
         }
     }
 
+    /**
+     * Returns the current call stack as a " → " separated string.
+     *
+     * @return The current call stack as a " → " separated string.
+     */
     public static String getCallStackString() {
         return getCallStackString(true);
     }
 
+    /**
+     * Returns the current call stack as a " → " separated string.
+     *
+     * @param removeTail     Whether to remove the tail from the call stack.
+     * @return               The current call stack as a " → " separated string.
+     */
     public static String getCallStackString(boolean removeTail) {
         String callstack;
         List<NSService> callers = ServiceHelper.getCallStack();
