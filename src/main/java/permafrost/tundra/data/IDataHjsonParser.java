@@ -24,6 +24,7 @@
 
 package permafrost.tundra.data;
 
+import com.wm.app.b2b.server.ServiceException;
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
@@ -68,13 +69,14 @@ public class IDataHjsonParser extends IDataParser {
     /**
      * Returns an IData representation of the JSON data in the given input stream.
      *
-     * @param inputStream   The input stream to be decoded.
-     * @param charset       The character set to use.
-     * @return              An IData representation of the given input stream data.
-     * @throws IOException  If there is a problem reading from the stream.
+     * @param inputStream       The input stream to be decoded.
+     * @param charset           The character set to use.
+     * @return                  An IData representation of the given input stream data.
+     * @throws IOException      If there is a problem reading from the stream.
+     * @throws ServiceException If any other error occurs.
      */
     @Override
-    public IData parse(InputStream inputStream, Charset charset) throws IOException {
+    public IData parse(InputStream inputStream, Charset charset) throws IOException, ServiceException {
         Object object = fromJsonValue(JsonValue.readHjson(ReaderHelper.normalize(inputStream, charset)));
 
         IData output = null;
@@ -94,13 +96,14 @@ public class IDataHjsonParser extends IDataParser {
     /**
      * Encodes the given IData document as JSON to the given output stream.
      *
-     * @param outputStream The stream to write the encoded IData to.
-     * @param document     The IData document to be encoded.
-     * @param charset      The character set to use.
-     * @throws IOException If there is a problem writing to the stream.
+     * @param outputStream      The stream to write the encoded IData to.
+     * @param document          The IData document to be encoded.
+     * @param charset           The character set to use.
+     * @throws IOException      If there is a problem writing to the stream.
+     * @throws ServiceException If any other error occurs.
      */
     @Override
-    public void emit(OutputStream outputStream, IData document, Charset charset) throws IOException {
+    public void emit(OutputStream outputStream, IData document, Charset charset) throws IOException, ServiceException {
         Writer writer = new BufferedWriter(new OutputStreamWriter(outputStream, CharsetHelper.normalize(charset)), InputOutputHelper.DEFAULT_BUFFER_SIZE);
 
         try {

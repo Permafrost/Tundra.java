@@ -98,7 +98,7 @@ public class JSONContentHandler  implements ContentHandler {
      */
     public Values getInputValues(InputStream inputStream, InvokeState invokeState) throws IOException {
         Values pipeline = new Values();
-        pipeline.put(inputName, new IDataJSONParser().parse(inputStream));
+        pipeline.put(inputName, new IDataJSONParser().decode(inputStream));
         return pipeline;
     }
 

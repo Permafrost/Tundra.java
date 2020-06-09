@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2015 Lachlan Dowding
+ * Copyright (c) 2020 Lachlan Dowding
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,67 +24,66 @@
 
 package permafrost.tundra.lang;
 
-import com.wm.app.b2b.server.ServiceException;
 import com.wm.data.IData;
 import com.wm.util.coder.IDataCodable;
 import permafrost.tundra.data.IDataMap;
 import java.util.Collection;
 
 /**
- * Checked exception superclass inherited by all other Tundra checked exceptions.
+ * Unchecked exception superclass inherited by all other Tundra checked exceptions.
  */
-public class BaseException extends ServiceException implements IDataCodable {
+public class BaseRuntimeException extends RuntimeException implements IDataCodable {
     /**
-     * Constructs a new BaseException.
+     * Constructs a new BaseRuntimeException.
      */
-    public BaseException() {
+    public BaseRuntimeException() {
         super("");
     }
 
     /**
-     * Constructs a new BaseException with the given message.
+     * Constructs a new BaseRuntimeException with the given message.
      *
-     * @param message A message describing why the BaseException was thrown.
+     * @param message A message describing why the BaseRuntimeException was thrown.
      */
-    public BaseException(String message) {
+    public BaseRuntimeException(String message) {
         super(message);
     }
 
     /**
-     * Constructs a new BaseException with the given cause.
+     * Constructs a new BaseRuntimeException with the given cause.
      *
-     * @param cause The cause of this BaseException.
+     * @param cause The cause of this BaseRuntimeException.
      */
-    public BaseException(Throwable cause) {
+    public BaseRuntimeException(Throwable cause) {
         this(ExceptionHelper.getMessage(cause), cause);
     }
 
     /**
-     * Constructs a new BaseException with the given message and cause.
+     * Constructs a new BaseRuntimeException with the given message and cause.
      *
-     * @param message A message describing why the BaseException was thrown.
+     * @param message A message describing why the BaseRuntimeException was thrown.
      * @param cause   The cause of this Exception.
      */
-    public BaseException(String message, Throwable cause) {
+    public BaseRuntimeException(String message, Throwable cause) {
         super(message);
         if (cause != null) initCause(cause);
     }
 
     /**
-     * Constructs a new BaseException with the given list of exceptions.
+     * Constructs a new BaseRuntimeException with the given list of exceptions.
      *
      * @param exceptions A collection of exceptions this exception will wrap.
      */
-    public BaseException(Collection<? extends Throwable> exceptions) {
+    public BaseRuntimeException(Collection<? extends Throwable> exceptions) {
         super(ExceptionHelper.getMessage(exceptions));
     }
 
     /**
-     * Constructs a new BaseException with the given list of exceptions.
+     * Constructs a new BaseRuntimeException with the given list of exceptions.
      *
      * @param exceptions A collection of exceptions this exception will wrap.
      */
-    public BaseException(Throwable... exceptions) {
+    public BaseRuntimeException(Throwable... exceptions) {
         super(ExceptionHelper.getMessage(exceptions));
     }
 

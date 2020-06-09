@@ -1,5 +1,6 @@
 package permafrost.tundra.server;
 
+import com.wm.app.b2b.server.ServiceException;
 import com.wm.app.log.impl.sc.LevelTranslator;
 import com.wm.data.IData;
 import com.wm.lang.ns.NSService;
@@ -69,6 +70,8 @@ public class ServerLogger {
                     message = message + " -- " + contextString;
                 }
             } catch(IOException ex) {
+                // do nothing, we should never get this exception
+            } catch(ServiceException ex) {
                 // do nothing, we should never get this exception
             }
         }

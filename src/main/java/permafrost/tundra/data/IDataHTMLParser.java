@@ -24,6 +24,7 @@
 
 package permafrost.tundra.data;
 
+import com.wm.app.b2b.server.ServiceException;
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataPortable;
@@ -45,6 +46,9 @@ import java.util.List;
  * Serializes IData objects to HTML.
  */
 public class IDataHTMLParser extends IDataParser {
+    /**
+     * Whether the HTML emitted should be an embeddable fragment, and whether tables should be in portrait orientation.
+     */
     boolean fragment, portraitOrientation;
 
     /**
@@ -80,27 +84,29 @@ public class IDataHTMLParser extends IDataParser {
     /**
      * This method has not implemented.
      *
-     * @param inputStream The input stream to be decoded.
-     * @param charset     The character set to use.
-     * @return An IData representation of the given input stream data.
+     * @param inputStream                    The input stream to be decoded.
+     * @param charset                        The character set to use.
+     * @return                               An IData representation of the given input stream data.
      * @throws IOException                   If there is a problem reading from the stream.
+     * @throws ServiceException              If any other error occurs.
      * @throws UnsupportedOperationException As this method has not been implemented.
      */
     @Override
-    public IData parse(InputStream inputStream, Charset charset) throws IOException {
+    public IData parse(InputStream inputStream, Charset charset) throws IOException, ServiceException {
         throw new UnsupportedOperationException("decode method not implemented");
     }
 
     /**
      * Encodes the given IData document as HTML to the given output stream.
      *
-     * @param outputStream The stream to write the encoded IData to.
-     * @param document     The IData document to be encoded.
-     * @param charset      The character set to use.
-     * @throws IOException If there is a problem writing to the stream.
+     * @param outputStream      The stream to write the encoded IData to.
+     * @param document          The IData document to be encoded.
+     * @param charset           The character set to use.
+     * @throws IOException      If there is a problem writing to the stream.
+     * @throws ServiceException If any other error occurs.
      */
     @Override
-    public void emit(OutputStream outputStream, IData document, Charset charset) throws IOException {
+    public void emit(OutputStream outputStream, IData document, Charset charset) throws IOException, ServiceException {
         InputOutputHelper.copy(InputStreamHelper.normalize(emit(document, Integer.MAX_VALUE), charset), outputStream);
     }
 

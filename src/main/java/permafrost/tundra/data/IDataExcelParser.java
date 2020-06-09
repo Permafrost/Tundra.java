@@ -24,6 +24,7 @@
 
 package permafrost.tundra.data;
 
+import com.wm.app.b2b.server.ServiceException;
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
@@ -40,6 +41,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import permafrost.tundra.content.MalformedException;
 import permafrost.tundra.lang.ObjectHelper;
 import permafrost.tundra.math.BigDecimalHelper;
 import permafrost.tundra.time.DateTimeHelper;
@@ -102,13 +104,14 @@ public class IDataExcelParser extends IDataParser {
     /**
      * Encodes the given IData document as Microsoft Excel spreadsheet to the given output stream.
      *
-     * @param outputStream The stream to write the encoded IData to.
-     * @param document     The IData document to be encoded.
-     * @param charset      The character set to use.
-     * @throws IOException If there is a problem writing to the stream.
+     * @param outputStream      The stream to write the encoded IData to.
+     * @param document          The IData document to be encoded.
+     * @param charset           The character set to use.
+     * @throws IOException      If there is a problem writing to the stream.
+     * @throws ServiceException If any other error occurs.
      */
     @Override
-    public void emit(OutputStream outputStream, IData document, Charset charset) throws IOException {
+    public void emit(OutputStream outputStream, IData document, Charset charset) throws IOException, ServiceException {
         IDataCursor cursor = document.getCursor();
         Workbook workbook = emitXSLX ? new XSSFWorkbook() : new HSSFWorkbook();
 
@@ -149,13 +152,14 @@ public class IDataExcelParser extends IDataParser {
     /**
      * Returns an IData representation of the Microsoft Excel spreadsheet data in the given input stream.
      *
-     * @param inputStream   The input stream to be decoded.
-     * @param charset       The character set to use.
-     * @return              An IData representation of the given input stream data.
-     * @throws IOException  If there is a problem reading from the stream.
+     * @param inputStream       The input stream to be decoded.
+     * @param charset           The character set to use.
+     * @return                  An IData representation of the given input stream data.
+     * @throws IOException      If there is a problem reading from the stream.
+     * @throws ServiceException If any other error occurs.
      */
     @Override
-    public IData parse(InputStream inputStream, Charset charset) throws IOException {
+    public IData parse(InputStream inputStream, Charset charset) throws IOException, ServiceException {
         IData output = IDataFactory.create();
         IDataCursor cursor = output.getCursor();
 
@@ -200,7 +204,7 @@ public class IDataExcelParser extends IDataParser {
                 cursor.insertAfter(sheet.getSheetName(), outputRows.toArray(new IData[0]));
             }
         } catch(InvalidFormatException ex) {
-            throw new RuntimeException(ex);
+            throw new MalformedException(ex);
         } finally {
             cursor.destroy();
         }

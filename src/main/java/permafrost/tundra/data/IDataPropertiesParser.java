@@ -24,6 +24,7 @@
 
 package permafrost.tundra.data;
 
+import com.wm.app.b2b.server.ServiceException;
 import com.wm.data.IData;
 import permafrost.tundra.lang.CharsetHelper;
 import java.io.IOException;
@@ -49,13 +50,14 @@ public final class IDataPropertiesParser extends IDataParser {
     /**
      * Returns an IData representation of the Java properties data read from the given input stream.
      *
-     * @param inputStream   The input stream to be decoded.
-     * @param charset       The character set to use.
-     * @return              An IData representation of the given input stream data.
-     * @throws IOException  If there is a problem reading from the stream.
+     * @param inputStream       The input stream to be decoded.
+     * @param charset           The character set to use.
+     * @return                  An IData representation of the given input stream data.
+     * @throws IOException      If there is a problem reading from the stream.
+     * @throws ServiceException If any other error occurs.
      */
     @Override
-    public IData parse(InputStream inputStream, Charset charset) throws IOException {
+    public IData parse(InputStream inputStream, Charset charset) throws IOException, ServiceException {
         Properties properties = new Properties();
         properties.load(new InputStreamReader(inputStream, CharsetHelper.normalize(charset)));
         return IDataHelper.toIData(properties);
@@ -64,13 +66,14 @@ public final class IDataPropertiesParser extends IDataParser {
     /**
      * Serializes the given IData document as Java properties to the given output stream.
      *
-     * @param outputStream  The stream to write the encoded IData to.
-     * @param document      The IData document to be encoded.
-     * @param charset       The character set to use.
-     * @throws IOException  If there is a problem writing to the stream.
+     * @param outputStream      The stream to write the encoded IData to.
+     * @param document          The IData document to be encoded.
+     * @param charset           The character set to use.
+     * @throws IOException      If there is a problem writing to the stream.
+     * @throws ServiceException If any other error occurs.
      */
     @Override
-    public void emit(OutputStream outputStream, IData document, Charset charset) throws IOException {
+    public void emit(OutputStream outputStream, IData document, Charset charset) throws IOException, ServiceException {
         Properties properties = new Properties();
 
         for (Map.Entry<String, Object> entry : IDataMap.of(document)) {

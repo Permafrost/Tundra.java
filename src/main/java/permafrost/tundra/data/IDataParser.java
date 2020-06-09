@@ -24,11 +24,15 @@
 
 package permafrost.tundra.data;
 
+import com.wm.app.b2b.server.ServiceException;
 import com.wm.data.IData;
+import com.wm.util.coder.IDataCodable;
 import com.wm.util.coder.IDataCoder;
 import permafrost.tundra.io.InputStreamHelper;
+import permafrost.tundra.lang.BooleanHelper;
 import permafrost.tundra.lang.BytesHelper;
 import permafrost.tundra.lang.StringHelper;
+import permafrost.tundra.lang.UnrecoverableRuntimeException;
 import permafrost.tundra.mime.MIMETypeHelper;
 import javax.activation.MimeType;
 import java.io.ByteArrayOutputStream;
@@ -49,7 +53,7 @@ public abstract class IDataParser extends IDataCoder {
     /**
      * Construct a new IDataParser.
      *
-     * @param contentType   The content type this parser handles.
+     * @param contentType       The content type this parser handles.
      */
     public IDataParser(String contentType) {
         this(MIMETypeHelper.of(contentType));
@@ -58,7 +62,7 @@ public abstract class IDataParser extends IDataCoder {
     /**
      * Construct a new IDataParser.
      *
-     * @param contentType   The content type this parser handles.
+     * @param contentType       The content type this parser handles.
      */
     public IDataParser(MimeType contentType) {
         this.contentType = MIMETypeHelper.normalize(contentType);
@@ -67,115 +71,125 @@ public abstract class IDataParser extends IDataCoder {
     /**
      * Parses the given String as an IData document.
      *
-     * @param string        The String to be parsed.
-     * @return              The parsed String as an IData document.
-     * @throws IOException  If an IO error occurs.
+     * @param string            The String to be parsed.
+     * @return                  The parsed String as an IData document.
+     * @throws IOException      If an IO error occurs.
+     * @throws ServiceException If any other error occurs.
      */
-    public final IData parse(String string) throws IOException {
+    public final IData parse(String string) throws IOException, ServiceException {
         return parse(InputStreamHelper.normalize(string));
     }
 
     /**
      * Parses the data in the given input stream, returning an IData representation.
      *
-     * @param inputStream   The input stream to be parsed.
-     * @return              An IData representation of the data in the given input stream.
-     * @throws IOException  If an I/O error occurs.
+     * @param inputStream       The input stream to be parsed.
+     * @return                  An IData representation of the data in the given input stream.
+     * @throws IOException      If an I/O error occurs.
+     * @throws ServiceException If any other error occurs.
      */
-    public IData parse(InputStream inputStream) throws IOException {
+    public IData parse(InputStream inputStream) throws IOException, ServiceException {
         return parse(inputStream, null);
     }
 
     /**
      * Parses the data in the given input stream, returning an IData representation.
      *
-     * @param inputStream   The input stream to be parsed.
-     * @param charset       The character set to use when decoding the data in the input stream.
-     * @return              An IData representation of the data in the given input stream.
-     * @throws IOException  If an I/O error occurs.
+     * @param inputStream       The input stream to be parsed.
+     * @param charset           The character set to use when decoding the data in the input stream.
+     * @return                  An IData representation of the data in the given input stream.
+     * @throws IOException      If an I/O error occurs.
+     * @throws ServiceException If any other error occurs.
      */
-    public abstract IData parse(InputStream inputStream, Charset charset) throws IOException;
+    public abstract IData parse(InputStream inputStream, Charset charset) throws IOException, ServiceException;
 
     /**
      * Serializes the given IData document.
      *
-     * @param outputStream  The output stream the serialized IData is written to.
-     * @param document      The IData document to be serialized.
-     * @throws IOException  If an I/O error occurs.
+     * @param outputStream      The output stream the serialized IData is written to.
+     * @param document          The IData document to be serialized.
+     * @throws IOException      If an I/O error occurs.
+     * @throws ServiceException If any other error occurs.
      */
-    public void emit(OutputStream outputStream, IData document) throws IOException {
+    public void emit(OutputStream outputStream, IData document) throws IOException, ServiceException {
         emit(outputStream, document, null);
     }
 
     /**
      * Serializes the given IData document.
      *
-     * @param outputStream  The output stream the serialized IData is written to.
-     * @param document      The IData document to be serialized.
-     * @param charset       The character set to use when serializing the IData document.
-     * @throws IOException  If an I/O error occurs.
+     * @param outputStream      The output stream the serialized IData is written to.
+     * @param document          The IData document to be serialized.
+     * @param charset           The character set to use when serializing the IData document.
+     * @throws IOException      If an I/O error occurs.
+     * @throws ServiceException If any other error occurs.
      */
-    public abstract void emit(OutputStream outputStream, IData document, Charset charset) throws IOException;
+    public abstract void emit(OutputStream outputStream, IData document, Charset charset) throws IOException, ServiceException;
 
     /**
      * Serializes the given IData document.
      *
-     * @param appendable    The appendable the serialized IData is written to.
-     * @param document      The IData document to be serialized.
-     * @throws IOException  If an I/O error occurs.
+     * @param appendable        The appendable the serialized IData is written to.
+     * @param document          The IData document to be serialized.
+     * @throws IOException      If an I/O error occurs.
+     * @throws ServiceException If any other error occurs.
      */
-    public final void emit(Appendable appendable, IData document) throws IOException {
+    public final void emit(Appendable appendable, IData document) throws IOException, ServiceException {
         appendable.append(StringHelper.normalize(emit(document)));
     }
 
     /**
      * Serializes the given IData document.
      *
-     * @param document      The IData document to be serialized.
-     * @return              A serialized representation of the given IData document.
-     * @throws IOException  If an I/O error occurs.
+     * @param document          The IData document to be serialized.
+     * @return                  A serialized representation of the given IData document.
+     * @throws IOException      If an I/O error occurs.
+     * @throws ServiceException If any other error occurs.
      */
-    public final InputStream emit(IData document) throws IOException {
+    public final InputStream emit(IData document) throws IOException, ServiceException {
         return emit(document, (Charset)null);
     }
 
     /**
      * Serializes the given IData document.
      *
-     * @param document      The IData document to be serialized.
-     * @param charset       The character set to use when serializing the IData document.
-     * @return              A serialized representation of the given IData document.
-     * @throws IOException  If an I/O error occurs.
+     * @param document          The IData document to be serialized.
+     * @param charset           The character set to use when serializing the IData document.
+     * @return                  A serialized representation of the given IData document.
+     * @throws IOException      If an I/O error occurs.
+     * @throws ServiceException If any other error occurs.
      */
-    public final InputStream emit(IData document, Charset charset) throws IOException {
+    public final InputStream emit(IData document, Charset charset) throws IOException, ServiceException {
         return emit(document, charset, InputStream.class);
     }
 
     /**
      * Serializes the given IData document.
      *
-     * @param document      The IData document to be serialized.
-     * @param returnClass   Whether to return a String, byte[], or InputStream.
-     * @param <T>           The desired class of object to be returned.
-     * @return              A serialized representation of the given IData document.
-     * @throws IOException  If an I/O error occurs.
+     * @param document          The IData document to be serialized.
+     * @param returnClass       Whether to return a String, byte[], or InputStream.
+     * @param <T>               The desired class of object to be returned.
+     * @return                  A serialized representation of the given IData document.
+     * @throws IOException      If an I/O error occurs.
+     * @throws ServiceException If any other error occurs.
      */
-    public final <T> T emit(IData document, Class<T> returnClass) throws IOException {
+    public final <T> T emit(IData document, Class<T> returnClass) throws IOException, ServiceException {
         return emit(document, null, returnClass);
     }
 
     /**
      * Serializes the given IData document.
      *
-     * @param document      The IData document to be serialized.
-     * @param charset       The character set to use when serializing the IData document.
-     * @param returnClass   Whether to return a String, byte[], or InputStream.
-     * @param <T>           The desired class of object to be returned.
-     * @return              A serialized representation of the given IData document.
-     * @throws IOException  If an I/O error occurs.
+     * @param document          The IData document to be serialized.
+     * @param charset           The character set to use when serializing the IData document.
+     * @param returnClass       Whether to return a String, byte[], or InputStream.
+     * @param <T>               The desired class of object to be returned.
+     * @return                  A serialized representation of the given IData document.
+     * @throws IOException      If an I/O error occurs.
+     * @throws ServiceException If any other error occurs.
      */
     @SuppressWarnings("unchecked")
-    public final <T> T emit(IData document, Charset charset, Class<T> returnClass) throws IOException {
+    public final <T> T emit(IData document, Charset charset, Class<T> returnClass) throws IOException, ServiceException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         emit(outputStream, document, charset);
         byte[] bytes = outputStream.toByteArray();
@@ -198,37 +212,61 @@ public abstract class IDataParser extends IDataCoder {
     /**
      * Decodes the given input stream data as an IData.
      *
-     * @param inputStream   The stream to read the data to be decoded from.
-     * @return              The IData representation of the stream data.
-     * @throws IOException  If there is a problem reading from the stream.
+     * @param inputStream       The stream to read the data to be decoded from.
+     * @return                  The IData representation of the stream data.
+     * @throws IOException      If there is a problem reading from the stream.
      */
     @Override
     public final IData decode(InputStream inputStream) throws IOException {
-        return parse(inputStream);
+        try {
+            return parse(inputStream);
+        } catch(ServiceException ex) {
+            if (isUnrecoverable(ex)) {
+                throw new UnrecoverableRuntimeException(ex);
+            } else {
+                throw new IOException(ex);
+            }
+        }
     }
 
     /**
      * Encodes the given IData document as a string.
      *
-     * @param outputStream The stream to write the encoded IData to.
-     * @param document     The IData document to be encoded.
-     * @throws IOException If there is a problem writing to the stream.
+     * @param outputStream      The stream to write the encoded IData to.
+     * @param document          The IData document to be encoded.
+     * @throws IOException      If there is a problem writing to the stream.
      */
     @Override
     public final void encode(OutputStream outputStream, IData document) throws IOException {
-        emit(outputStream, document);
+        try {
+            emit(outputStream, document);
+        } catch(ServiceException ex) {
+            if (isUnrecoverable(ex)) {
+                throw new UnrecoverableRuntimeException(ex);
+            } else {
+                throw new IOException(ex);
+            }
+        }
     }
 
     /**
      * Encodes the given IData document as a string.
      *
-     * @param document      The IData document to be encoded.
-     * @return              A byte[] representation of the resulting string.
-     * @throws IOException  If there is a problem writing to the stream.
+     * @param document          The IData document to be encoded.
+     * @return                  A byte[] representation of the resulting string.
+     * @throws IOException      If there is a problem writing to the stream.
      */
     @Override
     public final byte[] encodeToBytes(IData document) throws IOException {
-        return BytesHelper.normalize(emit(document));
+        try {
+            return BytesHelper.normalize(emit(document));
+        } catch(ServiceException ex) {
+            if (isUnrecoverable(ex)) {
+                throw new UnrecoverableRuntimeException(ex);
+            } else {
+                throw new IOException(ex);
+            }
+        }
     }
 
     /**
@@ -239,5 +277,20 @@ public abstract class IDataParser extends IDataCoder {
     @Override
     public String getContentType() {
         return contentType.toString();
+    }
+
+    /**
+     * Returns whether the given exception is unrecoverable.
+     *
+     * @param exception The exception in question.
+     * @return          True if the given exception is unrecoverable.
+     */
+    private boolean isUnrecoverable(Throwable exception) {
+        boolean isUnrecoverable = false;
+        if (exception instanceof IDataCodable) {
+            IDataMap exceptionDocument = IDataMap.of(((IDataCodable) exception).getIData());
+            isUnrecoverable = !BooleanHelper.parse((String) exceptionDocument.get("$exception.recoverable?"), true);
+        }
+        return isUnrecoverable;
     }
 }

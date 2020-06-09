@@ -24,6 +24,7 @@
 
 package permafrost.tundra.data;
 
+import com.wm.app.b2b.server.ServiceException;
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataHashCursor;
@@ -108,6 +109,8 @@ public abstract class AbstractIData implements IData {
             IDataJSONParser parser = new IDataJSONParser(false);
             output = parser.emit(this, String.class);
         } catch(IOException ex) {
+            ExceptionHelper.raiseUnchecked(ex);
+        } catch(ServiceException ex) {
             ExceptionHelper.raiseUnchecked(ex);
         }
         return output;

@@ -24,6 +24,7 @@
 
 package permafrost.tundra.data;
 
+import com.wm.app.b2b.server.ServiceException;
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
@@ -61,13 +62,14 @@ public class IDataHTMLFormParser extends IDataParser {
     /**
      * Parses the data in the given input stream, returning an IData representation.
      *
-     * @param inputStream   The input stream to be parsed.
-     * @param charset       The character set to use when decoding the data in the input stream.
-     * @return              An IData representation of the data in the given input stream.
-     * @throws IOException  If an I/O error occurs.
+     * @param inputStream       The input stream to be parsed.
+     * @param charset           The character set to use when decoding the data in the input stream.
+     * @return                  An IData representation of the data in the given input stream.
+     * @throws IOException      If an I/O error occurs.
+     * @throws ServiceException If any other error occurs.
      */
     @Override
-    public IData parse(InputStream inputStream, Charset charset) throws IOException {
+    public IData parse(InputStream inputStream, Charset charset) throws IOException, ServiceException {
         String[] items = StringHelper.split(StringHelper.normalize(inputStream, charset), "&", true);
 
         IData document = IDataFactory.create();
@@ -97,13 +99,14 @@ public class IDataHTMLFormParser extends IDataParser {
     /**
      * Serializes the given IData document.
      *
-     * @param outputStream  The output stream the serialized IData is written to.
-     * @param document      The IData document to be serialized.
-     * @param charset       The character set to use when serializing the IData document.
-     * @throws IOException  If an I/O error occurs.
+     * @param outputStream      The output stream the serialized IData is written to.
+     * @param document          The IData document to be serialized.
+     * @param charset           The character set to use when serializing the IData document.
+     * @throws IOException      If an I/O error occurs.
+     * @throws ServiceException If any other error occurs.
      */
     @Override
-    public void emit(OutputStream outputStream, IData document, Charset charset) throws IOException {
+    public void emit(OutputStream outputStream, IData document, Charset charset) throws IOException, ServiceException {
         Writer writer = new BufferedWriter(new OutputStreamWriter(outputStream, CharsetHelper.normalize(charset)), InputOutputHelper.DEFAULT_BUFFER_SIZE);
 
         IData denormalizedDcument = IDataHelper.denormalize(document);

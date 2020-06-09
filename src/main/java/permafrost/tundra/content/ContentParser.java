@@ -57,8 +57,10 @@ import java.nio.charset.Charset;
  * XLSX.
  */
 public class ContentParser extends IDataParser {
+    /**
+     * The default MIME media type used by this parser.
+     */
     public final static MimeType DEFAULT_CONTENT_TYPE = MIMETypeHelper.of("text/xml");
-
     /**
      * The character set to use when serializing, unless overridden in the parse or emit method call.
      */
@@ -110,23 +112,25 @@ public class ContentParser extends IDataParser {
     /**
      * Parses the data in the given input stream, returning an IData representation.
      *
-     * @param content       The content to be parsed.
-     * @return              An IData representation of the data in the given input stream.
-     * @throws IOException  If an I/O error occurs.
+     * @param content           The content to be parsed.
+     * @return                  An IData representation of the data in the given input stream.
+     * @throws IOException      If an I/O error occurs.
+     * @throws ServiceException If any other error occurs.
      */
-    public IData parse(Object content) throws IOException {
+    public IData parse(Object content) throws IOException, ServiceException {
         return parse(content, null);
     }
 
     /**
      * Parses the data in the given input stream, returning an IData representation.
      *
-     * @param content       The content to be parsed.
-     * @param charset       The character set to use when decoding the data in the input stream.
-     * @return              An IData representation of the data in the given input stream.
-     * @throws IOException  If an I/O error occurs.
+     * @param content           The content to be parsed.
+     * @param charset           The character set to use when decoding the data in the input stream.
+     * @return                  An IData representation of the data in the given input stream.
+     * @throws IOException      If an I/O error occurs.
+     * @throws ServiceException If any other error occurs.
      */
-    public IData parse(Object content, Charset charset) throws IOException {
+    public IData parse(Object content, Charset charset) throws IOException, ServiceException {
         IData document = null;
 
         if (content != null) {
@@ -259,8 +263,6 @@ public class ContentParser extends IDataParser {
                 if (validate && classification != MIMEClassification.PLAIN) {
                     ValidationHelper.validate(document, schema).raiseIfInvalid();
                 }
-            } catch(ServiceException ex) {
-                throw new IOException(ex);
             } finally {
                 cursor.destroy();
             }
@@ -272,26 +274,28 @@ public class ContentParser extends IDataParser {
     /**
      * Parses the data in the given input stream, returning an IData representation.
      *
-     * @param inputStream   The input stream to be parsed.
-     * @param charset       The character set to use when decoding the data in the input stream.
-     * @return              An IData representation of the data in the given input stream.
-     * @throws IOException  If an I/O error occurs.
+     * @param inputStream       The input stream to be parsed.
+     * @param charset           The character set to use when decoding the data in the input stream.
+     * @return                  An IData representation of the data in the given input stream.
+     * @throws IOException      If an I/O error occurs.
+     * @throws ServiceException If any other error occurs.
      */
     @Override
-    public IData parse(InputStream inputStream, Charset charset) throws IOException {
+    public IData parse(InputStream inputStream, Charset charset) throws IOException, ServiceException {
         return parse((Object)inputStream, charset);
     }
 
     /**
      * Serializes the given IData document.
      *
-     * @param outputStream  The output stream the serialized IData is written to.
-     * @param document      The IData document to be serialized.
-     * @param charset       The character set to use when serializing the IData document.
-     * @throws IOException  If an I/O error occurs.
+     * @param outputStream      The output stream the serialized IData is written to.
+     * @param document          The IData document to be serialized.
+     * @param charset           The character set to use when serializing the IData document.
+     * @throws IOException      If an I/O error occurs.
+     * @throws ServiceException If any other error occurs.
      */
     @Override
-    public void emit(OutputStream outputStream, IData document, Charset charset) throws IOException {
+    public void emit(OutputStream outputStream, IData document, Charset charset) throws IOException, ServiceException {
         if (document != null) {
             document = normalize(document);
             charset = normalize(charset);
@@ -402,8 +406,6 @@ public class ContentParser extends IDataParser {
                     default:
                         throw new UnsupportedOperationException("Unsupported content type cannot be parsed: " + contentType.toString());
                 }
-            } catch(ServiceException ex) {
-                throw new IOException(ex);
             } finally {
                 cursor.destroy();
             }
