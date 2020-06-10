@@ -104,7 +104,7 @@ public final class ExceptionHelper {
         } else if (cause instanceof Error) {
             throw (Error)cause;
         } else {
-            throw new RuntimeException(cause);
+            throw new BaseRuntimeException(cause);
         }
     }
 
