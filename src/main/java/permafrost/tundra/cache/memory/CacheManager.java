@@ -149,7 +149,7 @@ public class CacheManager<K, V> {
      * @param cacheValue    The value to be associated with the given key.
      * @param expiry        How long from now before the value expires.
      * @param onlyIfAbsent  If true, only associates the key with the given value if the key does not already exist.
-     * @return              The value that is associated with the key.
+     * @return              The value that was previously associated with the key, if any.
      */
     public ExpiringValue<V> put(String cacheName, K cacheKey, V cacheValue, Duration expiry, boolean onlyIfAbsent) {
         return put(cacheName, cacheKey, cacheValue, expiry == null ? null : DateTimeHelper.later(expiry), onlyIfAbsent);
@@ -163,7 +163,7 @@ public class CacheManager<K, V> {
      * @param cacheValue    The value to be associated with the given key.
      * @param expiry        When the value expires.
      * @param onlyIfAbsent  If true, only associates the key with the given value if the key does not already exist.
-     * @return              The value that is associated with the key.
+     * @return              The value that was previously associated with the key, if any.
      */
     public ExpiringValue<V> put(String cacheName, K cacheKey, V cacheValue, Calendar expiry, boolean onlyIfAbsent) {
         return put(cacheName, cacheKey, new ExpiringValue<V>(cacheValue, expiry), onlyIfAbsent);
@@ -176,25 +176,28 @@ public class CacheManager<K, V> {
      * @param cacheKey      The key to be associated with the given value.
      * @param cacheValue    The value to be associated with the given key.
      * @param onlyIfAbsent  If true, only associates the key with the given value if the key does not already exist.
-     * @return              The value that is associated with the key.
+     * @return              The value that was previously associated with the key, if any.
      */
     private ExpiringValue<V> put(String cacheName, K cacheKey, ExpiringValue<V> cacheValue, boolean onlyIfAbsent) {
         ConcurrentMap<K, ExpiringValue<V>> cache = getCache(cacheName);
 
+        ExpiringValue<V> previousValue;
+
         if (onlyIfAbsent) {
-            ExpiringValue<V> oldValue = cache.putIfAbsent(cacheKey, cacheValue);
-            if (oldValue != null) {
-                if (oldValue.isExpired()) {
-                    cache.replace(cacheKey, oldValue, cacheValue);
-                } else {
-                    cacheValue = oldValue;
+            previousValue = cache.putIfAbsent(cacheKey, cacheValue);
+            if (previousValue != null && previousValue.isExpired()) {
+                if(cache.replace(cacheKey, previousValue, cacheValue)) {
+                    previousValue = null;
                 }
             }
         } else {
-            cache.put(cacheKey, cacheValue);
+            previousValue = cache.put(cacheKey, cacheValue);
+            if (previousValue != null && previousValue.isExpired()) {
+                previousValue = null;
+            }
         }
 
-        return cacheValue;
+        return previousValue;
     }
 
     /**
