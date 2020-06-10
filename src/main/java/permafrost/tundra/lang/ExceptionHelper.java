@@ -85,6 +85,8 @@ public final class ExceptionHelper {
             throw (ServiceException)cause;
         } else if (cause instanceof RuntimeException) {
             throw (RuntimeException)cause;
+        } else if (cause instanceof Error) {
+            throw (Error)cause;
         } else {
             throw new BaseException(cause);
         }
