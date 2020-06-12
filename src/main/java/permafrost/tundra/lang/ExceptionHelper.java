@@ -144,7 +144,6 @@ public final class ExceptionHelper {
 
         if (exception instanceof SAXParseException) {
             SAXParseException parseException = (SAXParseException)exception;
-            //builder.append(" (Line ").append("" + ex.getLineNumber()).append(", Column ").append("" + ex.getColumnNumber()).append(")");
             builder.append(String.format(" (Line %d, Column %d)", parseException.getLineNumber(), parseException.getColumnNumber()));
         }
 
