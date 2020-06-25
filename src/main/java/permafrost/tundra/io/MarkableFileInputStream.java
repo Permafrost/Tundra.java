@@ -37,7 +37,7 @@ public class MarkableFileInputStream extends FileInputStream {
     /**
      * The marked position that will be returned to upon calling the reset method.
      */
-    protected long markPosition = 0;
+    private volatile long markPosition = 0;
 
     /**
      * Creates a MarkableFileInputStream by opening a connection to an actual file named by the given File object.
@@ -105,15 +105,5 @@ public class MarkableFileInputStream extends FileInputStream {
     @Override
     public synchronized void reset() throws IOException {
         getChannel().position(markPosition);
-    }
-
-    /**
-     * Closes this file input stream and releases any system resources associated with the stream.
-     *
-     * @throws IOException If an I/O error occurs.
-     */
-    @Override
-    public void close() throws IOException {
-        super.close();
     }
 }
