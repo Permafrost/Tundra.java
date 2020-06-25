@@ -35,37 +35,35 @@ public class DeleteOnCloseFileInputStream extends MarkableFileInputStream {
     /**
      * Whether the stream has been closed.
      */
-    protected boolean isClosed = false;
+    private volatile boolean isClosed = false;
+    /**
+     * Reference to the file to read from/write to, and then deleted on close.
+     */
+    private final File file;
 
     /**
-     * Reference to the file to be read and deleted on close.
+     * Constructs a new AutoDeleteFileInputStream by opening a connection to an actual file, the file named by the path
+     * name in the file system.
+     *
+     * @param name                   The file to be opened for reading.
+     * @throws FileNotFoundException If the file does not exist, is a directory rather than a regular file, or for some
+     *                               other reason cannot be opened for reading.
      */
-    private File file = null;
+    public DeleteOnCloseFileInputStream(String name) throws FileNotFoundException {
+        this(name == null ? null : new File(name));
+    }
 
     /**
      * Constructs a new AutoDeleteFileInputStream by opening a connection to an actual file, the file named by the File
      * object file in the file system.
      *
-     * @param file The file to be opened for reading.
+     * @param file                   The file to be opened for reading.
      * @throws FileNotFoundException If the file does not exist, is a directory rather than a regular file, or for some
      *                               other reason cannot be opened for reading.
      */
     public DeleteOnCloseFileInputStream(File file) throws FileNotFoundException {
         super(file);
         this.file = file;
-    }
-
-    /**
-     * Constructs a new AutoDeleteFileInputStream by opening a connection to an actual file, the file named by the path
-     * name in the file system.
-     *
-     * @param name The file to be opened for reading.
-     * @throws FileNotFoundException If the file does not exist, is a directory rather than a regular file, or for some
-     *                               other reason cannot be opened for reading.
-     */
-    public DeleteOnCloseFileInputStream(String name) throws FileNotFoundException {
-        super(name);
-        if (name != null) file = new File(name);
     }
 
     /**
@@ -77,13 +75,14 @@ public class DeleteOnCloseFileInputStream extends MarkableFileInputStream {
     @Override
     public void close() throws IOException {
         super.close();
-
-        synchronized (this) {
-            if (!isClosed) {
-                isClosed = true;
-                // automatically delete the file after closing the stream
-                if (file != null && !file.delete()) {
-                    throw new IOException("File could not be deleted: " + FileHelper.normalize(file));
+        if (!isClosed && file != null) {
+            synchronized(file) {
+                if (!isClosed) {
+                    isClosed = true;
+                    // automatically delete the file after closing the stream
+                    if (!file.delete()) {
+                        throw new IOException("File could not be deleted: " + FileHelper.normalize(file));
+                    }
                 }
             }
         }
@@ -95,6 +94,6 @@ public class DeleteOnCloseFileInputStream extends MarkableFileInputStream {
      * @return The file this input stream reads from.
      */
     public File getFile() {
-        return file;
+        return new File(file.getPath());
     }
 }
