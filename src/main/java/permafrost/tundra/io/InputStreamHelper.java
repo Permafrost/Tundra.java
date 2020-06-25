@@ -148,6 +148,20 @@ public final class InputStreamHelper {
     }
 
     /**
+     * Returns an input stream that supports marking which wraps the given input stream.
+     *
+     * @param inputStream   The input stream to wrap.
+     * @return              The given input stream wrapped in an input stream that supports marking.
+     * @throws IOException  If an IO error occurs.
+     */
+    public static InputStream markable(InputStream inputStream) throws IOException {
+        if (inputStream != null && !inputStream.markSupported()) {
+            inputStream = new MarkableInputStream(inputStream);
+        }
+        return inputStream;
+    }
+
+    /**
      * Reads all data from the given input stream, and then closes it when done.
      *
      * @param inputStream   An input stream containing data to be read.
