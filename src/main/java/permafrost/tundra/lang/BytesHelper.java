@@ -170,7 +170,7 @@ public final class BytesHelper {
      */
     public static String hexEncode(byte[] bytes) {
         if (bytes == null) return null;
-        return DatatypeConverter.printHexBinary(bytes);
+        return DatatypeConverter.printHexBinary(bytes).toLowerCase();
     }
 
     /**
