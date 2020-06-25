@@ -24,10 +24,8 @@
 
 package permafrost.tundra.security;
 
-import permafrost.tundra.io.MarkableInputStream;
 import permafrost.tundra.io.InputStreamHelper;
 import permafrost.tundra.lang.BytesHelper;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -129,41 +127,16 @@ public final class MessageDigestHelper {
     public static Map.Entry<? extends InputStream, byte[]> digest(MessageDigest algorithm, InputStream data) throws IOException, NoSuchAlgorithmException {
         if (data == null) return null;
 
-        Map.Entry<? extends InputStream, byte[]> output;
+        // wrap the data in a digest input stream
+        DigestInputStream digestInputStream = new DigestInputStream(data, normalize(algorithm));
+        // generating the digest requires first reading the entire stream, so read in full then reset it
+        data = InputStreamHelper.readThenReset(digestInputStream);
+        // calculate the digest after reading the stream
+        byte[] digest = digestInputStream.getMessageDigest().digest();
+        // turn off the digest function now that its complete
+        digestInputStream.on(false);
 
-        if (data instanceof ByteArrayInputStream) {
-            // treat ByteArrayInputStream classes differently, to optimise performance in this case
-            output = digest(algorithm, (ByteArrayInputStream)data);
-        } else {
-            algorithm = normalize(algorithm);
-            DigestInputStream digestInputStream = new DigestInputStream(data, algorithm);
-            data = new MarkableInputStream(digestInputStream);
-            // generating the digest relies on the fact that the MarkableInputStream constructor reads the entire stream
-            byte[] digest = digestInputStream.getMessageDigest().digest();
-            // turn off the digest function now that its complete
-            digestInputStream.on(false);
-            output = new AbstractMap.SimpleImmutableEntry<InputStream, byte[]>(data, digest);
-        }
-
-        return output;
-    }
-
-    /**
-     * Calculates a message digest for the given data using the given algorithm.
-     *
-     * @param algorithm                 The algorithm to use when calculating the message digest.
-     * @param data                      The data to calculate the digest for.
-     * @return                          The message digest calculated for the given data using the given algorithm.
-     * @throws IOException              If an I/O exception occurs reading from the stream.
-     * @throws NoSuchAlgorithmException If there is no provider for the default algorithm.
-     */
-    public static Map.Entry<ByteArrayInputStream, byte[]> digest(MessageDigest algorithm, ByteArrayInputStream data) throws IOException, NoSuchAlgorithmException {
-        if (data == null) return null;
-
-        byte[] bytes = InputStreamHelper.read(data, false);
-        data.reset();
-
-        return new AbstractMap.SimpleImmutableEntry<ByteArrayInputStream, byte[]>(data, digest(algorithm, bytes));
+        return new AbstractMap.SimpleImmutableEntry<InputStream, byte[]>(data, digest);
     }
 
     /**
