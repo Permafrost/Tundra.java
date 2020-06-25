@@ -38,9 +38,9 @@ public class MarkableInputStream extends FilterInputStream {
      * Creates a new MarkableInputStream, which wraps the given input stream object in a stream that supports the mark
      * and reset methods.
      *
-     * To provide support for mark and reset methods to a given input stream, this class creates a temporary backing
-     * file, then copies the entire contents of the given stream to the file, and then uses the file for reading the
-     * MarkableInputStream.
+     * To provide support for mark and reset methods to a given input stream, if the given input stream does not support
+     * marking then this class creates a temporary backing file then copies the entire contents of the given stream to
+     * the file and then uses the file for reading the MarkableInputStream.
      *
      * @param  inputStream The stream to be wrapped.
      * @throws IOException If an I/O error occurs while reading from the stream.
@@ -48,46 +48,16 @@ public class MarkableInputStream extends FilterInputStream {
     public MarkableInputStream(InputStream inputStream) throws IOException {
         super(inputStream);
 
-        File backingFile = FileHelper.create();
-        FileHelper.writeFromStream(backingFile, inputStream, false);
+        if (!inputStream.markSupported()) {
+            File backingFile = FileHelper.create();
+            FileHelper.writeFromStream(backingFile, inputStream, false);
 
-        in = new DeleteOnCloseFileInputStream(backingFile);
+            in = new DeleteOnCloseFileInputStream(backingFile);
 
-        // if the size of the data is small, read it fully into memory
-        if (backingFile.length() <= InputOutputHelper.DEFAULT_BUFFER_SIZE) {
-            in = InputStreamHelper.normalize(BytesHelper.normalize(in));
+            // if the size of the data is small, read it fully into memory
+            if (backingFile.length() <= InputOutputHelper.DEFAULT_BUFFER_SIZE) {
+                in = InputStreamHelper.normalize(BytesHelper.normalize(in));
+            }
         }
-    }
-
-    /**
-     * Returns true because this class supports marking and resetting the stream.
-     *
-     * @return True because this class supports marking and resetting the stream.
-     */
-    @Override
-    public boolean markSupported() {
-        return true;
-    }
-
-    /**
-     * Marks the current position in this input stream. A subsequent call to the reset method repositions this stream at
-     * the last marked position so that subsequent reads re-read the same bytes.
-     *
-     * @param readLimit This parameter is ignored.
-     */
-    @Override
-    public synchronized void mark(int readLimit) {
-        in.mark(readLimit);
-    }
-
-    /**
-     * Repositions this stream to the position at the time the mark method was last called on this input stream, or to
-     * the start of the stream if the mark method has never been called.
-     *
-     * @throws IOException If an I/O error occurs.
-     */
-    @Override
-    public synchronized void reset() throws IOException {
-        in.reset();
     }
 }
