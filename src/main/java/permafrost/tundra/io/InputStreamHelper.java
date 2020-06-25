@@ -189,6 +189,30 @@ public final class InputStreamHelper {
     }
 
     /**
+     * Reads the given input stream in full, then resets it back to its original position.
+     *
+     * @param inputStream   The input stream to read then reset.
+     * @return              The given input stream reset to its original position if it supports marking, otherwise
+     *                      the given input stream is return in a markable wrapper.
+     * @throws IOException  If an IO error occurs.
+     */
+    public static InputStream readThenReset(InputStream inputStream) throws IOException {
+        inputStream = markable(normalize(inputStream));
+
+        if (inputStream.markSupported()) {
+            inputStream.mark(Integer.MAX_VALUE);
+
+            byte[] buffer = new byte[InputOutputHelper.DEFAULT_BUFFER_SIZE];
+
+            // read stream to the end, and ignore the result
+            while (inputStream.read(buffer) != -1) ;
+
+            inputStream.reset();
+        }
+        return inputStream;
+    }
+
+    /**
      * Returns an InputStream which transcodes the character data in the given InputStream from one character set to
      * another.
      *
