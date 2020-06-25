@@ -73,6 +73,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 import javax.activation.MimeType;
+import javax.xml.bind.DatatypeConverter;
 import javax.xml.datatype.Duration;
 
 /**
@@ -465,10 +466,12 @@ public final class ObjectHelper {
             object = BytesHelper.normalize(object, charset);
         } else if (mode == ObjectConvertMode.STRING) {
             object = StringHelper.normalize(object, charset);
-        } else if (mode == ObjectConvertMode.BASE64) {
-            object = BytesHelper.base64Encode(BytesHelper.normalize(object, charset));
         } else if (mode == ObjectConvertMode.STREAM) {
             object = InputStreamHelper.normalize(object, charset);
+        } else if (mode == ObjectConvertMode.BASE64) {
+            object = BytesHelper.base64Encode(BytesHelper.normalize(object, charset));
+        } else if (mode == ObjectConvertMode.HEX) {
+            object = BytesHelper.hexEncode(BytesHelper.normalize(object, charset));
         } else {
             throw new IllegalArgumentException("Unsupported conversion mode specified: " + mode);
         }

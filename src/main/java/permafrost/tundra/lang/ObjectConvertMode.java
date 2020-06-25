@@ -28,7 +28,7 @@ package permafrost.tundra.lang;
  * The supported return types for the convert method.
  */
 public enum ObjectConvertMode {
-    STREAM(0), BYTES(1), STRING(2), BASE64(3);
+    STREAM(0), BYTES(1), STRING(2), BASE64(3), HEX(4);
 
     /**
      * The default convert mode used by Tundra.
