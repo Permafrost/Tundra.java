@@ -143,17 +143,21 @@ public final class HTTPHelper {
     /**
      * Throws an exception if the given HTTP response status code is >= 400.
      *
-     * @param code                  Response status code.
-     * @param message               Optional response status message.
-     * @param content               Optional response body content.
-     * @throws HTTPClientException  If the given code was >= 400 and < 500.
+     * @param code                              Response status code.
+     * @param message                           Optional response status message.
+     * @param content                           Optional response body content.
+     * @throws HTTPClientException              If the given code was >= 400 and < 500 and not 429.
+     * @throws HTTPClientRecoverableException   If the given code was 429.
+     * @throws HTTPServerException              If the given code was >= 500.
      */
     public static void raiseIfRequired(int code, String message, Content content) throws HTTPClientException {
         if (code >= 400) {
-            if (code < 500) {
-                throw new HTTPClientException(code, message, content);
-            } else {
+            if (code >= 500) {
                 throw new HTTPServerException(code, message, content);
+            } else if (code == 429) {
+                throw new HTTPClientRecoverableException(code, message, content);
+            } else {
+                throw new HTTPClientException(code, message, content);
             }
         }
     }
@@ -225,7 +229,7 @@ public final class HTTPHelper {
                             String contentType = IDataHelper.get(headers, "Content-Type", String.class);
                             byte[] contentBytes = IDataHelper.get(cursor, "content", byte[].class);
 
-                            HTTPHelper.raiseIfRequired(code, message, Content.of(contentBytes, contentType));
+                            raiseIfRequired(code, message, Content.of(contentBytes, contentType));
                         }
                     } finally {
                         statusCursor.destroy();
@@ -247,6 +251,6 @@ public final class HTTPHelper {
      * @return          A string describing the response as an exception message.
      */
     static String getExceptionMessage(int code, String message, Content content) {
-        return "HTTP/1.1 " + code + " " + HTTPHelper.normalizeResponseStatusMessage(code, message) + (content == null ? "" : " (Content-Length: " + content.getLength() + ")");
+        return "HTTP/1.1 " + code + " " + normalizeResponseStatusMessage(code, message) + (content == null ? "" : " (Content-Length: " + content.getLength() + ")");
     }
 }
