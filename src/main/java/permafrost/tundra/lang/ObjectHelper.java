@@ -27,6 +27,7 @@ package permafrost.tundra.lang;
 import com.wm.data.IData;
 import com.wm.data.IDataPortable;
 import com.wm.data.IDataUtil;
+import com.wm.data.MBoolean;
 import com.wm.lang.ns.NSNode;
 import com.wm.util.Table;
 import com.wm.util.coder.IDataCodable;
@@ -262,7 +263,13 @@ public final class ObjectHelper {
         String output;
 
         if (object instanceof NSNode) {
-            output = ((NSNode)object).getNSName().toString();
+            output = ((NSNode) object).getNSName().toString();
+        } else if (object instanceof MBoolean[][]) {
+            output = TableHelper.stringify((Object[][])object);
+        } else if (object instanceof MBoolean[]) {
+            output = ArrayHelper.stringify((Object[])object);
+        } else if (object instanceof MBoolean) {
+            output = object.toString();
         } else if (object instanceof IData[] || object instanceof Table || object instanceof IDataCodable[] || object instanceof IDataPortable[] || object instanceof ValuesCodable[]) {
             output = ArrayHelper.stringify(IDataHelper.toIDataArray(object));
         } else if (object instanceof IData || object instanceof IDataCodable || object instanceof IDataPortable || object instanceof ValuesCodable) {
