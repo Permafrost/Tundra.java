@@ -972,7 +972,22 @@ public final class IDataHelper {
      * @return          A new IData document which is a shallow copy of the given IData document.
      */
     public static IData clone(IData document) {
-        return clone(document, (Set<String>)null);
+        if (document == null) return null;
+
+        IData output = IDataFactory.create();
+        IDataCursor inputCursor = document.getCursor();
+        IDataCursor outputCursor = output.getCursor();
+
+        try {
+            while (inputCursor.next()) {
+                outputCursor.insertAfter(inputCursor.getKey(), inputCursor.getValue());
+            }
+        } finally {
+            inputCursor.destroy();
+            outputCursor.destroy();
+        }
+
+        return output;
     }
 
     /**
@@ -1001,17 +1016,18 @@ public final class IDataHelper {
         IDataCursor inputCursor = document.getCursor();
         IDataCursor outputCursor = output.getCursor();
 
-        while(inputCursor.next()) {
-            String key = inputCursor.getKey();
-            Object value = inputCursor.getValue();
-
-            if (!excluding.contains(key)) {
-                outputCursor.insertAfter(key, value);
+        try {
+            while (inputCursor.next()) {
+                String key = inputCursor.getKey();
+                Object value = inputCursor.getValue();
+                if (!excluding.contains(key)) {
+                    outputCursor.insertAfter(key, value);
+                }
             }
+        } finally {
+            inputCursor.destroy();
+            outputCursor.destroy();
         }
-
-        inputCursor.destroy();
-        outputCursor.destroy();
 
         return output;
     }
@@ -1023,7 +1039,15 @@ public final class IDataHelper {
      * @return          A new IData[] document list which is a shallow copy of the given IData[] document list.
      */
     public static IData[] clone(IData[] array) {
-        return clone(array, (Set<String>)null);
+        if (array == null) return null;
+
+        IData[] output = new IData[array.length];
+
+        for (int i = 0; i < array.length; i++) {
+            output[i] = clone(array[i]);
+        }
+
+        return output;
     }
 
     /**
