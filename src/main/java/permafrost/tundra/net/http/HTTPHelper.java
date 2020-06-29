@@ -30,8 +30,10 @@ import com.wm.data.IDataCursor;
 import permafrost.tundra.content.Content;
 import permafrost.tundra.data.CaseInsensitiveIData;
 import permafrost.tundra.data.IDataHelper;
+import permafrost.tundra.data.IDataMap;
 import permafrost.tundra.lang.BytesHelper;
 import permafrost.tundra.lang.ExceptionHelper;
+import permafrost.tundra.mime.MIMETypeHelper;
 import java.io.IOException;
 import java.util.Locale;
 
@@ -225,11 +227,17 @@ public final class HTTPHelper {
                         int code = IDataHelper.getOrDefault(statusCursor, "code", Integer.class, 200);
                         String message = IDataHelper.get(statusCursor, "message", String.class);
                         if (code >= 400) {
+                            String uri = IDataHelper.get(cursor, "uri", String.class);
                             IData headers = IDataHelper.get(cursor, "headers", IData.class);
                             String contentType = IDataHelper.get(headers, "Content-Type", String.class);
                             byte[] contentBytes = IDataHelper.get(cursor, "content", byte[].class);
 
-                            raiseIfRequired(code, message, Content.of(contentBytes, contentType));
+                            IDataMap context = new IDataMap();
+                            context.put("uri", uri);
+                            context.put("status", status);
+                            context.put("headers", IDataHelper.sort(headers));
+
+                            raiseIfRequired(code, message, new Content(contentBytes, MIMETypeHelper.of(contentType), context));
                         }
                     } finally {
                         statusCursor.destroy();
@@ -251,6 +259,6 @@ public final class HTTPHelper {
      * @return          A string describing the response as an exception message.
      */
     static String getExceptionMessage(int code, String message, Content content) {
-        return "HTTP/1.1 " + code + " " + normalizeResponseStatusMessage(code, message) + (content == null ? "" : " (Content-Length: " + content.getLength() + ")");
+        return "HTTP/1.1 " + code + " " + normalizeResponseStatusMessage(code, message);
     }
 }

@@ -27,12 +27,7 @@ package permafrost.tundra.content;
 import com.wm.data.IData;
 import com.wm.util.coder.IDataCodable;
 import permafrost.tundra.data.IDataMap;
-import permafrost.tundra.lang.BytesHelper;
-import permafrost.tundra.lang.CharsetHelper;
 import permafrost.tundra.mime.MIMETypeHelper;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.Charset;
 import javax.activation.MimeType;
 
 /**
@@ -51,6 +46,10 @@ public class Content implements IDataCodable {
      * The size of the content in bytes.
      */
     protected int length;
+    /**
+     * Optional document providing context for this content.
+     */
+    protected IData context;
 
     /**
      * Create a new Content object to hold arbitrary binary data.
@@ -74,16 +73,6 @@ public class Content implements IDataCodable {
      * @param  data                     Arbitrary binary data.
      * @param  type                     The MIME media type of the data.
      */
-    public Content(byte[] data, String type) {
-        this(data, MIMETypeHelper.of(type));
-    }
-
-    /**
-     * Create a new Content object to hold arbitrary binary data.
-     *
-     * @param  data                     Arbitrary binary data.
-     * @param  type                     The MIME media type of the data.
-     */
     public Content(byte[] data, MimeType type) {
         this.data = data == null ? new byte[0] : data;
         this.type = MIMETypeHelper.normalize(type);
@@ -93,77 +82,24 @@ public class Content implements IDataCodable {
     /**
      * Create a new Content object to hold arbitrary binary data.
      *
-     * @param  data                     Arbitrary binary data.
-     * @param  type                     The MIME media type of the data.
-     * @throws IOException              If an I/O error occurs reading the data.
+     * @param data                      Arbitrary binary data.
+     * @param type                      The MIME media type of the data.
+     * @param context                   The context for this content.
      */
-    public Content(InputStream data, String type) throws IOException {
-        this(data, MIMETypeHelper.of(type));
+    public Content(byte[] data, MimeType type, IData context) {
+        this.data = data == null ? new byte[0] : data;
+        this.type = MIMETypeHelper.normalize(type);
+        this.length = this.data.length;
+        this.context = context;
     }
 
     /**
-     * Create a new Content object to hold arbitrary binary data.
+     * Returns the context for this content.
      *
-     * @param  data                     Arbitrary binary data.
-     * @param  type                     The MIME media type of the data.
-     * @throws IOException              If an I/O error occurs reading the data.
+     * @return the context for this content.
      */
-    public Content(InputStream data, MimeType type) throws IOException {
-        this(BytesHelper.normalize(data), type);
-    }
-
-    /**
-     * Create a new Content object to hold arbitrary binary data.
-     *
-     * @param  data                     Arbitrary binary data.
-     * @param  type                     The MIME media type of the data.
-     */
-    public Content(String data, String type) {
-        this(data, type, null);
-    }
-
-    /**
-     * Create a new Content object to hold arbitrary binary data.
-     *
-     * @param  data                     Arbitrary binary data.
-     * @param  type                     The MIME media type of the data.
-     * @param  charsetName              The name of the charset used to encode the string data.
-     */
-    public Content(String data, String type, String charsetName) {
-        this(data, MIMETypeHelper.of(type), charsetName);
-    }
-
-    /**
-     * Create a new Content object to hold arbitrary binary data.
-     *
-     * @param  data                     Arbitrary binary data.
-     * @param  type                     The MIME media type of the data.
-     */
-    public Content(String data, MimeType type) {
-        this(data, type, MIMETypeHelper.normalize(type).getParameter("charset"));
-    }
-
-    /**
-     * Create a new Content object to hold arbitrary binary data.
-     *
-     * @param  data                     Arbitrary binary data.
-     * @param  type                     The MIME media type of the data.
-     * @param  charsetName              The name of the charset used to encode the string data.
-     */
-    public Content(String data, MimeType type, String charsetName) {
-        this(data, type, CharsetHelper.normalize(charsetName));
-    }
-
-    /**
-     * Create a new Content object to hold arbitrary binary data.
-     *
-     * @param  data                     Arbitrary binary data.
-     * @param  type                     The MIME media type of the data.
-     * @param  charset                  The charset used to encode the string data.
-     */
-    public Content(String data, MimeType type, Charset charset) {
-        this(BytesHelper.normalize(data, charset), type);
-        this.type.setParameter("charset", CharsetHelper.normalize(charset).displayName());
+    public IData getContext() {
+        return context;
     }
 
     /**
@@ -214,6 +150,7 @@ public class Content implements IDataCodable {
         map.put("$content", content);
         map.put("$content.type", getType().toString());
         map.put("$content.length", Integer.toString(length));
+        if (context != null) map.put("$content.context", context);
 
         return map;
     }
@@ -226,110 +163,6 @@ public class Content implements IDataCodable {
      */
     public void setIData(IData document) {
         throw new UnsupportedOperationException("setIData(IData) not implemented");
-    }
-
-    /**
-     * Create a new Content object to hold arbitrary binary data.
-     *
-     * @param  data                     Arbitrary binary data.
-     * @param  type                     The MIME media type of the data.
-     * @return                          The new Content object.
-     */
-    public static Content of(byte[] data, String type) {
-        return new Content(data, type);
-    }
-
-    /**
-     * Create a new Content object to hold arbitrary binary data.
-     *
-     * @param  data                     Arbitrary binary data.
-     * @param  type                     The MIME media type of the data.
-     * @return                          The new Content object.
-     */
-    public static Content of(byte[] data, MimeType type) {
-        return new Content(data, type);
-    }
-
-    /**
-     * Create a new Content object to hold arbitrary binary data.
-     *
-     * @param  data                     Arbitrary binary data.
-     * @param  type                     The MIME media type of the data.
-     * @return                          The new Content object.
-     * @throws IOException              If an IO error occurs.
-     */
-    public static Content of(InputStream data, String type) throws IOException {
-        return new Content(data, type);
-    }
-
-    /**
-     * Create a new Content object to hold arbitrary binary data.
-     *
-     * @param  data                     Arbitrary binary data.
-     * @param  type                     The MIME media type of the data.
-     * @return                          The new Content object.
-     * @throws IOException              If an IO error occurs.
-     */
-    public static Content of(InputStream data, MimeType type) throws IOException {
-        return new Content(data, type);
-    }
-
-    /**
-     * Create a new Content object to hold arbitrary binary data.
-     *
-     * @param  data                     Arbitrary binary data.
-     * @param  type                     The MIME media type of the data.
-     * @return                          The new Content object.
-     */
-    public static Content of(String data, String type) {
-        return new Content(data, type);
-    }
-
-    /**
-     * Create a new Content object to hold arbitrary binary data.
-     *
-     * @param  data                     Arbitrary binary data.
-     * @param  type                     The MIME media type of the data.
-     * @return                          The new Content object.
-     */
-    public static Content of(String data, MimeType type) {
-        return new Content(data, type);
-    }
-
-    /**
-     * Create a new Content object to hold arbitrary binary data.
-     *
-     * @param  data                     Arbitrary binary data.
-     * @param  type                     The MIME media type of the data.
-     * @param  charsetName              The name of the charset used to encode the string data.
-     * @return                          The new Content object.
-     */
-    public static Content of(String data, String type, String charsetName) {
-        return new Content(data, type, charsetName);
-    }
-
-    /**
-     * Create a new Content object to hold arbitrary binary data.
-     *
-     * @param  data                     Arbitrary binary data.
-     * @param  type                     The MIME media type of the data.
-     * @param  charsetName              The name of the charset used to encode the string data.
-     * @return                          The new Content object.
-     */
-    public static Content of(String data, MimeType type, String charsetName) {
-        return new Content(data, type, charsetName);
-    }
-
-    /**
-     * Create a new Content object to hold arbitrary binary data.
-     *
-     * @param  data                     Arbitrary binary data.
-     * @param  type                     The MIME media type of the data.
-     * @param  charset                  The charset used to encode the string data.
-     * @return                          The new Content object.
-     */
-    public static Content of(String data, MimeType type, Charset charset) {
-        return new Content(data, type, charset);
     }
 
     /**
