@@ -138,6 +138,30 @@ public final class ListHelper {
     }
 
     /**
+     * Concatenates the given lists into a single list.
+     *
+     * @param lists The lists to concatenate.
+     * @param <E>   The component type of the list.
+     * @return      A new list containing all the items if the given lists.
+     */
+    public static <E> List<E> concatenate(List<E> ...lists) {
+        if (lists == null) return null;
+        int size = 0;
+        for (List<E> list : lists) {
+            if (list != null) {
+                size += list.size();
+            }
+        }
+        List<E> outputList = create(size);
+        for (List<E> list : lists) {
+            if (list != null) {
+                outputList.addAll(list);
+            }
+        }
+        return outputList;
+    }
+
+    /**
      * Removes all items from the given list, or returns a new list if the given list is null.
      *
      * @param list  The list to be cleared.
