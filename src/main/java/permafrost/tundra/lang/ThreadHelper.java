@@ -28,8 +28,10 @@ import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
 import com.wm.data.IDataUtil;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import javax.xml.datatype.Duration;
 
 /**
@@ -42,12 +44,40 @@ public final class ThreadHelper {
     private ThreadHelper() {}
 
     /**
+     * Returns the thread with the given identity. Note this method has O(n) performance where n is the number of
+     * threads, and should be used sparingly.
+     *
+     * @param identity  The identity of the thread.
+     * @return          The thread with the given identity, or null if no thread currently exists with that identity.
+     */
+    public static Thread get(int identity) {
+        Thread[] threads = list();
+        for (Thread thread : threads) {
+            if (thread != null && thread.getId() == identity) {
+                return thread;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Returns the currently executing thread.
      *
      * @return The currently executing thread.
      */
     public static Thread current() {
         return Thread.currentThread();
+    }
+
+    /**
+     * Interrupts the given thread.
+     *
+     * @param thread    The thread to be interrupted.
+     */
+    public static void interrupt(Thread thread) {
+        if (thread != null) {
+            thread.interrupt();
+        }
     }
 
     /**
@@ -65,6 +95,24 @@ public final class ThreadHelper {
         }
 
         return Arrays.copyOf(threads, threadCount);
+    }
+
+    /**
+     * Returns the list of threads with the given name. Note this method has O(n) performance where n is the number of
+     * threads, and should be used sparingly.
+     *
+     * @param name  The name of the threads to return.
+     * @return      The list of threads with the given name.
+     */
+    public static Thread[] list(String name) {
+        Thread[] threads = list();
+        List<Thread> threadsWithName = new ArrayList<Thread>(threads.length);
+        for (Thread thread : threads) {
+            if (thread != null && thread.getName().equals(name)) {
+                threadsWithName.add(thread);
+            }
+        }
+        return threadsWithName.toArray(new Thread[0]);
     }
 
     /**
@@ -104,6 +152,18 @@ public final class ThreadHelper {
             Thread.sleep(milliseconds);
         } catch(InterruptedException ex) {
             Thread.currentThread().interrupt();
+        }
+    }
+
+    /**
+     * Stops the given thread.
+     *
+     * @param thread    The thread to be stopped.
+     */
+    @SuppressWarnings("deprecation")
+    public static void stop(Thread thread) {
+        if (thread != null) {
+            thread.stop();
         }
     }
 
