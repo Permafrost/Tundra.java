@@ -33,16 +33,21 @@ import com.wm.data.IDataFactory;
 import com.wm.data.IDataUtil;
 import com.wm.util.ServerException;
 import com.wm.util.coder.IDataCodable;
+import permafrost.tundra.data.IDataHTMLParser;
 import permafrost.tundra.data.IDataHelper;
 import permafrost.tundra.lang.BooleanHelper;
+import permafrost.tundra.lang.ExceptionHelper;
 import permafrost.tundra.time.DateTimeHelper;
 import permafrost.tundra.time.DurationHelper;
 import permafrost.tundra.time.DurationPattern;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -155,30 +160,44 @@ public class ServiceUsageProcessor extends AbstractInvokeChainProcessor implemen
         IData output = IDataFactory.create();
         IDataCursor cursor = output.getCursor();
 
-        IDataUtil.put(cursor, "monitoring.started?", BooleanHelper.emit(started));
-        if (started) {
-            IDataUtil.put(cursor, "monitoring.start", DateTimeHelper.format(startTime));
-            IDataUtil.put(cursor, "monitoring.duration", DurationHelper.format(System.currentTimeMillis() - startTime, DurationPattern.XML));
-        }
-
-        IDataUtil.put(cursor, "invocations.started", totalInvocations.longValue());
-        IDataUtil.put(cursor, "invocations.errored", totalErrors.longValue());
-
-        List<IData> currentInvocations = new ArrayList<IData>(invocations.size());
-        for (Map.Entry<Thread, Invocation> entry : invocations.entrySet()) {
-            if (entry.getValue().size() == 0) {
-                // remove any entries that don't have any current invocations - this shouldn't happen, but for some
-                // reason Event Manager threads sometimes fall into this category
-                invocations.remove(entry.getKey());
-            } else {
-                currentInvocations.add(entry.getValue().getIData());
+        try {
+            IDataUtil.put(cursor, "monitoring.started?", BooleanHelper.emit(started));
+            if (started) {
+                IDataUtil.put(cursor, "monitoring.start", DateTimeHelper.format(startTime));
+                IDataUtil.put(cursor, "monitoring.duration", DurationHelper.format(System.currentTimeMillis() - startTime, DurationPattern.XML));
             }
+            IDataUtil.put(cursor, "monitoring.datetime", DateTimeHelper.now("datetime"));
+            IDataUtil.put(cursor, "invocations.started", totalInvocations.longValue());
+            IDataUtil.put(cursor, "invocations.errored", totalErrors.longValue());
+
+            // sort the list of invocations by start time
+            SortedSet<Invocation> sortedInvocations = new TreeSet<Invocation>();
+            for (Map.Entry<Thread, Invocation> entry : invocations.entrySet()) {
+                Thread thread = entry.getKey();
+                Invocation invocation = entry.getValue();
+                if (invocation == null || invocation.size() == 0) {
+                    // remove any entries that don't have any current invocations - this shouldn't happen, but for some
+                    // reason Event Manager threads sometimes fall into this category
+                    invocations.remove(thread, invocation);
+                } else {
+                    sortedInvocations.add(invocation);
+                }
+            }
+
+            // convert the sorted list of invocations to a list of IData documents
+            List<IData> currentInvocations = new ArrayList<IData>(sortedInvocations.size());
+            for (Invocation invocation : sortedInvocations) {
+                IData document = invocation.getIData();
+                if (document != null) {
+                    currentInvocations.add(document);
+                }
+            }
+
+            IDataUtil.put(cursor, "invocations.current", currentInvocations.toArray(new IData[0]));
+            IDataUtil.put(cursor, "invocations.current.length", currentInvocations.size());
+        } finally {
+            cursor.destroy();
         }
-
-        IDataUtil.put(cursor, "invocations.current", currentInvocations.toArray(new IData[0]));
-        IDataUtil.put(cursor, "invocations.current.length", currentInvocations.size());
-
-        cursor.destroy();
 
         return output;
     }
@@ -237,9 +256,21 @@ public class ServiceUsageProcessor extends AbstractInvokeChainProcessor implemen
          */
         private final IData pipeline;
         /**
+         * The length of the pipeline.
+         */
+        private final int pipelineLength;
+        /**
+         * The input pipeline lazily serialized as HTML.
+         */
+        private volatile String pipelineHTML;
+        /**
          * The user and session invoking the service.
          */
         private final String user, session;
+        /**
+         * The parser used to emit the pipeline as HTML.
+         */
+        private static final IDataHTMLParser IDATA_HTML_PARSER = new IDataHTMLParser();
 
         /**
          * Constructs a new InvocationFrame.
@@ -251,6 +282,7 @@ public class ServiceUsageProcessor extends AbstractInvokeChainProcessor implemen
         public Frame(BaseService service, IData pipeline, InvokeState state) {
             this.service = service;
             this.pipeline = IDataHelper.clone(pipeline);
+            this.pipelineLength = IDataHelper.size(this.pipeline);
             this.startTime = System.currentTimeMillis();
             this.session = state.getSession().getSessionID();
             this.user = state.getUser().getName();
@@ -266,15 +298,26 @@ public class ServiceUsageProcessor extends AbstractInvokeChainProcessor implemen
             IData output = IDataFactory.create();
             IDataCursor cursor = output.getCursor();
 
-            IDataUtil.put(cursor, "service", service.getNSName().getFullName());
-            IDataUtil.put(cursor, "package", service.getPackageName());
-            IDataUtil.put(cursor, "pipeline", pipeline);
-            IDataUtil.put(cursor, "pipeline.length", IDataHelper.size(pipeline));
-            IDataUtil.put(cursor, "start", DateTimeHelper.format(startTime));
-            IDataUtil.put(cursor, "duration", DurationHelper.format(System.currentTimeMillis() - startTime, DurationPattern.XML));
-            IDataUtil.put(cursor, "session", session);
-            IDataUtil.put(cursor, "user", user);
-            cursor.destroy();
+            try {
+                // lazily initialize pipelineHTML by serializing the pipeline to HTML on first access
+                if (pipelineHTML == null) {
+                    pipelineHTML = IDATA_HTML_PARSER.emit(pipeline, 10, 5, 3);
+                }
+
+                IDataUtil.put(cursor, "service", service.getNSName().getFullName());
+                IDataUtil.put(cursor, "package", service.getPackageName());
+                IDataUtil.put(cursor, "pipeline", pipeline);
+                IDataUtil.put(cursor, "pipeline.length",pipelineLength);
+                IDataUtil.put(cursor, "pipeline.html", pipelineHTML);
+                IDataUtil.put(cursor, "start", DateTimeHelper.format(startTime));
+                IDataUtil.put(cursor, "duration", DurationHelper.format(System.currentTimeMillis() - startTime, DurationPattern.XML));
+                IDataUtil.put(cursor, "session", session);
+                IDataUtil.put(cursor, "user", user);
+            } catch (IOException ex) {
+                ExceptionHelper.raiseUnchecked(ex);
+            } finally {
+                cursor.destroy();
+            }
 
             return output;
         }
@@ -294,7 +337,7 @@ public class ServiceUsageProcessor extends AbstractInvokeChainProcessor implemen
     /**
      * Represents a single currently executing service thread.
      */
-    private static class Invocation implements IDataCodable {
+    private static class Invocation implements IDataCodable, Comparable<Invocation> {
         /**
          * The call stack.
          */
@@ -347,27 +390,32 @@ public class ServiceUsageProcessor extends AbstractInvokeChainProcessor implemen
         /**
          * Returns an IData representation of this object.
          *
-         * @return An IData representation of this object.
+         * @return An IData representation of this object, or null if there are no current frames.
          */
         @Override
         public IData getIData() {
-            IData output = IDataFactory.create();
-            IDataCursor cursor = output.getCursor();
-
-            IDataUtil.put(cursor, "thread.id", thread.getId());
-            IDataUtil.put(cursor, "thread.name", thread.getName());
-            IDataUtil.put(cursor, "thread.object", thread);
-            IDataUtil.put(cursor, "thread.start", DateTimeHelper.format(startTime));
-            IDataUtil.put(cursor, "thread.duration", DurationHelper.format(System.currentTimeMillis() - startTime, DurationPattern.XML));
+            IData output = null;
 
             List<IData> frames = new ArrayList<IData>(stack.size());
             for(Frame frame : stack) {
                 frames.add(frame.getIData());
             }
-            IDataUtil.put(cursor, "callstack", frames.toArray(new IData[0]));
-            IDataUtil.put(cursor, "callstack.length", frames.size());
 
-            cursor.destroy();
+            if (frames.size() > 0) {
+                output = IDataFactory.create();
+                IDataCursor cursor = output.getCursor();
+                try {
+                    IDataUtil.put(cursor, "thread.id", thread.getId());
+                    IDataUtil.put(cursor, "thread.name", thread.getName());
+                    IDataUtil.put(cursor, "thread.object", thread);
+                    IDataUtil.put(cursor, "thread.start", DateTimeHelper.format(startTime));
+                    IDataUtil.put(cursor, "thread.duration", DurationHelper.format(System.currentTimeMillis() - startTime, DurationPattern.XML));
+                    IDataUtil.put(cursor, "callstack", frames.toArray(new IData[0]));
+                    IDataUtil.put(cursor, "callstack.length", frames.size());
+                } finally {
+                    cursor.destroy();
+                }
+            }
 
             return output;
         }
@@ -381,6 +429,27 @@ public class ServiceUsageProcessor extends AbstractInvokeChainProcessor implemen
         @Override
         public void setIData(IData input) {
             throw new UnsupportedOperationException("setIData not implemented");
+        }
+
+        /**
+         * Compares this invocation with another based on start datetime.
+         *
+         * @param other The other invocation to compare with.
+         * @return      The result of the comparison.
+         */
+        @Override
+        public int compareTo(Invocation other) {
+            int result;
+            if (other == null) {
+                result = 1;
+            } else if (this.startTime < other.startTime) {
+                result = -1;
+            } else if (this.startTime > other.startTime) {
+                result = 1;
+            } else {
+                result = 0;
+            }
+            return result;
         }
     }
 }
