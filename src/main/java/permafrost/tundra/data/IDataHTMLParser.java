@@ -44,7 +44,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Serializes IData objects to HTML.
@@ -293,7 +295,7 @@ public class IDataHTMLParser extends IDataParser {
                         }
                     } else {
                         appendable.append("<tr>");
-                        int keyLength = Math.min(keys.length, maxWidth);
+                        int keyLength = Math.min(keys.length, maxWidth + 1);
                         for (int j = 0; j < keyLength; j++) {
                             appendable.append("<td>").append(HTMLEntity.VERTICAL_ELLIPSIS.toString()).append("</td>");
                         }
@@ -356,11 +358,8 @@ public class IDataHTMLParser extends IDataParser {
                 } else {
                     appendable.append("<tr>");
                     for (int j = 0; j < width; j++) {
-                        if (j < maxWidth) {
+                        if (j <= maxWidth) {
                             appendable.append("<td>").append(HTMLEntity.VERTICAL_ELLIPSIS.toString()).append("</td>");
-                        } else {
-                            appendable.append("<td>").append(HTMLEntity.HORIZONTAL_ELLIPSIS.toString()).append("</td>");
-                            break;
                         }
                     }
                     appendable.append("</tr>");
@@ -413,11 +412,8 @@ public class IDataHTMLParser extends IDataParser {
                 } else {
                     appendable.append("<tr>");
                     for (int j = 0; j < width; j++) {
-                        if (j < maxWidth) {
+                        if (j <= maxWidth) {
                             appendable.append("<td>").append(HTMLEntity.VERTICAL_ELLIPSIS.toString()).append("</td>");
-                        } else {
-                            appendable.append("<td>").append(HTMLEntity.HORIZONTAL_ELLIPSIS.toString()).append("</td>");
-                            break;
                         }
                     }
                     appendable.append("</tr>");
@@ -470,11 +466,8 @@ public class IDataHTMLParser extends IDataParser {
                 } else {
                     appendable.append("<tr>");
                     for (int j = 0; j < width; j++) {
-                        if (j < maxWidth) {
+                        if (j <= maxWidth) {
                             appendable.append("<td>").append(HTMLEntity.VERTICAL_ELLIPSIS.toString()).append("</td>");
-                        } else {
-                            appendable.append("<td>").append(HTMLEntity.HORIZONTAL_ELLIPSIS.toString()).append("</td>");
-                            break;
                         }
                     }
                     appendable.append("</tr>");
@@ -527,11 +520,8 @@ public class IDataHTMLParser extends IDataParser {
                 } else {
                     appendable.append("<tr>");
                     for (int j = 0; j < width; j++) {
-                        if (j < maxWidth) {
+                        if (j <= maxWidth) {
                             appendable.append("<td>").append(HTMLEntity.VERTICAL_ELLIPSIS.toString()).append("</td>");
-                        } else {
-                            appendable.append("<td>").append(HTMLEntity.HORIZONTAL_ELLIPSIS.toString()).append("</td>");
-                            break;
                         }
                     }
                     appendable.append("</tr>");
@@ -584,11 +574,8 @@ public class IDataHTMLParser extends IDataParser {
                 } else {
                     appendable.append("<tr>");
                     for (int j = 0; j < width; j++) {
-                        if (j < maxWidth) {
+                        if (j <= maxWidth) {
                             appendable.append("<td>").append(HTMLEntity.VERTICAL_ELLIPSIS.toString()).append("</td>");
-                        } else {
-                            appendable.append("<td>").append(HTMLEntity.HORIZONTAL_ELLIPSIS.toString()).append("</td>");
-                            break;
                         }
                     }
                     appendable.append("</tr>");
@@ -641,11 +628,8 @@ public class IDataHTMLParser extends IDataParser {
                 } else {
                     appendable.append("<tr>");
                     for (int j = 0; j < width; j++) {
-                        if (j < maxWidth) {
+                        if (j <= maxWidth) {
                             appendable.append("<td>").append(HTMLEntity.VERTICAL_ELLIPSIS.toString()).append("</td>");
-                        } else {
-                            appendable.append("<td>").append(HTMLEntity.HORIZONTAL_ELLIPSIS.toString()).append("</td>");
-                            break;
                         }
                     }
                     appendable.append("</tr>");
@@ -784,11 +768,8 @@ public class IDataHTMLParser extends IDataParser {
                 } else {
                     appendable.append("<tr>");
                     for (int j = 0; j < width; j++) {
-                        if (j < maxWidth) {
+                        if (j <= maxWidth) {
                             appendable.append("<td>").append(HTMLEntity.VERTICAL_ELLIPSIS.toString()).append("</td>");
-                        } else {
-                            appendable.append("<td>").append(HTMLEntity.HORIZONTAL_ELLIPSIS.toString()).append("</td>");
-                            break;
                         }
                     }
                     appendable.append("</tr>");
@@ -1120,26 +1101,93 @@ public class IDataHTMLParser extends IDataParser {
      * @throws IOException If an IO error occurs.
      */
     protected Appendable emit(Appendable appendable, Iterable input, int maxLength, int maxWidth, int maxDepth, int currentDepth, boolean portraitOrientation) throws IOException {
-        int i = 0;
+        Set<String> keys = new LinkedHashSet<String>();
+        boolean isIDataCollection = false;
         for (Object value : input) {
-            if (i == 0) {
-                appendable.append("<table><tbody>");
-            }
-            if (i < maxLength) {
-                appendable.append("<tr><td>");
-                emit(appendable, value, maxLength, maxWidth, maxDepth, currentDepth, portraitOrientation);
-                appendable.append("</td></tr>");
+            isIDataCollection = value instanceof IData;
+            if (isIDataCollection) {
+                keys.addAll(IDataHelper.getKeyList((IData)value));
             } else {
-                appendable.append("<tr><td>").append(HTMLEntity.VERTICAL_ELLIPSIS.toString()).append("</td></tr>");
                 break;
             }
-            i++;
         }
-        if (i == 0) {
-            appendable.append(HTMLEntity.EMPTY.toString());
+
+        if (isIDataCollection) {
+            int i = 0;
+            for (Object value : input) {
+                if (value instanceof IData) {
+                    IDataCursor cursor = ((IData)value).getCursor();
+                    try {
+                        if (i == 0) {
+                            appendable.append("<table class=\"IDataArray\"><thead class=\"IDataArray-Head\"><tr>");
+                            int j = 0;
+                            for (String key : keys) {
+                                if (j < maxWidth) {
+                                    appendable.append("<th>").append(HTMLHelper.encode(key)).append("</th>");
+                                } else {
+                                    appendable.append("<th>").append(HTMLEntity.HORIZONTAL_ELLIPSIS.toString()).append("</th>");
+                                }
+                                j++;
+                            }
+                            appendable.append("</tr></thead><tbody class=\"IDataArray-Body\">");
+                        }
+                        if (i < maxLength) {
+                            appendable.append("<tr>");
+                            for (String key : keys) {
+                                appendable.append("<td>");
+                                emit(appendable, IDataHelper.get(cursor, key), maxLength, maxWidth, maxDepth, currentDepth, portraitOrientation);
+                                appendable.append("</td>");
+                            }
+                            appendable.append("</tr>");
+                        } else {
+                            appendable.append("<tr>");
+                            int j = 0;
+                            for (String key : keys) {
+                                if (j <= maxWidth) {
+                                    appendable.append("<td>").append(HTMLEntity.VERTICAL_ELLIPSIS.toString()).append("</td>");
+                                }
+                                j++;
+                            }
+                            appendable.append("</tr>");
+                            break;
+                        }
+                        i++;
+                    } finally {
+                        cursor.destroy();
+                    }
+                }
+            }
+
+            if (i == 0) {
+                appendable.append(HTMLEntity.EMPTY.toString());
+            } else {
+                appendable.append("</tbody></table>");
+            }
         } else {
-            appendable.append("</tbody></table>");
+            int i = 0;
+            for (Object value : input) {
+                if (value != null) {
+                    if (i == 0) {
+                        appendable.append("<table><tbody>");
+                    }
+                    if (i < maxLength) {
+                        appendable.append("<tr><td>");
+                        emit(appendable, value, maxLength, maxWidth, maxDepth, currentDepth, portraitOrientation);
+                        appendable.append("</td></tr>");
+                    } else {
+                        appendable.append("<tr><td>").append(HTMLEntity.VERTICAL_ELLIPSIS.toString()).append("</td></tr>");
+                        break;
+                    }
+                    i++;
+                }
+            }
+            if (i == 0) {
+                appendable.append(HTMLEntity.EMPTY.toString());
+            } else {
+                appendable.append("</tbody></table>");
+            }
         }
+
         return appendable;
     }
 
