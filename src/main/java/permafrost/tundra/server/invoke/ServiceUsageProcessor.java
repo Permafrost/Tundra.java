@@ -26,6 +26,7 @@ package permafrost.tundra.server.invoke;
 
 import com.wm.app.b2b.server.BaseService;
 import com.wm.app.b2b.server.InvokeState;
+import com.wm.app.b2b.server.ServiceException;
 import com.wm.app.b2b.server.invoke.ServiceStatus;
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;
@@ -270,7 +271,7 @@ public class ServiceUsageProcessor extends AbstractInvokeChainProcessor implemen
         /**
          * The parser used to emit the pipeline as HTML.
          */
-        private static final IDataHTMLParser IDATA_HTML_PARSER = new IDataHTMLParser();
+        private static final IDataHTMLParser IDATA_HTML_PARSER = new IDataHTMLParser(true, true, 255, 10, 5, 3);
 
         /**
          * Constructs a new InvocationFrame.
@@ -301,9 +302,8 @@ public class ServiceUsageProcessor extends AbstractInvokeChainProcessor implemen
             try {
                 // lazily initialize pipelineHTML by serializing the pipeline to HTML on first access
                 if (pipelineHTML == null) {
-                    pipelineHTML = IDATA_HTML_PARSER.emit(pipeline, 10, 5, 3);
+                    pipelineHTML = IDATA_HTML_PARSER.emit(pipeline, String.class);
                 }
-
                 IDataUtil.put(cursor, "service", service.getNSName().getFullName());
                 IDataUtil.put(cursor, "package", service.getPackageName());
                 IDataUtil.put(cursor, "pipeline", pipeline);
@@ -314,6 +314,8 @@ public class ServiceUsageProcessor extends AbstractInvokeChainProcessor implemen
                 IDataUtil.put(cursor, "session", session);
                 IDataUtil.put(cursor, "user", user);
             } catch (IOException ex) {
+                ExceptionHelper.raiseUnchecked(ex);
+            } catch (ServiceException ex) {
                 ExceptionHelper.raiseUnchecked(ex);
             } finally {
                 cursor.destroy();
