@@ -67,20 +67,24 @@ public class StrictException extends UnrecoverableException {
     }
 
     /**
-     * Constructs a new StrictException with the given list of exceptions.
+     * Constructs a new StrictException with the given message and cause.
      *
-     * @param exceptions A collection of exceptions this exception will wrap.
+     * @param message       A message describing why the StrictException was thrown.
+     * @param cause         Optional cause of this Exception.
+     * @param suppressed    Optional list of suppressed exceptions.
      */
-    public StrictException(Collection<? extends Throwable> exceptions) {
-        super(exceptions);
+    public StrictException(String message, Throwable cause, Throwable... suppressed) {
+        super(message, cause, suppressed);
     }
 
     /**
-     * Constructs a new StrictException with the given list of exceptions.
+     * Constructs a new StrictException with the given message and cause.
      *
-     * @param exceptions A collection of exceptions this exception will wrap.
+     * @param message       A message describing why the StrictException was thrown.
+     * @param cause         Optional cause of this Exception.
+     * @param suppressed    Optional list of suppressed exceptions.
      */
-    public StrictException(Throwable... exceptions) {
-        super(exceptions);
+    public StrictException(String message, Throwable cause, Iterable<? extends Throwable> suppressed) {
+        super(message, cause, suppressed);
     }
 }

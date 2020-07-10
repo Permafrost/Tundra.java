@@ -66,20 +66,24 @@ public class ValidationException extends MalformedException {
     }
 
     /**
-     * Constructs a new ValidationException with the given list of exceptions.
+     * Constructs a new ValidationException with the given message and cause.
      *
-     * @param exceptions A collection of exceptions this exception will wrap.
+     * @param message       A message describing why the ValidationException was thrown.
+     * @param cause         Optional cause of this Exception.
+     * @param suppressed    Optional list of suppressed exceptions.
      */
-    public ValidationException(Collection<? extends Throwable> exceptions) {
-        super(exceptions);
+    public ValidationException(String message, Throwable cause, Throwable... suppressed) {
+        super(message, cause, suppressed);
     }
 
     /**
-     * Constructs a new ValidationException with the given list of exceptions.
+     * Constructs a new ValidationException with the given message and cause.
      *
-     * @param exceptions A collection of exceptions this exception will wrap.
+     * @param message       A message describing why the ValidationException was thrown.
+     * @param cause         Optional cause of this Exception.
+     * @param suppressed    Optional list of suppressed exceptions.
      */
-    public ValidationException(Throwable... exceptions) {
-        super(exceptions);
+    public ValidationException(String message, Throwable cause, Iterable<? extends Throwable> suppressed) {
+        super(message, cause, suppressed);
     }
 }

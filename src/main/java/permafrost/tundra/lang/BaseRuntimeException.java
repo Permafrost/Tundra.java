@@ -27,17 +27,21 @@ package permafrost.tundra.lang;
 import com.wm.data.IData;
 import com.wm.util.coder.IDataCodable;
 import permafrost.tundra.data.IDataMap;
-import java.util.Collection;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Unchecked exception superclass inherited by all other Tundra checked exceptions.
  */
-public class BaseRuntimeException extends RuntimeException implements IDataCodable {
+public class BaseRuntimeException extends RuntimeException implements ExceptionSuppression, IDataCodable {
     /**
      * Constructs a new BaseRuntimeException.
      */
     public BaseRuntimeException() {
-        super("");
+        this((String)null);
     }
 
     /**
@@ -55,36 +59,41 @@ public class BaseRuntimeException extends RuntimeException implements IDataCodab
      * @param cause The cause of this BaseRuntimeException.
      */
     public BaseRuntimeException(Throwable cause) {
-        this(ExceptionHelper.getMessage(cause), cause);
+        this(null, cause);
     }
 
     /**
      * Constructs a new BaseRuntimeException with the given message and cause.
      *
      * @param message A message describing why the BaseRuntimeException was thrown.
-     * @param cause   The cause of this Exception.
+     * @param cause   Optional cause of this Exception.
      */
     public BaseRuntimeException(String message, Throwable cause) {
-        super(message);
+        this(message, cause, (Iterable<? extends Throwable>)null);
+    }
+
+    /**
+     * Constructs a new BaseRuntimeException.
+     *
+     * @param message       A message describing why the BaseRuntimeException was thrown.
+     * @param cause         Optional cause of this Exception.
+     * @param suppressed    Optional list of suppressed exceptions.
+     */
+    public BaseRuntimeException(String message, Throwable cause, Throwable... suppressed) {
+        this(message, cause, suppressed == null ? null : Arrays.asList(suppressed));
+    }
+
+    /**
+     * Constructs a new BaseRuntimeException.
+     *
+     * @param message       A message describing why the BaseRuntimeException was thrown.
+     * @param cause         Optional cause of this Exception.
+     * @param suppressed    Optional list of suppressed exceptions.
+     */
+    public BaseRuntimeException(String message, Throwable cause, Iterable<? extends Throwable> suppressed) {
+        super(ExceptionHelper.normalizeMessage(message, cause, suppressed));
         if (cause != null) initCause(cause);
-    }
-
-    /**
-     * Constructs a new BaseRuntimeException with the given list of exceptions.
-     *
-     * @param exceptions A collection of exceptions this exception will wrap.
-     */
-    public BaseRuntimeException(Collection<? extends Throwable> exceptions) {
-        super(ExceptionHelper.getMessage(exceptions));
-    }
-
-    /**
-     * Constructs a new BaseRuntimeException with the given list of exceptions.
-     *
-     * @param exceptions A collection of exceptions this exception will wrap.
-     */
-    public BaseRuntimeException(Throwable... exceptions) {
-        super(ExceptionHelper.getMessage(exceptions));
+        suppress(suppressed);
     }
 
     /**
@@ -108,5 +117,73 @@ public class BaseRuntimeException extends RuntimeException implements IDataCodab
      */
     public void setIData(IData document) {
         throw new UnsupportedOperationException("setIData(IData) not implemented");
+    }
+
+    /**
+     * List of suppressed exceptions.
+     */
+    private List<Throwable> suppressedExceptions = Collections.emptyList();
+
+    /**
+     * Suppresses the given exception.
+     *
+     * @param exception The exception to suppress.
+     */
+    private synchronized void suppress(Throwable exception) {
+        if (exception == null || exception == this) return;
+
+        if (suppressedExceptions.size() == 0) {
+            suppressedExceptions = new ArrayList<Throwable>(1);
+        }
+
+        suppressedExceptions.add(exception);
+    }
+
+    /**
+     * Suppresses the given exceptions.
+     *
+     * @param exceptions The exceptions to suppress.
+     */
+    @Override
+    public synchronized void suppress(Iterable<? extends Throwable> exceptions) {
+        if (exceptions != null) {
+            for (Throwable exception : exceptions) {
+                suppress(exception);
+            }
+        }
+    }
+
+    /**
+     * Suppresses the given exceptions.
+     *
+     * @param exceptions The exceptions to suppress.
+     */
+    @Override
+    public synchronized void suppress(Throwable ...exceptions) {
+        if (exceptions != null) {
+            for (Throwable exception : exceptions) {
+                suppress(exception);
+            }
+        }
+    }
+
+    /**
+     * Returns the list of suppressed exceptions.
+     *
+     * @return the list of suppressed exceptions.
+     */
+    @Override
+    public synchronized Throwable[] suppressed() {
+        return suppressedExceptions.toArray(new Throwable[0]);
+    }
+
+    /**
+     * Prints this throwable and its backtrace to the specified print stream.
+     *
+     * @param printStream   The stream to print to.
+     */
+    @Override
+    public void printStackTrace(PrintStream printStream) {
+        ExceptionHelper.printStackTrace(this, printStream);
     }
 }

@@ -66,20 +66,24 @@ public class MalformedException extends StrictException {
     }
 
     /**
-     * Constructs a new MalformedException with the given list of exceptions.
+     * Constructs a new MalformedException with the given message and cause.
      *
-     * @param exceptions A collection of exceptions this exception will wrap.
+     * @param message       A message describing why the MalformedException was thrown.
+     * @param cause         Optional cause of this Exception.
+     * @param suppressed    Optional list of suppressed exceptions.
      */
-    public MalformedException(Collection<? extends Throwable> exceptions) {
-        super(exceptions);
+    public MalformedException(String message, Throwable cause, Throwable... suppressed) {
+        super(message, cause, suppressed);
     }
 
     /**
-     * Constructs a new MalformedException with the given list of exceptions.
+     * Constructs a new MalformedException with the given message and cause.
      *
-     * @param exceptions A collection of exceptions this exception will wrap.
+     * @param message       A message describing why the MalformedException was thrown.
+     * @param cause         Optional cause of this Exception.
+     * @param suppressed    Optional list of suppressed exceptions.
      */
-    public MalformedException(Throwable... exceptions) {
-        super(exceptions);
+    public MalformedException(String message, Throwable cause, Iterable<? extends Throwable> suppressed) {
+        super(message, cause, suppressed);
     }
 }

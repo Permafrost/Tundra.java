@@ -66,20 +66,24 @@ public class SecurityException extends UnrecoverableException {
     }
 
     /**
-     * Constructs a new SecurityException with the given list of exceptions.
+     * Constructs a new SecurityException with the given message and cause.
      *
-     * @param exceptions A collection of exceptions this exception will wrap.
+     * @param message       A message describing why the SecurityException was thrown.
+     * @param cause         Optional cause of this Exception.
+     * @param suppressed    Optional list of suppressed exceptions.
      */
-    public SecurityException(Collection<? extends Throwable> exceptions) {
-        super(exceptions);
+    public SecurityException(String message, Throwable cause, Throwable... suppressed) {
+        super(message, cause, suppressed);
     }
 
     /**
-     * Constructs a new SecurityException with the given list of exceptions.
+     * Constructs a new SecurityException with the given message and cause.
      *
-     * @param exceptions A collection of exceptions this exception will wrap.
+     * @param message       A message describing why the SecurityException was thrown.
+     * @param cause         Optional cause of this Exception.
+     * @param suppressed    Optional list of suppressed exceptions.
      */
-    public SecurityException(Throwable... exceptions) {
-        super(exceptions);
+    public SecurityException(String message, Throwable cause, Iterable<? extends Throwable> suppressed) {
+        super(message, cause, suppressed);
     }
 }

@@ -66,20 +66,24 @@ public class DuplicateException extends StrictException {
     }
 
     /**
-     * Constructs a new DuplicateException with the given list of exceptions.
+     * Constructs a new DuplicateException with the given message and cause.
      *
-     * @param exceptions A collection of exceptions this exception will wrap.
+     * @param message       A message describing why the DuplicateException was thrown.
+     * @param cause         Optional cause of this Exception.
+     * @param suppressed    Optional list of suppressed exceptions.
      */
-    public DuplicateException(Collection<? extends Throwable> exceptions) {
-        super(exceptions);
+    public DuplicateException(String message, Throwable cause, Throwable... suppressed) {
+        super(message, cause, suppressed);
     }
 
     /**
-     * Constructs a new DuplicateException with the given list of exceptions.
+     * Constructs a new DuplicateException with the given message and cause.
      *
-     * @param exceptions A collection of exceptions this exception will wrap.
+     * @param message       A message describing why the DuplicateException was thrown.
+     * @param cause         Optional cause of this Exception.
+     * @param suppressed    Optional list of suppressed exceptions.
      */
-    public DuplicateException(Throwable... exceptions) {
-        super(exceptions);
+    public DuplicateException(String message, Throwable cause, Iterable<? extends Throwable> suppressed) {
+        super(message, cause, suppressed);
     }
 }

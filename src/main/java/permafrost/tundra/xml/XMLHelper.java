@@ -32,7 +32,6 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 import permafrost.tundra.content.MalformedException;
 import permafrost.tundra.content.ValidationException;
-import permafrost.tundra.data.IDataHelper;
 import permafrost.tundra.data.transform.Transformer;
 import permafrost.tundra.data.transform.xml.Decoder;
 import permafrost.tundra.data.transform.xml.Encoder;
@@ -219,11 +218,10 @@ public final class XMLHelper {
 
         if (raise && errors.size() > 0) {
             if (schema == null) {
-                throw new MalformedException(errors);
+                throw new MalformedException(null, null, errors);
             } else {
-                throw new ValidationException(errors);
+                throw new ValidationException(null, null, errors);
             }
-
         }
 
         return errors.size() == 0 ? null : ExceptionHelper.getMessages(errors.toArray(new Throwable[0]));
@@ -280,5 +278,4 @@ public final class XMLHelper {
             errors.add(exception);
         }
     }
-
 }

@@ -3485,8 +3485,6 @@ public final class IDataHelper {
      */
     @SuppressWarnings("deprecation")
     public static IData toIData(Object object) {
-        if (object == null) return null;
-
         IData output = null;
 
         if (object instanceof IData) {
@@ -3568,8 +3566,6 @@ public final class IDataHelper {
      */
     @SuppressWarnings("deprecation")
     public static IData[] toIDataArray(Object object) {
-        if (object == null) return null;
-
         IData[] output = null;
 
         if (object instanceof Table) {

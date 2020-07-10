@@ -67,20 +67,24 @@ public class UnsupportedException extends StrictException {
     }
 
     /**
-     * Constructs a new UnsupportedException with the given list of exceptions.
+     * Constructs a new UnsupportedException with the given message and cause.
      *
-     * @param exceptions A collection of exceptions this exception will wrap.
+     * @param message       A message describing why the UnsupportedException was thrown.
+     * @param cause         Optional cause of this Exception.
+     * @param suppressed    Optional list of suppressed exceptions.
      */
-    public UnsupportedException(Collection<? extends Throwable> exceptions) {
-        super(exceptions);
+    public UnsupportedException(String message, Throwable cause, Throwable... suppressed) {
+        super(message, cause, suppressed);
     }
 
     /**
-     * Constructs a new UnsupportedException with the given list of exceptions.
+     * Constructs a new UnsupportedException with the given message and cause.
      *
-     * @param exceptions A collection of exceptions this exception will wrap.
+     * @param message       A message describing why the UnsupportedException was thrown.
+     * @param cause         Optional cause of this Exception.
+     * @param suppressed    Optional list of suppressed exceptions.
      */
-    public UnsupportedException(Throwable... exceptions) {
-        super(exceptions);
+    public UnsupportedException(String message, Throwable cause, Iterable<? extends Throwable> suppressed) {
+        super(message, cause, suppressed);
     }
 }

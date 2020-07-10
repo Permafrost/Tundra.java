@@ -68,21 +68,25 @@ public class UnrecoverableException extends BaseException {
     }
 
     /**
-     * Constructs a new UnrecoverableException with the given list of exceptions.
+     * Constructs a new UnrecoverableException with the given message and cause.
      *
-     * @param exceptions A collection of exceptions this exception will wrap.
+     * @param message       A message describing why the UnrecoverableException was thrown.
+     * @param cause         Optional cause of this Exception.
+     * @param suppressed    Optional list of suppressed exceptions.
      */
-    public UnrecoverableException(Collection<? extends Throwable> exceptions) {
-        super(exceptions);
+    public UnrecoverableException(String message, Throwable cause, Throwable ...suppressed) {
+        super(message, cause, suppressed);
     }
 
     /**
-     * Constructs a new UnrecoverableException with the given list of exceptions.
+     * Constructs a new UnrecoverableException with the given message and cause.
      *
-     * @param exceptions A collection of exceptions this exception will wrap.
+     * @param message       A message describing why the UnrecoverableException was thrown.
+     * @param cause         Optional cause of this Exception.
+     * @param suppressed    Optional list of suppressed exceptions.
      */
-    public UnrecoverableException(Throwable... exceptions) {
-        super(exceptions);
+    public UnrecoverableException(String message, Throwable cause, Iterable<? extends Throwable> suppressed) {
+        super(message, cause, suppressed);
     }
 
     /**

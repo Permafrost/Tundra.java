@@ -74,7 +74,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 import javax.activation.MimeType;
-import javax.xml.bind.DatatypeConverter;
 import javax.xml.datatype.Duration;
 
 /**

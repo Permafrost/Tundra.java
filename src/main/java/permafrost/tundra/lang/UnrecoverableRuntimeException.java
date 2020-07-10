@@ -68,21 +68,25 @@ public class UnrecoverableRuntimeException extends BaseRuntimeException {
     }
 
     /**
-     * Constructs a new UnrecoverableRuntimeException with the given list of exceptions.
+     * Constructs a new UnrecoverableRuntimeException with the given message and cause.
      *
-     * @param exceptions A collection of exceptions this exception will wrap.
+     * @param message       A message describing why the UnrecoverableRuntimeException was thrown.
+     * @param cause         Optional cause of this Exception.
+     * @param suppressed    Optional list of suppressed exceptions.
      */
-    public UnrecoverableRuntimeException(Collection<? extends Throwable> exceptions) {
-        super(exceptions);
+    public UnrecoverableRuntimeException(String message, Throwable cause, Throwable... suppressed) {
+        super(message, cause, suppressed);
     }
 
     /**
-     * Constructs a new UnrecoverableRuntimeException with the given list of exceptions.
+     * Constructs a new UnrecoverableRuntimeException with the given message and cause.
      *
-     * @param exceptions A collection of exceptions this exception will wrap.
+     * @param message       A message describing why the UnrecoverableRuntimeException was thrown.
+     * @param cause         Optional cause of this Exception.
+     * @param suppressed    Optional list of suppressed exceptions.
      */
-    public UnrecoverableRuntimeException(Throwable... exceptions) {
-        super(exceptions);
+    public UnrecoverableRuntimeException(String message, Throwable cause, Iterable<? extends Throwable> suppressed) {
+        super(message, cause, suppressed);
     }
 
     /**
