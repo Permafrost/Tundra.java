@@ -25,8 +25,8 @@
 package permafrost.tundra.server;
 
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.RejectedExecutionHandler;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import com.wm.app.b2b.server.InvokeState;
 import permafrost.tundra.util.concurrent.PrioritizedThreadPoolExecutor;
@@ -71,7 +71,7 @@ public class ServerThreadPoolExecutor extends PrioritizedThreadPoolExecutor {
      * @param handler          The policy used to handle when a submitted job is rejected due to resource exhaustion.
      */
     public ServerThreadPoolExecutor(int threadPoolSize, String threadNamePrefix, String threadNameSuffix, int threadPriority, boolean threadDaemon, InvokeState invokeState, BlockingQueue<Runnable> workQueue, RejectedExecutionHandler handler) {
-        super(threadPoolSize, threadPoolSize, DEFAULT_THREAD_KEEP_ALIVE_TIMEOUT_SECONDS, TimeUnit.SECONDS, workQueue, new CountingServerThreadFactory(threadNamePrefix, threadNameSuffix, invokeState, threadPriority, threadDaemon), handler);
+        super(threadPoolSize, threadPoolSize, DEFAULT_THREAD_KEEP_ALIVE_TIMEOUT_SECONDS, TimeUnit.SECONDS, workQueue, getThreadFactory(threadPoolSize, threadNamePrefix, threadNameSuffix, threadPriority, threadDaemon, invokeState), handler);
     }
 
     /**
@@ -88,5 +88,26 @@ public class ServerThreadPoolExecutor extends PrioritizedThreadPoolExecutor {
         } finally {
             shutdownNow();
         }
+    }
+
+    /**
+     * Returns the thread factory to be used to allocate threads.
+     *
+     * @param threadPoolSize   The number of threads to allocate to the pool.
+     * @param threadNamePrefix The prefix to use on all created thread names.
+     * @param threadNameSuffix The suffix used on all created thread names.
+     * @param threadPriority   The priority used for each thread created.
+     * @param threadDaemon     Whether the created threads should be daemons.
+     * @param invokeState      The invoke state to clone for each thread created.
+     * @return                 The thread factory to be used to allocate threads.
+     */
+    private static ThreadFactory getThreadFactory(int threadPoolSize, String threadNamePrefix, String threadNameSuffix, int threadPriority, boolean threadDaemon, InvokeState invokeState) {
+        ThreadFactory threadFactory;
+        if (threadPoolSize <= 1) {
+            threadFactory = new ServerThreadFactory(threadNamePrefix, threadNameSuffix, invokeState, threadPriority, threadDaemon);
+        } else {
+            threadFactory = new CountingServerThreadFactory(threadNamePrefix, threadNameSuffix, invokeState, threadPriority, threadDaemon);
+        }
+        return threadFactory;
     }
 }

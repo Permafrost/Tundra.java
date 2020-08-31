@@ -24,18 +24,10 @@
 
 package permafrost.tundra.server.content;
 
-import permafrost.tundra.lang.Loggable;
-import permafrost.tundra.server.ConcurrentLogWriter;
-import java.io.IOException;
-
 /**
  * A factory for creating LoggingContentHandler objects.
  */
-public class LoggingContentHandlerFactory extends FilterContentHandlerFactory implements Loggable {
-    /**
-     * The stream to which content will be logged.
-     */
-    protected volatile ConcurrentLogWriter logger;
+public class LoggingContentHandlerFactory extends FilterContentHandlerFactory {
     /**
      * Initialization on demand holder idiom.
      */
@@ -66,7 +58,7 @@ public class LoggingContentHandlerFactory extends FilterContentHandlerFactory im
      * @return A new content handler.
      */
     public FilterContentHandler create() {
-        return new LoggingContentHandler(this, this);
+        return new LoggingContentHandler(this);
     }
 
     /**
@@ -75,7 +67,6 @@ public class LoggingContentHandlerFactory extends FilterContentHandlerFactory im
     @Override
     public synchronized void start() {
         if (!started) {
-            logger = new ConcurrentLogWriter("tundra-content.log");
             super.start();
         }
     }
@@ -87,21 +78,6 @@ public class LoggingContentHandlerFactory extends FilterContentHandlerFactory im
     public synchronized void stop() {
         if (started) {
             super.stop();
-            logger.stop();
-            logger = null;
-        }
-    }
-
-    /**
-     * Logs the given message.
-     *
-     * @param message       The message to be logged.
-     * @throws IOException  If an IO error occurred.
-     */
-    @Override
-    public void log(String ...message) throws IOException {
-        if (started && logger != null) {
-            logger.log(message);
         }
     }
 }

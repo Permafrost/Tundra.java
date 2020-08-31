@@ -27,16 +27,22 @@ package permafrost.tundra.server;
 import com.wm.app.b2b.server.LogManager;
 import com.wm.app.b2b.server.LogWriter;
 import com.wm.app.b2b.server.Server;
+import com.wm.data.IData;
+import org.apache.log4j.Level;
 import permafrost.tundra.lang.Loggable;
-import permafrost.tundra.lang.Startable;
 import permafrost.tundra.util.concurrent.ConcurrentWriter;
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
 
 /**
  * A concurrent log writer for Integration Server.
  */
-public class ConcurrentLogWriter extends ConcurrentWriter implements Loggable, Startable {
+public class ServerLogWriter extends ConcurrentWriter implements Loggable {
+    /**
+     * The level of logging that will be written to the log file.
+     */
+    protected Level logLevel;
     /**
      * The path to the log file being written to.
      */
@@ -47,8 +53,8 @@ public class ConcurrentLogWriter extends ConcurrentWriter implements Loggable, S
      *
      * @param filename  The file the log will be written to.
      */
-    public ConcurrentLogWriter(String filename) {
-        this(filename, false);
+    public ServerLogWriter(ExecutorService executorService, String filename) {
+        this(executorService, filename, false);
     }
 
     /**
@@ -57,32 +63,46 @@ public class ConcurrentLogWriter extends ConcurrentWriter implements Loggable, S
      * @param filename      The file the log will be written to.
      * @param isAbsolute    Whether the given filename is an absolute or relative path.
      */
-    public ConcurrentLogWriter(String filename, boolean isAbsolute) {
-        super(LogManager.openLogWriter(isAbsolute ? filename : Server.getLogDir().getAbsolutePath() + File.separatorChar + filename));
+    public ServerLogWriter(ExecutorService executorService, String filename, boolean isAbsolute) {
+        super(executorService, LogManager.openLogWriter(isAbsolute ? filename : Server.getLogDir().getAbsolutePath() + File.separatorChar + filename));
+    }
+
+    /**
+     * Returns the level of logging that is being written to the log file.
+     *
+     * @return The level of logging that is being written to the log file.
+     */
+    @Override
+    public Level getLogLevel() {
+        return logLevel;
+    }
+
+    /**
+     * Sets the level of logging that will be written to the log file.
+     *
+     * @param logLevel  The level of logging that will be written to the log file.
+     */
+    @Override
+    public void setLogLevel(Level logLevel) {
+        this.logLevel = logLevel;
     }
 
     /**
      * Logs the given message.
      *
-     * @param message The message to be logged.
+     * @param level         The logging level to use.
+     * @param message       The message to be logged.
+     * @param context       Optional document containing additional context for this log statement.
+     * @param addPrefix     Whether to prefix the log statement with logging metadata.
+     * @throws IOException  If an IO error occurs.
      */
     @Override
-    public void log(String ...message) throws IOException {
+    public void log(Level level, String message, IData context, boolean addPrefix) throws IOException {
         if (started) {
-            if (message != null && message.length > 0) {
-                String statement = null;
-                if (message.length > 1) {
-                    StringBuilder builder = new StringBuilder();
-                    for (String part : message) {
-                        if (part != null) {
-                            builder.append(part);
-                        }
-                    }
-                    statement = builder.toString();
-                } else if (message[0] != null) {
-                    statement = message[0];
-                }
-
+            if (level == null) level = ServerLogLevelHelper.DEFAULT_LOG_LEVEL;
+            Level logLevel = this.logLevel == null ? ServerLogLevelHelper.toLevel(System.getProperty("watt.debug.level", Level.INFO.toString())) : this.logLevel;
+            if (level.isGreaterOrEqual(logLevel)) {
+                String statement = ServerLogStatement.of(level, message, context, addPrefix);
                 if (statement != null) {
                     write(statement);
                 }
@@ -119,15 +139,5 @@ public class ConcurrentLogWriter extends ConcurrentWriter implements Loggable, S
                 throw new RuntimeException(ex);
             }
         }
-    }
-
-    /**
-     * Returns the thread name prefix used when creating the task executor on startup.
-     * @return the thread name prefix used when creating the task executor on startup.
-     */
-    @Override
-    protected String getExecutorThreadPrefix() {
-        String prefix = super.getExecutorThreadPrefix();
-        return path == null ? prefix : prefix + "/" + new File(path).getName();
     }
 }

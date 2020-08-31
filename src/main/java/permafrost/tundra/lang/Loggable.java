@@ -24,17 +24,36 @@
 
 package permafrost.tundra.lang;
 
+import com.wm.data.IData;
+import org.apache.log4j.Level;
 import java.io.IOException;
 
 /**
- * A generic interfaces for objects which support logging.
+ * A generic interface for objects which support logging.
  */
-public interface Loggable {
+public interface Loggable extends Startable {
     /**
      * Logs the given message.
      *
+     * @param level         The logging level to use.
      * @param message       The message to be logged.
+     * @param context       Optional document containing additional context for this log statement.
+     * @param addPrefix     Whether to prefix the log statement with logging metadata.
      * @throws IOException  If an IO error occurs.
      */
-    void log(String ...message) throws IOException;
+    void log(Level level, String message, IData context, boolean addPrefix) throws IOException;
+
+    /**
+     * Returns the level of logging that is being written to the log file.
+     *
+     * @return The level of logging that is being written to the log file.
+     */
+    Level getLogLevel();
+
+    /**
+     * Sets the level of logging that will be written to the log file.
+     *
+     * @param logLevel  The level of logging that will be written to the log file.
+     */
+    void setLogLevel(Level logLevel);
 }

@@ -25,13 +25,11 @@
 package permafrost.tundra.util.concurrent;
 
 import permafrost.tundra.lang.Startable;
-import permafrost.tundra.server.ServerThreadPoolExecutor;
 import java.io.FilterWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingDeque;
 
 /**
  * A concurrent writer.
@@ -44,62 +42,75 @@ public class ConcurrentWriter extends FilterWriter implements Startable {
     /**
      * The task executor used to defer writing to.
      */
-    protected ExecutorService executor;
+    protected ExecutorService executorService;
 
     /**
      * Creates a new ConcurrentWriter object.
      *
      * @param writer The Writer this object delegates to.
      */
-    protected ConcurrentWriter(Writer writer) {
+    protected ConcurrentWriter(ExecutorService executorService, Writer writer) {
         super(writer);
-        start();
+        if (executorService == null) throw new NullPointerException("executorService must not be null");
+        this.executorService = executorService;
     }
 
     @Override
     public void write(final int c) {
-        executor.submit(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    out.write(c);
-                    out.flush();
-                } catch(IOException ex) {
-                    throw new RuntimeException(ex);
+        if (started) {
+            executorService.submit(new Runnable() {
+                @Override
+                public void run() {
+                    synchronized(out) {
+                        try {
+                            out.write(c);
+                            out.flush();
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     @Override
     public void write(char[] cbuf, final int off, final int len) {
-        final char[] copy = Arrays.copyOf(cbuf, cbuf.length);
-        executor.submit(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    out.write(copy, off, len);
-                    out.flush();
-                } catch(IOException ex) {
-                    throw new RuntimeException(ex);
+        if (started) {
+            final char[] copy = Arrays.copyOf(cbuf, cbuf.length);
+            executorService.submit(new Runnable() {
+                @Override
+                public void run() {
+                    synchronized(out) {
+                        try {
+                            out.write(copy, off, len);
+                            out.flush();
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     @Override
     public void write(final String str, final int off, final int len) {
-        executor.submit(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    out.write(str, off, len);
-                    out.flush();
-                } catch(IOException ex) {
-                    throw new RuntimeException(ex);
+        if (started) {
+            executorService.submit(new Runnable() {
+                @Override
+                public void run() {
+                    synchronized(out) {
+                        try {
+                            out.write(str, off, len);
+                            out.flush();
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     /**
@@ -108,7 +119,6 @@ public class ConcurrentWriter extends FilterWriter implements Startable {
     @Override
     public synchronized void start() {
         if (!started) {
-            executor = createExecutor();
             started = true;
         }
     }
@@ -119,8 +129,6 @@ public class ConcurrentWriter extends FilterWriter implements Startable {
     @Override
     public synchronized void stop() {
         if (started) {
-            executor.shutdown();
-            executor = null;
             started = false;
         }
     }
@@ -142,46 +150,5 @@ public class ConcurrentWriter extends FilterWriter implements Startable {
     @Override
     public boolean isStarted() {
         return started;
-    }
-
-
-    /**
-     * Creates a task executor used for deferring write calls to.
-     * @return a task executor used for deferring write calls to.
-     */
-    protected ExecutorService createExecutor() {
-        return new ServerThreadPoolExecutor(1, getExecutorThreadPrefix(), getExecutorThreadSuffix(), getExecutorThreadPriority(), new LinkedBlockingDeque<Runnable>(getExecutorTaskQueueCapacity()),  new BlockingRejectedExecutionHandler());
-    }
-
-    /**
-     * Returns the pending task queue capacity used when creating the task executor on startup.
-     * @return the pending task queue capacity used when creating the task executor on startup.
-     */
-    protected int getExecutorTaskQueueCapacity() {
-        return 8192;
-    }
-
-    /**
-     * Returns the thread name prefix used when creating the task executor on startup.
-     * @return the thread name prefix used when creating the task executor on startup.
-     */
-    protected String getExecutorThreadPrefix() {
-        return "Tundra/" + this.getClass().getSimpleName();
-    }
-
-    /**
-     * Returns the thread name suffix used when creating the task executor on startup.
-     * @return the thread name suffix used when creating the task executor on startup.
-     */
-    protected String getExecutorThreadSuffix() {
-        return null;
-    }
-
-    /**
-     * Returns the thread priority used when creating the task executor on startup.
-     * @return the thread priority used when creating the task executor on startup.
-     */
-    protected int getExecutorThreadPriority() {
-        return Thread.MIN_PRIORITY;
     }
 }

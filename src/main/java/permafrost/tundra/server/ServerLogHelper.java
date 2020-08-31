@@ -1,42 +1,45 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2020 Lachlan Dowding
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package permafrost.tundra.server;
 
-import com.wm.app.b2b.server.ServiceException;
-import com.wm.app.log.impl.sc.LevelTranslator;
 import com.wm.data.IData;
-import com.wm.lang.ns.NSService;
 import com.wm.util.JournalLogger;
 import org.apache.log4j.Level;
-import permafrost.tundra.data.IDataJSONParser;
-import permafrost.tundra.lang.IterableHelper;
+import permafrost.tundra.lang.ExceptionHelper;
+import permafrost.tundra.lang.Loggable;
 import java.io.IOException;
 import java.text.MessageFormat;
-import java.util.List;
-import java.util.Locale;
 
 /**
  * Convenience methods for logging to the Integration Server server log.
  */
-public class ServerLogger {
-    /**
-     * The default logging level when none is specified.
-     */
-    public static final Level DEFAULT_LOG_LEVEL = Level.DEBUG;
-
+public class ServerLogHelper {
     /**
      * Disallow instantiation of this class.
      */
-    private ServerLogger() {}
-
-    /**
-     * Logs the given message and context automatically prefixed by the current user and callstack.
-     *
-     * @param level     The logging level to use.
-     * @param message   The message to be logged.
-     * @param context   The optional context to be logged.
-     */
-    public static void log(String level, String message, IData context) {
-        log(fromLevel(level), message, context);
-    }
+    private ServerLogHelper() {}
 
     /**
      * Logs the given message and context automatically prefixed by the current user and callstack.
@@ -46,60 +49,40 @@ public class ServerLogger {
      * @param context   The optional context to be logged.
      */
     public static void log(Level level, String message, IData context) {
-        log(fromLevel(level), message, context);
+        log(level, message, context, true);
     }
 
     /**
-     * Logs the given message and context automatically prefixed by the current user and callstack.
+     * Logs the given message and context optionally prefixed by the current user and callstack.
      *
      * @param level     The logging level to use.
      * @param message   The message to be logged.
      * @param context   The optional context to be logged.
+     * @param addPrefix Whether to prefix log statement with logging metadata.
      */
-    public static void log(int level, String message, IData context) {
-        String user = UserHelper.getCurrentName();
+    public static void log(Level level, String message, IData context, boolean addPrefix) {
+        ServerLogStatement statement = new ServerLogStatement(level, message, context, addPrefix);
+        log(level, addPrefix ? statement.getFunction() : null, statement.getMessage());
+    }
 
-        if (context != null) {
+    /**
+     * Logs the given message and context optionally prefixed by the current user and callstack.
+     *
+     * @param name      Logical name of the log target file to use.
+     * @param level     The logging level to use.
+     * @param message   The message to be logged.
+     * @param context   The optional context to be logged.
+     * @param addPrefix Whether to prefix log statement with logging metadata.
+     */
+    public static void log(String name, Level level, String message, IData context, boolean addPrefix) {
+        Loggable loggable = ServerLogManager.getInstance().get(name);
+        if (loggable != null) {
             try {
-                IDataJSONParser parser = new IDataJSONParser(false);
-                String contextString = parser.emit(context, String.class);
-
-                if (message == null || message.equals("")) {
-                    message = contextString;
-                } else {
-                    message = message + " -- " + contextString;
-                }
+                loggable.log(level, message, context, addPrefix);
             } catch(IOException ex) {
-                // do nothing, we should never get this exception
-            } catch(ServiceException ex) {
-                // do nothing, we should never get this exception
+                ExceptionHelper.raiseUnchecked(ex);
             }
         }
-
-        if (message == null) message = "";
-
-        String callstack = null;
-        List<NSService> callers = ServiceHelper.getCallStack();
-        if (callers != null) {
-            if (callers.size() > 1) {
-                callers.remove(callers.size() - 1);
-            }
-            callstack = IterableHelper.join(callers, " → ", false);
-        }
-
-        String function = null;
-        if (user != null && callstack != null) {
-            function = user + " -- " + callstack;
-        } else if (callstack != null) {
-            function = callstack;
-        } else if (user != null) {
-            function = user;
-        } else {
-            function = "";
-        }
-
-
-        log(level, function, message);
     }
 
     /**
@@ -176,20 +159,8 @@ public class ServerLogger {
      * @param message   The message to be logged.
      * @param arguments The arguments to be included when formatting the message.
      */
-    public static void log(String level, String function, String message, Object... arguments) {
-        log(fromLevel(level), function, message, arguments);
-    }
-
-    /**
-     * Logs the given message formatted with the given arguments against the given function at the given level.
-     *
-     * @param level     The logging level to use.
-     * @param function  The function against which the message is being logged.
-     * @param message   The message to be logged.
-     * @param arguments The arguments to be included when formatting the message.
-     */
     public static void log(Level level, String function, String message, Object... arguments) {
-        log(fromLevel(level), function, message, arguments);
+        log(ServerLogLevelHelper.fromLevel(level), function, message, arguments);
     }
 
     /**
@@ -200,57 +171,7 @@ public class ServerLogger {
      * @param message   The message to be logged.
      * @param arguments The arguments to be included when formatting the message.
      */
-    public static void log(int level, String function, String message, Object... arguments) {
+    private static void log(int level, String function, String message, Object... arguments) {
         JournalLogger.log(4, 90, level, function, (arguments != null && arguments.length > 0) ? MessageFormat.format(message, arguments) : message);
-    }
-
-    /**
-     * Returns the logging Level for the given integer.
-     *
-     * @param level The integer logging level.
-     * @return      The Level that represents this integer.
-     */
-    public static Level toLevel(int level) {
-        return LevelTranslator.findLog4jLevel(level);
-    }
-
-    /**
-     * Returns the logging Level for the given string.
-     *
-     * @param level The string logging level.
-     * @return      The Level that represents this string.
-     */
-    public static Level toLevel(String level) {
-        return Level.toLevel(level == null ? null : level.toUpperCase(Locale.ENGLISH), DEFAULT_LOG_LEVEL);
-    }
-
-    /**
-     * Returns the log level as an integer given the level as an enumeration value.
-     *
-     * @param level The logging level to convert.
-     * @return      The integer representation of the given level.
-     */
-    public static int fromLevel(Level level) {
-        return LevelTranslator.findISLevelCode(level);
-    }
-
-    /**
-     * Returns the log level as an integer given the level as a String.
-     *
-     * @param levelString The logging level to convert.
-     * @return            The integer representation of the given level.
-     */
-    public static int fromLevel(String levelString) {
-        int level;
-        if (levelString != null) {
-            try {
-                level = Integer.parseInt(levelString);
-            } catch (NumberFormatException ex) {
-                level = fromLevel(toLevel(levelString));
-            }
-        } else {
-            level = fromLevel(toLevel(levelString));
-        }
-        return level;
     }
 }

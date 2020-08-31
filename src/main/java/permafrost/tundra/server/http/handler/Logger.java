@@ -26,7 +26,8 @@ package permafrost.tundra.server.http.handler;
 
 import com.wm.app.b2b.server.AccessException;
 import com.wm.app.b2b.server.ProtocolState;
-import permafrost.tundra.server.ConcurrentLogWriter;
+import org.apache.log4j.Level;
+import permafrost.tundra.server.ServerLogHelper;
 import permafrost.tundra.server.ProtocolStateHelper;
 import java.io.IOException;
 import java.util.Iterator;
@@ -36,9 +37,9 @@ import java.util.Iterator;
  */
 public class Logger extends StartableHandler {
     /**
-     * The logger to use when logging requests.
+     * The default log level used by this object.
      */
-    protected ConcurrentLogWriter logger;
+    private static Level DEFAULT_LOG_LEVEL = Level.INFO;
     /**
      * Initialization on demand holder idiom.
      */
@@ -81,7 +82,7 @@ public class Logger extends StartableHandler {
                 result = next(context, handlers);
             } finally {
                 long end = System.nanoTime(), endTime = System.currentTimeMillis();
-                logger.log(ProtocolStateHelper.serialize(context, end - start, startTime, endTime, null, null));
+                ServerLogHelper.log(this.getClass().getName(), DEFAULT_LOG_LEVEL, this.getClass().getName() + " -- " + ProtocolStateHelper.serialize(context, end - start, startTime, endTime, null, null), null, false);
             }
         } else {
             result = next(context, handlers);
@@ -96,9 +97,8 @@ public class Logger extends StartableHandler {
     @Override
     public synchronized void start() {
         if (!started) {
-            logger = new ConcurrentLogWriter("tundra-http.log");
+            super.start();
         }
-        super.start();
     }
 
     /**
@@ -107,9 +107,7 @@ public class Logger extends StartableHandler {
     @Override
     public synchronized void stop() {
         if (started) {
-            logger.stop();
-            logger = null;
+            super.stop();
         }
-        super.stop();
     }
 }

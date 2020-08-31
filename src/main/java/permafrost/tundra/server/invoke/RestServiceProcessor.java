@@ -54,12 +54,12 @@ import permafrost.tundra.mime.MIMETypeHelper;
 import permafrost.tundra.mime.MediaRange;
 import permafrost.tundra.server.InvokeStateHelper;
 import permafrost.tundra.server.ProtocolStateHelper;
-import permafrost.tundra.server.ServerLogger;
+import permafrost.tundra.server.ServerLogHelper;
+import permafrost.tundra.server.ServerLogLevelHelper;
 import permafrost.tundra.server.ServiceHelper;
 import permafrost.tundra.time.DurationHelper;
 import permafrost.tundra.time.DurationPattern;
 import javax.activation.MimeType;
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.text.MessageFormat;
@@ -150,7 +150,11 @@ public class RestServiceProcessor extends AbstractInvokeChainProcessor {
     /**
      * The service invocation instances in which to convert exceptions to be instances of ISRuntimeException.
      */
-    protected ConcurrentMap<RegistryKey, IData> registry = new ConcurrentHashMap<RegistryKey, IData>();
+    protected final ConcurrentMap<RegistryKey, IData> registry = new ConcurrentHashMap<RegistryKey, IData>();
+    /**
+     * The logging level to use when logging.
+     */
+    protected volatile Level logLevel = ServerLogLevelHelper.DEFAULT_LOG_LEVEL;
 
     /**
      * Initialization on demand holder idiom.
@@ -241,7 +245,7 @@ public class RestServiceProcessor extends AbstractInvokeChainProcessor {
                 IDataCursor cursor = pipeline.getCursor();
                 try {
                     IData response = IDataHelper.remove(cursor, "$httpResponse", IData.class);
-                    ServerLogger.log(Level.FATAL, null, pipeline);
+                    ServerLogHelper.log(this.getClass().getName(), logLevel, null, pipeline, true);
                     if (response == null) {
                         PipelineHelper.sanitize(baseService, pipeline, PipelineHelper.InputOutputSignature.OUTPUT);
                         ValidationResult result = PipelineHelper.validate(baseService, pipeline, PipelineHelper.InputOutputSignature.OUTPUT);
@@ -281,22 +285,17 @@ public class RestServiceProcessor extends AbstractInvokeChainProcessor {
             // clean up registry whether or not an exception was thrown
             IData inputPipeline = registry.remove(registryKey);
             if (inputPipeline != null) {
-                try {
-                    Level logLevel = IDataHelper.get(ConfigurationManager.get("Tundra"), "feature/service/restful/logging", Level.class);
-                    if (!Level.OFF.equals(logLevel)) {
-                        InvokeState invokeState = InvokeStateHelper.current();
-                        if (invokeState != null) {
-                            ProtocolInfoIf protocolInfo = invokeState.getProtocolInfoIf();
-                            if (protocolInfo instanceof ProtocolState) {
-                                long duration = System.nanoTime() - monotonicStartTime;
-                                long endTime = System.currentTimeMillis();
-                                String context = ProtocolStateHelper.serialize((ProtocolState)protocolInfo, duration, startTime, endTime, inputPipeline, pipeline);
-                                ServerLogger.log(logLevel, MessageFormat.format("{0} -- {1} -- {2}", exception == null ? "COMPLETED" : "FAILED: " + ExceptionHelper.getMessage(exception), DurationHelper.format(duration, DurationPattern.NANOSECONDS, DurationPattern.XML), context), null);
-                            }
+                if (!Level.OFF.equals(logLevel)) {
+                    InvokeState invokeState = InvokeStateHelper.current();
+                    if (invokeState != null) {
+                        ProtocolInfoIf protocolInfo = invokeState.getProtocolInfoIf();
+                        if (protocolInfo instanceof ProtocolState) {
+                            long duration = System.nanoTime() - monotonicStartTime;
+                            long endTime = System.currentTimeMillis();
+                            String context = ProtocolStateHelper.serialize((ProtocolState)protocolInfo, duration, startTime, endTime, inputPipeline, pipeline);
+                            ServerLogHelper.log(this.getClass().getName(), logLevel, MessageFormat.format("{0} -- {1} -- {2}", exception == null ? "COMPLETED" : "FAILED: " + ExceptionHelper.getMessage(exception), DurationHelper.format(duration, DurationPattern.NANOSECONDS, DurationPattern.XML), context), null, true);
                         }
                     }
-                } catch(IOException ex) {
-                    // ignore exception
                 }
             }
         }
@@ -396,6 +395,11 @@ public class RestServiceProcessor extends AbstractInvokeChainProcessor {
      */
     public synchronized void start() {
         if (!started) {
+            try {
+                logLevel = IDataHelper.get(ConfigurationManager.get("Tundra"), "feature/service/restful/logging", Level.class);
+            } catch(Exception ex) {
+                // do nothing
+            }
             registry.clear();
             super.start();
         }

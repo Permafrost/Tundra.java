@@ -48,7 +48,7 @@ import permafrost.tundra.math.ShortHelper;
 import permafrost.tundra.mime.MIMETypeHelper;
 import permafrost.tundra.security.MessageDigestHelper;
 import permafrost.tundra.server.NodePermission;
-import permafrost.tundra.server.ServerLogger;
+import permafrost.tundra.server.ServerLogLevelHelper;
 import permafrost.tundra.time.DateTimeHelper;
 import permafrost.tundra.time.DurationHelper;
 import permafrost.tundra.time.TimeZoneHelper;
@@ -609,9 +609,9 @@ public final class ObjectHelper {
                 value = (T)FileHelper.construct((String)object);
             } else if (klass.isAssignableFrom(Level.class) && (object instanceof String || object instanceof Number)) {
                 if (object instanceof String) {
-                    value = (T)ServerLogger.toLevel((String)object);
+                    value = (T)ServerLogLevelHelper.toLevel((String)object);
                 } else {
-                    value = (T)ServerLogger.toLevel(((Number)object).intValue());
+                    value = (T)ServerLogLevelHelper.toLevel(((Number)object).intValue());
                 }
             }
         } catch (IOException ex) {

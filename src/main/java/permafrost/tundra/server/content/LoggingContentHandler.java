@@ -25,17 +25,19 @@
 package permafrost.tundra.server.content;
 
 import com.wm.app.b2b.server.InvokeState;
+import org.apache.log4j.Level;
 import org.unbescape.java.JavaEscape;
 import org.unbescape.java.JavaEscapeLevel;
 import permafrost.tundra.io.InputStreamHelper;
 import permafrost.tundra.lang.BytesHelper;
 import permafrost.tundra.lang.CharsetHelper;
-import permafrost.tundra.lang.Loggable;
 import permafrost.tundra.lang.Startable;
 import permafrost.tundra.mime.MIMETypeHelper;
+import permafrost.tundra.server.ServerLogHelper;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.text.MessageFormat;
 import java.util.regex.Pattern;
 import javax.activation.MimeTypeParseException;
 
@@ -44,23 +46,22 @@ import javax.activation.MimeTypeParseException;
  */
 public class LoggingContentHandler extends FilterContentHandler {
     /**
+     * The default log level used by this object.
+     */
+    private static final Level DEFAULT_LOG_LEVEL = Level.INFO;
+
+    /**
      * The regular expression pattern which matches known text MIME media types.
      */
-    protected static Pattern TEXT_CONTENT_PATTERN = Pattern.compile("^(text\\/.+|[^\\/]+\\/xml|[^\\/]+\\/json|.+\\+xml|.+\\+json|.+\\+\\wsv)$");
-    /**
-     * The stream content is logged to.
-     */
-    protected Loggable loggable;
+    protected static final Pattern TEXT_CONTENT_PATTERN = Pattern.compile("^(text\\/.+|[^\\/]+\\/xml|[^\\/]+\\/json|.+\\+xml|.+\\+json|.+\\+\\wsv)$");
 
     /**
      * Constructs a new LoggingContentHandler, which logs all processed input content.
      *
      * @param startable Used to start and stop content filtering.
-     * @param loggable  The object to use to log content.
      */
-    public LoggingContentHandler(Startable startable, Loggable loggable) {
+    public LoggingContentHandler(Startable startable) {
         super(startable);
-        this.loggable = loggable;
     }
 
     /**
@@ -72,7 +73,7 @@ public class LoggingContentHandler extends FilterContentHandler {
      */
     @Override
     public void getInputValues(ContentHandlerInput contentHandlerInput) throws IOException {
-        if (startable.isStarted() && loggable != null) {
+        if (startable.isStarted()) {
             byte[] bytes = InputStreamHelper.read(contentHandlerInput.getInputStream());
             if (bytes != null) {
                 contentHandlerInput.setInputStream(new ByteArrayInputStream(bytes));
@@ -100,7 +101,7 @@ public class LoggingContentHandler extends FilterContentHandler {
                 }
 
                 try {
-                    loggable.log("type = ", contentType, ", content = ", content);
+                    ServerLogHelper.log(this.getClass().getName(), DEFAULT_LOG_LEVEL, MessageFormat.format("{0} -- content-type = {1}, content = {2}", this.getClass().getName(), contentType, content), null, false);
                 } catch(Exception ex) {
                     // do nothing
                 }

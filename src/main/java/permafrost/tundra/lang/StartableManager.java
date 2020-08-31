@@ -33,7 +33,6 @@ import permafrost.tundra.data.IDataMap;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -82,11 +81,11 @@ public class StartableManager<K, V extends Startable> implements Startable, Iter
      * @return          True if the value was associated with the key. False if another associated value already exists.
      */
     public boolean register(K key, V worker) {
-        boolean wasRegistered = REGISTRY.putIfAbsent(key, worker) == null;
-        if (wasRegistered && started && startWorkerOnRegistration) {
+        boolean didRegister = REGISTRY.putIfAbsent(key, worker) == null;
+        if (didRegister && started && startWorkerOnRegistration) {
             worker.start();
         }
-        return wasRegistered;
+        return didRegister;
     }
 
     /**

@@ -131,6 +131,7 @@ public class Manager implements Startable, HTTPHandler {
     /**
      * Starts the HTTP request manager.
      */
+    @Override
     public synchronized void start() {
         if (!started) {
             started = true;
@@ -155,6 +156,7 @@ public class Manager implements Startable, HTTPHandler {
     /**
      * Stops the HTTP handler manager.
      */
+    @Override
     public synchronized void stop() {
         if (started) {
             started = false;
@@ -191,6 +193,7 @@ public class Manager implements Startable, HTTPHandler {
     /**
      * Restarts the HTTP handler manager.
      */
+    @Override
     public synchronized void restart() {
         stop();
         start();
