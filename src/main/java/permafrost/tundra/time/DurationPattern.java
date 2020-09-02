@@ -70,7 +70,7 @@ public enum DurationPattern {
      *              associated with the given name.
      */
     public static DurationPattern normalize(String name) {
-        return normalize(name == null ? (DurationPattern)null : valueOf(name.trim().toUpperCase()));
+        return normalize(name == null ? (DurationPattern)null : valueOf(name.trim().toUpperCase().replace(' ', '_')));
     }
 
     /**

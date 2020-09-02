@@ -1090,7 +1090,7 @@ public final class DurationHelper {
                 builder.append(minutes).append('M');
             }
             if (scale != null ) {
-                builder.append(seconds.setScale(scale, RoundingModeHelper.normalize(roundingMode)));
+                builder.append(seconds.setScale(scale, RoundingModeHelper.normalize(roundingMode)).toPlainString());
                 builder.append('S');
             } else if (!isSecondsZero || (!hasDate && isHoursZero && isMinutesZero)) {
                 if (isSecondsZero) {
