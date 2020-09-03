@@ -2,11 +2,17 @@ package permafrost.tundra.net.http;
 
 import permafrost.tundra.content.Content;
 import permafrost.tundra.lang.UnrecoverableTransportException;
+import java.io.Serializable;
 
 /**
  * Represents an HTTP client error response.
  */
-public class HTTPClientException extends UnrecoverableTransportException {
+public class HTTPClientException extends UnrecoverableTransportException implements Serializable {
+    /**
+     * The serialization identity of this class version.
+     */
+    private static final long serialVersionUID = 1;
+
     /**
      * Constructs a new HTTPClientException.
      *

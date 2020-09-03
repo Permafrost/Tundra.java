@@ -26,12 +26,17 @@ package permafrost.tundra.lang;
 
 import com.wm.data.IData;
 import permafrost.tundra.data.IDataMap;
-import java.util.Collection;
+import java.io.Serializable;
 
 /**
  * An unchecked exception indicating that an unrecoverable error has occurred.
  */
-public class UnrecoverableRuntimeException extends BaseRuntimeException {
+public class UnrecoverableRuntimeException extends BaseRuntimeException implements Serializable {
+    /**
+     * The serialization identity of this class version.
+     */
+    private static final long serialVersionUID = 1;
+
     /**
      * Constructs a new UnrecoverableRuntimeException.
      */

@@ -28,11 +28,17 @@ import com.wm.data.IData;
 import permafrost.tundra.content.Content;
 import permafrost.tundra.content.ContentAttached;
 import permafrost.tundra.data.IDataMap;
+import java.io.Serializable;
 
 /**
  * An exception indicating that a transport error has occurred.
  */
-public class TransportException extends RecoverableException implements ContentAttached {
+public class TransportException extends RecoverableException implements ContentAttached, Serializable {
+    /**
+     * The serialization identity of this class version.
+     */
+    private static final long serialVersionUID = 1;
+
     /**
      * The content associated with this exception.
      */

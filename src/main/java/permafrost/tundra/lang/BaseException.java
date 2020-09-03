@@ -29,6 +29,7 @@ import com.wm.data.IData;
 import com.wm.util.coder.IDataCodable;
 import permafrost.tundra.data.IDataMap;
 import java.io.PrintStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -37,7 +38,12 @@ import java.util.List;
 /**
  * Checked exception superclass inherited by all other Tundra checked exceptions.
  */
-public class BaseException extends ServiceException implements ExceptionSuppression, IDataCodable {
+public class BaseException extends ServiceException implements ExceptionSuppression, IDataCodable, Serializable {
+    /**
+     * The serialization identity of this class version.
+     */
+    private static final long serialVersionUID = 1;
+
     /**
      * Constructs a new BaseException.
      */

@@ -28,12 +28,18 @@ import com.wm.app.b2b.server.ISRuntimeException;
 import com.wm.data.IData;
 import com.wm.util.coder.IDataCodable;
 import permafrost.tundra.data.IDataMap;
+import java.io.Serializable;
 import java.util.Collection;
 
 /**
  * An exception indicating that a recoverable error has occurred.
  */
-public class RecoverableException extends ISRuntimeException implements IDataCodable {
+public class RecoverableException extends ISRuntimeException implements IDataCodable, Serializable {
+    /**
+     * The serialization identity of this class version.
+     */
+    private static final long serialVersionUID = 1;
+
     /**
      * Constructs a new RecoverableException.
      */

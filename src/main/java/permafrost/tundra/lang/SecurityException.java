@@ -24,12 +24,17 @@
 
 package permafrost.tundra.lang;
 
-import java.util.Collection;
+import java.io.Serializable;
 
 /**
  * Throw a SecurityException to indicate an authentication or authorization error.
  */
-public class SecurityException extends UnrecoverableException {
+public class SecurityException extends UnrecoverableException implements Serializable {
+    /**
+     * The serialization identity of this class version.
+     */
+    private static final long serialVersionUID = 1;
+
     /**
      * Constructs a new SecurityException.
      */
