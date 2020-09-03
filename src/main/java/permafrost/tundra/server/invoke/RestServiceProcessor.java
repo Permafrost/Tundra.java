@@ -293,7 +293,7 @@ public class RestServiceProcessor extends AbstractInvokeChainProcessor {
                             long duration = System.nanoTime() - monotonicStartTime;
                             long endTime = System.currentTimeMillis();
                             String context = ProtocolStateHelper.serialize((ProtocolState)protocolInfo, duration, startTime, endTime, inputPipeline, pipeline);
-                            ServerLogHelper.log(this.getClass().getName(), logLevel, MessageFormat.format("{0} -- {1} -- {2}", exception == null ? "COMPLETED" : "FAILED: " + ExceptionHelper.getMessage(exception), DurationHelper.format(duration, DurationPattern.NANOSECONDS, DurationPattern.XML), context), null, true);
+                            ServerLogHelper.log(this.getClass().getName(), logLevel, MessageFormat.format("{0} {1} -- {2}", DurationHelper.format(duration, DurationPattern.NANOSECONDS, DurationPattern.XML_MILLISECONDS), exception == null ? "COMPLETED" : "FAILED: " + ExceptionHelper.getMessage(exception), context), null, true);
                         }
                     }
                 }

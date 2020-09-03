@@ -48,7 +48,7 @@ public class ServerLogHelper {
      * @param message   The message to be logged.
      * @param context   The optional context to be logged.
      */
-    public static void log(Level level, String message, IData context) {
+    public static void log(Level level, String function, String message, IData context) {
         log(level, message, context, true);
     }
 
@@ -62,7 +62,7 @@ public class ServerLogHelper {
      */
     public static void log(Level level, String message, IData context, boolean addPrefix) {
         ServerLogStatement statement = new ServerLogStatement(level, message, context, addPrefix);
-        log(level, addPrefix ? statement.getFunction() : null, statement.getMessage());
+        log(level, null, statement.toString());
     }
 
     /**
@@ -172,6 +172,10 @@ public class ServerLogHelper {
      * @param arguments The arguments to be included when formatting the message.
      */
     private static void log(int level, String function, String message, Object... arguments) {
-        JournalLogger.log(4, 90, level, function, (arguments != null && arguments.length > 0) ? MessageFormat.format(message, arguments) : message);
+        if (function == null) {
+            JournalLogger.log(3, 90, level, (arguments != null && arguments.length > 0) ? MessageFormat.format(message, arguments) : message);
+        } else {
+            JournalLogger.log(4, 90, level, function, (arguments != null && arguments.length > 0) ? MessageFormat.format(message, arguments) : message);
+        }
     }
 }

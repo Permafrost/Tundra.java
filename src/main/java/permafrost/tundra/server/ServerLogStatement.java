@@ -24,16 +24,11 @@
 
 package permafrost.tundra.server;
 
-import com.wm.app.b2b.server.InvokeState;
-import com.wm.app.b2b.server.ServiceException;
-import com.wm.app.b2b.server.User;
 import com.wm.data.IData;
-import com.wm.data.IDataCursor;
-import com.wm.data.IDataFactory;
 import com.wm.lang.ns.NSService;
 import org.apache.log4j.Level;
 import permafrost.tundra.data.IDataJSONParser;
-import java.io.IOException;
+import permafrost.tundra.lang.ExceptionHelper;
 import java.util.List;
 
 /**
@@ -77,13 +72,13 @@ public class ServerLogStatement {
      * @return The function to be logged.
      */
     public String getFunction() {
-        return getFunction(UserHelper.getCurrentName(), ServiceHelper.getCallStack(), true);
+        return addPrefix ? getFunction(UserHelper.getCurrentName(), ServiceHelper.getCallStack(), false) : null;
     }
 
     /**
      * Returns the function to be logged given a callstack.
      *
-     * @oaran user          The user invoking the function.
+     * @oaram user          The user invoking the function.
      * @param callstack     The callstack to convert to a function.
      * @param removeTail    Whether to remove the tail of the callstack.
      * @return              The resulting function to log.
@@ -123,22 +118,22 @@ public class ServerLogStatement {
     public String getMessage() {
         StringBuilder builder = new StringBuilder();
 
-        if (message != null && !message.equals("")) {
+        if (message != null) {
             builder.append(message);
         }
-
         if (context != null) {
+            if (message != null) {
+                builder.append(" -- ");
+            }
             try {
                 IDataJSONParser parser = new IDataJSONParser(false);
-                String contextString = parser.emit(context, String.class);
-                if (builder.length() > 0) builder.append(" --- ");
-                builder.append(contextString);
+                parser.emit(builder, context);
             } catch (Exception ex) {
-                // do nothing, as its better to log something rather than nothing
+                builder.append(ExceptionHelper.getMessage(ex));
             }
         }
 
-        return builder.length() > 0 ? builder.toString() : null;
+        return builder.toString();
     }
 
     /**
@@ -149,22 +144,21 @@ public class ServerLogStatement {
     public String toString() {
         StringBuilder builder = new StringBuilder();
 
-        if ((message != null && !message.equals("")) || context != null) {
-            if (addPrefix) {
-                String function = getFunction();
-                if (function != null) {
-                    builder.append(function);
-                }
-            }
+        String function = getFunction();
+        String message = getMessage();
 
-            String message = getMessage();
-            if (message != null) {
-                if (builder.length() > 0) builder.append(": ");
-                builder.append(message);
-            }
+        if (function != null) {
+            builder.append(function);
         }
 
-        return builder.length() > 0 ? builder.toString() : null;
+        if (message != null && !message.equals("")) {
+            if (function != null) {
+                builder.append(" -- ");
+            }
+            builder.append(message);
+        }
+
+        return builder.toString();
     }
 
     /**
