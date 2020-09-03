@@ -72,7 +72,7 @@ public class ServerLogStatement {
      * @return The function to be logged.
      */
     public String getFunction() {
-        return addPrefix ? getFunction(UserHelper.getCurrentName(), ServiceHelper.getCallStack(), false) : null;
+        return addPrefix ? getFunction(UserHelper.getCurrentName(), ServiceHelper.getCallStack(), true) : null;
     }
 
     /**
