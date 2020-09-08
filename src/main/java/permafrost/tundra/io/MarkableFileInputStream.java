@@ -68,7 +68,7 @@ public class MarkableFileInputStream extends FileInputStream {
      *                               other reason cannot be opened for reading.
      */
     public MarkableFileInputStream(String filename) throws FileNotFoundException {
-        super(filename);
+        super(FileHelper.construct(filename));
     }
 
     /**
