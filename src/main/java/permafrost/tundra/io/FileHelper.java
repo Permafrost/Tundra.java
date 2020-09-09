@@ -43,6 +43,7 @@ import permafrost.tundra.lang.StringHelper;
 import permafrost.tundra.math.LongHelper;
 import permafrost.tundra.mime.MIMETypeHelper;
 import permafrost.tundra.net.uri.URIHelper;
+import permafrost.tundra.security.MessageDigestHelper;
 import permafrost.tundra.server.ServiceHelper;
 import permafrost.tundra.time.DateTimeHelper;
 import javax.xml.datatype.Duration;
@@ -61,8 +62,12 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
+import java.security.NoSuchAlgorithmException;
+import java.text.MessageFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
 import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -641,6 +646,69 @@ public final class FileHelper {
      */
     public static void copy(String source, String target, boolean append) throws IOException {
         copy(construct(source), construct(target), append);
+    }
+
+    /**
+     * Returns true if the source file content is equal to the target file content by calculating and comparing
+     * cryptographic message digests for both files.
+     *
+     * @param source                    The source file.
+     * @param target                    The target file.
+     * @param raise                     Whether to throw an exception if the source and target contents are not equal.
+     * @return                          True if the source and target contents are equal.
+     * @throws IOException              If an IO error occurs.
+     * @throws NoSuchAlgorithmException If the message digest algorithm does not exist.
+     */
+    public static boolean equal(String source, String target, boolean raise) throws IOException, NoSuchAlgorithmException {
+        InputStream sourceStream = null, targetStream = null;
+        boolean equal = false;
+
+        try {
+            File sourceFile = construct(source);
+            File targetFile = construct(target);
+
+            boolean sourceExists = exists(sourceFile);
+            boolean sourceReadable = isReadable(sourceFile);
+            boolean targetExists = exists(targetFile);
+            boolean targetReadable = isReadable(targetFile);
+
+            if (sourceExists && sourceReadable && targetExists && targetReadable) {
+                if (sourceFile.length() == targetFile.length()) {
+                    sourceStream = new MarkableFileInputStream(sourceFile);
+                    targetStream = new MarkableFileInputStream(targetFile);
+                    Map.Entry<? extends InputStream, byte[]> sourceDigestResult = MessageDigestHelper.digest(MessageDigestHelper.DEFAULT_ALGORITHM, sourceStream);
+                    Map.Entry<? extends InputStream, byte[]> targetDigestResult = MessageDigestHelper.digest(MessageDigestHelper.DEFAULT_ALGORITHM, targetStream);
+
+                    sourceStream = sourceDigestResult.getKey();
+                    targetStream = targetDigestResult.getKey();
+
+                    byte[] sourceDigest = sourceDigestResult.getValue();
+                    byte[] targetDigest = targetDigestResult.getValue();
+
+                    equal = Arrays.equals(sourceDigest, targetDigest);
+                }
+
+                if (raise && !equal) {
+                    throw new IOException(MessageFormat.format("Source and target file contents are not equal: {0} <> {1}", source, target));
+                }
+            } else {
+                String errorMessage;
+                if (!sourceExists) {
+                    errorMessage = MessageFormat.format("Source file does not exist or is not reachable: {0}", source);
+                } else if (!sourceReadable) {
+                    errorMessage = MessageFormat.format("Source file is not readable: {0}", source);
+                } else if (!targetExists) {
+                    errorMessage = MessageFormat.format("Target file does not exist or is not reachable: {0}", target);
+                } else {
+                    errorMessage = MessageFormat.format("Target file is not readable: {0}", target);
+                }
+                throw new IOException(errorMessage);
+            }
+        } finally {
+            CloseableHelper.close(sourceStream, targetStream);
+        }
+
+        return equal;
     }
 
     /**
