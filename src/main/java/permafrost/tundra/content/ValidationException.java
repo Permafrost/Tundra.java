@@ -24,8 +24,6 @@
 
 package permafrost.tundra.content;
 
-import java.util.Collection;
-
 /**
  * Throw a ValidationException when data fails validation.
  */

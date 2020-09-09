@@ -24,9 +24,6 @@
 
 package permafrost.tundra.content;
 
-import java.util.Collection;
-import permafrost.tundra.lang.UnrecoverableException;
-
 /**
  * Throw a UnsupportedException to indicate that the provided data is not supported.
  */

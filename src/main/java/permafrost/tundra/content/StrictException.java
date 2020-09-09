@@ -24,7 +24,6 @@
 
 package permafrost.tundra.content;
 
-import java.util.Collection;
 import permafrost.tundra.lang.UnrecoverableException;
 
 /**

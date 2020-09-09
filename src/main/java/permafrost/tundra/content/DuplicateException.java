@@ -24,8 +24,6 @@
 
 package permafrost.tundra.content;
 
-import java.util.Collection;
-
 /**
  * Throw a DuplicateException when duplicate data is detected while processing.
  */
