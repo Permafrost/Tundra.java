@@ -37,6 +37,7 @@ import permafrost.tundra.io.filter.InclusionFilenameFilter;
 import permafrost.tundra.io.filter.RegularExpressionFilenameFilter;
 import permafrost.tundra.io.filter.WildcardFilenameFilter;
 import permafrost.tundra.lang.BooleanHelper;
+import permafrost.tundra.lang.BytesHelper;
 import permafrost.tundra.lang.CharsetHelper;
 import permafrost.tundra.lang.ExceptionHelper;
 import permafrost.tundra.lang.StringHelper;
@@ -62,6 +63,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.MessageFormat;
 import java.util.Arrays;
@@ -648,6 +650,16 @@ public final class FileHelper {
         copy(construct(source), construct(target), append);
     }
 
+    private static final String DEFAULT_MESSAGE_DIGEST_ALGORITHM_NAME = "SHA-1";
+    private static MessageDigest DEFAULT_MESSAGE_DIGEST_ALGORITHM;
+    static {
+        try {
+            DEFAULT_MESSAGE_DIGEST_ALGORITHM = MessageDigestHelper.normalize(DEFAULT_MESSAGE_DIGEST_ALGORITHM_NAME);
+        } catch(NoSuchAlgorithmException ex) {
+            DEFAULT_MESSAGE_DIGEST_ALGORITHM = MessageDigestHelper.DEFAULT_ALGORITHM;
+        }
+    }
+
     /**
      * Returns true if the source file content is equal to the target file content by calculating and comparing
      * cryptographic message digests for both files.
@@ -676,8 +688,8 @@ public final class FileHelper {
                 if (sourceFile.length() == targetFile.length()) {
                     sourceStream = new MarkableFileInputStream(sourceFile);
                     targetStream = new MarkableFileInputStream(targetFile);
-                    Map.Entry<? extends InputStream, byte[]> sourceDigestResult = MessageDigestHelper.digest(MessageDigestHelper.DEFAULT_ALGORITHM, sourceStream);
-                    Map.Entry<? extends InputStream, byte[]> targetDigestResult = MessageDigestHelper.digest(MessageDigestHelper.DEFAULT_ALGORITHM, targetStream);
+                    Map.Entry<? extends InputStream, byte[]> sourceDigestResult = MessageDigestHelper.digest(DEFAULT_MESSAGE_DIGEST_ALGORITHM, sourceStream);
+                    Map.Entry<? extends InputStream, byte[]> targetDigestResult = MessageDigestHelper.digest(DEFAULT_MESSAGE_DIGEST_ALGORITHM, targetStream);
 
                     sourceStream = sourceDigestResult.getKey();
                     targetStream = targetDigestResult.getKey();
@@ -686,10 +698,14 @@ public final class FileHelper {
                     byte[] targetDigest = targetDigestResult.getValue();
 
                     equal = Arrays.equals(sourceDigest, targetDigest);
-                }
 
-                if (raise && !equal) {
-                    throw new IOException(MessageFormat.format("Source and target file contents are not equal: {0} <> {1}", source, target));
+                    if (raise && !equal) {
+                        String sourceDigestString = BytesHelper.hexEncode(sourceDigest);
+                        String targetDigestString = BytesHelper.hexEncode(targetDigest);
+                        throw new IOException(MessageFormat.format("Source and target file contents are not equal:\n\tSource: {0} = {1} {2}\n\tTarget: {0} = {3} {4}", DEFAULT_MESSAGE_DIGEST_ALGORITHM.getAlgorithm(), sourceDigestString, source, targetDigestString, target));
+                    }
+                } else if (raise) {
+                    throw new IOException(MessageFormat.format("Source and target file sizes are not equal: \n\tSource: Size (bytes) = {0} {1}\n\tTarget: Size (bytes) = {2} {3}", sourceFile.length(), source, targetFile.length(), target));
                 }
             } else {
                 String errorMessage;
