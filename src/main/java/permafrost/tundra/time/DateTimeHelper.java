@@ -1243,10 +1243,7 @@ public final class DateTimeHelper {
             } else if (end == null) {
                 // endless range
                 within = DateTimeHelper.compare(instance, start) >= 0;
-            } else {
-                if (DateTimeHelper.compare(start, end) > 0) {
-                    throw new IllegalArgumentException("datetime range start " + emit(start) + " is required to be before range end " + emit(end));
-                }
+            } else if (DateTimeHelper.compare(start, end) <= 0) {
                 within = DateTimeHelper.compare(instance, start) >= 0 && DateTimeHelper.compare(instance, end) <= 0;
             }
         }
