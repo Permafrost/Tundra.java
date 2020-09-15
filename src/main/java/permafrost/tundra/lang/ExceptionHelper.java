@@ -453,6 +453,12 @@ public final class ExceptionHelper {
         return exception;
     }
 
+    /*
+     * The following code for exception suppression handling was adapted from the OpenJDK Throwable class source code,
+     * as allowed by the GNU General Public License, version 2, with the Classpath Exception.
+     * Refer: ./licenses/OpenJDK/LICENSE.txt
+     */
+
     /**
      * Caption for the cause of this exception.
      */
