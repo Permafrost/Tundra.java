@@ -47,7 +47,9 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
 import java.util.SortedSet;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -172,7 +174,7 @@ public class ServiceUsageProcessor extends AbstractInvokeChainProcessor implemen
             IDataUtil.put(cursor, "invocations.errored", totalErrors.longValue());
 
             // sort the list of invocations by start time
-            SortedSet<Invocation> sortedInvocations = new TreeSet<Invocation>();
+            SortedMap<Invocation, IData> sortedInvocations = new TreeMap<Invocation, IData>();
             for (Map.Entry<Thread, Invocation> entry : invocations.entrySet()) {
                 Thread thread = entry.getKey();
                 Invocation invocation = entry.getValue();
@@ -181,21 +183,14 @@ public class ServiceUsageProcessor extends AbstractInvokeChainProcessor implemen
                     // reason Event Manager threads sometimes fall into this category
                     invocations.remove(thread, invocation);
                 } else {
-                    sortedInvocations.add(invocation);
+                    sortedInvocations.put(invocation, invocation.getIData());
                 }
             }
 
-            // convert the sorted list of invocations to a list of IData documents
-            List<IData> currentInvocations = new ArrayList<IData>(sortedInvocations.size());
-            for (Invocation invocation : sortedInvocations) {
-                IData document = invocation.getIData();
-                if (document != null) {
-                    currentInvocations.add(document);
-                }
-            }
+            IData[] currentInvocations = sortedInvocations.values().toArray(new IData[0]);
 
-            IDataUtil.put(cursor, "invocations.current", currentInvocations.toArray(new IData[0]));
-            IDataUtil.put(cursor, "invocations.current.length", currentInvocations.size());
+            IDataUtil.put(cursor, "invocations.current", currentInvocations);
+            IDataUtil.put(cursor, "invocations.current.length", currentInvocations.length);
         } finally {
             cursor.destroy();
         }
