@@ -24,12 +24,16 @@
 
 package permafrost.tundra.server;
 
+import com.wm.app.b2b.server.HTTPState;
 import com.wm.app.b2b.server.InvokeState;
 import com.wm.app.b2b.server.ProtocolInfoIf;
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import permafrost.tundra.data.CaseInsensitiveIData;
 import permafrost.tundra.data.IDataHelper;
+import permafrost.tundra.data.IDataMap;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * A collection of convenience methods for working with InvokeState objects.
@@ -49,7 +53,89 @@ public final class InvokeStateHelper {
     @SuppressWarnings("unchecked")
     public static InvokeState clone(InvokeState invokeState) {
         if (invokeState == null) throw new NullPointerException("invokeState must not be null");
-        return (InvokeState)invokeState.clone();
+
+        InvokeState clone = (InvokeState)invokeState.clone();
+        sanitize(clone);
+        return clone;
+    }
+
+    /**
+     * Cleans the given InvokeState object so that it can be used by another threaded service invocation.
+     *
+     * @param invokeState   The InvokeState to sanitize.
+     */
+    private static void sanitize(InvokeState invokeState) {
+        ProtocolInfoIf oldState = invokeState.getProtocolInfoIf();
+        if (oldState instanceof HTTPState) {
+            ConcurrentHTTPState newState = new ConcurrentHTTPState(oldState);
+            invokeState.setProtocolInfoIf(newState);
+        }
+    }
+
+    /**
+     * A thread safe HTTPState class.
+     */
+    private static class ConcurrentHTTPState extends HTTPState {
+        /**
+         * Stores the properties of this object.
+         */
+        protected ConcurrentMap<String, Object> properties = new ConcurrentHashMap<String, Object>();
+
+        /**
+         * Create a new ConcurrentHTTPState object.
+         *
+         * @param protocolInfo  The state object to copy properties from.
+         */
+        ConcurrentHTTPState(ProtocolInfoIf protocolInfo) {
+            String[] keys = protocolInfo.getProtocolPropertyList();
+            for (String key : keys) {
+                properties.put(key, protocolInfo.getProtocolProperty(key));
+            }
+        }
+
+        /**
+         * Returns the property for the given key.
+         *
+         * @param key   The property key.
+         * @return      The property value with the given key.
+         */
+        @Override
+        public Object getProtocolProperty(String key) {
+            return properties.get(key);
+        }
+
+        /**
+         * Returns a list of property keys.
+         *
+         * @return a list of property keys.
+         */
+        @Override
+        public String[] getProtocolPropertyList() {
+            return properties.keySet().toArray(new String[0]);
+        }
+
+        /**
+         * Returns an IData representation of this object's properties.
+         *
+         * @return an IData representation of this object's properties.
+         */
+        @Override
+        public IData getResponseProtocolProperties() {
+            return new IDataMap(properties);
+        }
+
+        /**
+         * Sets the property with the given key to the given value.
+         *
+         * @param key   The property key.
+         * @param value The value to set the property to.
+         * @return      True if the property with the given key was set to the given value.
+         */
+        @Override
+        public boolean setProtocolProperty(String key, String value) {
+            properties.put(key, value);
+            return true;
+        }
     }
 
     /**

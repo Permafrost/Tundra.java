@@ -32,6 +32,9 @@ import permafrost.tundra.lang.ThreadHelper;
 
 import java.util.concurrent.ThreadFactory;
 
+/**
+ * A thread factory that creates webMethods Integration Server ServerThread threads.
+ */
 public class ServerThreadFactory implements ThreadFactory {
     /**
      * The prefix used on all created thread names.
