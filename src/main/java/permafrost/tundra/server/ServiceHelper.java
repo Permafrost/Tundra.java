@@ -598,7 +598,7 @@ public final class ServiceHelper {
             pipeline = normalize(pipeline, clone);
             try {
                 IDataUtil.merge(Service.doInvoke(service, pipeline), pipeline);
-            } catch (Exception exception) {
+            } catch (Throwable exception) {
                 if (raise) {
                     ExceptionHelper.raise(exception);
                 } else {
