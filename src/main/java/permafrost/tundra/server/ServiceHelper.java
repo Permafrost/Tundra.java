@@ -564,7 +564,7 @@ public final class ServiceHelper {
      * @throws ServiceException If raise is true and the service throws an exception while being invoked.
      */
     public static IData invoke(String service, IData pipeline, boolean raise, boolean clone) throws ServiceException {
-        return invoke(service, pipeline, raise, true, false);
+        return invoke(service, pipeline, raise, clone, false);
     }
 
     /**
