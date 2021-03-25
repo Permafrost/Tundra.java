@@ -27,16 +27,12 @@ package permafrost.tundra.lang;
 import com.wm.app.b2b.server.ServiceException;
 import com.wm.data.IData;
 import org.xml.sax.SAXParseException;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.IdentityHashMap;
 import java.util.List;
-import java.util.Set;
 
 /**
  * A collection of convenience methods for working with Integration Server service exceptions.
@@ -451,147 +447,5 @@ public final class ExceptionHelper {
             }
         }
         return exception;
-    }
-
-    /*
-     * The following code for exception suppression handling was adapted from the OpenJDK Throwable class source code,
-     * as allowed by the GNU General Public License, version 2, with the Classpath Exception.
-     * Refer: ./licenses/OpenJDK/LICENSE.txt
-     */
-
-    /**
-     * Caption for the cause of this exception.
-     */
-    private static final String CAUSE_CAPTION = "Caused by: ";
-    /**
-     * Caption for suppressed exceptions.
-     */
-    private static final String SUPPRESSED_CAPTION = "Suppressed: ";
-
-    /**
-     * Prints this throwable and its backtrace to the specified print stream.
-     *
-     * @param printStream   The stream to print to.
-     */
-    public static void printStackTrace(Throwable exception, PrintStream printStream) {
-        printStackTrace(exception, new WrappedPrintStream(printStream));
-    }
-
-    /**
-     * Prints this throwable and its backtrace to the specified print stream.
-     *
-     * @param printStreamOrWriter   The stream to print to.
-     */
-    private static void printStackTrace(Throwable exception, PrintStreamOrWriter printStreamOrWriter) {
-        // Guard against malicious overrides of Throwable.equals by
-        // using a Set with identity equality semantics.
-        Set<Throwable> dejaVu = Collections.newSetFromMap(new IdentityHashMap<Throwable, Boolean>());
-        dejaVu.add(exception);
-
-        synchronized (printStreamOrWriter.lock()) {
-            // stack trace
-            printStreamOrWriter.println(exception);
-            StackTraceElement[] trace = exception.getStackTrace();
-            for (StackTraceElement traceElement : trace)
-                printStreamOrWriter.println("\tat " + traceElement);
-
-            // suppressed exceptions
-            if (exception instanceof ExceptionSuppression) {
-                for (Throwable suppressedException : ((ExceptionSuppression)exception).suppressed()) {
-                    Throwable[] childSuppressedExceptions = null;
-                    if (suppressedException instanceof ExceptionSuppression) {
-                        childSuppressedExceptions = ((ExceptionSuppression)suppressedException).suppressed();
-                    }
-                    printEnclosedStackTrace(suppressedException, childSuppressedExceptions, printStreamOrWriter, trace, SUPPRESSED_CAPTION, "\t", dejaVu);
-                }
-            }
-
-            // cause
-            Throwable cause = exception.getCause();
-            if (cause != null) {
-                Throwable[] childSuppressedExceptions = null;
-                if (cause instanceof ExceptionSuppression) {
-                    childSuppressedExceptions = ((ExceptionSuppression)cause).suppressed();
-                }
-                printEnclosedStackTrace(cause, childSuppressedExceptions, printStreamOrWriter, trace, CAUSE_CAPTION, "", dejaVu);
-            }
-        }
-    }
-
-    /**
-     * Print stack trace as an enclosed exception for the specified stack trace.
-     */
-    private static void printEnclosedStackTrace(Throwable exception, Throwable[] suppressedExceptions, PrintStreamOrWriter printStreamOrWriter, StackTraceElement[] enclosingTrace, String caption, String prefix, Set<Throwable> dejaVu) {
-        assert Thread.holdsLock(printStreamOrWriter.lock());
-        if (dejaVu.contains(exception)) {
-            printStreamOrWriter.println("\t[CIRCULAR REFERENCE:" + exception + "]");
-        } else {
-            dejaVu.add(exception);
-            // Compute number of frames in common between this and enclosing trace
-            StackTraceElement[] trace = exception.getStackTrace();
-            int m = trace.length - 1;
-            int n = enclosingTrace.length - 1;
-            while (m >= 0 && n >=0 && trace[m].equals(enclosingTrace[n])) {
-                m--; n--;
-            }
-            int framesInCommon = trace.length - 1 - m;
-
-            // Print our stack trace
-            printStreamOrWriter.println(prefix + caption + exception);
-            for (int i = 0; i <= m; i++)
-                printStreamOrWriter.println(prefix + "\tat " + trace[i]);
-            if (framesInCommon != 0)
-                printStreamOrWriter.println(prefix + "\t... " + framesInCommon + " more");
-
-            if (suppressedExceptions != null) {
-                for (Throwable suppressedException : suppressedExceptions) {
-                    Throwable[] childSuppressedExceptions = null;
-                    if (suppressedException instanceof ExceptionSuppression) {
-                        childSuppressedExceptions = ((ExceptionSuppression)suppressedException).suppressed();
-                    }
-                    printEnclosedStackTrace(suppressedException, childSuppressedExceptions, printStreamOrWriter, trace, SUPPRESSED_CAPTION, prefix + "\t", dejaVu);
-                }
-            }
-
-            // Print cause, if any
-            Throwable cause = exception.getCause();
-            if (cause != null) {
-                Throwable[] childSuppressedExceptions = null;
-                if (cause instanceof ExceptionSuppression) {
-                    childSuppressedExceptions = ((ExceptionSuppression)cause).suppressed();
-                }
-                printEnclosedStackTrace(cause, childSuppressedExceptions, printStreamOrWriter, trace, CAUSE_CAPTION, prefix, dejaVu);
-            }
-        }
-    }
-
-    /**
-     * Wrapper class for PrintStream and PrintWriter to enable a single implementation of printStackTrace.
-     */
-    private abstract static class PrintStreamOrWriter {
-        /** Returns the object to be locked when using this StreamOrWriter */
-        abstract Object lock();
-
-        /** Prints the specified string as a line on this StreamOrWriter */
-        abstract void println(Object o);
-    }
-
-    /**
-     * Wrapper class implementation for PrintStream and PrintWriter to enable a single implementation of printStackTrace.
-     */
-    private static class WrappedPrintStream extends PrintStreamOrWriter {
-        private final PrintStream printStream;
-
-        WrappedPrintStream(PrintStream printStream) {
-            this.printStream = printStream;
-        }
-
-        Object lock() {
-            return printStream;
-        }
-
-        void println(Object o) {
-            printStream.println(o);
-        }
     }
 }

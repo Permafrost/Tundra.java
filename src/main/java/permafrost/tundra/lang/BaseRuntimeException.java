@@ -27,7 +27,6 @@ package permafrost.tundra.lang;
 import com.wm.data.IData;
 import com.wm.util.coder.IDataCodable;
 import permafrost.tundra.data.IDataMap;
-import java.io.PrintStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -181,15 +180,5 @@ public class BaseRuntimeException extends RuntimeException implements ExceptionS
     @Override
     public synchronized Throwable[] suppressed() {
         return suppressedExceptions.toArray(new Throwable[0]);
-    }
-
-    /**
-     * Prints this throwable and its backtrace to the specified print stream.
-     *
-     * @param printStream   The stream to print to.
-     */
-    @Override
-    public void printStackTrace(PrintStream printStream) {
-        ExceptionHelper.printStackTrace(this, printStream);
     }
 }
