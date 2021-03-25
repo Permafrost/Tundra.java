@@ -69,7 +69,7 @@ public final class DurationHelper {
     private static final BigDecimal SECONDS_PER_MINUTE_BIG_DECIMAL = BigDecimal.valueOf(SECONDS_PER_MINUTE);
     private static final BigDecimal MILLISECONDS_PER_SECOND_BIG_DECIMAL = BigDecimal.valueOf(MILLISECONDS_PER_SECOND);
 
-    private static DatatypeFactory DATATYPE_FACTORY;
+    private static final DatatypeFactory DATATYPE_FACTORY;
 
     static {
         try {
