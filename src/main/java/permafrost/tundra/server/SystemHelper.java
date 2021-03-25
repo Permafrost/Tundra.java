@@ -28,17 +28,27 @@ import com.wm.app.b2b.server.Build;
 import com.wm.app.b2b.server.Resources;
 import com.wm.app.b2b.server.Server;
 import com.wm.app.b2b.server.ServiceException;
+import com.wm.data.DataException;
 import com.wm.data.IData;
+import com.wm.data.IDataCursor;
+import com.wm.data.IDataFactory;
+import permafrost.tundra.data.AbstractIData;
 import permafrost.tundra.data.CaseInsensitiveIData;
 import permafrost.tundra.data.Element;
 import permafrost.tundra.data.ElementList;
+import permafrost.tundra.data.IDataHelper;
 import permafrost.tundra.data.IDataMap;
 import permafrost.tundra.data.ImmutableIData;
 import permafrost.tundra.data.KeyAliasElement;
 import permafrost.tundra.data.MapIData;
 import permafrost.tundra.flow.variable.GlobalVariableHelper;
+import permafrost.tundra.id.UUIDHelper;
 import permafrost.tundra.io.FileHelper;
 import permafrost.tundra.math.LongHelper;
+import permafrost.tundra.time.DateTimeHelper;
+import permafrost.tundra.time.TimeZoneHelper;
+import java.net.UnknownHostException;
+import java.util.Calendar;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
@@ -86,16 +96,90 @@ public final class SystemHelper {
             ElementList<String, Object> output = new ElementList<String, Object>();
 
             output.add(new Element<String, Object>("version", Build.getVersion()));
+            output.add(new Element<String, Object>("localhost", getHost()));
             output.add(new Element<String, Object>("environment", getEnvironment()));
             output.add(new KeyAliasElement<String, Object>("property", getProperties(), "properties"));
             if (GlobalVariableHelper.isSupported()) output.add(new Element<String, Object>("global", GlobalVariableHelper.list()));
             output.add(new KeyAliasElement<String, Object>("directory", getDirectories(), "directories"));
-            output.add(new Element<String, Object>("memory", getMemoryUsage()));
 
             system = new ImmutableIData(output);
         }
 
-        return system;
+        IData duplicate = IDataHelper.duplicate(system);
+        IDataCursor cursor = duplicate.getCursor();
+        try {
+            cursor.insertAfter("memory", getMemoryUsage());
+            cursor.insertAfter("reference", getReference());
+        } finally {
+            cursor.destroy();
+        }
+
+        return duplicate;
+    }
+
+    /**
+     * Returns an IData that can be used as a reference with a random uuid and the current datetime.
+     *
+     * @return an IData that can be used as a reference with a random uuid and the current datetime.
+     */
+    private static IData getReference() {
+        IData reference = IDataFactory.create();
+        IDataCursor cursor = reference.getCursor();
+
+        try {
+            cursor.insertAfter("uuid", UUIDHelper.generate());
+            cursor.insertAfter("datetime", getDateTime());
+        } finally {
+            cursor.destroy();
+        }
+
+        return reference;
+    }
+
+    /**
+     * Returns a special IData that uses keys as datetime patterns to format the current datetime dynamically.
+     *
+     * @return a special IData that uses keys as datetime patterns to format the current datetime dynamically.
+     */
+    private static IData getDateTime() {
+        IData datetime = IDataFactory.create();
+        IDataCursor cursor = datetime.getCursor();
+
+        try {
+            Calendar nowLocal = Calendar.getInstance();
+            Calendar nowUTC = Calendar.getInstance();
+            nowUTC.setTimeInMillis(nowLocal.getTimeInMillis());
+            nowUTC.setTimeZone(TimeZoneHelper.UTC_TIME_ZONE);
+            cursor.insertAfter("local", new DateTimeIData(nowLocal));
+            cursor.insertAfter("utc", new DateTimeIData(nowUTC));
+        } finally {
+            cursor.destroy();
+        }
+
+        return datetime;
+    }
+
+    /**
+     * Returns an IData representation of the localhost.
+     *
+     * @return an IData representation of the localhost.
+     */
+    private static IData getHost() {
+        IData host = IDataFactory.create();
+        IDataCursor cursor = host.getCursor();
+
+        try {
+            NameHelper.InternetAddress localhost = NameHelper.InternetAddress.localhost();
+            cursor.insertAfter("domain", localhost.getDomain());
+            cursor.insertAfter("host", localhost.getHost());
+            cursor.insertAfter("ip", localhost.getIPAddress());
+        } catch(UnknownHostException ex) {
+            // do nothing
+        } finally {
+            cursor.destroy();
+        }
+
+        return host;
     }
 
     /**
@@ -217,5 +301,195 @@ public final class SystemHelper {
         }
 
         return "Integration-Server@" + domain;
+    }
+
+    /**
+     * An IData representation of the given Calendar which dynamically formats the datetime using the requested key as
+     * the datetime pattern.
+     */
+    private static class DateTimeIData extends AbstractIData {
+        /**
+         * The datetime this IData represents.
+         */
+        private Calendar datetime;
+
+        /**
+         * Create a new DateTimeIData object.
+         *
+         * @param datetime  The datetime this object represents.
+         */
+        public DateTimeIData(Calendar datetime) {
+            if (datetime == null) throw new NullPointerException("datetime must not be null");
+            this.datetime = datetime;
+        }
+
+        /**
+         * Returns a cursor for traversing this object.
+         *
+         * @return a cursor for traversing this object.
+         */
+        @Override
+        public IDataCursor getCursor() {
+            return new DateTimeIDataCursor(datetime);
+        }
+
+        /**
+         * Implements IDataCursor for the DateTimeIData class, treats requested keys as datetime patterns, dynamically
+         * returning the wrapped datetime formatted using this pattern as the key's value.
+         */
+        private static class DateTimeIDataCursor implements IDataCursor {
+            private Calendar datetime;
+            private String key;
+            private Object value;
+
+            public DateTimeIDataCursor(Calendar datetime) {
+                if (datetime == null) throw new NullPointerException("datetime must not be null");
+                this.datetime = datetime;
+            }
+
+            private DateTimeIDataCursor(Calendar datetime, String key, Object value) {
+                this.datetime = datetime;
+                this.key = key;
+                this.value = value;
+            }
+
+            @Override
+            public void setErrorMode(int errorMode) {
+                // do nothing
+            }
+
+            @Override
+            public DataException getLastError() {
+                return null;
+            }
+
+            @Override
+            public boolean hasMoreErrors() {
+                return false;
+            }
+
+            @Override
+            public void home() {
+                // do nothing
+            }
+
+            @Override
+            public String getKey() {
+                return key;
+            }
+
+            @Override
+            public Object getValue() {
+                return value;
+            }
+
+            @Override
+            public void setKey(String key) {
+                // do nothing
+            }
+
+            @Override
+            public void setValue(Object value) {
+                // do nothing
+            }
+
+            @Override
+            public boolean delete() {
+                return false;
+            }
+
+            @Override
+            public void insertBefore(String key, Object value) {
+                // do nothing
+            }
+
+            @Override
+            public void insertAfter(String key, Object value) {
+                // do nothing
+            }
+
+            @Override
+            public IData insertDataBefore(String key) {
+                return null;
+            }
+
+            @Override
+            public IData insertDataAfter(String key) {
+                return null;
+            }
+
+            @Override
+            public boolean next() {
+                return false;
+            }
+
+            /**
+             * Sets the current key to the given key, and the value to the formatted datetime using the key as the datetime
+             * pattern.
+             *
+             * @param key   The requested key.
+             * @return      True if the key was a valid datetime pattern and the datetime was able to be formatted using it.
+             */
+            private boolean get(String key) {
+                boolean result = true;
+                try {
+                    this.key = key;
+                    this.value = DateTimeHelper.emit(datetime, key);
+                } catch(Exception ex) {
+                    result = false;
+                }
+                return result;
+            }
+
+            @Override
+            public boolean next(String key) {
+                return get(key);
+            }
+
+            @Override
+            public boolean previous() {
+                return false;
+            }
+
+            @Override
+            public boolean previous(String key) {
+                return get(key);
+            }
+
+            @Override
+            public boolean first() {
+                return false;
+            }
+
+            @Override
+            public boolean first(String key) {
+                return get(key);
+            }
+
+            @Override
+            public boolean last() {
+                return false;
+            }
+
+            @Override
+            public boolean last(String key) {
+                return get(key);
+            }
+
+            @Override
+            public boolean hasMoreData() {
+                return false;
+            }
+
+            @Override
+            public void destroy() {
+                // do nothing
+            }
+
+            @Override
+            public IDataCursor getCursorClone() {
+                return new DateTimeIDataCursor(this.datetime, this.key, this.value);
+            }
+        }
     }
 }
