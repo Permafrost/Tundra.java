@@ -148,7 +148,7 @@ public class RestServiceProcessor extends AbstractInvokeChainProcessor {
     }
 
     /**
-     * The service invocation instances in which to convert exceptions to be instances of ISRuntimeException.
+     * The service invocation instances which have registered as REST services.
      */
     protected final ConcurrentMap<RegistryKey, IData> registry = new ConcurrentHashMap<RegistryKey, IData>();
     /**
