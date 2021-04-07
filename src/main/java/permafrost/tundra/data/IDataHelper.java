@@ -2088,24 +2088,56 @@ public final class IDataHelper {
      * Removes all key value pairs from the given IData document except those with a specified key.
      *
      * @param document          An IData document to be cleared.
-     * @param keysToBePreserved List of simple or fully-qualified keys identifying items that should not be removed.
+     * @param keysToBePreserved List of literal or fully-qualified keys identifying items that should not be removed.
      */
     public static void clear(IData document, String... keysToBePreserved) {
-        if (document == null) return;
+        clear(document, Arrays.asList(keysToBePreserved), false);
+    }
 
-        IData saved = IDataFactory.create();
-        if (keysToBePreserved != null) {
-            for (String key : keysToBePreserved) {
-                if (key != null) put(saved, key, get(document, key), false, false);
+    /**
+     * Removes all key value pairs from the given IData document except those with a specified key.
+     *
+     * @param document          An IData document to be cleared.
+     * @param keysToBePreserved List of literal or fully-qualified keys identifying items that should not be removed.
+     * @param literal           Whether the specified keys are literal or fully-qualified.
+     */
+    public static void clear(IData document, Iterable<String> keysToBePreserved, boolean literal) {
+        if (document != null && keysToBePreserved != null) {
+            IData saved = IDataFactory.create();
+            IDataCursor cursor = document.getCursor();
+
+            try {
+                if (literal) {
+                    IDataCursor savedCursor = saved.getCursor();
+                    try {
+                        for (String key : keysToBePreserved) {
+                            if (key != null) {
+                                if (cursor.first(key)) {
+                                    savedCursor.insertAfter(key, cursor.getValue());
+                                    cursor.delete();
+                                }
+                            }
+                        }
+                    } finally {
+                        savedCursor.destroy();
+                    }
+                } else {
+                    for (String key : keysToBePreserved) {
+                        if (key != null) {
+                            put(saved, key, remove(document, key, literal), literal, false);
+                        }
+                    }
+                }
+
+                // delete all remaining elements
+                cursor.first();
+                while (cursor.delete());
+            } finally{
+                cursor.destroy();
             }
+
+            IDataUtil.merge(saved, document);
         }
-
-        IDataCursor cursor = document.getCursor();
-        cursor.first();
-        while (cursor.delete());
-        cursor.destroy();
-
-        if (keysToBePreserved != null) IDataUtil.merge(saved, document);
     }
 
     /**
