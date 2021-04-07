@@ -27,7 +27,6 @@ package permafrost.tundra.flow;
 import com.wm.app.b2b.server.InvokeState;
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;
-import com.wm.lang.ns.NSField;
 import com.wm.lang.ns.NSRecord;
 import com.wm.lang.ns.NSService;
 import com.wm.lang.ns.NSSignature;
@@ -35,11 +34,10 @@ import com.wm.lang.schema.Validator;
 import com.wm.lang.xml.WMDocumentException;
 import permafrost.tundra.content.ValidationHelper;
 import permafrost.tundra.content.ValidationResult;
+import permafrost.tundra.data.IDataCursorHelper;
 import permafrost.tundra.data.IDataHelper;
 import permafrost.tundra.lang.ExceptionHelper;
 import permafrost.tundra.server.ServiceHelper;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Convenience services for working with the invoke pipeline.
@@ -117,9 +115,10 @@ public class PipelineHelper {
      *
      * @param pipeline  The pipeline to be sanitized.
      * @param direction Whether to sanitize using the input or output signature.
+     * @param recurse   Whether to recursively sanitize child IData and IData[] elements.
      */
-    public static void sanitize(IData pipeline, InputOutputSignature direction) {
-        sanitize(ServiceHelper.self(), pipeline, direction);
+    public static void sanitize(IData pipeline, InputOutputSignature direction, boolean recurse) {
+        sanitize(ServiceHelper.self(), pipeline, direction, recurse);
     }
 
     /**
@@ -129,30 +128,55 @@ public class PipelineHelper {
      * @param service   The service whose signature is used to sanitized against.
      * @param pipeline  The pipeline to be sanitized.
      * @param direction Whether to sanitize using the input or output signature.
+     * @param recurse   Whether to recursively sanitize child IData and IData[] elements.
      */
-    public static void sanitize(NSService service, IData pipeline, InputOutputSignature direction) {
+    public static void sanitize(NSService service, IData pipeline, InputOutputSignature direction, boolean recurse) {
         // we can only sanitize the pipeline when not debugging
         if (service != null && !"wm.server.flow:stepFlow".equals(service.getNSName().getFullName())) {
-            NSRecord record;
-            if (direction == InputOutputSignature.INPUT) {
-                record = service.getSignature().getInput();
-            } else {
-                record = service.getSignature().getOutput();
-            }
-
-            if (record != null) {
-                NSField[] fields = record.getFields();
-                if (fields != null) {
-                    List<String> names = new ArrayList<String>(fields.length);
-                    for (int i = 0; i < fields.length; i++) {
-                        if (fields[i] != null) {
-                            names.add(fields[i].getName());
-                        }
-                    }
-                    IDataHelper.clear(pipeline, names.toArray(new String[0]));
-                }
+            IDataCursor cursor = pipeline.getCursor();
+            try {
+                IDataCursorHelper.sanitize(cursor, getClosedSignature(service, direction), recurse);
+            } finally {
+                cursor.destroy();
             }
         }
+    }
+
+    /**
+     * Returns a closed mutable clone of either the input or output signature of the given service.
+     *
+     * @param service   The service whose signature is to be returned.
+     * @param direction Whether to return the input or output signature.
+     * @return          The input or output signature of the given service.
+     */
+    private static NSRecord getClosedSignature(NSService service, InputOutputSignature direction) {
+        NSRecord record = getSignature(service, direction);
+        if (record != null) {
+            record = (NSRecord) record.clone();
+            record.setClosed(true);
+        }
+
+        return record;
+    }
+
+    /**
+     * Returns either the input or output signature of the given service.
+     *
+     * @param service   The service whose signature is to be returned.
+     * @param direction Whether to return the input or output signature.
+     * @return          The input or output signature of the given service.
+     */
+    private static NSRecord getSignature(NSService service, InputOutputSignature direction) {
+        if (service == null || direction == null) return null;
+
+        NSRecord record;
+        if (direction == InputOutputSignature.INPUT) {
+            record = service.getSignature().getInput();
+        } else {
+            record = service.getSignature().getOutput();
+        }
+
+        return record;
     }
 
     /**

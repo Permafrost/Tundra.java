@@ -366,7 +366,7 @@ public final class ServiceHelper {
         RestServiceProcessor processor = RestServiceProcessor.getInstance();
         if (processor.isStarted()) {
             processor.register(pipeline);
-            PipelineHelper.sanitize(pipeline, PipelineHelper.InputOutputSignature.INPUT);
+            PipelineHelper.sanitize(pipeline, PipelineHelper.InputOutputSignature.INPUT, false);
             ValidationResult result = PipelineHelper.validate(pipeline, PipelineHelper.InputOutputSignature.INPUT);
             result.raiseIfInvalid();
         }

@@ -247,7 +247,7 @@ public class RestServiceProcessor extends AbstractInvokeChainProcessor {
                     IData response = IDataHelper.remove(cursor, "$httpResponse", IData.class);
                     ServerLogHelper.log(this.getClass().getName(), logLevel, null, pipeline, true);
                     if (response == null) {
-                        PipelineHelper.sanitize(baseService, pipeline, PipelineHelper.InputOutputSignature.OUTPUT);
+                        PipelineHelper.sanitize(baseService, pipeline, PipelineHelper.InputOutputSignature.OUTPUT, false);
                         ValidationResult result = PipelineHelper.validate(baseService, pipeline, PipelineHelper.InputOutputSignature.OUTPUT);
                         result.raiseIfInvalid();
                         respond(200, pipeline);
