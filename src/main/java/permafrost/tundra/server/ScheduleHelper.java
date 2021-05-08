@@ -265,7 +265,7 @@ public final class ScheduleHelper {
                         }
                     }
                 } catch (SQLException ex) {
-                    // don't run on this server if schedule doesn't exist of there is a database issue
+                    // don't run on this server if schedule doesn't exist or if there is a database issue
                 }
             }
         }
