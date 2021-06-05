@@ -50,6 +50,8 @@ import permafrost.tundra.server.ServiceHelper;
 import permafrost.tundra.util.regex.PatternHelper;
 import permafrost.tundra.xml.dom.NodeHelper;
 import permafrost.tundra.xml.dom.Nodes;
+import permafrost.tundra.xml.namespace.IDataNamespaceContext;
+import permafrost.tundra.xml.namespace.NamespaceHelper;
 import permafrost.tundra.xml.xpath.XPathHelper;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -661,6 +663,25 @@ public final class IDataHelper {
         }
 
         return target;
+    }
+
+    /**
+     * Returns true if the given IData document is empty or null.
+     *
+     * @param document  The IData document.
+     * @return          True if the given IData document is empty or null.
+     */
+    public static boolean isEmpty(IData document) {
+        boolean isEmpty = true;
+        if (document != null) {
+            IDataCursor cursor = document.getCursor();
+            try {
+                isEmpty = !cursor.next();
+            } finally {
+                cursor.destroy();
+            }
+        }
+        return isEmpty;
     }
 
     /**
@@ -1511,11 +1532,25 @@ public final class IDataHelper {
      * Amends the given IData document with the key value pairs specified in the amendments IData document.
      *
      * @param document          The IData document to be amended.
+     * @param namespace         Optional IData document containing namespace declarations used in the given document.
      * @param amendments        The list of key value pairs to amend the document with.
      * @param scope             The scope against which to resolve variable substitution statements.
      * @return                  The amended IData document.
      */
-    public static IData amend(IData document, IData[] amendments, IData scope) {
+    public static IData amend(IData document, IData namespace, IData[] amendments, IData scope) {
+        return amend(document, isEmpty(namespace) ? null : new IDataNamespaceContext(namespace), amendments, scope);
+    }
+
+    /**
+     * Amends the given IData document with the key value pairs specified in the amendments IData document.
+     *
+     * @param document          The IData document to be amended.
+     * @param namespace         Optional NamespaceContext containing namespace declarations used in the given document.
+     * @param amendments        The list of key value pairs to amend the document with.
+     * @param scope             The scope against which to resolve variable substitution statements.
+     * @return                  The amended IData document.
+     */
+    public static IData amend(IData document, NamespaceContext namespace, IData[] amendments, IData scope) {
         if (amendments == null || amendments.length == 0) return document;
 
         IData output = duplicate(document);
@@ -1533,6 +1568,9 @@ public final class IDataHelper {
                 value = SubstitutionHelper.substitute((String)value, Object.class, null, null, scope);
 
                 if ((condition == null) || ConditionEvaluator.evaluate(condition, scope)) {
+                    if (namespace != null) {
+                        key = NamespaceHelper.normalize(key, namespace);
+                    }
                     if (action == null || action.equals("merge") || (action.equals("update") && IDataHelper.exists(output, key)) || (action.equals("create") && !IDataHelper.exists(output, key))) {
                         output = IDataHelper.put(output, key, value);
                     } else if (action.equals("delete")) {
