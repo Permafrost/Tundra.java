@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
 /**
  * Convenience class for fully qualified IData keys.
  */
-class IDataKey extends ArrayDeque<IDataKey.Part> {
+public class IDataKey extends ArrayDeque<IDataKey.Part> {
     /**
      * The string which separates individual key parts in a fully-qualified key string.
      */
