@@ -2129,7 +2129,7 @@ public final class IDataHelper {
      * @param keysToBePreserved List of literal or fully-qualified keys identifying items that should not be removed.
      */
     public static void clear(IData document, String... keysToBePreserved) {
-        clear(document, Arrays.asList(keysToBePreserved), false);
+        clear(document, keysToBePreserved == null ? null : Arrays.asList(keysToBePreserved), false);
     }
 
     /**
