@@ -39,7 +39,7 @@ public class Logger extends StartableHandler {
     /**
      * The default log level used by this object.
      */
-    private static Level DEFAULT_LOG_LEVEL = Level.INFO;
+    private static final Level DEFAULT_LOG_LEVEL = Level.INFO;
     /**
      * Initialization on demand holder idiom.
      */
