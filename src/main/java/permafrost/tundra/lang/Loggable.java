@@ -25,7 +25,7 @@
 package permafrost.tundra.lang;
 
 import com.wm.data.IData;
-import org.apache.log4j.Level;
+import permafrost.tundra.server.ServerLogLevel;
 import java.io.IOException;
 
 /**
@@ -41,19 +41,19 @@ public interface Loggable extends Startable {
      * @param addPrefix     Whether to prefix the log statement with logging metadata.
      * @throws IOException  If an IO error occurs.
      */
-    void log(Level level, String message, IData context, boolean addPrefix) throws IOException;
+    void log(ServerLogLevel level, String message, IData context, boolean addPrefix) throws IOException;
 
     /**
      * Returns the level of logging that is being written to the log file.
      *
      * @return The level of logging that is being written to the log file.
      */
-    Level getLogLevel();
+    ServerLogLevel getLogLevel();
 
     /**
      * Sets the level of logging that will be written to the log file.
      *
      * @param logLevel  The level of logging that will be written to the log file.
      */
-    void setLogLevel(Level logLevel);
+    void setLogLevel(ServerLogLevel logLevel);
 }

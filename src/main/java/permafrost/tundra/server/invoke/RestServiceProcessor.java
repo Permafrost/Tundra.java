@@ -35,7 +35,6 @@ import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
 import com.wm.util.ServerException;
-import org.apache.log4j.Level;
 import permafrost.tundra.configuration.ConfigurationManager;
 import permafrost.tundra.content.ContentParser;
 import permafrost.tundra.content.DuplicateException;
@@ -55,7 +54,7 @@ import permafrost.tundra.mime.MediaRange;
 import permafrost.tundra.server.InvokeStateHelper;
 import permafrost.tundra.server.ProtocolStateHelper;
 import permafrost.tundra.server.ServerLogHelper;
-import permafrost.tundra.server.ServerLogLevelHelper;
+import permafrost.tundra.server.ServerLogLevel;
 import permafrost.tundra.server.ServiceHelper;
 import permafrost.tundra.time.DurationHelper;
 import permafrost.tundra.time.DurationPattern;
@@ -154,7 +153,7 @@ public class RestServiceProcessor extends AbstractInvokeChainProcessor {
     /**
      * The logging level to use when logging.
      */
-    protected volatile Level logLevel = ServerLogLevelHelper.DEFAULT_LOG_LEVEL;
+    protected volatile ServerLogLevel logLevel = ServerLogLevel.DEFAULT_LOG_LEVEL;
 
     /**
      * Initialization on demand holder idiom.
@@ -285,7 +284,7 @@ public class RestServiceProcessor extends AbstractInvokeChainProcessor {
             // clean up registry whether or not an exception was thrown
             IData inputPipeline = registry.remove(registryKey);
             if (inputPipeline != null) {
-                if (!Level.OFF.equals(logLevel)) {
+                if (!ServerLogLevel.OFF.equals(logLevel)) {
                     InvokeState invokeState = InvokeStateHelper.current();
                     if (invokeState != null) {
                         ProtocolInfoIf protocolInfo = invokeState.getProtocolInfoIf();
@@ -396,7 +395,7 @@ public class RestServiceProcessor extends AbstractInvokeChainProcessor {
     public synchronized void start() {
         if (!started) {
             try {
-                logLevel = IDataHelper.get(ConfigurationManager.get("Tundra"), "feature/service/restful/logging", Level.class);
+                logLevel = IDataHelper.get(ConfigurationManager.get("Tundra"), "feature/service/restful/logging", ServerLogLevel.class);
             } catch(Exception ex) {
                 // do nothing
             }

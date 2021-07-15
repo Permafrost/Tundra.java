@@ -25,7 +25,6 @@
 package permafrost.tundra.server.content;
 
 import com.wm.app.b2b.server.InvokeState;
-import org.apache.log4j.Level;
 import org.unbescape.java.JavaEscape;
 import org.unbescape.java.JavaEscapeLevel;
 import permafrost.tundra.io.InputStreamHelper;
@@ -34,6 +33,7 @@ import permafrost.tundra.lang.CharsetHelper;
 import permafrost.tundra.lang.Startable;
 import permafrost.tundra.mime.MIMETypeHelper;
 import permafrost.tundra.server.ServerLogHelper;
+import permafrost.tundra.server.ServerLogLevel;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -48,7 +48,7 @@ public class LoggingContentHandler extends FilterContentHandler {
     /**
      * The default log level used by this object.
      */
-    private static final Level DEFAULT_LOG_LEVEL = Level.INFO;
+    private static final ServerLogLevel DEFAULT_LOG_LEVEL = ServerLogLevel.INFO;
 
     /**
      * The regular expression pattern which matches known text MIME media types.

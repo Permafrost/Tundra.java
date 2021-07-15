@@ -26,9 +26,9 @@ package permafrost.tundra.server.http.handler;
 
 import com.wm.app.b2b.server.AccessException;
 import com.wm.app.b2b.server.ProtocolState;
-import org.apache.log4j.Level;
 import permafrost.tundra.server.ServerLogHelper;
 import permafrost.tundra.server.ProtocolStateHelper;
+import permafrost.tundra.server.ServerLogLevel;
 import java.io.IOException;
 import java.util.Iterator;
 
@@ -39,7 +39,7 @@ public class Logger extends StartableHandler {
     /**
      * The default log level used by this object.
      */
-    private static final Level DEFAULT_LOG_LEVEL = Level.INFO;
+    private static final ServerLogLevel DEFAULT_LOG_LEVEL = ServerLogLevel.INFO;
     /**
      * Initialization on demand holder idiom.
      */

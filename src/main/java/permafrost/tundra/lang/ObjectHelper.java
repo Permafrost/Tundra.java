@@ -32,7 +32,6 @@ import com.wm.lang.ns.NSNode;
 import com.wm.util.Table;
 import com.wm.util.coder.IDataCodable;
 import com.wm.util.coder.ValuesCodable;
-import org.apache.log4j.Level;
 import permafrost.tundra.collection.ListHelper;
 import permafrost.tundra.data.IDataHelper;
 import permafrost.tundra.io.FileHelper;
@@ -48,7 +47,6 @@ import permafrost.tundra.math.ShortHelper;
 import permafrost.tundra.mime.MIMETypeHelper;
 import permafrost.tundra.security.MessageDigestHelper;
 import permafrost.tundra.server.NodePermission;
-import permafrost.tundra.server.ServerLogLevelHelper;
 import permafrost.tundra.time.DateTimeHelper;
 import permafrost.tundra.time.DurationHelper;
 import permafrost.tundra.time.TimeZoneHelper;
@@ -607,12 +605,6 @@ public final class ObjectHelper {
                 value = (T)TimeZoneHelper.get((String)object);
             } else if (klass.isAssignableFrom(File.class) && object instanceof String) {
                 value = (T)FileHelper.construct((String)object);
-            } else if (klass.isAssignableFrom(Level.class) && (object instanceof String || object instanceof Number)) {
-                if (object instanceof String) {
-                    value = (T)ServerLogLevelHelper.toLevel((String)object);
-                } else {
-                    value = (T)ServerLogLevelHelper.toLevel(((Number)object).intValue());
-                }
             }
         } catch (IOException ex) {
             throw new RuntimeException(ex);

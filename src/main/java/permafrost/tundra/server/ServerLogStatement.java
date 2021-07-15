@@ -26,7 +26,6 @@ package permafrost.tundra.server;
 
 import com.wm.data.IData;
 import com.wm.lang.ns.NSService;
-import org.apache.log4j.Level;
 import permafrost.tundra.data.IDataJSONParser;
 import permafrost.tundra.lang.ExceptionHelper;
 import java.util.List;
@@ -38,7 +37,7 @@ public class ServerLogStatement {
     /**
      * The logging level to use.
      */
-    protected Level level;
+    protected ServerLogLevel level;
     /**
      * The message to be logged.
      */
@@ -59,8 +58,8 @@ public class ServerLogStatement {
      * @param context   The optional context to include.
      * @param addPrefix Whether to prefix the log statement with logging metadata.
      */
-    public ServerLogStatement(Level level, String message, IData context, boolean addPrefix) {
-        this.level = level == null ? ServerLogLevelHelper.DEFAULT_LOG_LEVEL : level;
+    public ServerLogStatement(ServerLogLevel level, String message, IData context, boolean addPrefix) {
+        this.level = level == null ? ServerLogLevel.DEFAULT_LOG_LEVEL : level;
         this.message = message;
         this.context = context;
         this.addPrefix = addPrefix;
@@ -170,7 +169,7 @@ public class ServerLogStatement {
      * @param addPrefix Whether to prefix the log statement with logging metadata.
      * @return          The log statement as a string.
      */
-    public static String of(Level level, String message, IData context, boolean addPrefix) {
+    public static String of(ServerLogLevel level, String message, IData context, boolean addPrefix) {
         return new ServerLogStatement(level, message, context, addPrefix).toString();
     }
 }

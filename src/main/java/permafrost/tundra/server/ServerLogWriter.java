@@ -28,7 +28,6 @@ import com.wm.app.b2b.server.LogManager;
 import com.wm.app.b2b.server.LogWriter;
 import com.wm.app.b2b.server.Server;
 import com.wm.data.IData;
-import org.apache.log4j.Level;
 import permafrost.tundra.lang.Loggable;
 import permafrost.tundra.util.concurrent.ConcurrentWriter;
 import java.io.File;
@@ -42,7 +41,7 @@ public class ServerLogWriter extends ConcurrentWriter implements Loggable {
     /**
      * The level of logging that will be written to the log file.
      */
-    protected Level logLevel;
+    protected ServerLogLevel logLevel;
     /**
      * The path to the log file being written to.
      */
@@ -73,7 +72,7 @@ public class ServerLogWriter extends ConcurrentWriter implements Loggable {
      * @return The level of logging that is being written to the log file.
      */
     @Override
-    public Level getLogLevel() {
+    public ServerLogLevel getLogLevel() {
         return logLevel;
     }
 
@@ -83,7 +82,7 @@ public class ServerLogWriter extends ConcurrentWriter implements Loggable {
      * @param logLevel  The level of logging that will be written to the log file.
      */
     @Override
-    public void setLogLevel(Level logLevel) {
+    public void setLogLevel(ServerLogLevel logLevel) {
         this.logLevel = logLevel;
     }
 
@@ -97,11 +96,11 @@ public class ServerLogWriter extends ConcurrentWriter implements Loggable {
      * @throws IOException  If an IO error occurs.
      */
     @Override
-    public void log(Level level, String message, IData context, boolean addPrefix) throws IOException {
+    public void log(ServerLogLevel level, String message, IData context, boolean addPrefix) throws IOException {
         if (started) {
-            if (level == null) level = ServerLogLevelHelper.DEFAULT_LOG_LEVEL;
-            Level logLevel = this.logLevel == null ? ServerLogLevelHelper.toLevel(System.getProperty("watt.debug.level", Level.INFO.toString())) : this.logLevel;
-            if (level.isGreaterOrEqual(logLevel)) {
+            if (level == null) level = ServerLogLevel.DEFAULT_LOG_LEVEL;
+            ServerLogLevel logLevel = this.logLevel == null ? ServerLogLevel.normalize(System.getProperty("watt.debug.level", ServerLogLevel.INFO.toString())) : this.logLevel;
+            if (logLevel.compareTo(level) >= 0) {
                 String statement = ServerLogStatement.of(level, message, context, addPrefix);
                 if (statement != null) {
                     write(statement);

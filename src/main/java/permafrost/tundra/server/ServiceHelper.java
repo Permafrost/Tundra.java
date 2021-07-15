@@ -43,7 +43,6 @@ import com.wm.lang.ns.NSNode;
 import com.wm.lang.ns.NSService;
 import com.wm.lang.ns.NSServiceType;
 import com.wm.net.HttpHeader;
-import org.apache.log4j.Level;
 import permafrost.tundra.collection.ListHelper;
 import permafrost.tundra.content.ValidationResult;
 import permafrost.tundra.data.IDataHelper;

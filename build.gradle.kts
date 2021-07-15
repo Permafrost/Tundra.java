@@ -41,7 +41,6 @@ dependencies {
     api("com.sun.xml.bind:jaxb-impl:2.3.2")
     api("com.sun.xml.ws:jaxws-ri:2.3.2-1")
     api("javax.xml.bind:jaxb-api:2.3.1")
-    api("log4j:log4j:1.2.17")
     api("org.apache.axis2:axis2-kernel:1.7.9")
     api("org.apache.commons:commons-collections4:4.1")
     api("org.apache.commons:commons-compress:1.12")

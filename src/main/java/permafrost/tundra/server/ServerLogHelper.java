@@ -26,7 +26,6 @@ package permafrost.tundra.server;
 
 import com.wm.data.IData;
 import com.wm.util.JournalLogger;
-import org.apache.log4j.Level;
 import permafrost.tundra.lang.ExceptionHelper;
 import permafrost.tundra.lang.Loggable;
 import java.io.IOException;
@@ -48,7 +47,7 @@ public class ServerLogHelper {
      * @param message   The message to be logged.
      * @param context   The optional context to be logged.
      */
-    public static void log(Level level, String function, String message, IData context) {
+    public static void log(ServerLogLevel level, String function, String message, IData context) {
         log(level, message, context, true);
     }
 
@@ -60,7 +59,7 @@ public class ServerLogHelper {
      * @param context   The optional context to be logged.
      * @param addPrefix Whether to prefix log statement with logging metadata.
      */
-    public static void log(Level level, String message, IData context, boolean addPrefix) {
+    public static void log(ServerLogLevel level, String message, IData context, boolean addPrefix) {
         ServerLogStatement statement = new ServerLogStatement(level, message, context, addPrefix);
         log(level, null, statement.toString());
     }
@@ -74,7 +73,7 @@ public class ServerLogHelper {
      * @param context   The optional context to be logged.
      * @param addPrefix Whether to prefix log statement with logging metadata.
      */
-    public static void log(String name, Level level, String message, IData context, boolean addPrefix) {
+    public static void log(String name, ServerLogLevel level, String message, IData context, boolean addPrefix) {
         Loggable loggable = ServerLogManager.getInstance().get(name);
         if (loggable != null) {
             try {
@@ -93,7 +92,7 @@ public class ServerLogHelper {
      * @param arguments The arguments to be included when formatting the message.
      */
     public static void fatal(String function, String message, Object... arguments) {
-        log(Level.FATAL, function, message, arguments);
+        log(ServerLogLevel.FATAL, function, message, arguments);
     }
 
     /**
@@ -104,7 +103,7 @@ public class ServerLogHelper {
      * @param arguments The arguments to be included when formatting the message.
      */
     public static void error(String function, String message, Object... arguments) {
-        log(Level.ERROR, function, message, arguments);
+        log(ServerLogLevel.ERROR, function, message, arguments);
     }
 
     /**
@@ -115,7 +114,7 @@ public class ServerLogHelper {
      * @param arguments The arguments to be included when formatting the message.
      */
     public static void warn(String function, String message, Object... arguments) {
-        log(Level.WARN, function, message, arguments);
+        log(ServerLogLevel.WARN, function, message, arguments);
     }
 
     /**
@@ -126,7 +125,7 @@ public class ServerLogHelper {
      * @param arguments The arguments to be included when formatting the message.
      */
     public static void info(String function, String message, Object... arguments) {
-        log(Level.INFO, function, message, arguments);
+        log(ServerLogLevel.INFO, function, message, arguments);
     }
 
     /**
@@ -137,7 +136,7 @@ public class ServerLogHelper {
      * @param arguments The arguments to be included when formatting the message.
      */
     public static void debug(String function, String message, Object... arguments) {
-        log(Level.DEBUG, function, message, arguments);
+        log(ServerLogLevel.DEBUG, function, message, arguments);
     }
 
     /**
@@ -148,7 +147,7 @@ public class ServerLogHelper {
      * @param arguments The arguments to be included when formatting the message.
      */
     public static void trace(String function, String message, Object... arguments) {
-        log(Level.TRACE, function, message, arguments);
+        log(ServerLogLevel.TRACE, function, message, arguments);
     }
 
     /**
@@ -159,8 +158,8 @@ public class ServerLogHelper {
      * @param message   The message to be logged.
      * @param arguments The arguments to be included when formatting the message.
      */
-    public static void log(Level level, String function, String message, Object... arguments) {
-        log(ServerLogLevelHelper.fromLevel(level), function, message, arguments);
+    public static void log(ServerLogLevel level, String function, String message, Object... arguments) {
+        log(level == null ? ServerLogLevel.DEFAULT_LOG_LEVEL.getLevelCode() : level.getLevelCode(), function, message, arguments);
     }
 
     /**

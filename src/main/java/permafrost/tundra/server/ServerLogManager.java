@@ -27,7 +27,6 @@ package permafrost.tundra.server;
 import com.wm.app.b2b.server.ServiceException;
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;
-import org.apache.log4j.Level;
 import permafrost.tundra.configuration.ConfigurationManager;
 import permafrost.tundra.data.IDataHelper;
 import permafrost.tundra.io.InputOutputHelper;
@@ -190,8 +189,8 @@ public class ServerLogManager extends StartableManager<String, Loggable> {
          * @return The level of logging that is being written to the log file.
          */
         @Override
-        public Level getLogLevel() {
-            return ServerLogLevelHelper.toLevel(System.getProperty("watt.debug.level", Level.INFO.toString()));
+        public ServerLogLevel getLogLevel() {
+            return ServerLogLevel.normalize(System.getProperty("watt.debug.level", ServerLogLevel.INFO.toString()));
         }
 
         /**
@@ -200,7 +199,7 @@ public class ServerLogManager extends StartableManager<String, Loggable> {
          * @param logLevel  The level of logging that will be written to the log file.
          */
         @Override
-        public void setLogLevel(Level logLevel) {
+        public void setLogLevel(ServerLogLevel logLevel) {
             // do nothing
         }
 
@@ -213,7 +212,7 @@ public class ServerLogManager extends StartableManager<String, Loggable> {
          * @param addPrefix     Whether to prefix the log statement with logging metadata.
          */
         @Override
-        public void log(Level level, String message, IData context, boolean addPrefix) {
+        public void log(ServerLogLevel level, String message, IData context, boolean addPrefix) {
             ServerLogHelper.log(level, message, context, addPrefix);
         }
 
