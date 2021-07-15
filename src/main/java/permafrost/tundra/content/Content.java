@@ -25,15 +25,16 @@
 package permafrost.tundra.content;
 
 import com.wm.data.IData;
-import com.wm.util.coder.IDataCodable;
-import permafrost.tundra.data.IDataMap;
+import permafrost.tundra.lang.Properties;
 import permafrost.tundra.mime.MIMETypeHelper;
 import javax.activation.MimeType;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * A generic class for holding arbitrary binary data.
  */
-public class Content implements IDataCodable {
+public class Content implements Properties<String, Object> {
     /**
      * The arbitrary binary data held by this object.
      */
@@ -139,30 +140,21 @@ public class Content implements IDataCodable {
     }
 
     /**
-     * Returns an IData representation of this object.
+     * Returns the properties of this object.
      *
-     * @return An IData representation of this object.
+     * @return the properties of this object
      */
-    public IData getIData() {
-        IDataMap map = new IDataMap();
+    @Override
+    public Map<String, Object> getProperties() {
+        Map<String, Object> properties = new LinkedHashMap<String, Object>();
 
         byte[] content = getData();
-        map.put("$content", content);
-        map.put("$content.type", getType().toString());
-        map.put("$content.length", Integer.toString(length));
-        if (context != null) map.put("$content.context", context);
+        properties.put("$content", content);
+        properties.put("$content.type", getType().toString());
+        properties.put("$content.length", Integer.toString(length));
+        if (context != null) properties.put("$content.context", context);
 
-        return map;
-    }
-
-    /**
-     * This method has not been implemented.
-     *
-     * @param  document                         An IData document.
-     * @throws UnsupportedOperationException    This method has not been implemented.
-     */
-    public void setIData(IData document) {
-        throw new UnsupportedOperationException("setIData(IData) not implemented");
+        return properties;
     }
 
     /**

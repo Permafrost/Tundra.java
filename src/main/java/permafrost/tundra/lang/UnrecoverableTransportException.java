@@ -29,6 +29,7 @@ import permafrost.tundra.content.Content;
 import permafrost.tundra.content.ContentAttached;
 import permafrost.tundra.data.IDataMap;
 import java.io.Serializable;
+import java.util.Map;
 
 /**
  * An exception indicating that an unrecoverable transport error has occurred.
@@ -96,14 +97,14 @@ public class UnrecoverableTransportException extends UnrecoverableException impl
     }
 
     /**
-     * Returns an IData representation of this object.
+     * Returns the properties of this object.
      *
-     * @return An IData representation of this object.
+     * @return the properties of this object.
      */
     @Override
-    public IData getIData() {
-        IDataMap map = IDataMap.of(super.getIData());
-        map.put("$exception.content", content.getIData());
-        return map;
+    public Map<String, Object> getProperties() {
+        Map<String, Object> properties = super.getProperties();
+        properties.put("$exception.content", content.getProperties());
+        return properties;
     }
 }

@@ -24,19 +24,18 @@
 
 package permafrost.tundra.lang;
 
-import com.wm.data.IData;
-import com.wm.util.coder.IDataCodable;
-import permafrost.tundra.data.IDataMap;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Unchecked exception superclass inherited by all other Tundra checked exceptions.
  */
-public class BaseRuntimeException extends RuntimeException implements ExceptionSuppression, IDataCodable, Serializable {
+public class BaseRuntimeException extends RuntimeException implements ExceptionSuppression, Properties<String, Object>, Serializable {
     /**
      * The serialization identity of this class version.
      */
@@ -101,28 +100,7 @@ public class BaseRuntimeException extends RuntimeException implements ExceptionS
         suppress(suppressed);
     }
 
-    /**
-     * Returns an IData representation of this object.
-     *
-     * @return An IData representation of this object.
-     */
-    public IData getIData() {
-        IDataMap map = new IDataMap();
-        map.put("$exception?", "true");
-        map.put("$exception.class", getClass().getName());
-        map.put("$exception.message", getMessage());
-        return map;
-    }
 
-    /**
-     * This method has not been implemented.
-     *
-     * @param  document                         An IData document.
-     * @throws UnsupportedOperationException    This method has not been implemented.
-     */
-    public void setIData(IData document) {
-        throw new UnsupportedOperationException("setIData(IData) not implemented");
-    }
 
     /**
      * List of suppressed exceptions.
@@ -180,5 +158,18 @@ public class BaseRuntimeException extends RuntimeException implements ExceptionS
     @Override
     public synchronized Throwable[] suppressed() {
         return suppressedExceptions.toArray(new Throwable[0]);
+    }
+
+    /**
+     * Returns the properties of this object.
+     *
+     * @return the properties of this object.
+     */
+    public Map<String, Object> getProperties() {
+        Map<String, Object> properties = new LinkedHashMap<String, Object>();
+        properties.put("$exception?", "true");
+        properties.put("$exception.class", getClass().getName());
+        properties.put("$exception.message", getMessage());
+        return properties;
     }
 }

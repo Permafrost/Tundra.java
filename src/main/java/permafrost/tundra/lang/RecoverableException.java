@@ -25,16 +25,15 @@
 package permafrost.tundra.lang;
 
 import com.wm.app.b2b.server.ISRuntimeException;
-import com.wm.data.IData;
-import com.wm.util.coder.IDataCodable;
-import permafrost.tundra.data.IDataMap;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * An exception indicating that a recoverable error has occurred.
  */
-public class RecoverableException extends ISRuntimeException implements IDataCodable, Serializable {
+public class RecoverableException extends ISRuntimeException implements Properties<String, Object>, Serializable {
     /**
      * The serialization identity of this class version.
      */
@@ -98,22 +97,13 @@ public class RecoverableException extends ISRuntimeException implements IDataCod
      *
      * @return An IData representation of this object.
      */
-    public IData getIData() {
-        IDataMap map = new IDataMap();
-        map.put("$exception?", "true");
-        map.put("$exception.class", getClass().getName());
-        map.put("$exception.message", getMessage());
-        map.put("$exception.recoverable?", "true");
-        return map;
-    }
-
-    /**
-     * This method has not been implemented.
-     *
-     * @param  document                         An IData document.
-     * @throws UnsupportedOperationException    This method has not been implemented.
-     */
-    public void setIData(IData document) {
-        throw new UnsupportedOperationException("setIData(IData) not implemented");
+    @Override
+    public Map<String, Object> getProperties() {
+        Map<String, Object> properties = new LinkedHashMap<String, Object>();
+        properties.put("$exception?", "true");
+        properties.put("$exception.class", getClass().getName());
+        properties.put("$exception.message", getMessage());
+        properties.put("$exception.recoverable?", "true");
+        return properties;
     }
 }

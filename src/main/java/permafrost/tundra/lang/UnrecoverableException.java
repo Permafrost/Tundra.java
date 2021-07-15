@@ -24,9 +24,8 @@
 
 package permafrost.tundra.lang;
 
-import com.wm.data.IData;
-import permafrost.tundra.data.IDataMap;
 import java.io.Serializable;
+import java.util.Map;
 
 /**
  * An exception indicating that an unrecoverable error has occurred.
@@ -95,14 +94,14 @@ public class UnrecoverableException extends BaseException implements Serializabl
     }
 
     /**
-     * Returns an IData representation of this object.
+     * Returns the properties of this object.
      *
-     * @return An IData representation of this object.
+     * @return the properties of this object.
      */
     @Override
-    public IData getIData() {
-        IDataMap map = IDataMap.of(super.getIData());
-        map.put("$exception.recoverable?", "false");
-        return map;
+    public Map<String, Object> getProperties() {
+        Map<String, Object> properties = super.getProperties();
+        properties.put("$exception.recoverable?", "false");
+        return properties;
     }
 }
