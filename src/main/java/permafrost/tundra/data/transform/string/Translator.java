@@ -44,28 +44,39 @@ public class Translator extends Transformer<String, Object> {
      * value.
      */
     private final Object defaultValue, nullValue;
+    /**
+     * Whether to exclude missing translation values from translated documents.
+     */
+    private final boolean exclude;
 
     /**
      * Creates a new Translator object.
      *
      * @param translations  The translation table used to translate values.
+     * @param exclude       If true, missing translation values will be excluded from the translated document.
      * @param reverse       If true, the translation table is flipped so keys become values and vice versa.
      */
-    public Translator(IData translations, boolean reverse) {
-        super(String.class, Object.class, TransformerMode.VALUES, true, true, true, true);
+    public Translator(IData translations, boolean exclude, boolean reverse) {
+        super(String.class, Object.class, TransformerMode.VALUES, true, !exclude, true, true);
+        this.exclude = exclude;
         if (translations == null) {
             this.translations = IDataFactory.create();
             defaultValue = null;
             nullValue = null;
         } else {
             translations = IDataHelper.duplicate(translations, true);
-            defaultValue = IDataHelper.remove(translations, "$default");
-            nullValue = IDataHelper.remove(translations, "$null");
-
+            Object defaultValueForward = IDataHelper.remove(translations, "$default");
+            Object defaultValueReverse = IDataHelper.remove(translations, "$default.reverse");
+            Object nullValueForward = IDataHelper.remove(translations, "$null");
+            Object nullValueReverse = IDataHelper.remove(translations, "$null.reverse");
             if (reverse) {
                 this.translations = IDataHelper.flip(translations);
+                this.defaultValue = defaultValueReverse;
+                this.nullValue = nullValueReverse;
             } else {
                 this.translations = translations;
+                this.defaultValue = defaultValueForward;
+                this.nullValue = nullValueForward;
             }
         }
     }
@@ -81,7 +92,16 @@ public class Translator extends Transformer<String, Object> {
     protected Object transformValue(String key, String value) {
         IDataCursor cursor = translations.getCursor();
         try {
-            Object defaultValue = this.defaultValue == null ? value : this.defaultValue;
+            Object defaultValue;
+            if (this.defaultValue == null) {
+                if (exclude) {
+                    defaultValue = null;
+                } else {
+                    defaultValue = value;
+                }
+            } else {
+                defaultValue = this.defaultValue;
+            }
             return IDataHelper.getOrDefault(cursor, value, Object.class, defaultValue);
         } finally {
             cursor.destroy();
