@@ -194,14 +194,14 @@ public class RestServiceProcessor extends AbstractInvokeChainProcessor {
      * List of automatically supported response body content types.
      */
     private static final List<MimeType> SUPPORTED_RESPONSE_CONTENT_TYPES = Arrays.asList(
-            MIMETypeHelper.of("application/json"),
-            MIMETypeHelper.of("text/json"),
-            MIMETypeHelper.of("application/xml"),
-            MIMETypeHelper.of("text/xml"),
-            MIMETypeHelper.of("application/yaml"),
-            MIMETypeHelper.of("text/yaml"),
-            MIMETypeHelper.of("application/x-www-form-urlencoded"),
-            MIMETypeHelper.of("text/html")
+        MIMETypeHelper.of("application/json"),
+        MIMETypeHelper.of("text/json"),
+        MIMETypeHelper.of("application/xml"),
+        MIMETypeHelper.of("text/xml"),
+        MIMETypeHelper.of("application/yaml"),
+        MIMETypeHelper.of("text/yaml"),
+        MIMETypeHelper.of("application/x-www-form-urlencoded"),
+        MIMETypeHelper.of("text/html")
     );
 
     /**

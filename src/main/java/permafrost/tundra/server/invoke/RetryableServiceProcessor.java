@@ -121,7 +121,7 @@ public class RetryableServiceProcessor extends AbstractInvokeChainProcessor {
             if (registry.remove(Thread.currentThread(), baseService.getNSName().getFullName()) && !EXCLUDED_EXCEPTION_MESSAGE_PATTERN.matcher(ex.getMessage()).find()) {
                 if (ex instanceof UnrecoverableException) {
                     // do not retry unrecoverable exceptions
-                    throw (UnrecoverableException) ex;
+                    throw (UnrecoverableException)ex;
                 } else if (ex instanceof ISRuntimeException) {
                     // rethrow if exception is already recoverable
                     throw (ISRuntimeException)ex;
