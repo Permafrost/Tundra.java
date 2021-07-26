@@ -123,6 +123,119 @@ public class IDataCursorHelper {
     }
 
     /**
+     * Positions the cursor on the first element with the given key whose value has the specified class.
+     *
+     * @param cursor        The cursor to be positioned.
+     * @param valueClass    The required class of the element's value.
+     * @param key           The element's key.
+     * @param <V>           The required class of the element's value.
+     * @return              True if the key existed with a value of the required class and the cursor was repositioned,
+     *                      otherwise false.
+     */
+    @SuppressWarnings("unchecked")
+    public static <V> boolean first(IDataCursor cursor, Class<V> valueClass, String key) {
+        boolean first = false;
+        if (cursor != null) {
+            if (cursor.first(key)) {
+                Object candidateValue = cursor.getValue();
+                if (valueClass.isInstance(candidateValue)) {
+                    first = true;
+                } else {
+                    while(cursor.next(key)) {
+                        candidateValue = cursor.getValue();
+                        if (valueClass.isInstance(candidateValue)) {
+                            first = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return first;
+    }
+
+    /**
+     * Returns the value of the first element in the cursor with the given key whose value has the specified class.
+     *
+     * @param cursor        The cursor containing elements.
+     * @param valueClass    The required class of the element's value.
+     * @param key           The element's key.
+     * @param <V>           The required class of the element's value.
+     * @return              The value associated with the given key, if any.
+     */
+    @SuppressWarnings("unchecked")
+    public static <V> V get(IDataCursor cursor, Class<V> valueClass, String key) {
+        V value;
+        if (first(cursor, valueClass, key)) {
+            value = (V)cursor.getValue();
+        } else {
+            value = null;
+        }
+        return value;
+    }
+
+    /**
+     * Removes the first element in the cursor with the given key whose value has the specified class.
+     *
+     * @param cursor        The cursor containing elements.
+     * @param valueClass    The required class of the element's value.
+     * @param key           The element's key.
+     * @param <V>           The required class of the element's value.
+     * @return              The value associated with the given key, if any.
+     */
+    @SuppressWarnings("unchecked")
+    public static <V> V remove(IDataCursor cursor, Class<V> valueClass, String key) {
+        V value;
+        if (first(cursor, valueClass, key)) {
+            value = (V)cursor.getValue();
+            cursor.delete();
+        } else {
+            value = null;
+        }
+        return value;
+    }
+
+    /**
+     * Renames the first element's key in the cursor with the given key whose value has the specified class.
+     *
+     * @param cursor        The cursor containing elements.
+     * @param valueClass    The required class of the element's value.
+     * @param sourceKey     The element's key before renaming.
+     * @param targetKey     The element's key after renaming.
+     * @param <V>           The required class of the element's value.
+     * @return              The value associated with the given key, if any.
+     */
+    @SuppressWarnings("unchecked")
+    public static <V> V rename(IDataCursor cursor, Class<V> valueClass, String sourceKey, String targetKey) {
+        V value;
+        if (first(cursor, valueClass, sourceKey)) {
+            value = (V)cursor.getValue();
+            cursor.delete();
+            cursor.insertAfter(targetKey, value);
+        } else {
+            value = null;
+        }
+        return value;
+    }
+
+    /**
+     * Replaces the value of the first element in the cursor with the given key whose existing value has the specified
+     * class.
+     *
+     * @param cursor        The cursor containing elements.
+     * @param valueClass    The required class of the element's existing value.
+     * @param key           The element's key.
+     * @param newValue      The new value to be associated with the given key.
+     * @param <V>           The required class of the element's existing value.
+     */
+    @SuppressWarnings("unchecked")
+    public static <V> void replace(IDataCursor cursor, Class<V> valueClass, String key, Object newValue) {
+        if (first(cursor, valueClass, key)) {
+            cursor.setValue(newValue);
+        }
+    }
+
+    /**
      * Replaces all elements in the given target cursor with the elements in the given source cursor.
      *
      * @param sourceCursor  The cursor containing the elements to be used to replace the target cursor elements.
@@ -160,6 +273,16 @@ public class IDataCursorHelper {
                 }
             }
         }
+    }
+
+    /**
+     * Returns true if the given cursor is empty.
+     *
+     * @param cursor    The cursor to be checked if empty.
+     * @return          True if the cursor contains no elements, otherwise false.
+     */
+    public static boolean isEmpty(IDataCursor cursor) {
+        return cursor == null || !cursor.first();
     }
 
     /**
@@ -241,7 +364,6 @@ public class IDataCursorHelper {
                 try {
                     for (NSField field : fields) {
                         if (field != null) {
-
                             String key = field.getName();
                             if (cursor.first(key)) {
                                 Object value = sanitize(cursor.getValue(), field, recurse);
