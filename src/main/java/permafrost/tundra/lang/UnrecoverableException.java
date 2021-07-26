@@ -24,18 +24,12 @@
 
 package permafrost.tundra.lang;
 
-import java.io.Serializable;
 import java.util.Map;
 
 /**
  * An exception indicating that an unrecoverable error has occurred.
  */
-public class UnrecoverableException extends BaseException implements Serializable {
-    /**
-     * The serialization identity of this class version.
-     */
-    private static final long serialVersionUID = 1;
-
+public class UnrecoverableException extends BaseException {
     /**
      * Constructs a new UnrecoverableException.
      */

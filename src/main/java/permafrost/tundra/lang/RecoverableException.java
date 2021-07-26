@@ -25,7 +25,6 @@
 package permafrost.tundra.lang;
 
 import com.wm.app.b2b.server.ISRuntimeException;
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -33,12 +32,7 @@ import java.util.Map;
 /**
  * An exception indicating that a recoverable error has occurred.
  */
-public class RecoverableException extends ISRuntimeException implements Properties<String, Object>, Serializable {
-    /**
-     * The serialization identity of this class version.
-     */
-    private static final long serialVersionUID = 1;
-
+public class RecoverableException extends ISRuntimeException implements Properties<String, Object> {
     /**
      * Constructs a new RecoverableException.
      */

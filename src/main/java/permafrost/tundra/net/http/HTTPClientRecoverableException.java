@@ -2,17 +2,11 @@ package permafrost.tundra.net.http;
 
 import permafrost.tundra.content.Content;
 import permafrost.tundra.lang.TransportException;
-import java.io.Serializable;
 
 /**
  * Represents an HTTP client error response that can be retried automatically, such as 429 Too Many Requests.
  */
-public class HTTPClientRecoverableException extends TransportException implements Serializable {
-    /**
-     * The serialization identity of this class version.
-     */
-    private static final long serialVersionUID = 1;
-
+public class HTTPClientRecoverableException extends TransportException {
     /**
      * Constructs a new HTTPClientRecoverableException.
      *

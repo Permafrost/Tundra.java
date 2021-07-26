@@ -26,7 +26,7 @@ package permafrost.tundra.lang;
 
 import java.util.Map;
 
-public interface  Properties<K, V> {
+public interface Properties<K, V> {
     /**
      * Returns the properties of this object.
      *

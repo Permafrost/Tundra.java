@@ -25,7 +25,6 @@
 package permafrost.tundra.lang;
 
 import com.wm.app.b2b.server.ServiceException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -36,12 +35,7 @@ import java.util.Map;
 /**
  * Checked exception superclass inherited by all other Tundra checked exceptions.
  */
-public class BaseException extends ServiceException implements ExceptionSuppression, Properties<String, Object>, Serializable {
-    /**
-     * The serialization identity of this class version.
-     */
-    private static final long serialVersionUID = 1;
-
+public class BaseException extends ServiceException implements ExceptionSuppression, Properties<String, Object> {
     /**
      * Constructs a new BaseException.
      */

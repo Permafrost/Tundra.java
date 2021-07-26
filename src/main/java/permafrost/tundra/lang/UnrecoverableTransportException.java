@@ -24,22 +24,14 @@
 
 package permafrost.tundra.lang;
 
-import com.wm.data.IData;
 import permafrost.tundra.content.Content;
 import permafrost.tundra.content.ContentAttached;
-import permafrost.tundra.data.IDataMap;
-import java.io.Serializable;
 import java.util.Map;
 
 /**
  * An exception indicating that an unrecoverable transport error has occurred.
  */
-public class UnrecoverableTransportException extends UnrecoverableException implements ContentAttached, Serializable {
-    /**
-     * The serialization identity of this class version.
-     */
-    private static final long serialVersionUID = 1;
-
+public class UnrecoverableTransportException extends UnrecoverableException implements ContentAttached {
     /**
      * The content associated with this exception.
      */

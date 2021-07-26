@@ -24,7 +24,6 @@
 
 package permafrost.tundra.lang;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -35,12 +34,7 @@ import java.util.Map;
 /**
  * Unchecked exception superclass inherited by all other Tundra checked exceptions.
  */
-public class BaseRuntimeException extends RuntimeException implements ExceptionSuppression, Properties<String, Object>, Serializable {
-    /**
-     * The serialization identity of this class version.
-     */
-    private static final long serialVersionUID = 1;
-
+public class BaseRuntimeException extends RuntimeException implements ExceptionSuppression, Properties<String, Object> {
     /**
      * Constructs a new BaseRuntimeException.
      */
