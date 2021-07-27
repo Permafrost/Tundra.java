@@ -147,10 +147,10 @@ public final class MIMETypeHelper {
         boolean isText = false;
 
         if (type != null) {
-            if ("text".equals(type.getPrimaryType())) {
+            if ("text".equals(type.getPrimaryType()) || type.getParameter("charset") != null) {
                 isText = true;
             } else {
-                switch(MIMETypeHelper.classify(type)) {
+                switch(classify(type)) {
                     case XML:
                     case JSON:
                     case PLAIN:
