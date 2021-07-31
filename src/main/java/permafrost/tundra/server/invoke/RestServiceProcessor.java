@@ -43,6 +43,7 @@ import permafrost.tundra.content.UnsupportedException;
 import permafrost.tundra.content.ValidationException;
 import permafrost.tundra.content.ValidationResult;
 import permafrost.tundra.data.IDataHelper;
+import permafrost.tundra.flow.InputOutputSignature;
 import permafrost.tundra.flow.PipelineHelper;
 import permafrost.tundra.io.InputStreamHelper;
 import permafrost.tundra.lang.CharsetHelper;
@@ -246,8 +247,8 @@ public class RestServiceProcessor extends AbstractInvokeChainProcessor {
                     IData response = IDataHelper.remove(cursor, "$httpResponse", IData.class);
                     ServerLogHelper.log(this.getClass().getName(), logLevel, null, pipeline, true);
                     if (response == null) {
-                        PipelineHelper.sanitize(baseService, pipeline, PipelineHelper.InputOutputSignature.OUTPUT, false);
-                        ValidationResult result = PipelineHelper.validate(baseService, pipeline, PipelineHelper.InputOutputSignature.OUTPUT);
+                        PipelineHelper.sanitize(baseService, pipeline, InputOutputSignature.OUTPUT, false);
+                        ValidationResult result = PipelineHelper.validate(baseService, pipeline, InputOutputSignature.OUTPUT);
                         result.raiseIfInvalid();
                         respond(200, pipeline);
                     } else {

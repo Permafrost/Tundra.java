@@ -47,6 +47,7 @@ import permafrost.tundra.collection.ListHelper;
 import permafrost.tundra.content.ValidationResult;
 import permafrost.tundra.data.IDataHelper;
 import permafrost.tundra.data.IDataMap;
+import permafrost.tundra.flow.InputOutputSignature;
 import permafrost.tundra.flow.PipelineHelper;
 import permafrost.tundra.lang.BytesHelper;
 import permafrost.tundra.lang.CharsetHelper;
@@ -365,8 +366,8 @@ public final class ServiceHelper {
         RestServiceProcessor processor = RestServiceProcessor.getInstance();
         if (processor.isStarted()) {
             processor.register(pipeline);
-            PipelineHelper.sanitize(pipeline, PipelineHelper.InputOutputSignature.INPUT, false);
-            ValidationResult result = PipelineHelper.validate(pipeline, PipelineHelper.InputOutputSignature.INPUT);
+            PipelineHelper.sanitize(pipeline, InputOutputSignature.INPUT, false);
+            ValidationResult result = PipelineHelper.validate(pipeline, InputOutputSignature.INPUT);
             result.raiseIfInvalid();
         }
     }

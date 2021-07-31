@@ -29,7 +29,7 @@ import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
 import permafrost.tundra.data.IDataHelper;
-import permafrost.tundra.flow.PipelineHelper;
+import permafrost.tundra.flow.InputOutputSignature;
 import permafrost.tundra.lang.ExceptionHelper;
 import permafrost.tundra.lang.StringHelper;
 import permafrost.tundra.server.NodeHelper;
@@ -187,7 +187,7 @@ public class ValidationHelper {
      * @param pipeline  The pipeline against which error keys are resolved.
      * @return          A ValidationResult object representing the given inputs.
      */
-    public static ValidationResult buildResult(PipelineHelper.InputOutputSignature direction, boolean isValid, IData[] errors, IData pipeline) {
+    public static ValidationResult buildResult(InputOutputSignature direction, boolean isValid, IData[] errors, IData pipeline) {
         ValidationResult result;
 
         if (isValid) {

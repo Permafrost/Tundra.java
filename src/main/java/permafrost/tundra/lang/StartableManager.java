@@ -31,7 +31,6 @@ import com.wm.util.coder.ValuesCodable;
 import permafrost.tundra.data.IDataHelper;
 import permafrost.tundra.data.IDataMap;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -42,7 +41,7 @@ import java.util.concurrent.ConcurrentMap;
  * @param <K> The component type of the keys associated with managed worker objects.
  * @param <V> The component type of the managed worker objects.
  */
-public class StartableManager<K, V extends Startable> implements Startable, Iterable<V>, IDataCodable {
+public class StartableManager<K, V extends Startable> implements Startable, IDataCodable {
     /**
      * Registry of Startable objects managed by this manager object.
      */
@@ -80,7 +79,7 @@ public class StartableManager<K, V extends Startable> implements Startable, Iter
      * @param worker    The worker to associated with the key.
      * @return          True if the value was associated with the key. False if another associated value already exists.
      */
-    public boolean register(K key, V worker) {
+    protected boolean register(K key, V worker) {
         boolean didRegister = REGISTRY.putIfAbsent(key, worker) == null;
         if (didRegister && started && startWorkerOnRegistration) {
             worker.start();
@@ -96,7 +95,7 @@ public class StartableManager<K, V extends Startable> implements Startable, Iter
      * @return          True if the key and worker was unregistered. False if the worker is not associated with the key
      *                  or the key does not exist.
      */
-    public boolean unregister(K key, V worker) {
+    protected boolean unregister(K key, V worker) {
         return REGISTRY.remove(key, worker);
     }
 
@@ -106,17 +105,8 @@ public class StartableManager<K, V extends Startable> implements Startable, Iter
      * @param key   The key.
      * @return      The Startable associated with the given key, or null if the key does not exist.
      */
-    public V get(K key) {
+    protected V get(K key) {
         return REGISTRY.get(key);
-    }
-
-    /**
-     * Returns Iterator for iterating over the Startable objects managed by this manager.
-     *
-     * @return Iterator for iterating over the Startable objects managed by this manager.
-     */
-    public Iterator<V> iterator() {
-        return REGISTRY.values().iterator();
     }
 
     /**
@@ -124,19 +114,9 @@ public class StartableManager<K, V extends Startable> implements Startable, Iter
      */
     @Override
     public synchronized void start() {
-        List<Throwable> exceptions = new ArrayList<Throwable>();
         if (!started) {
-            for (V value : REGISTRY.values()) {
-                try {
-                    value.start();
-                } catch(Throwable exception) {
-                    exceptions.add(exception);
-                }
-            }
             started = true;
-        }
-        if (exceptions.size() > 0) {
-            ExceptionHelper.raiseUnchecked(exceptions);
+            start(REGISTRY.values());
         }
     }
 
@@ -145,19 +125,33 @@ public class StartableManager<K, V extends Startable> implements Startable, Iter
      */
     @Override
     public synchronized void stop() {
-        List<Throwable> exceptions = new ArrayList<Throwable>();
+        stop(false);
+    }
+
+    /**
+     * Stops all objects managed by this manager.
+     *
+     * @param clear If true, all registrations are removed.
+     */
+    public synchronized void stop(boolean clear) {
         if (started) {
-            for (V value : REGISTRY.values()) {
-                try {
-                    value.stop();
-                } catch(Throwable exception) {
-                    exceptions.add(exception);
-                }
-            }
             started = false;
+            if (clear) {
+                clear();
+            } else {
+                stop(REGISTRY.values());
+            }
         }
-        if (exceptions.size() > 0) {
-            ExceptionHelper.raiseUnchecked(exceptions);
+    }
+
+    /**
+     * Stops then unregisters all workers.
+     */
+    public synchronized void clear() {
+        try {
+            stop(REGISTRY.values());
+        } finally {
+            REGISTRY.clear();
         }
     }
 
@@ -219,10 +213,53 @@ public class StartableManager<K, V extends Startable> implements Startable, Iter
      * Method not implemented.
      *
      * @param document                          The IData document.
-     * @throws UnsupportedOperationException    Method not implemented.
      */
     @Override
     public void setIData(IData document) {
-        throw new UnsupportedOperationException("setIData(IData) not implemented");
+        // ignore, not implemented
+    }
+
+    /**
+     * Starts all given Startable objects.
+     *
+     * @param workers   The workers to be stopped.
+     * @param <V>       The type of worker.
+     */
+    public static <V extends Startable> void start(Iterable<V> workers) {
+        List<Throwable> exceptions = new ArrayList<Throwable>();
+
+        for (V worker : workers) {
+            try {
+                worker.start();
+            } catch(Throwable exception) {
+                exceptions.add(exception);
+            }
+        }
+
+        if (exceptions.size() > 0) {
+            ExceptionHelper.raiseUnchecked(exceptions);
+        }
+    }
+
+    /**
+     * Stops all given Startable objects.
+     *
+     * @param workers   The workers to be stopped.
+     * @param <V>       The type of worker.
+     */
+    public static <V extends Startable> void stop(Iterable<V> workers) {
+        List<Throwable> exceptions = new ArrayList<Throwable>();
+
+        for (V worker : workers) {
+            try {
+                worker.stop();
+            } catch(Throwable exception) {
+                exceptions.add(exception);
+            }
+        }
+
+        if (exceptions.size() > 0) {
+            ExceptionHelper.raiseUnchecked(exceptions);
+        }
     }
 }

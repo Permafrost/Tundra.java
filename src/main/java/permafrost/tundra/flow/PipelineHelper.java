@@ -178,11 +178,4 @@ public class PipelineHelper {
 
         return record;
     }
-
-    /**
-     * Specifies whether to use the input or output signature.
-     */
-    public enum InputOutputSignature {
-        INPUT, OUTPUT;
-    }
 }
