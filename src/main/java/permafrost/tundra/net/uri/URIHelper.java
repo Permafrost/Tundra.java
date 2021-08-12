@@ -41,6 +41,8 @@ import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -396,7 +398,7 @@ public final class URIHelper {
                 String schemeSpecificPart = uri.getRawSchemeSpecificPart();
                 if (schemeSpecificPart != null) {
                     if (schemeSpecificPart.contains(URI_QUERY_DELIMITER)) {
-                        query = URIQueryHelper.parse(schemeSpecificPart.substring(schemeSpecificPart.indexOf(URI_QUERY_DELIMITER) + 1, schemeSpecificPart.length()), true);
+                        query = URIQueryHelper.parse(schemeSpecificPart.substring(schemeSpecificPart.indexOf(URI_QUERY_DELIMITER) + 1), true);
                         schemeSpecificPart = schemeSpecificPart.substring(0, schemeSpecificPart.indexOf(URI_QUERY_DELIMITER));
                     }
                     IDataHelper.put(cursor, "body", decode(schemeSpecificPart));
@@ -423,7 +425,7 @@ public final class URIHelper {
                                 String user = uri.getUserInfo();
                                 String password = null;
                                 if (user != null && user.contains(URI_USER_PASSWORD_DELIMITER)) {
-                                    password = user.substring(user.indexOf(URI_USER_PASSWORD_DELIMITER) + 1, user.length());
+                                    password = user.substring(user.indexOf(URI_USER_PASSWORD_DELIMITER) + 1);
                                     user = user.substring(0, user.indexOf(URI_USER_PASSWORD_DELIMITER));
                                 }
                                 IDataHelper.put(sc, "user", user, false);
@@ -547,6 +549,10 @@ public final class URIHelper {
                         // hosts are case-insensitive, according to RFC 2396, but we will preserve the case to be safe
                         String host = IDataHelper.get(sc, "host", String.class);
                         int port = IDataHelper.getOrDefault(sc, "port", Integer.class, -1);
+                        // remove the explicit port if it is the default port for the scheme
+                        if (port != -1 && isDefaultPort(scheme, port)) {
+                            port = -1;
+                        }
 
                         String userinfo = IDataHelper.get(sc, "user", String.class);
                         if (userinfo != null) {
@@ -613,5 +619,90 @@ public final class URIHelper {
         }
 
         return output;
+    }
+
+    /**
+     * Returns the default port for the given scheme.
+     *
+     * @param scheme    The URI scheme.
+     * @return          The default port for the given scheme, if defined.
+     */
+    public static Integer getDefaultPort(String scheme) {
+        Integer defaultPort = null;
+        if (scheme != null) {
+            defaultPort = DEFAULT_PORTS.get(scheme.toLowerCase());
+        }
+        return defaultPort;
+    }
+
+    /**
+     * Returns true if the given port is the default port for the given scheme.
+     *
+     * @param scheme    The URI scheme.
+     * @param port      The port to check.
+     * @return          True if the given port is the default port for the given scheme.
+     */
+    public static boolean isDefaultPort(String scheme, int port) {
+        boolean isDefaultPort = false;
+        if (scheme != null) {
+            String key = scheme.toLowerCase();
+            isDefaultPort = DEFAULT_PORTS.containsKey(key) && DEFAULT_PORTS.get(key) == port;
+        }
+        return isDefaultPort;
+    }
+
+    /**
+     * A map of schemes and their respective default ports, seeded with some well-known schemes sourced from the IANA
+     * [Uniform Resource Identifier (URI) Schemes][1] and [Service Name and Transport Protocol Port Number Registry][2]
+     * via Mahmoud Hashemi's [scheme_port_map.json][3].
+     *
+     * [1]: https://www.iana.org/assignments/uri-schemes/uri-schemes.xhtml
+     * [2]: https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml
+     * [3]: https://gist.github.com/mahmoud/2fe281a8daaff26cfe9c15d2c5bf5c8b
+     */
+    private static final Map<String, Integer> DEFAULT_PORTS = new TreeMap<String, Integer>();
+    static {
+        DEFAULT_PORTS.put("acap", 674);
+        DEFAULT_PORTS.put("afp", 548);
+        DEFAULT_PORTS.put("dict", 2628);
+        DEFAULT_PORTS.put("dns", 53);
+        DEFAULT_PORTS.put("ftp", 21);
+        DEFAULT_PORTS.put("ftps", 990);
+        DEFAULT_PORTS.put("git", 9418);
+        DEFAULT_PORTS.put("gopher", 70);
+        DEFAULT_PORTS.put("http", 80);
+        DEFAULT_PORTS.put("https", 443);
+        DEFAULT_PORTS.put("imap", 143);
+        DEFAULT_PORTS.put("ipp", 631);
+        DEFAULT_PORTS.put("ipps", 631);
+        DEFAULT_PORTS.put("irc", 194);
+        DEFAULT_PORTS.put("ircs", 6697);
+        DEFAULT_PORTS.put("ldap", 389);
+        DEFAULT_PORTS.put("ldaps", 636);
+        DEFAULT_PORTS.put("mms", 1755);
+        DEFAULT_PORTS.put("msrp", 2855);
+        DEFAULT_PORTS.put("mtqp", 1038);
+        DEFAULT_PORTS.put("nfs", 111);
+        DEFAULT_PORTS.put("nntp", 119);
+        DEFAULT_PORTS.put("nntps", 563);
+        DEFAULT_PORTS.put("pop", 110);
+        DEFAULT_PORTS.put("prospero", 1525);
+        DEFAULT_PORTS.put("redis", 6379);
+        DEFAULT_PORTS.put("rsync", 873);
+        DEFAULT_PORTS.put("rtsp", 554);
+        DEFAULT_PORTS.put("rtsps", 322);
+        DEFAULT_PORTS.put("rtspu", 5005);
+        DEFAULT_PORTS.put("scp", 22);
+        DEFAULT_PORTS.put("sftp", 22);
+        DEFAULT_PORTS.put("smb", 445);
+        DEFAULT_PORTS.put("snmp", 161);
+        DEFAULT_PORTS.put("ssh", 22);
+        DEFAULT_PORTS.put("svn", 3690);
+        DEFAULT_PORTS.put("telnet", 23);
+        DEFAULT_PORTS.put("ventrilo", 3784);
+        DEFAULT_PORTS.put("vnc", 5900);
+        DEFAULT_PORTS.put("wais", 210);
+        DEFAULT_PORTS.put("ws", 80);
+        DEFAULT_PORTS.put("wss", 443);
     }
 }

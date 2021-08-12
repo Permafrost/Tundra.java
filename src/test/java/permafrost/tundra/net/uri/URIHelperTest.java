@@ -148,7 +148,7 @@ public class URIHelperTest {
 
     @Test
     public void testParseNonOpaqueWithCurrentDirectory() throws Exception {
-        String string = "ftp://aladdin:opensesame@example.com:21/./path/file?append=true&active=true&ascii=true";
+        String string = "ftp://aladdin:opensesame@example.com/./path/file?append=true&active=true&ascii=true";
         String result = URIHelper.emit(URIHelper.parse(string));
         assertEquals(string, result);
     }
