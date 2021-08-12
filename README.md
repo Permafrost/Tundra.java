@@ -3,9 +3,6 @@
 This is the pure Java layer that underlies [Tundra], a package of
 cool services for [webMethods Integration Server] 7.1 and higher.
 
-Please peruse the [API Documentation] for details on the classes and
-methods provided by [Tundra.java].
-
 ## Related
 
 See [Tundra] and [TundraTN], packages of cool services for
