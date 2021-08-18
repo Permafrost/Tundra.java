@@ -111,6 +111,15 @@ public class IDataCSVParser extends IDataParser {
      * Construct a new IDataCSVCoder.
      *
      * @param delimiter   The delimiter character to use.
+     */
+    public IDataCSVParser(String delimiter) {
+        this(delimiter, null, null, null, DEFAULT_CONTENT_TYPE, true, null);
+    }
+
+    /**
+     * Construct a new IDataCSVCoder.
+     *
+     * @param delimiter   The delimiter character to use.
      * @param contentType The content type to use.
      * @param hasHeader   Whether to use a header row.
      * @param columns     The column names to use.
@@ -131,7 +140,7 @@ public class IDataCSVParser extends IDataParser {
      * @param columns     The column names to use.
      */
     public IDataCSVParser(Character delimiter, Character escape, Character quote, QuoteMode quoteMode, String contentType, boolean hasHeader, String[] columns) {
-        super(contentType);
+        super(contentType == null ? DEFAULT_CONTENT_TYPE : contentType);
         if (delimiter == null) throw new NullPointerException("delimiter must not be null");
         this.delimiter = delimiter;
         this.escape = escape;
@@ -139,15 +148,6 @@ public class IDataCSVParser extends IDataParser {
         this.quoteMode = quoteMode == null ? QuoteMode.MINIMAL : quoteMode;
         this.hasHeader = hasHeader;
         this.columns = columns;
-    }
-
-    /**
-     * Construct a new IDataCSVCoder.
-     *
-     * @param delimiter   The delimiter character to use.
-     */
-    public IDataCSVParser(String delimiter) {
-        this(delimiter, null, null, null, DEFAULT_CONTENT_TYPE, true, null);
     }
 
     /**
