@@ -46,10 +46,11 @@ public final class ReaderHelper {
      * Returns a new Reader object given an InputStream.
      *
      * @param inputStream   The InputStream to be converted to a Reader.
+     * @param charset       The Charset to use when reading from the InputStream.
      * @return              A new Reader object representing the given InputStream.
      */
-    public static Reader normalize(InputStream inputStream) {
-        return normalize(inputStream, null);
+    public static Reader normalize(InputStream inputStream, Charset charset) {
+        return normalize(inputStream, charset, -1);
     }
 
     /**
@@ -57,31 +58,43 @@ public final class ReaderHelper {
      *
      * @param inputStream   The InputStream to be converted to a Reader.
      * @param charset       The Charset to use when reading from the InputStream.
+     * @param bufferSize    The buffering size in bytes.
      * @return              A new Reader object representing the given InputStream.
      */
-    public static Reader normalize(InputStream inputStream, Charset charset) {
+    public static Reader normalize(InputStream inputStream, Charset charset, int bufferSize) {
         if (inputStream == null) return null;
-        return normalize(new InputStreamReader(inputStream, CharsetHelper.normalize(charset)));
+        return normalize(new InputStreamReader(inputStream, CharsetHelper.normalize(charset)), bufferSize);
     }
 
     /**
      * Normalizes the given Reader, by wrapping it in a BufferedReader where appropriate.
      *
-     * @param reader    A Reader to be normalized.
-     * @return          The normalized Reader.
+     * @param reader        A Reader to be normalized.
+     * @return              The normalized Reader.
      */
     public static Reader normalize(Reader reader) {
+        return normalize(reader, -1);
+    }
+
+    /**
+     * Normalizes the given Reader, by wrapping it in a BufferedReader where appropriate.
+     *
+     * @param reader        A Reader to be normalized.
+     * @param bufferSize    The buffering size in bytes.
+     * @return              The normalized Reader.
+     */
+    public static Reader normalize(Reader reader, int bufferSize) {
         if (reader == null) return null;
 
         if (!(reader instanceof BufferedReader)) {
-            reader = new BufferedReader(reader, InputOutputHelper.DEFAULT_BUFFER_SIZE);
+            reader = new BufferedReader(reader, InputOutputHelper.normalizeBufferSize(bufferSize));
         }
 
         return reader;
     }
 
     /**
-     * Reads all data from the given Reader, and then closes it when done.
+     * Reads all data from the given input stream, and closes it when done.
      *
      * @param reader        A Reader containing data to be read.
      * @return              Returns a String containing all the data read from the given Reader.
@@ -100,10 +113,23 @@ public final class ReaderHelper {
      * @throws IOException  If there is a problem reading from the Reader.
      */
     public static String read(Reader reader, boolean close) throws IOException {
+        return read(reader, close, -1);
+    }
+
+    /**
+     * Reads all data from the given input stream, and optionally closes it when done.
+     *
+     * @param reader        A Reader containing data to be read.
+     * @param close         When true the Reader will be closed when done.
+     * @param bufferSize    The buffering size in bytes.
+     * @return              Returns a String containing all the data read from the given Reader.
+     * @throws IOException  If there is a problem reading from the Reader.
+     */
+    public static String read(Reader reader, boolean close, int bufferSize) throws IOException {
         if (reader == null) return null;
 
         StringWriter writer = new StringWriter();
-        InputOutputHelper.copy(reader, writer, close);
+        InputOutputHelper.copy(reader, writer, close, bufferSize);
         return writer.toString();
     }
 }

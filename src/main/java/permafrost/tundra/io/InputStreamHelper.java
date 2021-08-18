@@ -72,10 +72,21 @@ public final class InputStreamHelper {
      * @return              The normalized InputStream.
      */
     public static InputStream normalize(InputStream inputStream) {
+        return normalize(inputStream, -1);
+    }
+
+    /**
+     * Normalizes the given InputStream, by wrapping it in a BufferedInputStream where appropriate.
+     *
+     * @param inputStream   An InputStream to be normalized.
+     * @param bufferSize    The buffering size in bytes.
+     * @return              The normalized InputStream.
+     */
+    public static InputStream normalize(InputStream inputStream, int bufferSize) {
         if (inputStream == null) return null;
 
         if (!(inputStream instanceof FilterInputStream || inputStream instanceof ByteArrayInputStream)) {
-            inputStream = new BufferedInputStream(inputStream, InputOutputHelper.DEFAULT_BUFFER_SIZE);
+            inputStream = new BufferedInputStream(inputStream, InputOutputHelper.normalizeBufferSize(bufferSize));
         }
 
         return inputStream;

@@ -45,10 +45,21 @@ public final class OutputStreamHelper {
      * @return              The normalized OutputStream.
      */
     public static OutputStream normalize(OutputStream outputStream) {
+        return normalize(outputStream, -1);
+    }
+
+    /**
+     * Normalizes the given OutputStream, by wrapping it in a BufferedOutputStream where appropriate.
+     *
+     * @param outputStream  A OutputStream to be normalized.
+     * @param bufferSize    The buffering size in bytes.
+     * @return              The normalized OutputStream.
+     */
+    public static OutputStream normalize(OutputStream outputStream, int bufferSize) {
         if (outputStream == null) return null;
 
         if (!(outputStream instanceof FilterOutputStream || outputStream instanceof ByteArrayOutputStream)) {
-            outputStream = new BufferedOutputStream(outputStream, InputOutputHelper.DEFAULT_BUFFER_SIZE);
+            outputStream = new BufferedOutputStream(outputStream, InputOutputHelper.normalizeBufferSize(bufferSize));
         }
 
         return outputStream;

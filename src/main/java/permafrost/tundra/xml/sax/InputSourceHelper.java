@@ -59,17 +59,6 @@ public final class InputSourceHelper {
      */
     public static InputSource normalize(InputStream inputStream, Charset charset) {
         if (inputStream == null) return null;
-        return normalize(ReaderHelper.normalize(inputStream, CharsetHelper.normalize(charset)));
-    }
-
-    /**
-     * Returns a new InputSource object that wraps the given Reader object.
-     *
-     * @param reader    The Reader object to be wrapped.
-     * @return          A new InputSource object representing the given Reader object.
-     */
-    public static InputSource normalize(Reader reader) {
-        if (reader == null) return null;
-        return new InputSource(ReaderHelper.normalize(reader));
+        return new InputSource(ReaderHelper.normalize(inputStream, CharsetHelper.normalize(charset)));
     }
 }

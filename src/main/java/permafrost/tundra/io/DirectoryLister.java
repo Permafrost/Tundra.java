@@ -60,27 +60,6 @@ public class DirectoryLister {
      * @param directory     The directory whose contents are to be listed.
      * @param recurse       If true, all child directories will be recursively listed also.
      */
-    public DirectoryLister(String directory, boolean recurse) {
-        this(directory, null, recurse);
-    }
-
-    /**
-     * Constructs a new DirectoryLister for listing the contents of a given directory.
-     *
-     * @param directory     The directory whose contents are to be listed.
-     * @param filter        A FilenameFilter used to filter the listing results.
-     * @param recurse       If true, all child directories will be recursively listed also.
-     */
-    public DirectoryLister(String directory, FilenameFilter filter, boolean recurse) {
-        this(FileHelper.construct(directory), filter, recurse);
-    }
-
-    /**
-     * Constructs a new DirectoryLister for listing the contents of a given directory.
-     *
-     * @param directory     The directory whose contents are to be listed.
-     * @param recurse       If true, all child directories will be recursively listed also.
-     */
     public DirectoryLister(File directory, boolean recurse) {
         this(directory, null, recurse);
     }

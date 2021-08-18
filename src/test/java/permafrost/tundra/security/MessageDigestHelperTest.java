@@ -69,7 +69,7 @@ public class MessageDigestHelperTest {
     @Test
     public void testGetDigestWithBufferedInputStream() throws Exception {
         File tempFile = FileHelper.create();
-        FileHelper.writeFromBytes(tempFile, data, false);
+        FileHelper.writeFromBytes(tempFile, data, false, -1);
 
         Map.Entry<? extends InputStream, byte[]> result = MessageDigestHelper.digest(algorithm, new FileInputStream(tempFile));
         assertArrayEquals(sha256, result.getValue());

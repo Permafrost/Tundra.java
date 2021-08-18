@@ -111,16 +111,6 @@ public final class FileHelper {
     }
 
     /**
-     * Returns the MIME media type that describes the content of the given file.
-     *
-     * @param filename  The file whose MIME type is to be returned.
-     * @return          The MIME media type that describes the content of the given file.
-     */
-    public static String getMIMEType(String filename) {
-        return getMIMEType(construct(filename));
-    }
-
-    /**
      * Returns true if the given file exists and is a file.
      *
      * @param file  The file to check existence of.
@@ -131,23 +121,13 @@ public final class FileHelper {
     }
 
     /**
-     * Returns true if the given file exists and is a file.
-     *
-     * @param filename  The file to check existence of.
-     * @return          True if the given file exists and is a file.
-     */
-    public static boolean exists(String filename) {
-        return exists(construct(filename));
-    }
-
-    /**
      * Creates a new, empty temporary file.
      *
      * @return              The file which was created.
      * @throws IOException  If the file already exists.
      */
     public static File create() throws IOException {
-        return create((File)null);
+        return create(null);
     }
 
     /**
@@ -168,17 +148,6 @@ public final class FileHelper {
             }
         }
         return file;
-    }
-
-    /**
-     * Creates a new, empty file; if filename is null, a temporary file is created.
-     *
-     * @param filename      The name of the file to be created.
-     * @return              The name of the file which was created.
-     * @throws IOException  If the filename is unparseable or the file already exists.
-     */
-    public static String create(String filename) throws IOException {
-        return normalize(create(construct(filename)));
     }
 
     /**
@@ -241,19 +210,9 @@ public final class FileHelper {
      * @throws IOException  If the file cannot be deleted.
      */
     public static void remove(File file) throws IOException {
-        if (file != null && exists(file) && !file.delete()) {
+        if (exists(file) && !file.delete()) {
             throw new IOException("Unable to remove file: " + normalize(file));
         }
-    }
-
-    /**
-     * Deletes the given file.
-     *
-     * @param filename      The name of the file to be deleted.
-     * @throws IOException  If the filename is unparseable or the file cannot be deleted.
-     */
-    public static void remove(String filename) throws IOException {
-        remove(construct(filename));
     }
 
     /**
@@ -321,28 +280,6 @@ public final class FileHelper {
     }
 
     /**
-     * Renames the source file to the target name.
-     *
-     * @param source        The file to be renamed.
-     * @param target        The new name of the file.
-     * @throws IOException  If file cannot be renamed.
-     */
-    public static void rename(String source, String target) throws IOException {
-        rename(construct(source), construct(target));
-    }
-
-    /**
-     * Reads the given file completely, returning the file's content as a byte[].
-     *
-     * @param filename      The name of the file to be read.
-     * @return              A byte[] containing the file's content.
-     * @throws IOException  If there is a problem reading the file.
-     */
-    public static byte[] readToBytes(String filename) throws IOException {
-        return readToBytes(construct(filename));
-    }
-
-    /**
      * Reads the given file completely, returning the file's content as a byte[].
      *
      * @param file          The file to be read.
@@ -350,6 +287,18 @@ public final class FileHelper {
      * @throws IOException  If there is a problem reading the file.
      */
     public static byte[] readToBytes(File file) throws IOException {
+        return readToBytes(file, -1);
+    }
+
+    /**
+     * Reads the given file completely, returning the file's content as a byte[].
+     *
+     * @param file          The file to be read.
+     * @param bufferSize    The buffering size in bytes.
+     * @return              A byte[] containing the file's content.
+     * @throws IOException  If there is a problem reading the file.
+     */
+    public static byte[] readToBytes(File file, int bufferSize) throws IOException {
         byte[] content = null;
 
         if (file != null) {
@@ -357,7 +306,7 @@ public final class FileHelper {
             ByteArrayOutputStream outputStream = null;
             try {
                 inputStream = new FileInputStream(file);
-                outputStream = new ByteArrayOutputStream(InputOutputHelper.DEFAULT_BUFFER_SIZE);
+                outputStream = new ByteArrayOutputStream(InputOutputHelper.normalizeBufferSize(bufferSize));
 
                 InputOutputHelper.copy(inputStream, outputStream);
 
@@ -368,41 +317,6 @@ public final class FileHelper {
         }
 
         return content;
-    }
-
-    /**
-     * Reads the given file completely, returning the file's content as a String.
-     *
-     * @param filename      The name of the file to be read.
-     * @return              A String containing the file's content.
-     * @throws IOException  If there is a problem reading the file.
-     */
-    public static String readToString(String filename) throws IOException {
-        return readToString(filename, CharsetHelper.DEFAULT_CHARSET);
-    }
-
-    /**
-     * Reads the given file completely, returning the file's content as a String.
-     *
-     * @param filename      The name of the file to be read.
-     * @param charsetName   The character set the file's content is encoded with.
-     * @return              A String containing the file's content.
-     * @throws IOException  If there is a problem reading the file.
-     */
-    public static String readToString(String filename, String charsetName) throws IOException {
-        return readToString(filename, CharsetHelper.normalize(charsetName));
-    }
-
-    /**
-     * Reads the given file completely, returning the file's content as a String.
-     *
-     * @param filename      The name of the file to be read.
-     * @param charset       The character set the file's content is encoded with.
-     * @return              A String containing the file's content.
-     * @throws IOException  If there is a problem reading the file.
-     */
-    public static String readToString(String filename, Charset charset) throws IOException {
-        return readToString(construct(filename), CharsetHelper.normalize(charset));
     }
 
     /**
@@ -420,35 +334,12 @@ public final class FileHelper {
      * Reads the given file completely, returning the file's content as a String.
      *
      * @param file          The file to be read.
-     * @param charsetName   The character set the file's content is encoded with.
-     * @return              A String containing the file's content.
-     * @throws IOException  If there is a problem reading the file.
-     */
-    public static String readToString(File file, String charsetName) throws IOException {
-        return readToString(file, CharsetHelper.normalize(charsetName));
-    }
-
-    /**
-     * Reads the given file completely, returning the file's content as a String.
-     *
-     * @param file          The file to be read.
      * @param charset       The character set the file's content is encoded with.
      * @return              A String containing the file's content.
      * @throws IOException  If there is a problem reading the file.
      */
     public static String readToString(File file, Charset charset) throws IOException {
         return StringHelper.normalize(readToBytes(file), CharsetHelper.normalize(charset));
-    }
-
-    /**
-     * Reads the given file completely, returning the file's content as an InputStream.
-     *
-     * @param filename      The name of the file to be read.
-     * @return              An InputStream containing the file's content.
-     * @throws IOException  If there is a problem reading the file.
-     */
-    public static InputStream readToStream(String filename) throws IOException {
-        return readToStream(construct(filename));
     }
 
     /**
@@ -469,72 +360,29 @@ public final class FileHelper {
      * @param content       The content to be written.
      * @param append        If true, the content will be appended to the file, otherwise the content will overwrite any
      *                      previous content in the file.
+     * @param bufferSize    The buffering size in bytes.
      * @return              The file which the content was written to.
      * @throws IOException  If there is a problem writing to the file.
      */
-    public static File writeFromStream(File file, InputStream content, boolean append) throws IOException {
-        if (file == null || !exists(file)) file = create(file);
-        if (content != null) InputOutputHelper.copy(content, new FileOutputStream(file, append));
+    public static File writeFromStream(File file, InputStream content, boolean append, int bufferSize) throws IOException {
+        if (!exists(file)) file = create(file);
+        if (content != null) InputOutputHelper.copy(content, new FileOutputStream(file, append), true, bufferSize);
         return file;
     }
 
     /**
-     * Writes content to a file; if the given filename is null, a new temporary file is automatically created.
-     *
-     * @param filename      The name of the file to be written to; if null, a new temporary file is automatically
-     *                      created.
-     * @param content       The content to be written.
-     * @param append        If true, the content will be appended to the file, otherwise the content will overwrite any
-     *                      previous content in the file.
-     * @return              The name of the file which the content was written to.
-     * @throws IOException  If there is a problem writing to the file.
-     */
-    public static String writeFromStream(String filename, InputStream content, boolean append) throws IOException {
-        return normalize(writeFromStream(construct(filename), content, append));
-    }
-
-    /**
      * Writes content to a file; if the given file is null, a new temporary file is automatically created.
      *
      * @param file          The file to be written to; if null, a new temporary file is automatically created.
      * @param content       The content to be written.
      * @param append        If true, the content will be appended to the file, otherwise the content will overwrite any
      *                      previous content in the file.
+     * @param bufferSize    The buffering size in bytes.
      * @return              The file which the content was written to.
      * @throws IOException  If there is a problem writing to the file.
      */
-    public static File writeFromBytes(File file, byte[] content, boolean append) throws IOException {
-        return writeFromStream(file, InputStreamHelper.normalize(content), append);
-    }
-
-    /**
-     * Writes content to a file; if the given filename is null, a new temporary file is automatically created.
-     *
-     * @param filename      The name of the file to be written to; if null, a new temporary file is automatically
-     *                      created.
-     * @param content       The content to be written.
-     * @param append        If true, the content will be appended to the file, otherwise the content will overwrite any
-     *                      previous content in the file.
-     * @return              The name of the file which the content was written to.
-     * @throws IOException  If the filename is unparseable or there is a problem writing to the file.
-     */
-    public static String writeFromBytes(String filename, byte[] content, boolean append) throws IOException {
-        return normalize(writeFromBytes(construct(filename), content, append));
-    }
-
-    /**
-     * Writes content to a file; if the given file is null, a new temporary file is automatically created.
-     *
-     * @param file          The file to be written to; if null, a new temporary file is automatically created.
-     * @param content       The content to be written.
-     * @param charsetName   The character set to encode the content with.
-     * @param append        If true, the content will be appended to the file, otherwise the content will overwrite any
-     *                      previous content in the file.
-     * @return              The file which the content was written to.
-     * @throws IOException  If there is a problem writing to the file.
-     */
-    public static File writeFromString(File file, String content, String charsetName, boolean append) throws IOException {
-        return writeFromString(file, content, CharsetHelper.normalize(charsetName), append);
+    public static File writeFromBytes(File file, byte[] content, boolean append, int bufferSize) throws IOException {
+        return writeFromStream(file, InputStreamHelper.normalize(content), append, bufferSize);
     }
 
     /**
@@ -545,72 +393,12 @@ public final class FileHelper {
      * @param charset       The character set to encode the content with.
      * @param append        If true, the content will be appended to the file, otherwise the content will overwrite any
      *                      previous content in the file.
+     * @param bufferSize    The buffering size in bytes.
      * @return              The file which the content was written to.
      * @throws IOException  If there is a problem writing to the file.
      */
-    public static File writeFromString(File file, String content, Charset charset, boolean append) throws IOException {
-        return writeFromStream(file, InputStreamHelper.normalize(content, charset), append);
-    }
-
-    /**
-     * Writes content to a file; if the given filename is null, a new temporary file is automatically created.
-     *
-     * @param filename      The name of the file to be written to; if null, a new temporary file is automatically
-     *                      created.
-     * @param content       The content to be written.
-     * @param charsetName   The character set to encode the content with.
-     * @param append        If true, the content will be appended to the file, otherwise the content will overwrite any
-     *                      previous content in the file.
-     * @return              The name of the file which the content was written to.
-     * @throws IOException  If the filename is unparseable or there is a problem writing to the file.
-     */
-    public static String writeFromString(String filename, String content, String charsetName, boolean append) throws IOException {
-        return writeFromString(filename, content, CharsetHelper.normalize(charsetName), append);
-    }
-
-    /**
-     * Writes content to a file; if the given filename is null, a new temporary file is automatically created.
-     *
-     * @param filename      The name of the file to be written to; if null, a new temporary file is automatically
-     *                      created.
-     * @param content       The content to be written.
-     * @param charset       The character set to encode the content with.
-     * @param append        If true, the content will be appended to the file, otherwise the content will overwrite any
-     *                      previous content in the file.
-     * @return              The name of the file which the content was written to.
-     * @throws IOException  If the filename is unparseable or there is a problem writing to the file.
-     */
-    public static String writeFromString(String filename, String content, Charset charset, boolean append) throws IOException {
-        return normalize(writeFromString(construct(filename), content, charset, append));
-    }
-
-    /**
-     * Writes content to a file; if the given file is null, a new temporary file is automatically created.
-     *
-     * @param file          The file to be written to; if null, a new temporary file is automatically created.
-     * @param content       The content to be written.
-     * @param append        If true, the content will be appended to the file, otherwise the content will overwrite any
-     *                      previous content in the file.
-     * @return              The file which the content was written to.
-     * @throws IOException  If there is a problem writing to the file.
-     */
-    public static File writeFromString(File file, String content, boolean append) throws IOException {
-        return writeFromString(file, content, CharsetHelper.DEFAULT_CHARSET, append);
-    }
-
-    /**
-     * Writes content to a file; if the given filename is null, a new temporary file is automatically created.
-     *
-     * @param filename      The name of the file to be written to; if null, a new temporary file is automatically
-     *                      created.
-     * @param content       The content to be written.
-     * @param append        If true, the content will be appended to the file, otherwise the content will overwrite any
-     *                      previous content in the file.
-     * @return              The name of the file which the content was written to.
-     * @throws IOException  If there is a problem writing to the file.
-     */
-    public static String writeFromString(String filename, String content, boolean append) throws IOException {
-        return normalize(writeFromString(construct(filename), content, append));
+    public static File writeFromString(File file, String content, Charset charset, boolean append, int bufferSize) throws IOException {
+        return writeFromStream(file, InputStreamHelper.normalize(content, charset), append, bufferSize);
     }
 
     /**
@@ -620,34 +408,22 @@ public final class FileHelper {
      * @param target        The file to which content will be copied.
      * @param append        If true, the target content will be appended to, otherwise any previous content will be
      *                      overwritten.
+     * @param bufferSize    The buffering size in bytes.
      * @throws IOException  If the source file does not exist or there is a problem copying it.
      */
-    public static void copy(File source, File target, boolean append) throws IOException {
+    public static void copy(File source, File target, boolean append, int bufferSize) throws IOException {
         if (source != null && target != null) {
             if (!source.getCanonicalPath().equals(target.getCanonicalPath())) {
                 // only needs to copy file when the paths are different
-                InputOutputHelper.copy(new FileInputStream(source), new FileOutputStream(target, append));
+                InputOutputHelper.copy(new FileInputStream(source), new FileOutputStream(target, append), true, bufferSize);
             } else if (append) {
                 // read fully into memory before writing to itself
-                InputOutputHelper.copy(InputStreamHelper.memoize(new FileInputStream(source)), new FileOutputStream(target, append));
+                InputOutputHelper.copy(InputStreamHelper.memoize(new FileInputStream(source)), new FileOutputStream(target, append), true, bufferSize);
             } else {
                 // otherwise update the last modified date
                 touch(source);
             }
         }
-    }
-
-    /**
-     * Copies the content in the source file to the target file.
-     *
-     * @param source        The file from which content will be copied.
-     * @param target        The file to which content will be copied.
-     * @param append        If true, the target content will be appended to, otherwise any previous content will be
-     *                      overwritten.
-     * @throws IOException  If the source file does not exist or there is a problem copying it.
-     */
-    public static void copy(String source, String target, boolean append) throws IOException {
-        copy(construct(source), construct(target), append);
     }
 
     private static final String DEFAULT_MESSAGE_DIGEST_ALGORITHM_NAME = "SHA-1";
@@ -671,23 +447,20 @@ public final class FileHelper {
      * @throws IOException              If an IO error occurs.
      * @throws NoSuchAlgorithmException If the message digest algorithm does not exist.
      */
-    public static boolean equal(String source, String target, boolean raise) throws IOException, NoSuchAlgorithmException {
+    public static boolean equal(File source, File target, boolean raise) throws IOException, NoSuchAlgorithmException {
         InputStream sourceStream = null, targetStream = null;
         boolean equal = false;
 
         try {
-            File sourceFile = construct(source);
-            File targetFile = construct(target);
-
-            boolean sourceExists = exists(sourceFile);
-            boolean sourceReadable = isReadable(sourceFile);
-            boolean targetExists = exists(targetFile);
-            boolean targetReadable = isReadable(targetFile);
+            boolean sourceExists = exists(source);
+            boolean sourceReadable = isReadable(source);
+            boolean targetExists = exists(target);
+            boolean targetReadable = isReadable(target);
 
             if (sourceExists && sourceReadable && targetExists && targetReadable) {
-                if (sourceFile.length() == targetFile.length()) {
-                    sourceStream = new MarkableFileInputStream(sourceFile);
-                    targetStream = new MarkableFileInputStream(targetFile);
+                if (source.length() == target.length()) {
+                    sourceStream = new MarkableFileInputStream(source);
+                    targetStream = new MarkableFileInputStream(target);
                     Map.Entry<? extends InputStream, byte[]> sourceDigestResult = MessageDigestHelper.digest(DEFAULT_MESSAGE_DIGEST_ALGORITHM, sourceStream);
                     Map.Entry<? extends InputStream, byte[]> targetDigestResult = MessageDigestHelper.digest(DEFAULT_MESSAGE_DIGEST_ALGORITHM, targetStream);
 
@@ -705,7 +478,7 @@ public final class FileHelper {
                         throw new IOException(MessageFormat.format("Source and target file contents are not equal:\n\tSource: {0} = {1} {2}\n\tTarget: {0} = {3} {4}", DEFAULT_MESSAGE_DIGEST_ALGORITHM.getAlgorithm(), sourceDigestString, source, targetDigestString, target));
                     }
                 } else if (raise) {
-                    throw new IOException(MessageFormat.format("Source and target file sizes are not equal: \n\tSource: Size (bytes) = {0} {1}\n\tTarget: Size (bytes) = {2} {3}", sourceFile.length(), source, targetFile.length(), target));
+                    throw new IOException(MessageFormat.format("Source and target file sizes are not equal: \n\tSource: Size (bytes) = {0} {1}\n\tTarget: Size (bytes) = {2} {3}", source.length(), source, target.length(), target));
                 }
             } else {
                 String errorMessage;
@@ -728,18 +501,6 @@ public final class FileHelper {
     }
 
     /**
-     * GZips the given file as a new file in the same directory with the same name suffixed with ".gz".
-     *
-     * @param source        The file to be gzipped.
-     * @param replace       Whether the source file should be deleted once compressed.
-     * @return              The resulting gzipped file.
-     * @throws IOException  If an IO error occurs.
-     */
-    public static String gzip(String source, boolean replace) throws IOException {
-        return normalize(gzip(construct(source), replace));
-    }
-
-    /**
      * Gzips the given file as a new file in the same directory with the same name suffixed with ".gz".
      *
      * @param source        The file to be gzipped.
@@ -749,19 +510,6 @@ public final class FileHelper {
      */
     public static File gzip(File source, boolean replace) throws IOException {
         return gzip(source, null, replace);
-    }
-
-    /**
-     * Gzips the given file as a new file with the given target name.
-     *
-     * @param source        The file to be gzipped.
-     * @param target        The file to write the gzipped content to.
-     * @param replace       Whether the source file should be deleted once compressed.*
-     * @return              The resulting gzipped file.
-     * @throws IOException  If an IO error occurs.
-     */
-    public static String gzip(String source, String target, boolean replace) throws IOException {
-        return normalize(gzip(construct(source), construct(target), replace));
     }
 
     /**
@@ -797,18 +545,6 @@ public final class FileHelper {
         } else {
             throw new IOException("Unable to gzip file because it does not exist: " + normalize(source));
         }
-    }
-
-    /**
-     * Deletes all files that match the given file pattern older than the given duration.
-     *
-     * @param  file                     The file pattern to be purged.
-     * @param  duration                 The age files must be before they are deleted.
-     * @return                          The number of files deleted.
-     * @throws FileNotFoundException    If the parent directory does not exist.
-     */
-    public static long purge(String file, FilenameFilterType filterType, Duration duration) throws FileNotFoundException {
-        return purge(FileHelper.construct(file), filterType, duration);
     }
 
     /**
@@ -865,33 +601,8 @@ public final class FileHelper {
      * @return              The resulting zipped file.
      * @throws IOException  If an IO error occurs.
      */
-    public static String zip(String source, boolean replace) throws IOException {
-        return normalize(zip(construct(source), replace));
-    }
-
-    /**
-     * Zips the given file as a new file in the same directory with the same name suffixed with ".zip".
-     *
-     * @param source        The file to be zipped.
-     * @param replace       Whether the source file should be deleted once compressed.
-     * @return              The resulting zipped file.
-     * @throws IOException  If an IO error occurs.
-     */
     public static File zip(File source, boolean replace) throws IOException {
         return zip(source, null, replace);
-    }
-
-    /**
-     * Zips the given file as a new file with the given name.
-     *
-     * @param source        The file to be zipped.
-     * @param target        The file to write the zipped content to.
-     * @param replace       Whether the source file should be deleted once compressed.
-     * @return              The resulting zipped file.
-     * @throws IOException  If an IO error occurs.
-     */
-    public static String zip(String source, String target, boolean replace) throws IOException {
-        return normalize(zip(construct(source), construct(target), replace));
     }
 
     /**
@@ -1007,19 +718,6 @@ public final class FileHelper {
     /**
      * Returns true if the given file matches the given pattern.
      *
-     * @param filename                      The name of the file to check against the pattern.
-     * @param pattern                       Either a regular expression or wildcard pattern.
-     * @param patternIsRegularExpression    Boolean indicating if the given pattern is a regular expression or wildcard
-     *                                      pattern.
-     * @return                              True if the given file matches the given pattern.
-     */
-    public static boolean match(String filename, String pattern, boolean patternIsRegularExpression) {
-        return match(construct(filename), pattern, patternIsRegularExpression);
-    }
-
-    /**
-     * Returns true if the given file matches the given pattern.
-     *
      * @param file                          The file to check against the pattern.
      * @param pattern                       Either a regular expression or wildcard pattern.
      * @param patternIsRegularExpression    Boolean indicating if the given pattern is a regular expression or wildcard
@@ -1054,16 +752,6 @@ public final class FileHelper {
     }
 
     /**
-     * Returns whether the given file can be written to by this process.
-     *
-     * @param filename  The file to check the permissions of.
-     * @return          Whether the given file is writable by this process.
-     */
-    public static boolean isWritable(String filename) {
-        return isWritable(construct(filename));
-    }
-
-    /**
      * Returns whether the given file can be read by this process.
      *
      * @param file  The file to check the permissions of.
@@ -1072,16 +760,6 @@ public final class FileHelper {
     public static boolean isReadable(File file) {
         if (file == null) return false;
         return file.canRead();
-    }
-
-    /**
-     * Returns whether the given file can be read by this process.
-     *
-     * @param filename  The file to check the permissions of.
-     * @return          Whether the given file is readable by this process.
-     */
-    public static boolean isReadable(String filename) {
-        return isReadable(construct(filename));
     }
 
     /**
@@ -1096,16 +774,6 @@ public final class FileHelper {
     }
 
     /**
-     * Returns whether the given file can be executed by this process.
-     *
-     * @param filename  The file to check the permissions of.
-     * @return          Whether the given file is executable by this process.
-     */
-    public static boolean isExecutable(String filename) {
-        return isExecutable(construct(filename));
-    }
-
-    /**
      * Returns the length of the given file in bytes.
      *
      * @param file  The file to check the length of.
@@ -1117,34 +785,13 @@ public final class FileHelper {
     }
 
     /**
-     * Returns the length of the given file in bytes.
-     *
-     * @param filename  The file to check the length of.
-     * @return          The length in bytes of the given file.
-     */
-    public static long length(String filename) {
-        return length(construct(filename));
-    }
-
-    /**
      * Returns only the name component of the given file.
      *
      * @param file  The file to return the name of.
      * @return      The name component only of the given file.
      */
     public static String getName(File file) {
-        if (file == null || file.equals("")) return null;
-        return file.getName();
-    }
-
-    /**
-     * Returns only the name component of the given file.
-     *
-     * @param filename  The file to return the name of.
-     * @return          The name component only of the given file.
-     */
-    public static String getName(String filename) {
-        return getName(construct(filename));
+        return file == null ? null : file.getName();
     }
 
     /**
@@ -1186,16 +833,6 @@ public final class FileHelper {
     }
 
     /**
-     * Returns the base and extension parts of the given file's name.
-     *
-     * @param filename  The file to get the name parts of.
-     * @return          The parts of the given file's name.
-     */
-    public static String[] getNameParts(String filename) {
-        return getNameParts(construct(filename));
-    }
-
-    /**
      * Returns the parent directory containing the given file.
      *
      * @param file  The file to return the parent directory of.
@@ -1204,36 +841,6 @@ public final class FileHelper {
     public static File getParentDirectory(File file) {
         if (file == null) return null;
         return file.getParentFile();
-    }
-
-    /**
-     * Returns the parent directory containing the given file.
-     *
-     * @param filename  The file to return the parent directory of.
-     * @return          The parent directory of the given file.
-     */
-    public static File getParentDirectory(String filename) {
-        return getParentDirectory(construct(filename));
-    }
-
-    /**
-     * Returns the parent directory containing the given file as a string.
-     *
-     * @param file  The file to return the parent directory of.
-     * @return      The parent directory of the given file.
-     */
-    public static String getParentDirectoryAsString(File file) {
-        return normalize(getParentDirectory(file));
-    }
-
-    /**
-     * Returns the parent directory containing the given file as a string.
-     *
-     * @param filename  The file to return the parent directory of.
-     * @return          The parent directory of the given file.
-     */
-    public static String getParentDirectoryAsString(String filename) {
-        return getParentDirectoryAsString(construct(filename));
     }
 
     /**
@@ -1248,16 +855,6 @@ public final class FileHelper {
     }
 
     /**
-     * Returns the last modified datetime of the given file.
-     *
-     * @param filename  The file to return the last modified datetime of.
-     * @return          The last modified datetime of the given file.
-     */
-    public static Date getLastModifiedDate(String filename) {
-        return getLastModifiedDate(construct(filename));
-    }
-
-    /**
      * Returns the last modified datetime of the given file as an ISO8601 formatted datetime string.
      *
      * @param file  The file to return the last modified datetime of.
@@ -1268,32 +865,14 @@ public final class FileHelper {
     }
 
     /**
-     * Returns the last modified datetime of the given file as an ISO8601 formatted datetime string.
-     *
-     * @param filename  The file to return the last modified datetime of.
-     * @return          The last modified datetime of the given file.
-     */
-    public static String getLastModifiedDateTimeString(String filename) {
-        return getLastModifiedDateTimeString(construct(filename));
-    }
-
-    /**
-     * Returns an IData document containing the properties of the given file.
-     *
-     * @param filename  The file to return the properties for.
-     * @return          The properties of the given file as an IData document.
-     */
-    public static IData getPropertiesAsIData(String filename) {
-        return getPropertiesAsIData(construct(filename));
-    }
-
-    /**
      * Returns an IData document containing the properties of the given file.
      *
      * @param file  The file to return the properties for.
      * @return      The properties of the given file as an IData document.
      */
     public static IData getPropertiesAsIData(File file) {
+        if (file == null) throw new NullPointerException("file must not be null");
+
         IData output = IDataFactory.create();
         IDataCursor cursor = output.getCursor();
 
@@ -1302,11 +881,11 @@ public final class FileHelper {
 
         IDataUtil.put(cursor, "exists?", BooleanHelper.emit(exists));
 
-        String parent = getParentDirectoryAsString(file);
+        String parent = normalize(getParentDirectory(file));
         if (parent != null) IDataUtil.put(cursor, "parent", parent);
 
         String name = getName(file);
-        if (name != null) IDataUtil.put(cursor, "name", name);
+        IDataUtil.put(cursor, "name", name);
 
         String[] parts = getNameParts(file);
         if (parts != null) {

@@ -44,10 +44,11 @@ public final class WriterHelper {
      * Returns a new Writer object which wraps the given OutputStream object.
      *
      * @param outputStream  The OutputStream to be wrapped.
+     * @param charset       The character set used to encode the text data in the given OutputStream.
      * @return              A new Writer object which represents the given OutputStream.
      */
-    public static Writer normalize(OutputStream outputStream) {
-        return normalize(outputStream, null);
+    public static Writer normalize(OutputStream outputStream, Charset charset) {
+        return normalize(outputStream, charset, -1);
     }
 
     /**
@@ -55,24 +56,36 @@ public final class WriterHelper {
      *
      * @param outputStream  The OutputStream to be wrapped.
      * @param charset       The character set used to encode the text data in the given OutputStream.
+     * @param bufferSize    The buffering size in bytes.
      * @return              A new Writer object which represents the given OutputStream.
      */
-    public static Writer normalize(OutputStream outputStream, Charset charset) {
+    public static Writer normalize(OutputStream outputStream, Charset charset, int bufferSize) {
         if (outputStream == null) return null;
-        return normalize(new OutputStreamWriter(outputStream, CharsetHelper.normalize(charset)));
+        return normalize(new OutputStreamWriter(outputStream, CharsetHelper.normalize(charset)), bufferSize);
     }
 
     /**
      * Normalizes the given Writer, by wrapping it in a BufferedWriter where appropriate.
      *
-     * @param writer    A Writer to be normalized.
-     * @return          The normalized Writer.
+     * @param writer        A Writer to be normalized.
+     * @return              The normalized Writer.
      */
     public static Writer normalize(Writer writer) {
+        return normalize(writer, -1);
+    }
+
+    /**
+     * Normalizes the given Writer, by wrapping it in a BufferedWriter where appropriate.
+     *
+     * @param writer        A Writer to be normalized.
+     * @param bufferSize    The buffering size in bytes.
+     * @return              The normalized Writer.
+     */
+    public static Writer normalize(Writer writer, int bufferSize) {
         if (writer == null) return null;
 
         if (!(writer instanceof BufferedWriter)) {
-            writer = new BufferedWriter(writer, InputOutputHelper.DEFAULT_BUFFER_SIZE);
+            writer = new BufferedWriter(writer, InputOutputHelper.normalizeBufferSize(bufferSize));
         }
 
         return writer;

@@ -50,7 +50,7 @@ public class MarkableInputStream extends FilterInputStream {
 
         if (!inputStream.markSupported()) {
             File backingFile = FileHelper.create();
-            FileHelper.writeFromStream(backingFile, inputStream, false);
+            FileHelper.writeFromStream(backingFile, inputStream, false, -1);
 
             in = new DeleteOnCloseFileInputStream(backingFile);
 

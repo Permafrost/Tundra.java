@@ -27,6 +27,7 @@ package permafrost.tundra.io;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
+import permafrost.tundra.lang.CharsetHelper;
 import permafrost.tundra.lang.StringHelper;
 import java.io.File;
 
@@ -36,7 +37,7 @@ public class DeleteOnCloseFileInputStreamTest {
     public void testClose() throws Exception {
         String content = "this is a test";
         File tempFile = FileHelper.create();
-        FileHelper.writeFromString(tempFile, content, false);
+        FileHelper.writeFromString(tempFile, content, CharsetHelper.DEFAULT_CHARSET, false, -1);
         assertTrue(FileHelper.exists(tempFile));
 
         DeleteOnCloseFileInputStream in = new DeleteOnCloseFileInputStream(tempFile);

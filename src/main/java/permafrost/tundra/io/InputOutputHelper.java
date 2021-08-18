@@ -45,33 +45,48 @@ public final class InputOutputHelper {
     private InputOutputHelper() {}
 
     /**
-     * Copies all data from the given input stream to the given output stream, and then closes both streams.
+     * Copies all data from the given input stream to the given output stream, then closes both streams.
      *
-     * @param inputStream  An input stream containing data to be copied.
-     * @param outputStream An output stream to where the copied data will be written.
-     * @throws IOException If there is a problem reading from or writing to the streams.
+     * @param inputStream   An input stream containing data to be copied.
+     * @param outputStream  An output stream to where the copied data will be written.
+     * @throws IOException  If there is a problem reading from or writing to the streams.
      */
     public static void copy(InputStream inputStream, OutputStream outputStream) throws IOException {
         copy(inputStream, outputStream, true);
     }
 
     /**
-     * Copies all data from the given input stream to the given output stream, and optionally closes both streams.
+     * Copies all data from the given input stream to the given output stream, then optionally closes both streams.
      *
-     * @param inputStream  An input stream containing data to be copied.
-     * @param outputStream An output stream to where the copied data will be written.
-     * @param close        When true, both the input and output streams will be closed when done.
-     * @throws IOException If there is a problem reading from or writing to the streams.
+     * @param inputStream   An input stream containing data to be copied.
+     * @param outputStream  An output stream to where the copied data will be written.
+     * @param close         When true, both the input and output streams will be closed when done.
+     * @throws IOException  If there is a problem reading from or writing to the streams.
      */
     public static void copy(InputStream inputStream, OutputStream outputStream, boolean close) throws IOException {
+        copy(inputStream, outputStream, close, -1);
+    }
+
+    /**
+     * Copies all data from the given input stream to the given output stream, then optionally closes both streams.
+     *
+     * @param inputStream   An input stream containing data to be copied.
+     * @param outputStream  An output stream to where the copied data will be written.
+     * @param close         When true, both the input and output streams will be closed when done.
+     * @param bufferSize    The size of the buffer to use when copying the data.
+     * @throws IOException  If there is a problem reading from or writing to the streams.
+     */
+    public static void copy(InputStream inputStream, OutputStream outputStream, boolean close, int bufferSize) throws IOException {
         if (inputStream == null || outputStream == null) return;
 
         try {
-            byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
-            int length;
+            bufferSize = normalizeBufferSize(bufferSize);
 
-            inputStream = InputStreamHelper.normalize(inputStream);
-            outputStream = OutputStreamHelper.normalize(outputStream);
+            inputStream = InputStreamHelper.normalize(inputStream, bufferSize);
+            outputStream = OutputStreamHelper.normalize(outputStream, bufferSize);
+
+            int length;
+            byte[] buffer = new byte[bufferSize];
 
             while ((length = inputStream.read(buffer)) > 0) {
                 outputStream.write(buffer, 0, length);
@@ -79,6 +94,20 @@ public final class InputOutputHelper {
         } finally {
             if (close) CloseableHelper.close(inputStream, outputStream);
         }
+    }
+
+    /**
+     * Normalizes the given buffer size, if the given size is less than or equal to zero then set to the default
+     * buffer size.
+     *
+     * @param bufferSize    The buffer size to normalize.
+     * @return              The normalized buffer size.
+     */
+    public static int normalizeBufferSize(int bufferSize) {
+        if (bufferSize <= 0) {
+            bufferSize = DEFAULT_BUFFER_SIZE;
+        }
+        return bufferSize;
     }
 
     /**
@@ -93,7 +122,7 @@ public final class InputOutputHelper {
     }
 
     /**
-     * Copies all the data from the given reader to the given writer, then closes both.
+     * Copies all the data from the given reader to the given writer, then optionally closes both.
      *
      * @param reader        The reader to copy data from.
      * @param writer        The writer to copy data to.
@@ -101,14 +130,29 @@ public final class InputOutputHelper {
      * @throws IOException  If there is a problem reading from the reader or writing to the writer.
      */
     public static void copy(Reader reader, Writer writer, boolean close) throws IOException {
+        copy(reader, writer, close, -1);
+    }
+
+    /**
+     * Copies all the data from the given reader to the given writer, then optionally closes both.
+     *
+     * @param reader        The reader to copy data from.
+     * @param writer        The writer to copy data to.
+     * @param close         When true, both the reader and writer will be closed when done.
+     * @param bufferSize    The buffering size in bytes.
+     * @throws IOException  If there is a problem reading from the reader or writing to the writer.
+     */
+    public static void copy(Reader reader, Writer writer, boolean close, int bufferSize) throws IOException {
         if (reader == null || writer == null) return;
 
         try {
-            char[] buffer = new char[DEFAULT_BUFFER_SIZE];
-            int length;
+            bufferSize = normalizeBufferSize(bufferSize);
 
-            reader = ReaderHelper.normalize(reader);
-            writer = WriterHelper.normalize(writer);
+            reader = ReaderHelper.normalize(reader, bufferSize);
+            writer = WriterHelper.normalize(writer, bufferSize);
+
+            int length;
+            char[] buffer = new char[bufferSize];
 
             while ((length = reader.read(buffer)) > 0) {
                 writer.write(buffer, 0, length);
