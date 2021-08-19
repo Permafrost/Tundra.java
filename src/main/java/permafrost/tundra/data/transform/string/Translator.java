@@ -27,6 +27,7 @@ package permafrost.tundra.data.transform.string;
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
+import permafrost.tundra.content.TranslationException;
 import permafrost.tundra.data.IDataHelper;
 import permafrost.tundra.data.transform.Transformer;
 import permafrost.tundra.data.transform.TransformerMode;
@@ -48,17 +49,23 @@ public class Translator extends Transformer<String, Object> {
      * Whether to exclude missing translation values from translated documents.
      */
     private final boolean exclude;
+    /**
+     * Whether to throw an exception for missing translation values.
+     */
+    private final boolean raise;
 
     /**
      * Creates a new Translator object.
      *
      * @param translations  The translation table used to translate values.
-     * @param exclude       If true, missing translation values will be excluded from the translated document.
      * @param reverse       If true, the translation table is flipped so keys become values and vice versa.
+     * @param exclude       If true, missing translation values will be excluded from the translated document.
+     * @param raise         If true, missing translation values will result in an exception being thrown.
      */
-    public Translator(IData translations, boolean exclude, boolean reverse) {
+    public Translator(IData translations, boolean reverse, boolean exclude, boolean raise) {
         super(String.class, Object.class, TransformerMode.VALUES, true, !exclude, true, true);
         this.exclude = exclude;
+        this.raise = raise;
         if (translations == null) {
             this.translations = IDataFactory.create();
             defaultValue = null;
@@ -94,7 +101,7 @@ public class Translator extends Transformer<String, Object> {
         try {
             Object defaultValue;
             if (this.defaultValue == null) {
-                if (exclude) {
+                if (exclude || raise) {
                     defaultValue = null;
                 } else {
                     defaultValue = value;
@@ -102,7 +109,11 @@ public class Translator extends Transformer<String, Object> {
             } else {
                 defaultValue = this.defaultValue;
             }
-            return IDataHelper.getOrDefault(cursor, value, Object.class, defaultValue);
+            Object translatedValue = IDataHelper.getOrDefault(cursor, value, Object.class, defaultValue);
+            if (raise && translatedValue == null) {
+                throw new TranslationException("Translation missing for value: " + value);
+            }
+            return translatedValue;
         } finally {
             cursor.destroy();
         }
