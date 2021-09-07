@@ -24,6 +24,7 @@
 
 package permafrost.tundra.lang;
 
+import com.wm.app.b2b.server.diagnostic.RuntimeDataCollector;
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
@@ -201,6 +202,7 @@ public final class ThreadHelper {
         IDataUtil.put(cursor, "id", "" + thread.getId());
         IDataUtil.put(cursor, "name", thread.getName());
         IDataUtil.put(cursor, "description", thread.toString());
+        IDataUtil.put(cursor, "dump", StringHelper.trim(RuntimeDataCollector.getThreadDump(thread.getId())));
         IDataUtil.put(cursor, "state", thread.getState().toString());
         IDataUtil.put(cursor, "priority", "" + thread.getPriority());
 
