@@ -50,6 +50,7 @@ import permafrost.tundra.server.NodePermission;
 import permafrost.tundra.time.DateTimeHelper;
 import permafrost.tundra.time.DurationHelper;
 import permafrost.tundra.time.TimeZoneHelper;
+import permafrost.tundra.util.regex.PatternHelper;
 import permafrost.tundra.xml.namespace.IDataNamespaceContext;
 import java.io.File;
 import java.io.IOException;
@@ -71,6 +72,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
+import java.util.regex.Pattern;
 import javax.activation.MimeType;
 import javax.xml.datatype.Duration;
 
@@ -605,6 +607,8 @@ public final class ObjectHelper {
                 value = (T)TimeZoneHelper.get((String)object);
             } else if (klass.isAssignableFrom(File.class) && object instanceof String) {
                 value = (T)FileHelper.construct((String)object);
+            } else if (klass.isAssignableFrom(Pattern.class) && object instanceof String) {
+                value = (T)PatternHelper.compile((String)object);
             }
         } catch (IOException ex) {
             throw new RuntimeException(ex);
