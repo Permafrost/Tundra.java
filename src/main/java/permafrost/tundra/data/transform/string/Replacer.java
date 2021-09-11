@@ -27,6 +27,8 @@ package permafrost.tundra.data.transform.string;
 import permafrost.tundra.data.transform.Transformer;
 import permafrost.tundra.data.transform.TransformerMode;
 import permafrost.tundra.lang.StringHelper;
+import permafrost.tundra.util.regex.PatternHelper;
+import permafrost.tundra.util.regex.ReplacementHelper;
 import java.util.regex.Pattern;
 
 /**
@@ -60,6 +62,19 @@ public class Replacer extends Transformer<String, String> {
         this.pattern = pattern;
         this.replacement = replacement;
         this.firstOnly = firstOnly;
+    }
+
+    /**
+     * Creates a new Replacer object.
+     *
+     * @param mode          The transformer mode to use.
+     * @param pattern       The regular expression pattern.
+     * @param replacement   The replacement string.
+     * @param firstOnly     If true, only the first occurrence is replaced, otherwise all occurrences are replaced.
+     * @param recurse       Whether to recursively transform child IData documents and IData[] document lists.
+     */
+    public Replacer(TransformerMode mode, String pattern, boolean literalPattern, String replacement, boolean literalReplacement, boolean firstOnly, boolean recurse) {
+        this(mode, PatternHelper.compile(pattern, literalPattern), ReplacementHelper.quote(replacement, literalReplacement), firstOnly, recurse);
     }
 
     /**
