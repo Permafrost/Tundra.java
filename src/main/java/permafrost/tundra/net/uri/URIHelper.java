@@ -329,19 +329,22 @@ public final class URIHelper {
      * @throws URISyntaxException   If the given string is not a valid URI.
      */
     public static String substitute(String uri, IData scope) throws URISyntaxException {
-        // possible URI template
-        if (uri.contains("{")) {
-            uri = expandTemplate(uri, scope);
+        if (uri != null) {
+            // possible URI template
+            if (uri.contains("{")) {
+                uri = expandTemplate(uri, scope);
+            }
+
+            IData parsedURI = parse(uri);
+
+            // possible variable substitution strings
+            if (uri.contains("%25")) {
+                parsedURI = SubstitutionHelper.substitute(parsedURI, null, true, false, null, scope);
+            }
+
+            uri = emit(parsedURI);
         }
-
-        IData parsedURI = parse(uri);
-
-        // possible variable substitution strings
-        if (uri.contains("%25")) {
-            parsedURI = SubstitutionHelper.substitute(parsedURI, null, true, false, null, scope);
-        }
-
-        return emit(parsedURI);
+        return uri;
     }
 
     /**
