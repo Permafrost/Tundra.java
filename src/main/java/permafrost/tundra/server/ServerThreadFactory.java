@@ -25,11 +25,9 @@
 package permafrost.tundra.server;
 
 import com.wm.app.b2b.server.InvokeState;
-import com.wm.app.b2b.server.ServerThread;
 import com.wm.app.b2b.server.Session;
 import permafrost.tundra.id.UUIDHelper;
 import permafrost.tundra.lang.ThreadHelper;
-
 import java.util.concurrent.ThreadFactory;
 
 /**

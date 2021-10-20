@@ -24,9 +24,9 @@
 
 package permafrost.tundra.server;
 
-import java.util.concurrent.SynchronousQueue;
 import com.wm.app.b2b.server.InvokeState;
 import permafrost.tundra.util.concurrent.BlockingRejectedExecutionHandler;
+import java.util.concurrent.SynchronousQueue;
 
 /**
  * A Integration Server ThreadPoolExecutor which blocks on submit when all threads are busy.

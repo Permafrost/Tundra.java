@@ -24,6 +24,7 @@
 
 package permafrost.tundra.util.concurrent;
 
+import permafrost.tundra.server.ServerThread;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.RejectedExecutionHandler;
@@ -74,5 +75,34 @@ public class PrioritizedThreadPoolExecutor extends ThreadPoolExecutor {
     @Override
     protected <T> RunnableFuture<T> newTaskFor(Runnable runnable, T value) {
         return new PrioritizedFutureTask<T>(runnable, value);
+    }
+
+    /**
+     * Performs any work required before a task is executed.
+     *
+     * @param thread    The thread which will execute the task.
+     * @param runnable  The task to be executed.
+     */
+    @Override
+    protected void beforeExecute(Thread thread, Runnable runnable) {
+        if (thread instanceof ServerThread) {
+            ((ServerThread)thread).setStartTime();
+        }
+        super.beforeExecute(thread, runnable);
+    }
+
+    /**
+     * Performs any work required after a task was executed.
+     *
+     * @param runnable  The task that was executed.
+     * @param throwable Any exception that was encountered during task execution.
+     */
+    @Override
+    protected void afterExecute(Runnable runnable, Throwable throwable) {
+        super.afterExecute(runnable, throwable);
+        Thread thread = Thread.currentThread();
+        if (thread instanceof ServerThread) {
+            ((ServerThread)thread).clearStartTime();;
+        }
     }
 }
