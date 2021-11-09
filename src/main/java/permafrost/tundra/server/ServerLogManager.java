@@ -212,7 +212,7 @@ public class ServerLogManager extends StartableManager<String, Loggable> {
          * @param addPrefix     Whether to prefix the log statement with logging metadata.
          */
         @Override
-        public void log(ServerLogLevel level, String message, IData context, boolean addPrefix) {
+        public void log(ServerLogLevel level, String message, Object context, boolean addPrefix) {
             ServerLogHelper.log(level, message, context, addPrefix);
         }
 

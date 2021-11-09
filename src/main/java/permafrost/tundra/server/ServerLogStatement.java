@@ -25,9 +25,14 @@
 package permafrost.tundra.server;
 
 import com.wm.data.IData;
+import com.wm.data.IDataPortable;
 import com.wm.lang.ns.NSService;
+import com.wm.util.coder.IDataCodable;
+import com.wm.util.coder.ValuesCodable;
+import permafrost.tundra.data.IDataHelper;
 import permafrost.tundra.data.IDataJSONParser;
 import permafrost.tundra.lang.ExceptionHelper;
+import permafrost.tundra.lang.StringHelper;
 import java.util.List;
 
 /**
@@ -45,7 +50,7 @@ public class ServerLogStatement {
     /**
      * The optional context to include.
      */
-    protected IData context;
+    protected Object context;
     /**
      * Whether to prefix the log statement with logging metadata.
      */
@@ -58,7 +63,7 @@ public class ServerLogStatement {
      * @param context   The optional context to include.
      * @param addPrefix Whether to prefix the log statement with logging metadata.
      */
-    public ServerLogStatement(ServerLogLevel level, String message, IData context, boolean addPrefix) {
+    public ServerLogStatement(ServerLogLevel level, String message, Object context, boolean addPrefix) {
         this.level = level == null ? ServerLogLevel.DEFAULT_LOG_LEVEL : level;
         this.message = message;
         this.context = context;
@@ -125,8 +130,12 @@ public class ServerLogStatement {
                 builder.append(" -- ");
             }
             try {
-                IDataJSONParser parser = new IDataJSONParser(false);
-                parser.emit(builder, context);
+                if (context instanceof IData || context instanceof IDataCodable || context instanceof IDataPortable || context instanceof ValuesCodable) {
+                    IDataJSONParser parser = new IDataJSONParser(false);
+                    parser.emit(builder, IDataHelper.toIData(context));
+                } else {
+                    builder.append(StringHelper.normalize(context));
+                }
             } catch (Exception ex) {
                 builder.append(ExceptionHelper.getMessage(ex));
             }
@@ -169,7 +178,7 @@ public class ServerLogStatement {
      * @param addPrefix Whether to prefix the log statement with logging metadata.
      * @return          The log statement as a string.
      */
-    public static String of(ServerLogLevel level, String message, IData context, boolean addPrefix) {
+    public static String of(ServerLogLevel level, String message, Object context, boolean addPrefix) {
         return new ServerLogStatement(level, message, context, addPrefix).toString();
     }
 }

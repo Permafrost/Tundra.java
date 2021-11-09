@@ -27,7 +27,6 @@ package permafrost.tundra.server;
 import com.wm.app.b2b.server.LogManager;
 import com.wm.app.b2b.server.LogWriter;
 import com.wm.app.b2b.server.Server;
-import com.wm.data.IData;
 import permafrost.tundra.lang.Loggable;
 import permafrost.tundra.util.concurrent.ConcurrentWriter;
 import java.io.File;
@@ -96,7 +95,7 @@ public class ServerLogWriter extends ConcurrentWriter implements Loggable {
      * @throws IOException  If an IO error occurs.
      */
     @Override
-    public void log(ServerLogLevel level, String message, IData context, boolean addPrefix) throws IOException {
+    public void log(ServerLogLevel level, String message, Object context, boolean addPrefix) throws IOException {
         if (started) {
             if (level == null) level = ServerLogLevel.DEFAULT_LOG_LEVEL;
             ServerLogLevel logLevel = this.logLevel == null ? ServerLogLevel.normalize(System.getProperty("watt.debug.level", ServerLogLevel.INFO.toString())) : this.logLevel;

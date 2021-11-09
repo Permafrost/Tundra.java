@@ -59,7 +59,7 @@ public class ServerLogHelper {
      * @param context   The optional context to be logged.
      * @param addPrefix Whether to prefix log statement with logging metadata.
      */
-    public static void log(ServerLogLevel level, String message, IData context, boolean addPrefix) {
+    public static void log(ServerLogLevel level, String message, Object context, boolean addPrefix) {
         ServerLogStatement statement = new ServerLogStatement(level, message, context, addPrefix);
         log(level, null, statement.toString());
     }
@@ -73,7 +73,7 @@ public class ServerLogHelper {
      * @param context   The optional context to be logged.
      * @param addPrefix Whether to prefix log statement with logging metadata.
      */
-    public static void log(String name, ServerLogLevel level, String message, IData context, boolean addPrefix) {
+    public static void log(String name, ServerLogLevel level, String message, Object context, boolean addPrefix) {
         Loggable loggable = ServerLogManager.getInstance().get(name);
         if (loggable != null) {
             try {
