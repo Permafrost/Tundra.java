@@ -40,6 +40,36 @@ public class SubstitutionHelperTest {
         IDataHelper.put(scope, "b", "2");
         IDataHelper.put(scope, "c/d", "3");
         IDataHelper.put(scope, "e", 4);
+        IDataHelper.put(scope, "f", "%g%%b%");
+        IDataHelper.put(scope, "g", "%a%");
+    }
+
+    @Test
+    public void testRecursiveSubstringSubstitutionStringWithBracesAndSpaces() {
+        String testCase = "Testing substring {{ f }} substitution";
+        String result = SubstitutionHelper.substitute(testCase, String.class, null, null, scope);
+        assertEquals("Testing substring 12 substitution", result);
+    }
+
+    @Test
+    public void testRecursiveSubstringSubstitutionStringWithBracesAndMultipleSpaces() {
+        String testCase = "Testing substring {{  f  }} substitution";
+        String result = SubstitutionHelper.substitute(testCase, String.class, null, null, scope);
+        assertEquals("Testing substring 12 substitution", result);
+    }
+
+    @Test
+    public void testRecursiveSubstringSubstitutionStringWithBraces() {
+        String testCase = "Testing substring {{f}} substitution";
+        String result = SubstitutionHelper.substitute(testCase, String.class, null, null, scope);
+        assertEquals("Testing substring 12 substitution", result);
+    }
+
+    @Test
+    public void testRecursiveSubstringSubstitutionString() {
+        String testCase = "Testing substring %f% substitution";
+        String result = SubstitutionHelper.substitute(testCase, String.class, null, null, scope);
+        assertEquals("Testing substring 12 substitution", result);
     }
 
     @Test
@@ -47,6 +77,13 @@ public class SubstitutionHelperTest {
         String testCase = "Testing substring %a% substitution";
         String result = SubstitutionHelper.substitute(testCase, String.class, null, null, scope);
         assertEquals("Testing substring 1 substitution", result);
+    }
+
+    @Test
+    public void testMultiSubstringSubstitutionStringWithBraces() {
+        String testCase = "Testing substring {{a}} substitution {{e}}";
+        String result = SubstitutionHelper.substitute(testCase, String.class, null, null, scope);
+        assertEquals("Testing substring 1 substitution 4", result);
     }
 
     @Test
@@ -64,10 +101,31 @@ public class SubstitutionHelperTest {
     }
 
     @Test
+    public void testNonexistentSubstringSubstitutionStringWithBraces() {
+        String testCase = "Testing substring {{unknown}} substitution";
+        String result = SubstitutionHelper.substitute(testCase, String.class, null, null, scope);
+        assertEquals(testCase, result);
+    }
+
+    @Test
     public void testNonexistentSubstringSubstitutionStringWithDefault() {
         String testCase = "Testing substring %unknown% substitution";
         String result = SubstitutionHelper.substitute(testCase, String.class, "4", null, scope);
         assertEquals("Testing substring 4 substitution", result);
+    }
+
+    @Test
+    public void testRecursiveSubstitutionStringWithBraces() {
+        String testCase = "{{f}}";
+        String result = SubstitutionHelper.substitute(testCase, String.class, null, null, scope);
+        assertEquals("12", result);
+    }
+
+    @Test
+    public void testRecursiveSubstitutionString() {
+        String testCase = "%f%";
+        String result = SubstitutionHelper.substitute(testCase, String.class, null, null, scope);
+        assertEquals("12", result);
     }
 
     @Test

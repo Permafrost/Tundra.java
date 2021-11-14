@@ -53,7 +53,7 @@ public final class SubstitutionHelper {
     /**
      * A regular expression pattern for detecting variable substitution statements in strings.
      */
-    protected static final Pattern SUBSTITUTION_PATTERN = Pattern.compile("%([^%]+)%");
+    private static final Pattern SUBSTITUTION_PATTERN = Pattern.compile("%([^%]+)%|\\{\\{\\s*((?!}})(.)+?)\\s*}}");
 
     /**
      * Disallow instantiation of this class.
@@ -95,15 +95,24 @@ public final class SubstitutionHelper {
         T output = null;
 
         if (matcher.matches()) {
-            output = resolve(matcher.group(1), valueClass, defaultValue == null ? matcher.group(0) : defaultValue, substitutionType, scopes);
+            String percentDelimitedValue = matcher.group(1);
+            String braceDelimitedValue = matcher.group(2);
+            output = resolve(percentDelimitedValue == null ? braceDelimitedValue : percentDelimitedValue, valueClass, defaultValue == null ? matcher.group(0) : defaultValue, substitutionType, scopes);
         } else if (valueClass.isAssignableFrom(String.class)) {
             StringBuffer buffer = new StringBuffer();
             matcher.reset();
             while (matcher.find()) {
-                matcher.appendReplacement(buffer, ReplacementHelper.quote(resolve(matcher.group(1), String.class, defaultValue == null ? matcher.group(0) : defaultValue, substitutionType, scopes)));
+                String percentDelimitedValue = matcher.group(1);
+                String braceDelimitedValue = matcher.group(2);
+                matcher.appendReplacement(buffer, ReplacementHelper.quote(resolve(percentDelimitedValue == null ? braceDelimitedValue : percentDelimitedValue, String.class, defaultValue == null ? matcher.group(0) : defaultValue, substitutionType, scopes)));
             }
             matcher.appendTail(buffer);
             output = (T)buffer.toString();
+        }
+
+        if (output instanceof String && !output.equals(substitutionString)) {
+            // support recursive substitutions
+            output = substitute((String)output, valueClass, defaultValue, substitutionType, scopes);
         }
 
         return output;
@@ -122,7 +131,6 @@ public final class SubstitutionHelper {
      * @param <T>                The class of value to be returned.
      * @return                   The result of the variable substitution.
      */
-    @SuppressWarnings("unchecked")
     public static <T> T resolve(String key, Class<T> valueClass, Object defaultValue, SubstitutionType substitutionType, IData... scopes) {
         if (valueClass == null) throw new NullPointerException("valueClass must not be null");
         if (key == null || scopes == null || scopes.length == 0) return null;
@@ -252,7 +260,6 @@ public final class SubstitutionHelper {
      * @param <T>                The class of value to be returned.
      * @return                   The value associated with the given key.
      */
-    @SuppressWarnings("unchecked")
     private static <T> T getValue(String key, Class<T> valueClass, SubstitutionType substitutionType, IData... scopes) {
         substitutionType = SubstitutionType.normalize(substitutionType);
 
