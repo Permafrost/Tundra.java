@@ -24,8 +24,6 @@
 
 package permafrost.tundra.server;
 
-import com.wm.app.b2b.server.ServerAPI;
-
 /**
  * Handles uncaught exceptions by logging them to the Integration Server error log.
  */
@@ -56,6 +54,6 @@ public class UncaughtExceptionLogger implements Thread.UncaughtExceptionHandler 
      * @param exception The uncaught exception requiring handling.
      */
     public void uncaughtException(Thread thread, Throwable exception) {
-        ServerAPI.logError(exception);
+        ServerLogHelper.log(exception);
     }
 }

@@ -85,7 +85,6 @@ public final class SchedulerHelper {
     /**
      * @return true if the Integration Server user task scheduler is paused.
      */
-    @SuppressWarnings("unchecked")
     public static boolean isPaused() {
         boolean isPaused = false;
 
@@ -103,7 +102,6 @@ public final class SchedulerHelper {
     /**
      * @return true if the Integration Server user task scheduler is running.
      */
-    @SuppressWarnings("unchecked")
     public static boolean isRunning() {
         boolean isRunning = true;
 

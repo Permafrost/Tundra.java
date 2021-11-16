@@ -24,13 +24,16 @@
 
 package permafrost.tundra.server;
 
+import com.wm.app.b2b.server.JDBCConnectionManager;
 import com.wm.app.b2b.server.ServiceException;
+import com.wm.app.b2b.server.scheduler.ScheduleDB;
 import com.wm.app.b2b.server.scheduler.ScheduleManager;
 import com.wm.app.b2b.server.scheduler.ScheduledTask;
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
 import com.wm.data.IDataUtil;
+import com.wm.jdbc.IJDBCConnPool;
 import permafrost.tundra.data.IDataHelper;
 import permafrost.tundra.flow.ConditionEvaluator;
 import permafrost.tundra.lang.BooleanHelper;
@@ -39,15 +42,30 @@ import permafrost.tundra.math.LongHelper;
 import permafrost.tundra.time.DateTimeHelper;
 import permafrost.tundra.time.DurationHelper;
 import permafrost.tundra.time.DurationPattern;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 /**
  * A collection of convenience methods for working with Integration Server scheduled tasks.
  */
 public final class ScheduleHelper {
+    /**
+     * SQL statement to update a scheduled tasks to run immediately on the version of the IS_USER_TASKS table with the
+     * RUN_AT column.
+     */
+    private static final String EXPEDITE_SCHEDULED_TASK_RUN_AT_SQL = "UPDATE IS_USER_TASKS SET RUN_AT = ? WHERE RUN_AT > ? AND (STATE = 0 OR (STATE = 1 AND TASKTYPE <> 0)) AND (RUNFROMEND = 0 OR (RUNFROMEND = 1 AND RUNNINGON IS NULL))";
+    /**
+     * SQL statement to update a scheduled tasks to run immediately on the version of the IS_USER_TASKS table with the
+     * NEXT_RUN column.
+     */
+    private static final String EXPEDITE_SCHEDULED_TASK_NEXT_RUN_SQL = "UPDATE IS_USER_TASKS SET NEXTRUN = ? WHERE NEXTRUN > ? AND (STATE = 0 OR (STATE = 1 AND TASKTYPE <> 0)) AND (RUNFROMEND = 0 OR (RUNFROMEND = 1 AND RUNNINGON IS NULL))";
+
     /**
      * Disallow instantiation of this class.
      */
@@ -307,6 +325,120 @@ public final class ScheduleHelper {
      */
     public static boolean existsByName(String name) throws ServiceException {
         return getByName(name) != null;
+    }
+
+    /**
+     * Whether this version of the Integration Server task scheduler includes the RUN_AT column.
+     */
+    private static final boolean TASK_SCHEDULER_VERSION_INCLUDES_RUN_AT_COLUMN;
+    static {
+        TASK_SCHEDULER_VERSION_INCLUDES_RUN_AT_COLUMN = Arrays.binarySearch(ScheduleDB.columns, "RUN_AT") >= 0;
+    }
+
+    /**
+     * Expedites the execution of the scheduled tasks with the given identities to run immediately.
+     *
+     * @param identities        The identities of the scheduled tasks to be expedited.
+     * @throws ServiceException If an error occurs.
+     */
+    public static void expedite(String... identities) throws ServiceException {
+        if (identities != null && identities.length > 0) {
+            expedite(Arrays.asList(identities));
+        }
+    }
+
+    /**
+     * Expedites the execution of the scheduled tasks with the given identities to run immediately.
+     *
+     * @param identities        The identities of the scheduled tasks to be expedited.
+     * @throws ServiceException If an error occurs.
+     */
+    public static void expedite(Collection<String> identities) throws ServiceException {
+        // update scheduled tasks that are to be expedited to run immediately
+        if (identities != null && identities.size() > 0) {
+            IJDBCConnPool pool = null;
+            Connection connection = null;
+            PreparedStatement statement = null;
+
+            try {
+                pool = JDBCConnectionManager.getConnPool("ISInternal");
+                connection = pool.getConnection(100, true);
+
+                String updateSQL = getExpediteSQL(identities.size());
+                if (updateSQL != null) {
+                    int index = 1;
+                    statement = connection.prepareStatement(updateSQL);
+                    statement.setQueryTimeout(1);
+                    statement.clearParameters();
+
+                    long currentTimeMillis = System.currentTimeMillis();
+                    if (TASK_SCHEDULER_VERSION_INCLUDES_RUN_AT_COLUMN) {
+                        statement.setLong(index++, currentTimeMillis);
+                        statement.setLong(index++, currentTimeMillis);
+                    } else {
+                        statement.setTimestamp(index++, new Timestamp(currentTimeMillis));
+                        statement.setTimestamp(index++, new Timestamp(currentTimeMillis));
+                    }
+
+                    for (String identity : identities) {
+                        statement.setString(index++, identity);
+                    }
+
+                    int updateCount = statement.executeUpdate();
+
+                    if (updateCount > 0) {
+                        // wake up the scheduler to run the updated scheduled tasks immediately
+                        ScheduleManager.wakeup();
+                    }
+                }
+            } catch(Exception ex) {
+                ExceptionHelper.raise(ex);
+            } finally {
+                if (statement != null) {
+                    try {
+                        statement.close();
+                    } catch(SQLException ex) {
+                        // ignore exception
+                    }
+                }
+                if (pool != null && connection != null) {
+                    try {
+                        pool.releaseConnection(connection);
+                    } catch(SQLException ex) {
+                        // ignore exception
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Returns the SQL statement used to update the RUN_AT column for the given number of scheduled tasks.
+     *
+     * @param taskCount The number of scheduled tasks to be updated.
+     * @return          The SQL statement to use.
+     */
+    private static String getExpediteSQL(int taskCount) {
+        if (taskCount < 1) return null;
+
+        StringBuilder builder = new StringBuilder();
+
+        if (TASK_SCHEDULER_VERSION_INCLUDES_RUN_AT_COLUMN) {
+            builder.append(EXPEDITE_SCHEDULED_TASK_RUN_AT_SQL);
+        } else {
+            builder.append(EXPEDITE_SCHEDULED_TASK_NEXT_RUN_SQL);
+        }
+
+        builder.append(" AND UUID IN (");
+        for (int i = 0; i < taskCount; i++) {
+            if (i > 0) {
+                builder.append(", ");
+            }
+            builder.append("?");
+        }
+        builder.append(")");
+
+        return builder.toString();
     }
 
     /**

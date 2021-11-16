@@ -24,7 +24,6 @@
 
 package permafrost.tundra.flow.variable;
 
-import com.wm.app.b2b.server.ServiceException;
 import com.wm.app.b2b.server.globalvariables.GlobalVariablesManager;
 import com.wm.data.IData;
 import com.wm.passman.PasswordManager;
