@@ -275,14 +275,29 @@ public final class ExceptionHelper {
      * Returns a message describing the given exception.
      *
      * @param exception An exception whose message is to be retrieved.
-     * @return A message describing the given exception.
+     * @return          A message describing the given exception.
      */
     public static String getMessage(Throwable exception) {
+        return getMessage(exception, false);
+    }
+
+    /**
+     * Returns a message describing the given exception.
+     *
+     * @param exception             An exception whose message is to be retrieved.
+     * @param useSimpleClassName    Whether to use a simple or fully-qualifed class name.
+     * @return                      A message describing the given exception.
+     */
+    public static String getMessage(Throwable exception, boolean useSimpleClassName) {
         if (exception == null) return "";
 
         StringBuilder builder = new StringBuilder();
 
-        builder.append(exception.getClass().getName());
+        if (useSimpleClassName) {
+            builder.append(exception.getClass().getSimpleName());
+        } else {
+            builder.append(exception.getClass().getName());
+        }
         builder.append(": ");
         builder.append(exception.getMessage());
 
