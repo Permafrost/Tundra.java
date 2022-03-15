@@ -25,63 +25,63 @@
 package permafrost.tundra.lang;
 
 /**
- * Throw a SecurityException to indicate an authentication or authorization or general security error.
+ * Throw a AuthenticationException to indicate an authentication error.
  */
-public class SecurityException extends UnrecoverableException {
+public class AuthenticationException extends SecurityException {
     /**
-     * Constructs a new SecurityException.
+     * Constructs a new AuthenticationException.
      */
-    public SecurityException() {
+    public AuthenticationException() {
         super();
     }
 
     /**
-     * Constructs a new SecurityException with the given message.
+     * Constructs a new AuthenticationException with the given message.
      *
-     * @param message A message describing why the SecurityException was thrown.
+     * @param message A message describing why the AuthenticationException was thrown.
      */
-    public SecurityException(String message) {
+    public AuthenticationException(String message) {
         super(message);
     }
 
     /**
-     * Constructs a new SecurityException with the given cause.
+     * Constructs a new AuthenticationException with the given cause.
      *
-     * @param cause The cause of this SecurityException.
+     * @param cause The cause of this AuthenticationException.
      */
-    public SecurityException(Throwable cause) {
+    public AuthenticationException(Throwable cause) {
         super(cause);
     }
 
     /**
-     * Constructs a new SecurityException with the given message and cause.
+     * Constructs a new AuthenticationException with the given message and cause.
      *
-     * @param message A message describing why the SecurityException was thrown.
+     * @param message A message describing why the AuthenticationException was thrown.
      * @param cause   The cause of this Exception.
      */
-    public SecurityException(String message, Throwable cause) {
+    public AuthenticationException(String message, Throwable cause) {
         super(message, cause);
     }
 
     /**
-     * Constructs a new SecurityException with the given message and cause.
+     * Constructs a new AuthenticationException with the given message and cause.
      *
-     * @param message       A message describing why the SecurityException was thrown.
+     * @param message       A message describing why the AuthenticationException was thrown.
      * @param cause         Optional cause of this Exception.
      * @param suppressed    Optional list of suppressed exceptions.
      */
-    public SecurityException(String message, Throwable cause, Throwable... suppressed) {
+    public AuthenticationException(String message, Throwable cause, Throwable... suppressed) {
         super(message, cause, suppressed);
     }
 
     /**
-     * Constructs a new SecurityException with the given message and cause.
+     * Constructs a new AuthenticationException with the given message and cause.
      *
-     * @param message       A message describing why the SecurityException was thrown.
+     * @param message       A message describing why the AuthenticationException was thrown.
      * @param cause         Optional cause of this Exception.
      * @param suppressed    Optional list of suppressed exceptions.
      */
-    public SecurityException(String message, Throwable cause, Iterable<? extends Throwable> suppressed) {
+    public AuthenticationException(String message, Throwable cause, Iterable<? extends Throwable> suppressed) {
         super(message, cause, suppressed);
     }
 }

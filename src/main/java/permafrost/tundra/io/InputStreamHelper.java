@@ -32,7 +32,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.util.AbstractMap;
+import java.util.Map;
 
 /**
  * A collection of convenience methods for working with InputStream objects.
@@ -207,19 +210,57 @@ public final class InputStreamHelper {
      *                      the given input stream is return in a markable wrapper.
      * @throws IOException  If an IO error occurs.
      */
-    public static InputStream readThenReset(InputStream inputStream) throws IOException {
+    public static Map.Entry<? extends InputStream, byte[]> readFullyThenReset(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        inputStream = readFullyThenReset(inputStream, outputStream, true);
+        return new AbstractMap.SimpleEntry<InputStream, byte[]>(inputStream, outputStream.toByteArray());
+    }
+
+    /**
+     * Reads the given input stream in full to the given output stream, then resets it back to its original position.
+     * Note that the input stream is not closed, as it is returned for reuse, however the output stream is closed.
+     *
+     * @param inputStream       The input stream to read then reset.
+     * @param outputStream      The output stream to write the data read from the input stream to.
+     * @return                  The given input stream reset to its original position if it supports marking, otherwise
+     *                          the given input stream is returned reset within a markable wrapper.
+     * @throws IOException      If an IO error occurs.
+     */
+    public static InputStream readFullyThenReset(InputStream inputStream, OutputStream outputStream) throws IOException {
+        return readFullyThenReset(inputStream, outputStream, true);
+    }
+
+    /**
+     * Reads the given input stream in full to the given output stream, then resets it back to its original position.
+     * Note that neither stream is closed by this method.
+     *
+     * @param inputStream       The input stream to read then reset.
+     * @param outputStream      The output stream to write the data read from the input stream to.
+     * @param closeOutputStream Whether to close the output stream after writing.
+     * @return                  The given input stream reset to its original position if it supports marking, otherwise
+     *                          the given input stream is returned reset within a markable wrapper.
+     * @throws IOException      If an IO error occurs.
+     */
+    public static InputStream readFullyThenReset(InputStream inputStream, OutputStream outputStream, boolean closeOutputStream) throws IOException {
         inputStream = markable(normalize(inputStream));
 
         if (inputStream.markSupported()) {
             inputStream.mark(Integer.MAX_VALUE);
 
-            byte[] buffer = new byte[InputOutputHelper.DEFAULT_BUFFER_SIZE];
-
-            // read stream to the end, and ignore the result
-            while (inputStream.read(buffer) != -1) ;
+            if (outputStream == null) {
+                byte[] buffer = new byte[InputOutputHelper.DEFAULT_BUFFER_SIZE];
+                // read stream to the end, and ignore the result
+                while (inputStream.read(buffer) != -1) ;
+            } else {
+                InputOutputHelper.copy(inputStream, outputStream, false);
+                if (closeOutputStream) {
+                    CloseableHelper.close(outputStream);
+                }
+            }
 
             inputStream.reset();
         }
+
         return inputStream;
     }
 

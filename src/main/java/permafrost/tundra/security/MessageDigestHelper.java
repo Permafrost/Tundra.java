@@ -25,6 +25,7 @@
 package permafrost.tundra.security;
 
 import permafrost.tundra.io.InputStreamHelper;
+import permafrost.tundra.io.NullOutputStream;
 import permafrost.tundra.lang.BytesHelper;
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,6 +36,9 @@ import java.security.NoSuchAlgorithmException;
 import java.util.AbstractMap;
 import java.util.Map;
 
+/**
+ * Convenience methods for cryptographic message digests.
+ */
 public final class MessageDigestHelper {
     /**
      * The default message digest algorithm name.
@@ -130,7 +134,7 @@ public final class MessageDigestHelper {
         // wrap the data in a digest input stream
         DigestInputStream digestInputStream = new DigestInputStream(data, normalize(algorithm));
         // generating the digest requires first reading the entire stream, so read in full then reset it
-        data = InputStreamHelper.readThenReset(digestInputStream);
+        data = InputStreamHelper.readFullyThenReset(digestInputStream, new NullOutputStream());
         // calculate the digest after reading the stream
         byte[] digest = digestInputStream.getMessageDigest().digest();
         // turn off the digest function now that its complete
