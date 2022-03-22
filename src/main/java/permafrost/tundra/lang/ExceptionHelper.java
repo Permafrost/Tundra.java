@@ -410,9 +410,28 @@ public final class ExceptionHelper {
      * @return          A string containing the printed stack trace for the given exception.
      */
     public static String getStackTraceString(Throwable exception, int level) {
+        return getStackTraceString(exception, level, true);
+    }
+
+    /**
+     * Returns the printed stack trace for the given exception as a string.
+     *
+     * @param exception The exception to print the stack trace for.
+     * @param level     How many levels of the stack trace to include.
+     * @param formatted If true, stack trace will be formatted with tabs and new lines.
+     * @return          A string containing the printed stack trace for the given exception.
+     */
+    public static String getStackTraceString(Throwable exception, int level, boolean formatted) {
         if (exception == null) return null;
 
-        final String linePrefix = "\t", lineSuffix = "\n";
+        String linePrefix, lineSuffix;
+        if (formatted) {
+            linePrefix = "\t";
+            lineSuffix = "\n";
+        } else {
+            linePrefix = " ";
+            lineSuffix = "";
+        }
 
         StringWriter stringWriter = new StringWriter();
         PrintWriter printWriter = new PrintWriter(stringWriter);
