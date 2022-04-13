@@ -25,10 +25,14 @@
 package permafrost.tundra.time;
 
 import com.wm.data.IData;
-import permafrost.tundra.data.IDataHelper;
 import permafrost.tundra.data.transform.Transformer;
 import permafrost.tundra.data.transform.time.DateTimeFormatter;
 import permafrost.tundra.lang.ArrayHelper;
+import javax.xml.bind.DatatypeConverter;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.Duration;
+import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -47,11 +51,6 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.xml.bind.DatatypeConverter;
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.Duration;
-import javax.xml.datatype.XMLGregorianCalendar;
 
 /**
  * A collection of convenience methods for working with datetimes.
@@ -72,8 +71,10 @@ public final class DateTimeHelper {
 
     static {
         // Initialize the list of well-known named patterns.
-        NAMED_PATTERNS.put("datetime.jdbc", "yyyy-MM-dd HH:mm:ss.SSS");
+        NAMED_PATTERNS.put("datetime", "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
         NAMED_PATTERNS.put("datetime.db2", "yyyy-MM-dd-HH.mm.ss.SSS'000'");
+        NAMED_PATTERNS.put("datetime.jdbc", "yyyy-MM-dd HH:mm:ss.SSS");
+        NAMED_PATTERNS.put("datetime.xml", "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
         NAMED_PATTERNS.put("date", "yyyy-MM-dd");
         NAMED_PATTERNS.put("date.jdbc", "yyyy-MM-dd");
         NAMED_PATTERNS.put("date.xml", "yyyy-MM-dd");
@@ -555,7 +556,7 @@ public final class DateTimeHelper {
 
             if (timezone != null) output = TimeZoneHelper.replace(output, timezone);
         } catch(Exception ex) {
-            throw new IllegalArgumentException(MessageFormat.format("Unparseable datetime: {0} does not conform to the specified pattern {1}", input, pattern), ex);
+            throw new IllegalArgumentException(getUnparseableExceptionMessage(input, pattern), ex);
         }
 
         return output;
@@ -609,10 +610,53 @@ public final class DateTimeHelper {
         }
 
         if (!parsed) {
-            throw new IllegalArgumentException(MessageFormat.format("Unparseable datetime: \"{0}\" does not conform to any of the specified patterns [\"{1}\"]", input, ArrayHelper.join(patterns, "\", \"")), exception);
+            throw new IllegalArgumentException(getUnparseableExceptionMessage(input, patterns), exception);
         }
 
         return output;
+    }
+
+    private static String getUnparseableExceptionMessage(String input, String... patterns) {
+        String message = "Unparseable datetime value does not conform to {2}the specified pattern{3} (\"{0}\"): \"{1}\"";
+        String anyOf, ess;
+        if (patterns != null && patterns.length > 1) {
+            anyOf = "any of ";
+            ess = "s";
+        } else {
+            anyOf = "";
+            ess = "";
+        }
+        return MessageFormat.format(message, ArrayHelper.join(resolvePattern(patterns), "\", \""), input, anyOf, ess);
+    }
+
+    /**
+     * Resolves the given pattern such that if it is a well-known named pattern, the underlying java.text.SimpleDateFormat
+     * pattern is returned.
+     *
+     * @param pattern   The pattern to resolve.
+     * @return          The resolved pattern.
+     */
+    private static String resolvePattern(String pattern) {
+        if (pattern == null) pattern = DEFAULT_DATETIME_PATTERN;
+        return NAMED_PATTERNS.containsKey(pattern) ? NAMED_PATTERNS.get(pattern) : pattern;
+    }
+
+    /**
+     * Resolves the given patterns such that if any are a well-known named pattern, the underlying java.text.SimpleDateFormat
+     * pattern is returned.
+     *
+     * @param patterns  The patterns to resolve.
+     * @return          The resolved patterns.
+     */
+    private static String[] resolvePattern(String[] patterns) {
+        if (patterns == null) return null;
+
+        String[] resolvedPatterns = new String[patterns.length];
+        for (int i = 0; i < patterns.length; i++) {
+            resolvedPatterns[i] = resolvePattern(patterns[i]);
+        }
+
+        return resolvedPatterns;
     }
 
     /**
