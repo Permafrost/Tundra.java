@@ -152,7 +152,7 @@ class RedirectService extends BaseService implements Startable, IDataCodable {
     private void applyInputRedirect(IData inputPipeline) {
         applyRedirect(inputPipeline, inputSignature, InputOutputSignature.INPUT);
         if (inputPipeline != null && this.inputPipeline != null) {
-            IDataHelper.mergeInto(inputPipeline, this.inputPipeline);
+            IDataHelper.mergeInto(inputPipeline, IDataHelper.duplicate(this.inputPipeline, true));
         }
     }
 
@@ -177,7 +177,7 @@ class RedirectService extends BaseService implements Startable, IDataCodable {
                 }
             }
             if (this.outputPipeline != null) {
-                IDataHelper.mergeInto(outputPipeline, this.outputPipeline);
+                IDataHelper.mergeInto(outputPipeline, IDataHelper.duplicate(this.outputPipeline, true));
             }
         }
     }
