@@ -27,7 +27,7 @@ package permafrost.tundra.server;
 import permafrost.tundra.time.DateTimeHelper;
 
 /**
- * Wrapper for Integration Server thread, which allows
+ * Wrapper for Integration Server thread, which allows the task start time to be cleared.
  */
 public class ServerThread extends com.wm.app.b2b.server.ServerThread {
     /**
