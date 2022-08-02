@@ -116,16 +116,6 @@ public class ServerThreadFactory implements ThreadFactory {
      * @return a thread name for a newly generated thread.
      */
     protected String newThreadName() {
-        String threadName;
-
-        String threadContext = UUIDHelper.generate();
-
-        if (threadNameSuffix != null) {
-            threadName = String.format("%s %s %s", threadNamePrefix, threadContext, threadNameSuffix);
-        } else {
-            threadName = String.format("%s %s", threadNamePrefix, threadContext);
-        }
-
-        return threadName;
+        return String.format("%s%s", threadNamePrefix, threadNameSuffix == null ? "" : " " + threadNameSuffix);
     }
 }

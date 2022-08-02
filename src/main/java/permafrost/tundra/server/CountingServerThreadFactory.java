@@ -25,7 +25,6 @@
 package permafrost.tundra.server;
 
 import com.wm.app.b2b.server.InvokeState;
-import permafrost.tundra.id.UUIDHelper;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -67,17 +66,6 @@ public class CountingServerThreadFactory extends ServerThreadFactory {
      */
     @Override
     protected String newThreadName() {
-        String threadName;
-
-        String threadContext = UUIDHelper.generate();
-        long threadCount = count.getAndIncrement();
-
-        if (threadNameSuffix != null) {
-            threadName = String.format("%s #%03d Thread=%s %s", threadNamePrefix, threadCount, threadContext, threadNameSuffix);
-        } else {
-            threadName = String.format("%s #%03d Thread=%s", threadNamePrefix, threadCount, threadContext);
-        }
-
-        return threadName;
+        return String.format("%s %03d%s", threadNamePrefix, count.getAndIncrement(), threadNameSuffix == null ? "" : " " + threadNameSuffix);
     }
 }
