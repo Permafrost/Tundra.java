@@ -24,10 +24,9 @@
 
 package permafrost.tundra.net.uri;
 
-import static org.junit.Assert.assertEquals;
-import com.wm.data.IData;
 import org.junit.Test;
 import permafrost.tundra.data.IDataMap;
+import static org.junit.Assert.assertEquals;
 
 public class URIHelperTest {
     @Test
@@ -76,10 +75,17 @@ public class URIHelperTest {
     }
 
     @Test
+    public void testParseFragment() throws Exception {
+        String string = "#somefragment";
+        String result = URIHelper.emit(URIHelper.parse(string));
+        assertEquals(string, result);
+    }
+
+    @Test
     public void testParseOpaqueWithQuery() throws Exception {
         String string = "sap+idoc:sap_r3?user=aladdin&password=opensesame&client=200&language=en&queue=x:yz";
         String result = URIHelper.emit(URIHelper.parse(string));
-        assertEquals(string, result);
+        assertEquals("sap+idoc:sap_r3?user=aladdin&password=opensesame&client=200&language=en&queue=x%3Ayz", result);
     }
 
     @Test
@@ -122,7 +128,7 @@ public class URIHelperTest {
         map.put("client", "200");
         map.put("queue", "x:yz");
 
-        assertEquals("sap+idoc://aladdin:opensesame@sappr3?client=200&language=%7Blanguage%7D&queue=x:yz", URIHelper.substitute(string, map));
+        assertEquals("sap+idoc://aladdin:opensesame@sappr3?client=200&language=%7Blanguage%7D&queue=x%3Ayz", URIHelper.substitute(string, map));
     }
 
     @Test
@@ -136,14 +142,14 @@ public class URIHelperTest {
         map.put("client", "200");
         map.put("queue", "x:yz");
 
-        assertEquals("sap+idoc://aladdin:opensesame@sappr3?client=200&language=%25language%25&queue=x:yz", URIHelper.substitute(string, map));
+        assertEquals("sap+idoc://aladdin:opensesame@sappr3?client=200&language=%25language%25&queue=x%3Ayz", URIHelper.substitute(string, map));
     }
 
     @Test
     public void testParseNonOpaqueWithQuery() throws Exception {
         String string = "sap+idoc://aladdin:opensesame@sappr3?client=200&language=en&queue=x:yz";
         String result = URIHelper.emit(URIHelper.parse(string));
-        assertEquals(string, result);
+        assertEquals("sap+idoc://aladdin:opensesame@sappr3?client=200&language=en&queue=x%3Ayz", result);
     }
 
     @Test
@@ -156,6 +162,20 @@ public class URIHelperTest {
     @Test
     public void testParseMailtoURI() throws Exception {
         String string = "mailto:bob@example.com?cc=jane@example.com&subject=Example&body=Example&attachment=message.xml";
+        String result = URIHelper.emit(URIHelper.parse(string));
+        assertEquals("mailto:bob@example.com?cc=jane%40example.com&subject=Example&body=Example&attachment=message.xml", result);
+    }
+
+    @Test
+    public void testParseHTTPSURIWithQueryContainingUnencodedPlus() throws Exception {
+        String string = "https://example.com/a-b/c/d.e?token=xUl+LI+ubf6TryKbBBDf5VJTrb//TC";
+        String result = URIHelper.emit(URIHelper.parse(string));
+        assertEquals("https://example.com/a-b/c/d.e?token=xUl%20LI%20ubf6TryKbBBDf5VJTrb%2F%2FTC", result);
+    }
+
+    @Test
+    public void testParseHTTPSURIWithQueryContainingEncodedPlus() throws Exception {
+        String string = "https://example.com/a-b/c/d.e?token=xUl%2BLI%2Bubf6TryKbBBDf5VJTrb%2F%2FTC";
         String result = URIHelper.emit(URIHelper.parse(string));
         assertEquals(string, result);
     }

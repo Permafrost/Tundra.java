@@ -27,21 +27,21 @@ package permafrost.tundra.net.uri;
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
-import com.wm.data.IDataUtil;
 import permafrost.tundra.data.IDataHelper;
-import permafrost.tundra.lang.ArrayHelper;
 import permafrost.tundra.lang.CharsetHelper;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A collection of convenience methods for working with URI query strings.
  */
 public final class URIQueryHelper {
-
-    public static final String QUERY_STRING_KEY_ARRAY_SUFFIX = "[]";
+    /**
+     * The character used to delimit a query string key from its value.
+     */
     public static final String QUERY_STRING_KEY_VALUE_PAIR_EQUALS_OPERATOR = "=";
+    /**
+     * The character used to delimit one query string key value pair from the next key value pair.
+     */
     public static final String QUERY_STRING_KEY_VALUE_PAIR_TOKEN_SEPARATOR = "&";
 
     /**

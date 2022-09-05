@@ -67,6 +67,10 @@ public final class URIHelper {
      */
     public static final String URI_QUERY_DELIMITER = "?";
     /**
+     * The character used to delimit the start of a URI's fragment.
+     */
+    public static final String URI_FRAGMENT_DELIMITER = "#";
+    /**
      * The character used to delimit the user from the password in a URI's authority section.
      */
     public static final String URI_USER_PASSWORD_DELIMITER = ":";
@@ -502,7 +506,7 @@ public final class URIHelper {
 
             String fragment = IDataHelper.get(cursor, "fragment", String.class);
             IData queryDocument = IDataHelper.get(cursor, "query", IData.class);
-            String query = URIQueryHelper.emit(queryDocument, false);
+            String query = URIQueryHelper.emit(queryDocument, true);
 
             String body = IDataHelper.get(cursor, "body", String.class);
             IData authority = IDataHelper.get(cursor, "authority", IData.class);
@@ -511,7 +515,7 @@ public final class URIHelper {
             String file = IDataHelper.get(cursor, "file", String.class);
 
             if (body == null && !(authority == null && paths == null && file == null)) {
-                // create an hierarchical URI
+                // create hierarchical URI
                 String path;
 
                 if ((paths != null || file != null) && (absolutePath || authority != null)) {
@@ -539,7 +543,7 @@ public final class URIHelper {
                 }
 
                 if (authority == null) {
-                    uri = new URI(scheme, null, path, query, fragment);
+                    uri = appendQueryAndFragment(new URI(scheme, null, path, null, null), query, fragment);
                 } else {
                     IDataCursor ac = authority.getCursor();
                     String registry = IDataHelper.get(ac, "registry", String.class);
@@ -568,22 +572,47 @@ public final class URIHelper {
                         }
 
                         sc.destroy();
-                        uri = new URI(scheme, userinfo, host, port, path, query, fragment);
+                        uri = appendQueryAndFragment(new URI(scheme, userinfo, host, port, path, null, null), query, fragment);
                     } else {
-                        uri = new URI(scheme, registry, path, query, fragment);
+                        uri = appendQueryAndFragment(new URI(scheme, registry, path, null, null), query, fragment);
                     }
                 }
             } else if (query != null) {
-                uri = new URI(scheme, (body == null ? "" : body) + URI_QUERY_DELIMITER + query, fragment);
+                uri = appendQueryAndFragment(new URI(scheme, (body == null ? "" : body), null), query, fragment);
             } else if (body != null) {
                 uri = new URI(scheme, body, fragment);
             } else {
-                uri = new URI("");
+                uri = appendQueryAndFragment(new URI(""), null, fragment);
             }
         } finally {
             cursor.destroy();
         }
 
+        return uri;
+    }
+
+    /**
+     * Appends the given raw query string and raw fragment to the given URI, returning a new URI.
+     *
+     * @param uri                   The URI to append to.
+     * @param encodedQuery          The query string already URL-encoded.
+     * @param decodedFragment       The fragment not yet URL-encoded.
+     * @return                      A new URI that represents the given URI with the query string and fragment appended.
+     * @throws URISyntaxException   If the resulting URI is invalid.
+     */
+    private static URI appendQueryAndFragment(URI uri, String encodedQuery, String decodedFragment) throws URISyntaxException  {
+        if ((encodedQuery != null && !encodedQuery.equals("")) || (decodedFragment != null && !decodedFragment.equals(""))) {
+            StringBuilder builder = new StringBuilder(toString(uri));
+            if (encodedQuery != null && !encodedQuery.equals("")) {
+                builder.append(URI_QUERY_DELIMITER);
+                builder.append(encodedQuery);
+            }
+            if (decodedFragment != null && !decodedFragment.equals("")) {
+                builder.append(URI_FRAGMENT_DELIMITER);
+                builder.append(encode(decodedFragment));
+            }
+            uri = new URI(builder.toString());
+        }
         return uri;
     }
 
