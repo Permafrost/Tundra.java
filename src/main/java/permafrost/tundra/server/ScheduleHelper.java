@@ -79,7 +79,7 @@ public final class ScheduleHelper {
      * @throws ServiceException If an error occurs when retrieving scheduled tasks.
      */
     public static IData get(String identity) throws ServiceException {
-        if (identity == null || !exists(identity)) return null;
+        if (!exists(identity)) return null;
 
         IData pipeline = IDataFactory.create();
         IDataCursor cursor = pipeline.getCursor();
@@ -110,7 +110,7 @@ public final class ScheduleHelper {
             IDataCursor ic = info.getCursor();
 
             String intervalSeconds = IDataUtil.getString(ic, "interval");
-            overlap = !Boolean.valueOf(IDataUtil.getString(ic, "doNotOverlap"));
+            overlap = !Boolean.parseBoolean(IDataUtil.getString(ic, "doNotOverlap"));
 
             startDate = IDataUtil.getString(ic, "startDate");
             startTime = IDataUtil.getString(ic, "startTime");
@@ -130,7 +130,7 @@ public final class ScheduleHelper {
             info = IDataUtil.getIData(cursor, "complexTaskInfo");
             IDataCursor ic = info.getCursor();
 
-            overlap = !Boolean.valueOf(IDataUtil.getString(ic, "doNotOverlap"));
+            overlap = !Boolean.parseBoolean(IDataUtil.getString(ic, "doNotOverlap"));
 
             startDate = IDataUtil.getString(ic, "startDate");
             startTime = IDataUtil.getString(ic, "startTime");
@@ -332,7 +332,14 @@ public final class ScheduleHelper {
      */
     private static final boolean TASK_SCHEDULER_VERSION_INCLUDES_RUN_AT_COLUMN;
     static {
-        TASK_SCHEDULER_VERSION_INCLUDES_RUN_AT_COLUMN = Arrays.binarySearch(ScheduleDB.columns, "RUN_AT") >= 0;
+        boolean includesRunAtColumn = false;
+        for (String column : ScheduleDB.columns) {
+            if ("RUN_AT".equals(column)) {
+                includesRunAtColumn = true;
+                break;
+            }
+        }
+        TASK_SCHEDULER_VERSION_INCLUDES_RUN_AT_COLUMN = includesRunAtColumn;
     }
 
     /**
@@ -385,6 +392,7 @@ public final class ScheduleHelper {
                     }
 
                     int updateCount = statement.executeUpdate();
+                    connection.commit();
 
                     if (updateCount > 0) {
                         // wake up the scheduler to run the updated scheduled tasks immediately
@@ -515,35 +523,36 @@ public final class ScheduleHelper {
 
         for (String identity : identities) {
             IData task = get(identity);
+            if (task != null) {
+                boolean matched = true;
 
-            boolean matched = true;
+                if (name != null) {
+                    IDataCursor cursor = task.getCursor();
+                    String taskName = IDataUtil.getString(cursor, "name");
+                    cursor.destroy();
 
-            if (name != null) {
-                IDataCursor cursor = task.getCursor();
-                String taskName = IDataUtil.getString(cursor, "name");
-                cursor.destroy();
+                    matched = name.equals(taskName);
+                }
 
-                matched = name.equals(taskName);
+                if (matched && service != null) {
+                    IDataCursor cursor = task.getCursor();
+                    String taskService = IDataUtil.getString(cursor, "service");
+                    cursor.destroy();
+
+                    matched = service.equals(taskService);
+                }
+
+                if (matched && filter != null) {
+                    IData scope = IDataUtil.clone(pipeline);
+                    IDataCursor cursor = scope.getCursor();
+                    IDataUtil.put(cursor, "$schedule", task);
+                    cursor.destroy();
+
+                    matched = ConditionEvaluator.evaluate(filter, scope);
+                }
+
+                if (matched) tasks.add(task);
             }
-
-            if (matched && service != null) {
-                IDataCursor cursor = task.getCursor();
-                String taskService = IDataUtil.getString(cursor, "service");
-                cursor.destroy();
-
-                matched = service.equals(taskService);
-            }
-
-            if (matched && filter != null) {
-                IData scope = IDataUtil.clone(pipeline);
-                IDataCursor cursor = scope.getCursor();
-                IDataUtil.put(cursor, "$schedule", task);
-                cursor.destroy();
-
-                matched = ConditionEvaluator.evaluate(filter, scope);
-            }
-
-            if (matched) tasks.add(task);
         }
 
         return tasks.toArray(new IData[0]);
