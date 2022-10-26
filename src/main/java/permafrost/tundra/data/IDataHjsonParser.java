@@ -60,10 +60,34 @@ import java.util.List;
  */
 public class IDataHjsonParser extends IDataParser {
     /**
-     * Default constructor.
+     * The formatting to use when writing Hjson.
+     */
+    private final Stringify format;
+
+    /**
+     * Constructs a new IDataHjsonParser object.
      */
     public IDataHjsonParser() {
+        this(false);
+    }
+
+    /**
+     * Constructs a new IDataHjsonParser object.
+     *
+     * @param formatAsJSON  Whether to format as JSON or HJSON.
+     */
+    public IDataHjsonParser(boolean formatAsJSON) {
+        this(formatAsJSON ? Stringify.FORMATTED : null);
+    }
+
+    /**
+     * Constructs a new IDataHjsonParser object.
+     *
+     * @param format    The IDataHjsonParser formatting option to use, defaults to HJSON.
+     */
+    public IDataHjsonParser(Stringify format) {
         super("application/hjson");
+        this.format = format == null ? Stringify.HJSON : format;
     }
 
     /**
@@ -120,7 +144,7 @@ public class IDataHjsonParser extends IDataParser {
                     value = toJsonObject(document);
                 }
 
-                value.writeTo(writer, Stringify.HJSON);
+                value.writeTo(writer, format);
             }
         } finally {
             CloseableHelper.close(writer);
