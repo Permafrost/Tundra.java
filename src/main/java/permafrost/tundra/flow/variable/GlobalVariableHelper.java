@@ -26,13 +26,12 @@ package permafrost.tundra.flow.variable;
 
 import com.wm.app.b2b.server.globalvariables.GlobalVariablesManager;
 import com.wm.data.IData;
-import com.wm.passman.PasswordManager;
-import com.wm.security.OutboundPasswordStore;
 import com.wm.util.GlobalVariables;
-import com.wm.util.security.WmSecureString;
 import permafrost.tundra.data.IDataMap;
 import permafrost.tundra.lang.ExceptionHelper;
 import permafrost.tundra.server.NodeHelper;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * A collection of convenience methods for dealing with global variables.
@@ -82,32 +81,29 @@ public final class GlobalVariableHelper {
      * @return                  The global variable value associated with the given key.
      */
     public static String get(String key) {
-        String value = null;
+        GlobalVariableElement variable = getVariable(key);
+        return variable == null ? null : variable.getValue();
+    }
 
+    /**
+     * Returns a GlobalVariableElement object representation of the global variable associated with the given key.
+     *
+     * @param key The key for the value to be returned.
+     * @return    The global variable object associated with the given key.
+     */
+    public static GlobalVariableElement getVariable(String key) {
+        GlobalVariables.GlobalVariableValue variable = null;
         if (isSupported() && key != null) {
             try {
                 GlobalVariablesManager globalVariablesManager = GlobalVariablesManager.getInstance();
-
                 if (globalVariablesManager.globalVariableExists(key)) {
-                    GlobalVariables.GlobalVariableValue variable = globalVariablesManager.getGlobalVariableValue(key);
-
-                    value = variable.getValue();
-
-                    if (variable.isSecure()) {
-                        PasswordManager passwordManager = OutboundPasswordStore.getStore();
-                        WmSecureString password = passwordManager.retrievePassword(value);
-                        if (password == null) {
-                            value = null;
-                        } else {
-                            value = password.toString();
-                        }
-                    }
+                    variable = globalVariablesManager.getGlobalVariableValue(key);
                 }
             } catch (Exception ex) {
                 ExceptionHelper.raiseUnchecked(ex);
             }
         }
-        return value;
+        return variable == null ? null : new GlobalVariableElement(key, variable);
     }
 
     /**
@@ -139,5 +135,30 @@ public final class GlobalVariableHelper {
         }
 
         return output;
+    }
+
+    /**
+     * Returns all global variables as a GlobalVariableElement[] array.
+     *
+     * @return                  All global variables as a GlobalVariableElement[] array.
+     */
+    public static GlobalVariableElement[] listVariables() {
+        SortedSet<GlobalVariableElement> set = new TreeSet<GlobalVariableElement>();
+
+        if (isSupported()) {
+            GlobalVariablesManager globalVariablesManager = GlobalVariablesManager.getInstance();
+            IData[] variables = globalVariablesManager.listGlobalVariables();
+            for (IDataMap document : IDataMap.of(variables)) {
+                if (document != null) {
+                    String key = (String)document.get("key");
+                    GlobalVariableElement variable = getVariable(key);
+                    if (variable != null) {
+                        set.add(variable);
+                    }
+                }
+            }
+        }
+
+        return set.toArray(new GlobalVariableElement[0]);
     }
 }
