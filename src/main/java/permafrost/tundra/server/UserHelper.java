@@ -27,6 +27,10 @@ package permafrost.tundra.server;
 import com.wm.app.b2b.server.InvokeState;
 import com.wm.app.b2b.server.User;
 import com.wm.app.b2b.server.UserManager;
+import java.util.Comparator;
+import java.util.Enumeration;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * Convenience methods for working with Integration Server user objects.
@@ -76,5 +80,42 @@ public class UserHelper {
         }
 
         return currentName;
+    }
+
+    /**
+     * Returns the list of all users defined on this Integration Server.
+     *
+     * @return The list of all users defined on this Integration Server.
+     */
+    public static User[] list() {
+        Enumeration enumeration = UserManager.listUsers(true);
+        SortedSet<User> set = new TreeSet<User>(new UserComparator());
+        while(enumeration.hasMoreElements()) {
+            Object element = enumeration.nextElement();
+            if (element instanceof String) {
+                User user = get((String)element);
+                if (user != null) {
+                    set.add(user);
+                }
+            }
+        }
+        return set.toArray(new User[0]);
+    }
+
+    /**
+     * Compares instance of User class.
+     */
+    private static class UserComparator implements Comparator<User> {
+        /**
+         * Compares two instances of the User class.
+         *
+         * @param thisUser  The first object to be compared.
+         * @param otherUser The second object to be compared.
+         * @return          The result of the comparison.
+         */
+        @Override
+        public int compare(User thisUser, User otherUser) {
+            return thisUser.getName().compareTo(otherUser.getName());
+        }
     }
 }
