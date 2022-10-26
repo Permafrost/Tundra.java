@@ -28,6 +28,10 @@ import com.wm.app.b2b.server.Group;
 import com.wm.app.b2b.server.ServiceException;
 import com.wm.app.b2b.server.UserManager;
 import permafrost.tundra.lang.ExceptionHelper;
+import java.util.Comparator;
+import java.util.Enumeration;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * Collection of convenience methods for working with Integration Server groups.
@@ -123,5 +127,41 @@ public final class GroupHelper {
         }
 
         return groups;
+    }
+
+    /**
+     * Returns the list of all groups defined on this Integration Server.
+     * @return The list of all groups defined on this Integration Server.
+     */
+    public static Group[] list() {
+        Enumeration enumeration = UserManager.listGroups(true);
+        SortedSet<Group> set = new TreeSet<Group>(new GroupComparator());
+        while(enumeration.hasMoreElements()) {
+            Object element = enumeration.nextElement();
+            if (element instanceof String) {
+                Group group = get((String)element);
+                if (group != null) {
+                    set.add(group);
+                }
+            }
+        }
+        return set.toArray(new Group[0]);
+    }
+
+    /**
+     * Compares instance of Group class.
+     */
+    private static class GroupComparator implements Comparator<Group> {
+        /**
+         * Compares two instances of the Group class.
+         *
+         * @param thisGroup  The first object to be compared.
+         * @param otherGroup The second object to be compared.
+         * @return           The result of the comparison.
+         */
+        @Override
+        public int compare(Group thisGroup, Group otherGroup) {
+            return thisGroup.getName().compareTo(otherGroup.getName());
+        }
     }
 }
