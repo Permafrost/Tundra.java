@@ -27,9 +27,22 @@ package permafrost.tundra.server.security;
 import com.wm.app.b2b.server.ACLGroup;
 import com.wm.app.b2b.server.ACLManager;
 import com.wm.app.b2b.server.Group;
+import com.wm.app.b2b.server.ServiceException;
+import com.wm.app.b2b.server.UserManager;
+import com.wm.data.IData;
+import com.wm.data.IDataCursor;
+import com.wm.data.IDataFactory;
+import permafrost.tundra.data.IDataCursorHelper;
+import permafrost.tundra.data.IDataHelper;
+import permafrost.tundra.data.IDataHjsonParser;
+import permafrost.tundra.data.IDataParser;
+import permafrost.tundra.lang.ExceptionHelper;
+import permafrost.tundra.lang.StringHelper;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Enumeration;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
@@ -193,19 +206,180 @@ public final class ACLHelper {
     public static ACLGroup[] list() {
         Enumeration enumeration = ACLManager.groupKeys();
         SortedSet<ACLGroup> set = new TreeSet<ACLGroup>(new ACLGroupComparator());
-        while (enumeration.hasMoreElements()) {
-            Object element = enumeration.nextElement();
-            if (element instanceof String) {
-                String name = (String)element;
-                if (name != null) {
-                    ACLGroup group = ACLManager.getGroup(name);
-                    if (group != null) {
-                        set.add(group);
+        if (enumeration != null) {
+            while (enumeration.hasMoreElements()) {
+                Object element = enumeration.nextElement();
+                if (element instanceof String) {
+                    String name = (String)element;
+                    if (name != null) {
+                        ACLGroup group = ACLManager.getGroup(name);
+                        if (group != null) {
+                            set.add(group);
+                        }
                     }
                 }
             }
         }
         return set.toArray(new ACLGroup[0]);
+    }
+
+    /**
+     * Returns a list of all Integration Server ACLs.
+     *
+     * @return a list of all Integration Server ACLs.
+     */
+    public static IData[] listAsIDataArray() {
+        ACLGroup[] groups = ACLHelper.list();
+
+        List<IData> list = new ArrayList<IData>(groups.length);
+        for (ACLGroup group : groups) {
+            if (group != null) {
+                IData document = IDataFactory.create();
+                IDataCursor cursor = document.getCursor();
+
+                try {
+                    cursor.insertAfter("name", group.getName());
+                    cursor.insertAfter("allow", convertGroupsToStrings(ACLHelper.getAllowList(group)));
+                    cursor.insertAfter("deny", convertGroupsToStrings(ACLHelper.getDenyList(group)));
+                } finally {
+                    cursor.destroy();
+                }
+
+                list.add(document);
+            }
+        }
+
+        return list.toArray(new IData[0]);
+    }
+
+    /**
+     * Converts the given Group[] to a String[] containing the group names.
+     *
+     * @param groups    The Group[] to convert.
+     * @return          The resulting String[] containing the group names.
+     */
+    private static String[] convertGroupsToStrings(Group[] groups) {
+        if (groups == null) return null;
+
+        List<String> names = new ArrayList<String>(groups.length);
+
+        for (Group group : groups) {
+            if (group != null) {
+                names.add(group.getSourceName());
+            }
+        }
+
+        return names.toArray(new String[0]);
+    }
+
+    /**
+     * Exports all ACLs as a JSON string.
+     * @return all ACLs as a JSON string.
+     */
+    public static String export() throws ServiceException {
+        IData document = IDataFactory.create();
+        IDataCursor cursor = document.getCursor();
+
+        IDataParser parser = new IDataHjsonParser(true);
+        String export = null;
+        try {
+            cursor.insertAfter("recordWithNoID", listAsIDataArray());
+            export = StringHelper.trim(parser.emit(document, null, String.class));
+        } catch(IOException ex) {
+            ExceptionHelper.raise(ex);
+        } finally {
+            cursor.destroy();
+        }
+
+        return export;
+    }
+
+    /**
+     * Merges all global variables specified in the given JSON string into this
+     * Integration Server.
+     *
+     * @param importJSON A JSON string containing global variables, created or
+     *                   compatible with the export method.
+     */
+    public static void merge(String importJSON) throws ServiceException {
+        IDataHjsonParser parser = new IDataHjsonParser(true);
+        try {
+            IData document = parser.parse(importJSON);
+            IDataCursor cursor = document.getCursor();
+            try {
+                IData[] documents = IDataCursorHelper.get(cursor, IData[].class, "recordWithNoID");
+                merge(documents);
+
+                boolean saveGroups = UserManager.save();
+                boolean saveACLs = ACLManager.save();
+
+                if (!saveGroups && !saveACLs) {
+                    throw new RuntimeException("ACLManager.save() and UserManager.save() failed to commit updates to ACLs and groups respectively");
+                } else if (!saveGroups) {
+                    throw new RuntimeException("UserManager.save() failed to commit updates to groups");
+                } else if (!saveACLs) {
+                    throw new RuntimeException("ACLManager.save() failed to commit updates to ACLs");
+                }
+            } finally {
+                cursor.destroy();
+            }
+        } catch(IOException ex) {
+            ExceptionHelper.raise(ex);
+        }
+    }
+
+    /**
+     * Merges the given list of ACLs into this Integration Server.
+     *
+     * @param documents The list of ACLs to be merged.
+     */
+    private static void merge(IData[] documents) throws ServiceException {
+        if (documents != null) {
+            List<Throwable> exceptions = new LinkedList<Throwable>();
+            for (IData document : documents) {
+                try {
+                    merge(document);
+                } catch(Throwable ex) {
+                    exceptions.add(ex);
+                }
+            }
+
+            if (exceptions.size() > 0) {
+                ExceptionHelper.raise(exceptions);
+            }
+        }
+    }
+
+    /**
+     * Merges the given IData representation of an ACL into this Integration
+     * Server by either creating or updating it if it already exists.
+     *
+     * @param document  The ACL to be merged.
+     */
+    private static void merge(IData document) throws ServiceException {
+        if (document != null) {
+            IDataCursor cursor = document.getCursor();
+            try {
+                String name = IDataHelper.get(cursor, "name", String.class);
+                String[] allowList = IDataHelper.get(cursor, "allow", String[].class);
+                String[] denyList = IDataHelper.get(cursor, "deny", String[].class);
+
+                if (name != null) {
+                    Group[] allow = GroupHelper.findOrCreate(allowList);
+                    Group[] deny = GroupHelper.findOrCreate(denyList);
+
+                    ACLGroup acl = get(name);
+                    if (acl == null) {
+                        create(name, null, null, false);
+                    }
+                    createOrMerge(name, allow, deny, true, true);
+                }
+            } catch (Exception ex) {
+                ExceptionHelper.raise(ex);
+            } finally {
+                cursor.destroy();
+            }
+        }
     }
 
     /**

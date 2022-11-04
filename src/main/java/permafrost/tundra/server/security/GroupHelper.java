@@ -24,6 +24,7 @@
 
 package permafrost.tundra.server.security;
 
+import com.wm.app.b2b.server.ACLGroup;
 import com.wm.app.b2b.server.Group;
 import com.wm.app.b2b.server.ServiceException;
 import com.wm.app.b2b.server.UserManager;
@@ -43,15 +44,23 @@ public final class GroupHelper {
     private GroupHelper() {}
 
     /**
-     * Creates a new group with the given name unless it already exists.
+     * Creates a new local group with the given name unless it already exists.
      *
      * @param name              The group name.
      * @throws ServiceException If the group cannot be created.
      */
     public static synchronized void create(String name) throws ServiceException {
         try {
-            UserManager.addGroup(name);
-        } catch(Exception ex) {
+            if (name != null) {
+                int index = name.indexOf('/');
+                if (index == -1 || name.startsWith("local/")) {
+                    if (index >= 0) {
+                        name = name.substring(index + 1);
+                    }
+                    UserManager.addGroup(name);
+                }
+            }
+        } catch (Exception ex) {
             ExceptionHelper.raise(ex);
         }
     }
@@ -108,7 +117,7 @@ public final class GroupHelper {
      * @return      The group with the given name, or null if no group with the given name exists.
      */
     public static Group get(String name) {
-        return UserManager.getGroup(name);
+        return UserManager.getGroup(ACLGroup.cleanGroupName(name), true);
     }
 
     /**
