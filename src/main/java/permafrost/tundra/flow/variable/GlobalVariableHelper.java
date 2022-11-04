@@ -24,12 +24,24 @@
 
 package permafrost.tundra.flow.variable;
 
+import com.wm.app.b2b.server.ServiceException;
 import com.wm.app.b2b.server.globalvariables.GlobalVariablesManager;
 import com.wm.data.IData;
+import com.wm.data.IDataCursor;
+import com.wm.data.IDataFactory;
 import com.wm.util.GlobalVariables;
+import permafrost.tundra.data.IDataCursorHelper;
+import permafrost.tundra.data.IDataHelper;
+import permafrost.tundra.data.IDataHjsonParser;
 import permafrost.tundra.data.IDataMap;
+import permafrost.tundra.data.IDataParser;
 import permafrost.tundra.lang.ExceptionHelper;
+import permafrost.tundra.lang.StringHelper;
 import permafrost.tundra.server.NodeHelper;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -37,6 +49,10 @@ import java.util.TreeSet;
  * A collection of convenience methods for dealing with global variables.
  */
 public final class GlobalVariableHelper {
+    /**
+     * Whether the global variable feature is supported by this Integration
+     * Server.
+     */
     private static final boolean isSupported = NodeHelper.exists("wm.server.globalvariables:getGlobalVariableValue");
 
     /**
@@ -64,8 +80,8 @@ public final class GlobalVariableHelper {
 
         if (isSupported() && key != null) {
             try {
-                GlobalVariablesManager globalVariablesManager = GlobalVariablesManager.getInstance();
-                exists = globalVariablesManager.globalVariableExists(key);
+                GlobalVariablesManager manager = GlobalVariablesManager.getInstance();
+                exists = manager.globalVariableExists(key);
             } catch (Exception ex) {
                 ExceptionHelper.raiseUnchecked(ex);
             }
@@ -95,9 +111,9 @@ public final class GlobalVariableHelper {
         GlobalVariables.GlobalVariableValue variable = null;
         if (isSupported() && key != null) {
             try {
-                GlobalVariablesManager globalVariablesManager = GlobalVariablesManager.getInstance();
-                if (globalVariablesManager.globalVariableExists(key)) {
-                    variable = globalVariablesManager.getGlobalVariableValue(key);
+                GlobalVariablesManager manager = GlobalVariablesManager.getInstance();
+                if (manager.globalVariableExists(key)) {
+                    variable = manager.getGlobalVariableValue(key);
                 }
             } catch (Exception ex) {
                 ExceptionHelper.raiseUnchecked(ex);
@@ -115,8 +131,8 @@ public final class GlobalVariableHelper {
         IDataMap output = new IDataMap();
 
         if (isSupported()) {
-            GlobalVariablesManager globalVariablesManager = GlobalVariablesManager.getInstance();
-            IData[] variables = globalVariablesManager.listGlobalVariables();
+            GlobalVariablesManager manager = GlobalVariablesManager.getInstance();
+            IData[] variables = manager.listGlobalVariables();
             for (IDataMap variable : IDataMap.of(variables)) {
                 if (variable != null) {
                     String key = (String)variable.get("key");
@@ -146,8 +162,8 @@ public final class GlobalVariableHelper {
         SortedSet<GlobalVariableElement> set = new TreeSet<GlobalVariableElement>();
 
         if (isSupported()) {
-            GlobalVariablesManager globalVariablesManager = GlobalVariablesManager.getInstance();
-            IData[] variables = globalVariablesManager.listGlobalVariables();
+            GlobalVariablesManager manager = GlobalVariablesManager.getInstance();
+            IData[] variables = manager.listGlobalVariables();
             for (IDataMap document : IDataMap.of(variables)) {
                 if (document != null) {
                     String key = (String)document.get("key");
@@ -160,5 +176,151 @@ public final class GlobalVariableHelper {
         }
 
         return set.toArray(new GlobalVariableElement[0]);
+    }
+
+    /**
+     * Lists all global variables as an IData[].
+     * @return all global variables as an IData[].
+     */
+    public static IData[] listVariablesAsIDataArray() {
+        GlobalVariableElement[] array = GlobalVariableHelper.listVariables();
+        List<IData> list = new ArrayList<IData>(array.length);
+
+        for (GlobalVariableElement item : array) {
+            if (item != null) {
+                list.add(item.toIData());
+            }
+        }
+
+        return list.toArray(new IData[0]);
+    }
+
+    /**
+     * Exports all global variables as a JSON string.
+     * @return all global variables as a JSON string.
+     */
+    public static String export() throws ServiceException {
+        IData document = IDataFactory.create();
+        IDataCursor cursor = document.getCursor();
+
+        IDataParser parser = new IDataHjsonParser(true);
+        String export = null;
+        try {
+            cursor.insertAfter("recordWithNoID", listVariablesAsIDataArray());
+            export = StringHelper.trim(parser.emit(document, null, String.class));
+        } catch(IOException ex) {
+            ExceptionHelper.raise(ex);
+        } finally {
+            cursor.destroy();
+        }
+
+        return export;
+    }
+
+    /**
+     * Merges all global variables specified in the given JSON string into this
+     * Integration Server.
+     *
+     * @param importJSON A JSON string containing global variables, created or
+     *                   compatible with the export method.
+     */
+    public static void merge(String importJSON) throws ServiceException {
+        IDataHjsonParser parser = new IDataHjsonParser(true);
+        try {
+            IData document = parser.parse(importJSON);
+            IDataCursor cursor = document.getCursor();
+            try {
+                IData[] documents = IDataCursorHelper.get(cursor, IData[].class, "recordWithNoID");
+                merge(documents);
+            } finally {
+                cursor.destroy();
+            }
+        } catch(IOException ex) {
+            ExceptionHelper.raise(ex);
+        }
+    }
+
+    /**
+     * Merges the given list of global variables into this Integration Server.
+     *
+     * @param documents The list of global variables to be merged.
+     */
+    private static void merge(IData[] documents) throws ServiceException {
+        if (documents != null) {
+            List<Throwable> exceptions = new LinkedList<Throwable>();
+            for (IData document : documents) {
+                try {
+                    merge(document);
+                } catch(Throwable ex) {
+                    exceptions.add(ex);
+                }
+            }
+
+            if (exceptions.size() > 0) {
+                ExceptionHelper.raise(exceptions);
+            }
+        }
+    }
+
+    /**
+     * Merges the given IData representation of a global variable into this
+     * Integration Server by either creating or updating it if it already
+     * exists.
+     *
+     * @param document  The global variable to be merged.
+     */
+    private static void merge(IData document) throws ServiceException {
+        if (document != null) {
+            IDataCursor cursor = document.getCursor();
+            try {
+                String key = IDataHelper.get(cursor, "key", String.class);
+                String value = IDataHelper.get(cursor, "value", String.class);
+                boolean secured = IDataHelper.getOrDefault(cursor, "secured", Boolean.class, false);
+
+                merge(key, value, secured);
+            } catch (Exception ex) {
+                ExceptionHelper.raise(ex);
+            } finally {
+                cursor.destroy();
+            }
+        }
+    }
+
+    /**
+     * Merges the given global variable into this Integration Server by
+     * creating it if it does not exist, otherwise updating the existing global
+     * variable with the same key.
+     *
+     * @param variable    The global variable to be merged.
+     */
+    public static void merge(GlobalVariableElement variable) throws ServiceException {
+        if (variable != null) {
+            merge(variable.getKey(), variable.getValue(), variable.isSecure());
+        }
+    }
+
+    /**
+     * Merges the given global variable key and value into this Integration
+     * Server by creating it if it does not exist, otherwise updating the
+     * existing global variable with the same key.
+     *
+     * @param key               The global variable key.
+     * @param value             The global variable value.
+     * @param secured           Whether the global variable is secret and should
+     *                          be secured.
+     * @throws ServiceException If an error occurs.
+     */
+    public static void merge(String key, String value, boolean secured) throws ServiceException {
+        try {
+            GlobalVariablesManager manager = GlobalVariablesManager.getInstance();
+            GlobalVariableElement existingVariable = GlobalVariableHelper.getVariable(key);
+            if (existingVariable == null) {
+                manager.addGlobalVariable(key, value, secured);
+            } else {
+                manager.editGlobalVariable(key, value, secured);
+            }
+        } catch(Exception ex) {
+            ExceptionHelper.raise(ex);
+        }
     }
 }

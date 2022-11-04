@@ -24,14 +24,12 @@
 
 package permafrost.tundra.flow.variable;
 
+import com.wm.app.b2b.server.globalvariables.GlobalVariablesManager;
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
-import com.wm.passman.PasswordManager;
-import com.wm.security.OutboundPasswordStore;
 import com.wm.util.GlobalVariables;
-import com.wm.util.security.WmSecureString;
-import permafrost.tundra.lang.ExceptionHelper;
+import permafrost.tundra.server.OutboundPasswordHelper;
 
 /**
  * Wrapper for a Global Variable element.
@@ -74,17 +72,7 @@ public class GlobalVariableElement implements Comparable<GlobalVariableElement> 
     public String getValue() {
         String value = variable.getValue();
         if (variable.isSecure()) {
-            try {
-                PasswordManager passwordManager = OutboundPasswordStore.getStore();
-                WmSecureString password = passwordManager.retrievePassword(value);
-                if (password == null) {
-                    value = null;
-                } else {
-                    value = password.toString();
-                }
-            } catch(Exception ex) {
-                ExceptionHelper.raiseUnchecked(ex);
-            }
+            value = OutboundPasswordHelper.getPassword(value);
         }
         return value;
     }
