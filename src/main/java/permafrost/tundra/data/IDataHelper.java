@@ -43,8 +43,8 @@ import permafrost.tundra.data.transform.string.Squeezer;
 import permafrost.tundra.flow.ConditionEvaluator;
 import permafrost.tundra.flow.variable.SubstitutionHelper;
 import permafrost.tundra.lang.ArrayHelper;
-import permafrost.tundra.lang.Sanitization;
 import permafrost.tundra.lang.ObjectHelper;
+import permafrost.tundra.lang.Sanitization;
 import permafrost.tundra.lang.TableHelper;
 import permafrost.tundra.server.ServiceHelper;
 import permafrost.tundra.util.regex.PatternHelper;
@@ -53,6 +53,9 @@ import permafrost.tundra.xml.dom.Nodes;
 import permafrost.tundra.xml.namespace.IDataNamespaceContext;
 import permafrost.tundra.xml.namespace.NamespaceHelper;
 import permafrost.tundra.xml.xpath.XPathHelper;
+import javax.xml.namespace.NamespaceContext;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -65,9 +68,6 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.xml.namespace.NamespaceContext;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathExpressionException;
 
 /**
  * A collection of convenience methods for working with IData objects.
@@ -245,6 +245,17 @@ public final class IDataHelper {
     }
 
     /**
+     * Returns all the top-level values from the given document.
+     *
+     * @param document  An IData document from which to return all values.
+     * @param keys      The keys whose values are to be returned the sequence provided.
+     * @return          The list of top-level values present in the given IData document.
+     */
+    public static Object[] getValues(IData document, String ...keys) {
+        return ArrayHelper.normalize(getValueList(document, keys));
+    }
+
+    /**
      * Returns all the top-level values that are instances of the given class from the given document.
      *
      * @param document   An IData document.
@@ -283,9 +294,8 @@ public final class IDataHelper {
      * @param document   An IData document.
      * @return           The list of top-level values from given IData document.
      */
-    @SuppressWarnings("unchecked")
-    public static List getValueList(IData document) {
-        List values = new ArrayList(size(document));
+    public static List<Object> getValueList(IData document) {
+        List<Object> values = new ArrayList<Object>(size(document));
 
         if (document != null) {
             IDataCursor cursor = document.getCursor();
@@ -293,6 +303,34 @@ public final class IDataHelper {
             try {
                 while (cursor.next()) {
                     values.add(cursor.getValue());
+                }
+            } finally {
+                cursor.destroy();
+            }
+        }
+
+        return values;
+    }
+
+    /**
+     * Returns all the top-level values from the given document.
+     *
+     * @param document   An IData document.
+     * @param keys      The keys whose values are to be returned the sequence provided.
+     * @return           The list of top-level values from given IData document.
+     */
+    public static List<Object> getValueList(IData document, String ...keys) {
+        List<Object> values = new ArrayList<Object>(size(document));
+
+        if (document != null && keys != null) {
+            IDataCursor cursor = document.getCursor();
+            try {
+                for (String key : keys) {
+                    if (key != null) {
+                        values.add(IDataUtil.get(cursor, key));
+                    } else {
+                        values.add(null);
+                    }
                 }
             } finally {
                 cursor.destroy();

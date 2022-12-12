@@ -249,7 +249,7 @@ public class IDataCSVParser extends IDataParser {
                 CSVPrinter printer = new CSVPrinter(printStream, getRecordsFormatter(hasHeader, columns));
 
                 for (IData row : table) {
-                    if (row != null) printer.printRecord(IDataHelper.getValues(row));
+                    if (row != null) printer.printRecord(IDataHelper.getValues(row, columns));
                 }
             } else if (values instanceof Object[][]) {
                 Object[][] table = (Object[][])values;
