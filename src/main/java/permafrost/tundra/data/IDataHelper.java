@@ -320,7 +320,7 @@ public final class IDataHelper {
      * @return           The list of top-level values from given IData document.
      */
     public static List<Object> getValueList(IData document, String ...keys) {
-        List<Object> values = new ArrayList<Object>(size(document));
+        List<Object> values = new ArrayList<Object>(ArrayHelper.length(keys));
 
         if (document != null && keys != null) {
             IDataCursor cursor = document.getCursor();
