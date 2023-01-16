@@ -28,14 +28,20 @@ import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
 import com.wm.data.IDataUtil;
+import org.junit.Test;
+import permafrost.tundra.lang.StringHelper;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import org.junit.Test;
 
 public class IDataCSVParserTest {
 
     @Test
     public void testEncodeToString() throws Exception {
+        // rename column headings to ensure this feature works
+        String[] columns = new String[] { "column1", "column2" };
+        String expected = "column1,column2\nJohn,john@example.org\nJean,jean@example.org\nBill,bill@example.org\n";
+
         IData[] records = new IData[3];
         IDataCursor cursor;
 
@@ -47,8 +53,9 @@ public class IDataCSVParserTest {
 
         records[1] = IDataFactory.create();
         cursor = records[1].getCursor();
-        IDataUtil.put(cursor, "name", "Jean");
+        // reorder keys to ensure key ordering insensitivity
         IDataUtil.put(cursor, "email", "jean@example.org");
+        IDataUtil.put(cursor, "name", "Jean");
         cursor.destroy();
 
         records[2] = IDataFactory.create();
@@ -62,14 +69,9 @@ public class IDataCSVParserTest {
         IDataUtil.put(cursor, "recordWithNoID", records);
         cursor.destroy();
 
-        String csv = new IDataCSVParser().emit(document, String.class);
+        String actual = new IDataCSVParser(',', "text/csv", true, columns).emit(document, String.class);
 
-        assertTrue(csv.contains("John"));
-        assertTrue(csv.contains("john@example.org"));
-        assertTrue(csv.contains("Jean"));
-        assertTrue(csv.contains("jean@example.org"));
-        assertTrue(csv.contains("Bill"));
-        assertTrue(csv.contains("bill@example.org"));
+        assertArrayEquals(StringHelper.lines(expected), StringHelper.lines(actual));
     }
 
     @Test

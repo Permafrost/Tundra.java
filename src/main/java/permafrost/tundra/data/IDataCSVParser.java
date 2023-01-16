@@ -46,6 +46,7 @@ import java.io.PrintStream;
 import java.io.Reader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -244,12 +245,21 @@ public class IDataCSVParser extends IDataParser {
                 IData[] table = (IData[])values;
 
                 String[] columns = this.columns;
-                if (columns == null || columns.length == 0) columns = IDataHelper.getKeys(table);
+                String[] keys = IDataHelper.getKeys(table);
+
+                if (columns == null || columns.length == 0) {
+                    columns = keys;
+                } else if (columns.length < keys.length) {
+                    List<String> columnList = new ArrayList<String>(keys.length);
+                    columnList.addAll(Arrays.asList(columns));
+                    columnList.addAll(Arrays.asList(keys).subList(columns.length, keys.length));
+                    columns = columnList.toArray(new String[0]);
+                }
 
                 CSVPrinter printer = new CSVPrinter(printStream, getRecordsFormatter(hasHeader, columns));
 
                 for (IData row : table) {
-                    if (row != null) printer.printRecord(IDataHelper.getValues(row, columns));
+                    if (row != null) printer.printRecord(IDataHelper.getValues(row, keys));
                 }
             } else if (values instanceof Object[][]) {
                 Object[][] table = (Object[][])values;
