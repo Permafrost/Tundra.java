@@ -47,7 +47,7 @@ public final class SchedulerHelper {
      */
     private static Field gRunningField = null;
 
-    /**
+    /*
      * Reflect on ScheduleManager class to get references to the methods and fields required for the following methods.
      */
     static {
