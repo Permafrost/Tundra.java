@@ -33,6 +33,7 @@ import permafrost.tundra.data.transform.Transformer;
 import permafrost.tundra.data.transform.net.uri.Decoder;
 import permafrost.tundra.data.transform.net.uri.Encoder;
 import permafrost.tundra.flow.variable.SubstitutionHelper;
+import permafrost.tundra.flow.variable.SubstitutionType;
 import permafrost.tundra.lang.ArrayHelper;
 import permafrost.tundra.lang.CharsetHelper;
 import java.io.UnsupportedEncodingException;
@@ -328,22 +329,36 @@ public final class URIHelper {
      * Performs variable substitution on the components of the given URI string.
      *
      * @param uri                   The URI string to perform variable substitution on.
-     * @param scope                 The scope variables are resolved against.
+     * @param scopes                The scopes against which variables are resolved.
      * @return                      The resulting URI string after variable substitution.
      * @throws URISyntaxException   If the given string is not a valid URI.
      */
-    public static String substitute(String uri, IData scope) throws URISyntaxException {
+    public static String substitute(String uri, IData... scopes) throws URISyntaxException {
+        return substitute(uri, null, null, scopes);
+    }
+
+    /**
+     * Performs variable substitution on the components of the given URI string.
+     *
+     * @param uri                   The URI string to perform variable substitution on.
+     * @param defaultValue          The value to substitute if a variable cannot be resolved.
+     * @param substitutionType      The type of substitution to be performed.
+     * @param scopes                The scopes against which variables are resolved.
+     * @return                      The resulting URI string after variable substitution.
+     * @throws URISyntaxException   If the given string is not a valid URI.
+     */
+    public static String substitute(String uri, String defaultValue, SubstitutionType substitutionType, IData... scopes) throws URISyntaxException {
         if (uri != null) {
             // possible URI template
             if (uri.contains("{")) {
-                uri = expandTemplate(uri, scope);
+                uri = expandTemplate(uri, defaultValue, substitutionType, scopes);
             }
 
             IData parsedURI = parse(uri);
 
             // possible variable substitution strings
             if (uri.contains("%25")) {
-                parsedURI = SubstitutionHelper.substitute(parsedURI, null, true, false, null, scope);
+                parsedURI = SubstitutionHelper.substitute(parsedURI, defaultValue, true, false, substitutionType, scopes);
             }
 
             uri = emit(parsedURI);
@@ -359,18 +374,20 @@ public final class URIHelper {
     /**
      * Expands the given URI template using the given variable scope.
      *
-     * @param template  The URI template to expand.
-     * @param scope     The scope against which variable references in the template are resolved.
-     * @return          The expanded URI template where variable references have been resolved against the given scope.
+     * @param template              The URI template to expand.
+     * @param substitutionType      The type of substitution to be performed.
+     * @param scopes                The scopes against which variable references in the template are resolved.
+     * @return                      The expanded URI template where variable references have been resolved against the
+     *                              given scope.
      */
-    private static String expandTemplate(String template, IData scope) {
+    private static String expandTemplate(String template, String defaultValue, SubstitutionType substitutionType, IData... scopes) {
         if (template != null) {
             StringBuilder builder = new StringBuilder();
             Matcher matcher = URI_TEMPLATE_VARIABLE.matcher(template);
             int index = 0;
             while (matcher.find()) {
                 builder.append(template, index, matcher.start());
-                builder.append(encode(SubstitutionHelper.resolve(matcher.group(1), String.class, matcher.group(0), null, scope)));
+                builder.append(encode(SubstitutionHelper.resolve(matcher.group(1), String.class, defaultValue == null ? matcher.group(0) : defaultValue, substitutionType, scopes)));
                 index = matcher.end();
             }
             if (index > 0) {
