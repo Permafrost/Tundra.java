@@ -27,8 +27,10 @@ package permafrost.tundra.io;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import permafrost.tundra.lang.ArrayHelper;
+import permafrost.tundra.lang.ExceptionHelper;
 import permafrost.tundra.lang.IterableHelper;
 import permafrost.tundra.time.DateTimeHelper;
+import javax.xml.datatype.Duration;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -41,6 +43,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigInteger;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -49,7 +52,6 @@ import java.util.List;
 import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-import javax.xml.datatype.Duration;
 
 /**
  * A collection of convenience methods for working with file system directories.
@@ -185,23 +187,33 @@ public final class DirectoryHelper {
     public static long purge(File directory, Calendar olderThan, FilenameFilter filter, boolean recurse) throws FileNotFoundException {
         long count = 0;
 
+        List<Throwable> exceptions = new ArrayList<Throwable>();
+
         for (String item : list(directory)) {
-            File child = new File(directory, item);
-            if (child.exists()) {
-                if (child.isFile() && (filter == null || filter.accept(directory, item))) {
-                    boolean shouldPurge = true;
+            try {
+                File child = new File(directory, item);
+                if (child.exists()) {
+                    if (child.isFile() && (filter == null || filter.accept(directory, item))) {
+                        boolean shouldPurge = true;
 
-                    if (olderThan != null) {
-                        Calendar modified = Calendar.getInstance();
-                        modified.setTime(new Date(child.lastModified()));
-                        shouldPurge = modified.compareTo(olderThan) <= 0;
+                        if (olderThan != null) {
+                            Calendar modified = Calendar.getInstance();
+                            modified.setTime(new Date(child.lastModified()));
+                            shouldPurge = modified.compareTo(olderThan) <= 0;
+                        }
+
+                        if (shouldPurge && child.delete()) count += 1;
+                    } else if (recurse && child.isDirectory()) {
+                        count += purge(child, olderThan, filter, recurse);
                     }
-
-                    if (shouldPurge && child.delete()) count += 1;
-                } else if (recurse && child.isDirectory()) {
-                    count += purge(child, olderThan, filter, recurse);
                 }
+            } catch(IOException ex) {
+                exceptions.add(ex);
             }
+        }
+
+        if (exceptions.size() > 0) {
+            ExceptionHelper.raiseUnchecked(exceptions);
         }
 
         return count;
@@ -491,26 +503,36 @@ public final class DirectoryHelper {
     public static long gzip(File directory, Calendar olderThan, FilenameFilter filter, boolean recurse, boolean replace) throws IOException {
         long count = 0;
 
+        List<Throwable> exceptions = new ArrayList<Throwable>();
+
         for (String item : list(directory)) {
-            File child = new File(directory, item);
-            if (child.exists()) {
-                if (child.isFile() && (filter == null || filter.accept(directory, item))) {
-                    boolean shouldCompress = true;
+            try {
+                File child = new File(directory, item);
+                if (child.exists()) {
+                    if (child.isFile() && (filter == null || filter.accept(directory, item))) {
+                        boolean shouldCompress = true;
 
-                    if (olderThan != null) {
-                        Calendar modified = Calendar.getInstance();
-                        modified.setTime(new Date(child.lastModified()));
-                        shouldCompress = modified.compareTo(olderThan) <= 0;
-                    }
+                        if (olderThan != null) {
+                            Calendar modified = Calendar.getInstance();
+                            modified.setTime(new Date(child.lastModified()));
+                            shouldCompress = modified.compareTo(olderThan) <= 0;
+                        }
 
-                    if (shouldCompress) {
-                        FileHelper.gzip(child, replace);
-                        count += 1;
+                        if (shouldCompress) {
+                            FileHelper.gzip(child, replace);
+                            count += 1;
+                        }
+                    } else if (recurse && child.isDirectory()) {
+                        count += gzip(child, olderThan, filter, recurse, replace);
                     }
-                } else if (recurse && child.isDirectory()) {
-                    count += gzip(child, olderThan, filter, recurse, replace);
                 }
+            } catch(IOException ex) {
+                exceptions.add(ex);
             }
+        }
+
+        if (exceptions.size() > 0) {
+            ExceptionHelper.raiseUnchecked(exceptions);
         }
 
         return count;
