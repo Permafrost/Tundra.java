@@ -295,11 +295,11 @@ public final class ACLHelper {
     }
 
     /**
-     * Merges all global variables specified in the given JSON string into this
-     * Integration Server.
+     * Merges all ACLs specified in the given JSON string into this Integration
+     * Server.
      *
-     * @param importJSON A JSON string containing global variables, created or
-     *                   compatible with the export method.
+     * @param importJSON A JSON string containing ACLs, created or compatible
+     *                   with the export method.
      */
     public static void merge(String importJSON) throws ServiceException {
         IDataHjsonParser parser = new IDataHjsonParser(true);
