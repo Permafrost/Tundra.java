@@ -523,11 +523,23 @@ public final class FileHelper {
      */
     public static File gzip(File source, File target, boolean replace) throws IOException {
         if (source == null) throw new NullPointerException("source must not be null");
-        if (target == null) target = new File(source.getParentFile(), source.getName() + ".gz");
 
         if (source.exists()) {
             if (source.isFile()) {
                 if (source.canRead() && (!replace || source.canWrite())) {
+                    if (target == null) {
+                        // default target file to be the source file suffixed with ".gz"
+                        target = new File(source.getParentFile(), source.getName() + ".gz");
+                        if (target.exists()) {
+                            if (replace) {
+                                target.delete();
+                            } else {
+                                // if default target file already exists, then also add a datetime component to the default target for more uniqueness
+                                target = new File(source.getParentFile(), source.getName() + "." + DateTimeHelper.now("yyyyMMddHHmmssSSS") + ".gz");
+                            }
+                        }
+                    }
+
                     if (target.exists()) {
                         throw new IOException("Unable to create file because it already exists: " + normalize(target));
                     } else {
