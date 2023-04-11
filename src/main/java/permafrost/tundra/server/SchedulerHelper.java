@@ -138,6 +138,7 @@ public final class SchedulerHelper {
      */
     public static void stop() {
         ScheduleManager.shutdown();
+        ScheduleManager.wakeup();
     }
 
     /**
