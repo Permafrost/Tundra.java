@@ -32,7 +32,7 @@ java {
 }
 
 repositories {
-    jcenter()
+    mavenCentral()
 }
 
 dependencies {
@@ -57,7 +57,7 @@ dependencies {
     api("oro:oro:2.0.8")
     api(files("libs/wm-isclient.jar", "libs/wm-isserver.jar"))
 
-    testImplementation("junit:junit:4.13")
+    testImplementation("junit:junit:4.13.1")
     testImplementation("org.hamcrest:hamcrest-all:1.3")
 }
 
