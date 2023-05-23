@@ -202,7 +202,9 @@ public class IDataMap extends IDataAdapter implements Iterable<Map.Entry<String,
      */
     @Override
     public boolean containsValue(Object value) {
-        return Arrays.binarySearch(IDataHelper.getValues(this), value) >= 0;
+        Object[] values = IDataHelper.getValues(this);
+        Arrays.sort(values);
+        return Arrays.binarySearch(values, value) >= 0;
     }
 
     /**
