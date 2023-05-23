@@ -58,6 +58,11 @@ import java.util.TreeSet;
  */
 public class HTTPRouter implements HTTPHandler {
     /**
+     * The header used to store the original request URI.
+     */
+    public static final String REQUEST_URI_HEADER = "X-Tundra-HTTPRouter-Request-URI";
+
+    /**
      * The header used to return the response time in milliseconds.
      */
     private static final String RESPONSE_DURATION_HEADER = "X-Response-Duration";
@@ -104,17 +109,14 @@ public class HTTPRouter implements HTTPHandler {
     /**
      * The method to use to overwrite the request URL on the current invoke state HTTP headers.
      */
-    private Method overwriteReqUrlMethod = null;
+    private static Method overwriteReqUrlMethod = null;
     /**
      * The field to use to overwrite the request URL on the current invoke state HTTP headers, if the above method
      * does not exist.
      */
-    private Field requestUrlField = null;
+    private static Field requestUrlField = null;
 
-    /**
-     * Disallow instantiation of this class.
-     */
-    private HTTPRouter() {
+    static {
         try {
             overwriteReqUrlMethod = HttpHeader.class.getDeclaredMethod("overwriteReqUrlMethod", String.class);
         } catch (NoSuchMethodException ex) {
@@ -142,7 +144,7 @@ public class HTTPRouter implements HTTPHandler {
      * @param state             The HTTP request to be processed.
      * @return                  True if this object was able to process the HTTP request, otherwise false.
      * @throws IOException      If an I/O problem is encountered reading from or writing to the client socket.
-     * @throws AccessException  If the the HTTP request requires authentication or is not authorized.
+     * @throws AccessException  If the HTTP request requires authentication or is not authorized.
      */
     public final boolean process(ProtocolState state) throws IOException, AccessException {
         long startTime = System.nanoTime();
@@ -168,15 +170,17 @@ public class HTTPRouter implements HTTPHandler {
             if (route.isInvoke()) {
                 // fool the AuditLogManager that the requested URL was for the invoke directive so that it does not
                 // inadvertently log spurious access denied errors
-                String originalRequestURL = setRequestURL(INVOKE_REQUEST_URL);
+                String originalRequestURL = setRequestURI(INVOKE_REQUEST_URL);
+                setHeader(REQUEST_URI_HEADER, originalRequestURL);
 
                 result = DEFAULT_INVOKE_HANDLER._process(state, contentHandler, route.getService());
 
                 // restore the original request URL to the invoke state
-                setRequestURL(originalRequestURL);
+                setRequestURI(originalRequestURL);
+                removeHeader(REQUEST_URI_HEADER);
             } else {
                 String target = route.getTarget();
-                if (target.startsWith("/")) target = target.substring(1, target.length());
+                if (target.startsWith("/")) target = target.substring(1);
                 state.setHttpRequestUrl(target);
                 result = DEFAULT_DOCUMENT_HANDLER.process(state);
             }
@@ -194,12 +198,37 @@ public class HTTPRouter implements HTTPHandler {
     }
 
     /**
+     * Returns the HTTP request URI from the HttpHeader object in the current InvokeState.
+     * @return The HTTP request URI from the HttpHeader object in the current InvokeState.
+     */
+    public static String getRequestURI() {
+        String requestURI = null;
+
+        InvokeState invokeState = InvokeState.getCurrentState();
+        if (invokeState != null) {
+            ProtocolInfoIf protocolInfoIf = invokeState.getProtocolInfoIf();
+            if (protocolInfoIf != null) {
+                Object object = protocolInfoIf.getProtocolProperty(PROTOCOL_REQUEST_HEADER_PROPERTY);
+                if (object instanceof HttpHeader) {
+                    HttpHeader header = (HttpHeader)object;
+                    requestURI = header.getFieldValue(REQUEST_URI_HEADER);
+                    if (requestURI == null) {
+                        requestURI = header.getRequestUrl();
+                    }
+                }
+            }
+        }
+
+        return requestURI;
+    }
+
+    /**
      * Sets the requestUrl field on the HttpHeader object in the current InvokeState.
      *
-     * @param newRequestURL The value to set.
+     * @param newRequestURI The value to set.
      * @return              The previous value.
      */
-    private String setRequestURL(String newRequestURL) {
+    private static String setRequestURI(String newRequestURI) {
         String originalRequestURL = null;
 
         InvokeState invokeState = InvokeState.getCurrentState();
@@ -212,9 +241,9 @@ public class HTTPRouter implements HTTPHandler {
                     originalRequestURL = header.getRequestUrl();
                     try {
                         if (overwriteReqUrlMethod != null) {
-                            overwriteReqUrlMethod.invoke(header, newRequestURL);
+                            overwriteReqUrlMethod.invoke(header, newRequestURI);
                         } else if (requestUrlField != null) {
-                            requestUrlField.set(header, newRequestURL);
+                            requestUrlField.set(header, newRequestURI);
                         }
                     } catch (InvocationTargetException ex) {
                         // ignore exception
@@ -226,6 +255,57 @@ public class HTTPRouter implements HTTPHandler {
         }
 
         return originalRequestURL;
+    }
+
+    /**
+     * Sets the header field on the HttpHeader object in the current InvokeState.
+     *
+     * @param key           The header key to set.
+     * @param value         The header value to set.
+     * @return              The previous value.
+     */
+    private static String setHeader(String key, String value) {
+        String originalValue = null;
+
+        InvokeState invokeState = InvokeState.getCurrentState();
+        if (invokeState != null) {
+            ProtocolInfoIf protocolInfoIf = invokeState.getProtocolInfoIf();
+            if (protocolInfoIf != null) {
+                Object object = protocolInfoIf.getProtocolProperty(PROTOCOL_REQUEST_HEADER_PROPERTY);
+                if (object instanceof HttpHeader) {
+                    HttpHeader header = (HttpHeader)object;
+                    originalValue = header.getFieldValue(key);
+                    header.setField(key, value);
+                }
+            }
+        }
+
+        return originalValue;
+    }
+
+    /**
+     * Removes the header field with the given key on the HttpHeader object in the current InvokeState.
+     *
+     * @param key           The key identifying the header to be removed.
+     * @return              The previous value.
+     */
+    private static String removeHeader(String key) {
+        String originalValue = null;
+
+        InvokeState invokeState = InvokeState.getCurrentState();
+        if (invokeState != null) {
+            ProtocolInfoIf protocolInfoIf = invokeState.getProtocolInfoIf();
+            if (protocolInfoIf != null) {
+                Object object = protocolInfoIf.getProtocolProperty(PROTOCOL_REQUEST_HEADER_PROPERTY);
+                if (object instanceof HttpHeader) {
+                    HttpHeader header = (HttpHeader)object;
+                    originalValue = header.getFieldValue(key);
+                    header.clearField(key);
+                }
+            }
+        }
+
+        return originalValue;
     }
 
     /**

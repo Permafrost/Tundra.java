@@ -32,6 +32,7 @@ import com.wm.net.HttpHeader;
 import org.glassfish.json.JsonProviderImpl;
 import permafrost.tundra.data.IDataJSONParser;
 import permafrost.tundra.math.IntegerHelper;
+import permafrost.tundra.net.http.route.HTTPRouter;
 import permafrost.tundra.time.DateTimeHelper;
 import permafrost.tundra.time.DurationHelper;
 import permafrost.tundra.time.DurationPattern;
@@ -168,14 +169,14 @@ public class ProtocolStateHelper {
         try {
             request.add("datetime", DateTimeHelper.emit(datetime));
             request.add("method", HttpHeader.reqStrType[context.getRequestType()]);
-            request.add("uri", context.getRequestUrl());
+            request.add("uri", HTTPRouter.getRequestURI());
 
             JsonObjectBuilder headers = provider.createObjectBuilder();
             Map<String, String> map = new TreeMap<String, String>(context.getRequestHeader().getFieldsMap());
             for (Map.Entry<String, String> entry : map.entrySet()) {
                 String key = entry.getKey();
                 String value = entry.getValue();
-                if (key != null && value != null) {
+                if (key != null && value != null && !HTTPRouter.REQUEST_URI_HEADER.equalsIgnoreCase(key)) {
                     if (key.equalsIgnoreCase("Authorization")) {
                         value = "REDACTED";
                     }
