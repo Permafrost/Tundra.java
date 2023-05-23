@@ -36,7 +36,7 @@ repositories {
 }
 
 dependencies {
-    api("javax.activation:javax.activation-api:1.2.0")
+    api("com.sun.activation:javax.activation:1.2.0")
     api("com.googlecode.htmlcompressor:htmlcompressor:1.5.2")
     api("com.sun.xml.bind:jaxb-impl:2.3.2")
     api("com.sun.xml.ws:jaxws-ri:2.3.2-1")
