@@ -29,6 +29,8 @@ import com.wm.data.IData;
 import org.xml.sax.SAXParseException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -289,16 +291,29 @@ public final class ExceptionHelper {
      * @return                      A message describing the given exception.
      */
     public static String getMessage(Throwable exception, boolean useSimpleClassName) {
+        return getMessage(exception, true, useSimpleClassName);
+    }
+
+    /**
+     * Returns a message describing the given exception.
+     *
+     * @param exception             An exception whose message is to be retrieved.
+     * @param useSimpleClassName    Whether to use a simple or fully-qualifed class name.
+     * @return                      A message describing the given exception.
+     */
+    public static String getMessage(Throwable exception, boolean includeClassName, boolean useSimpleClassName) {
         if (exception == null) return "";
 
         StringBuilder builder = new StringBuilder();
 
-        if (useSimpleClassName) {
-            builder.append(exception.getClass().getSimpleName());
-        } else {
-            builder.append(exception.getClass().getName());
+        if (includeClassName) {
+            if (useSimpleClassName) {
+                builder.append(exception.getClass().getSimpleName());
+            } else {
+                builder.append(exception.getClass().getName());
+            }
+            builder.append(": ");
         }
-        builder.append(": ");
         builder.append(exception.getMessage());
 
         if (exception instanceof SAXParseException) {
@@ -306,7 +321,59 @@ public final class ExceptionHelper {
             builder.append(String.format(" (Line %d, Column %d)", parseException.getLineNumber(), parseException.getColumnNumber()));
         }
 
+        Throwable cause =  exception.getCause();
+        if (cause != null && cause != exception) {
+            builder.append("\n\tCaused by: ");
+            builder.append(getMessage(cause, includeClassName, useSimpleClassName));
+        }
+
+        Throwable[] suppressed = getSuppressed(exception);
+        if (suppressed != null) {
+            for (Throwable throwable : suppressed) {
+                if (throwable != null && throwable != exception) {
+                    builder.append("\nSuppressed: ");
+                    builder.append(getMessage(throwable, includeClassName, useSimpleClassName));
+                }
+            }
+        }
+
         return builder.toString();
+    }
+
+    /**
+     * The Throwable.getSuppressed() reflected method, if it exists.
+     */
+    private static Method THROWABLE_GET_SUPPRESSED_METHOD;
+    static {
+        try {
+            THROWABLE_GET_SUPPRESSED_METHOD = Throwable.class.getDeclaredMethod("getSuppressed");
+        } catch(Throwable ex) {
+            THROWABLE_GET_SUPPRESSED_METHOD = null;
+        }
+    }
+
+    /**
+     * Returns the list of exceptions suppressed by the given exception, if any.
+     *
+     * @param exception The exception whose suppressed exceptions are to be returned.
+     * @return          The list of exceptions suppressed by the given exception.
+     */
+    private static Throwable[] getSuppressed(Throwable exception) {
+        Throwable[] suppressed = null;
+
+        try {
+            if (THROWABLE_GET_SUPPRESSED_METHOD != null) {
+                suppressed = (Throwable[]) THROWABLE_GET_SUPPRESSED_METHOD.invoke(exception);
+            }
+        } catch(IllegalAccessException ex) {
+            // ignore exception
+        } catch(IllegalArgumentException ex) {
+            // ignore exception
+        } catch(InvocationTargetException ex) {
+            // ignore exception
+        }
+
+        return suppressed;
     }
 
     /**
