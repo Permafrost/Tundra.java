@@ -377,6 +377,42 @@ public final class ExceptionHelper {
     }
 
     /**
+     * The Throwable.addSuppressed(Throwable) reflected method, if it exists.
+     */
+    private static Method THROWABLE_ADD_SUPPRESSED_METHOD;
+    static {
+        try {
+            THROWABLE_ADD_SUPPRESSED_METHOD = Throwable.class.getDeclaredMethod("addSuppressed", Throwable.class);
+        } catch(Throwable ex) {
+            THROWABLE_ADD_SUPPRESSED_METHOD = null;
+        }
+    }
+
+    /**
+     * Adds the given list of suppressed exceptions to the given exception.
+     *
+     * @param exception     The exception to add suppressed exceptions to.
+     * @param suppressed    The list of exceptions which were suppressed.
+     */
+    public static void addSuppressed(Throwable exception, Throwable ...suppressed) {
+        if (suppressed != null) {
+            if (THROWABLE_ADD_SUPPRESSED_METHOD != null) {
+                for (Throwable throwable : suppressed) {
+                    try {
+                        THROWABLE_ADD_SUPPRESSED_METHOD.invoke(exception, throwable);
+                    } catch (IllegalAccessException ex) {
+                        // ignore exception
+                    } catch (IllegalArgumentException ex) {
+                        // ignore exception
+                    } catch (InvocationTargetException ex) {
+                        // ignore exception
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * Returns a message describing the given list of exceptions.
      *
      * @param exceptions A list of exceptions whose messages are to be retrieved.
