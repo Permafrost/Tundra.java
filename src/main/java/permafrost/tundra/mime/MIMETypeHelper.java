@@ -33,6 +33,9 @@ import permafrost.tundra.data.IDataHelper;
 import permafrost.tundra.data.IDataMap;
 import permafrost.tundra.lang.ExceptionHelper;
 import permafrost.tundra.server.NodeHelper;
+import javax.activation.MimeType;
+import javax.activation.MimeTypeParameterList;
+import javax.activation.MimeTypeParseException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,9 +45,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import javax.activation.MimeType;
-import javax.activation.MimeTypeParameterList;
-import javax.activation.MimeTypeParseException;
 
 public final class MIMETypeHelper {
     /**
@@ -114,7 +114,7 @@ public final class MIMETypeHelper {
         try {
             return new MimeType(string);
         } catch(MimeTypeParseException ex) {
-            throw new IllegalArgumentException(ex);
+            throw new IllegalArgumentException("Unparseable mime type: \"" + string + "\"", ex);
         }
     }
 
