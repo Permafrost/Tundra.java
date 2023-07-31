@@ -179,4 +179,35 @@ public class URIHelperTest {
         String result = URIHelper.emit(URIHelper.parse(string));
         assertEquals(string, result);
     }
+
+    public void testEmitMailtoURIWithSSP() throws Exception {
+        IDataMap query = new IDataMap();
+        query.put("subject", "password");
+        query.put("body", "opensesame");
+
+        IDataMap uri = new IDataMap();
+        uri.put("scheme", "mailto");
+        uri.put("body", "aladdin@example.com");
+        uri.put("query", query);
+
+        String string = "mailto:aladdin@example.com?subject=password&body=opensesame";
+        String result = URIHelper.emit(uri);
+        assertEquals(string, result);
+    }
+
+    @Test
+    public void testEmitMailtoURIWithoutSSP() throws Exception {
+        IDataMap query = new IDataMap();
+        query.put("to", "aladdin@example.com");
+        query.put("subject", "password");
+        query.put("body", "opensesame");
+
+        IDataMap uri = new IDataMap();
+        uri.put("scheme", "mailto");
+        uri.put("query", query);
+
+        String string = "mailto:?to=aladdin@example.com&subject=password&body=opensesame";
+        String result = URIHelper.emit(uri);
+        assertEquals(string, result);
+    }
 }

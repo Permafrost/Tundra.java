@@ -594,6 +594,9 @@ public final class URIHelper {
                         uri = appendQueryAndFragment(new URI(scheme, registry, path, null, null), query, fragment);
                     }
                 }
+            } else if ("mailto".equals(scheme) && body == null && query != null) {
+                // support mailto URIs with a query string but no scheme-specific part (body), such as mailto:?to=aladdin@example.com
+                uri = new URI(scheme, null, null, URIQueryHelper.emit(queryDocument, false), fragment);
             } else if (query != null) {
                 uri = appendQueryAndFragment(new URI(scheme, (body == null ? "" : body), null), query, fragment);
             } else if (body != null) {
