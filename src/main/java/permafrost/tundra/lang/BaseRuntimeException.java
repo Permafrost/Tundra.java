@@ -94,8 +94,6 @@ public class BaseRuntimeException extends RuntimeException implements ExceptionS
         suppress(suppressed);
     }
 
-
-
     /**
      * List of suppressed exceptions.
      */
@@ -109,7 +107,7 @@ public class BaseRuntimeException extends RuntimeException implements ExceptionS
     private synchronized void suppress(Throwable exception) {
         if (exception == null || exception == this) return;
 
-        if (suppressedExceptions.size() == 0) {
+        if (suppressedExceptions.isEmpty()) {
             suppressedExceptions = new ArrayList<Throwable>(1);
         }
 
@@ -159,6 +157,7 @@ public class BaseRuntimeException extends RuntimeException implements ExceptionS
      *
      * @return the properties of this object.
      */
+    @Override
     public Map<String, Object> getProperties() {
         Map<String, Object> properties = new LinkedHashMap<String, Object>();
         properties.put("$exception?", "true");

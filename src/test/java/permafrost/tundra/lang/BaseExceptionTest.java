@@ -25,16 +25,16 @@
 package permafrost.tundra.lang;
 
 import com.wm.app.b2b.server.ServiceException;
+import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import org.junit.Test;
 
 public class BaseExceptionTest {
     @Test
     public void testGetMessageWithCause() throws Exception {
         String message = "test";
         BaseException ex = new BaseException(new IllegalArgumentException(message));
-        assertEquals("Message should be prefixed with cause's class name", IllegalArgumentException.class.getName() + ": " + message, ex.getMessage());
+        assertEquals("Message should be a literal matchq", message, ex.getMessage());
     }
 
     @Test

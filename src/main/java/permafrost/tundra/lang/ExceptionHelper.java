@@ -172,7 +172,6 @@ public final class ExceptionHelper {
      * Throws a new exception that includes all the given exceptions as suppressed exceptions.
      *
      * @param exceptions        The suppressed exceptions.
-     * @throws ServiceException The thrown exception.
      */
     public static void raiseUnchecked(Throwable... exceptions) {
         raiseUnchecked(null, null, exceptions);
@@ -182,7 +181,6 @@ public final class ExceptionHelper {
      * Throws a new exception that includes all the given exceptions as suppressed exceptions.
      *
      * @param exceptions        The suppressed exceptions.
-     * @throws ServiceException The thrown exception.
      */
     public static void raiseUnchecked(Iterable<? extends Throwable> exceptions) {
         raiseUnchecked(null, null, exceptions);
@@ -263,10 +261,13 @@ public final class ExceptionHelper {
                 if (suppressed == null) {
                     message = "";
                 } else {
-                    message = getMessage(suppressed);
+                    for (Throwable throwable : suppressed) {
+                        message = getMessage(throwable, false, false);
+                        break;
+                    }
                 }
             } else {
-                message = getMessage(cause);
+                message = getMessage(cause, false, false);
             }
         }
 
@@ -363,7 +364,9 @@ public final class ExceptionHelper {
 
         try {
             if (THROWABLE_GET_SUPPRESSED_METHOD != null) {
-                suppressed = (Throwable[]) THROWABLE_GET_SUPPRESSED_METHOD.invoke(exception);
+                suppressed = (Throwable[])THROWABLE_GET_SUPPRESSED_METHOD.invoke(exception);
+            } else if (exception instanceof ExceptionSuppression) {
+                suppressed = ((ExceptionSuppression)exception).suppressed();
             }
         } catch(IllegalAccessException ex) {
             // ignore exception
@@ -408,6 +411,8 @@ public final class ExceptionHelper {
                         // ignore exception
                     }
                 }
+            } else if (exception instanceof ExceptionSuppression) {
+                ((ExceptionSuppression)exception).suppress(suppressed);
             }
         }
     }

@@ -93,8 +93,6 @@ public class BaseException extends ServiceException implements ExceptionSuppress
         super(ExceptionHelper.normalizeMessage(message, cause, suppressed));
         if (cause != null) initCause(cause);
         suppress(suppressed);
-
-
     }
 
     /**
@@ -110,7 +108,7 @@ public class BaseException extends ServiceException implements ExceptionSuppress
     private synchronized void suppress(Throwable exception) {
         if (exception == null || exception == this) return;
 
-        if (suppressedExceptions.size() == 0) {
+        if (suppressedExceptions.isEmpty()) {
             suppressedExceptions = new ArrayList<Throwable>(1);
         }
 
@@ -160,6 +158,7 @@ public class BaseException extends ServiceException implements ExceptionSuppress
      *
      * @return the properties of this object.
      */
+    @Override
     public Map<String, Object> getProperties() {
         Map<String, Object> properties = new LinkedHashMap<String, Object>();
         properties.put("$exception?", "true");
