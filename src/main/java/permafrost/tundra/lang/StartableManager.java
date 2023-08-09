@@ -174,7 +174,7 @@ public class StartableManager<K, V extends Startable> implements Startable, IDat
             exceptions.add(exception);
         }
 
-        if (exceptions.size() > 0) {
+        if (!exceptions.isEmpty()) {
             ExceptionHelper.raiseUnchecked(exceptions);
         }
     }
@@ -236,7 +236,7 @@ public class StartableManager<K, V extends Startable> implements Startable, IDat
             }
         }
 
-        if (exceptions.size() > 0) {
+        if (!exceptions.isEmpty()) {
             ExceptionHelper.raiseUnchecked(exceptions);
         }
     }
@@ -258,7 +258,7 @@ public class StartableManager<K, V extends Startable> implements Startable, IDat
             }
         }
 
-        if (exceptions.size() > 0) {
+        if (!exceptions.isEmpty()) {
             ExceptionHelper.raiseUnchecked(exceptions);
         }
     }
