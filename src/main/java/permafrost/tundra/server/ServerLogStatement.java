@@ -25,8 +25,11 @@
 package permafrost.tundra.server;
 
 import com.wm.data.IData;
+import com.wm.data.IDataCursor;
+import com.wm.data.IDataFactory;
 import com.wm.data.IDataPortable;
 import com.wm.lang.ns.NSService;
+import com.wm.util.Table;
 import com.wm.util.coder.IDataCodable;
 import com.wm.util.coder.ValuesCodable;
 import permafrost.tundra.data.IDataHelper;
@@ -34,6 +37,7 @@ import permafrost.tundra.data.IDataJSONParser;
 import permafrost.tundra.lang.ExceptionHelper;
 import permafrost.tundra.lang.StringHelper;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Represents a server log statement.
@@ -130,7 +134,17 @@ public class ServerLogStatement {
                 builder.append(" -- ");
             }
             try {
-                if (context instanceof IData || context instanceof IDataCodable || context instanceof IDataPortable || context instanceof ValuesCodable) {
+                if (context instanceof IData[] || context instanceof Table || context instanceof IDataCodable[] || context instanceof IDataPortable[] || context instanceof ValuesCodable[] || context instanceof Map[]) {
+                    IData document = IDataFactory.create();
+                    IDataCursor cursor = document.getCursor();
+                    try {
+                        cursor.insertAfter("recordWithNoID", IDataHelper.toIDataArray(context));
+                    } finally {
+                        cursor.destroy();
+                    }
+                    context = document;
+                }
+                if (context instanceof IData || context instanceof IDataCodable || context instanceof IDataPortable || context instanceof ValuesCodable || context instanceof Map) {
                     IDataJSONParser parser = new IDataJSONParser(false);
                     parser.emit(builder, IDataHelper.toIData(context));
                 } else {
