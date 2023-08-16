@@ -362,6 +362,11 @@ public final class PackageHelper {
     }
 
     /**
+     * The package manifest property key used by the package description property.
+     */
+    private static final String PACKAGE_MANIFEST_DESCRIPTION_KEY = "description";
+
+    /**
      * Converts the given Manifest object to an IData document representation.
      *
      * @param manifest  The object to be converted.
@@ -372,6 +377,11 @@ public final class PackageHelper {
         if (manifest == null) return null;
 
         IDataMap map = new IDataMap();
+
+        Object description = manifest.getProperty(PACKAGE_MANIFEST_DESCRIPTION_KEY);
+        if (description instanceof String) {
+            map.put(PACKAGE_MANIFEST_DESCRIPTION_KEY, description);
+        }
 
         map.put("version", manifest.getVersion());
         map.put("enabled?", BooleanHelper.emit(manifest.isEnabled()));
