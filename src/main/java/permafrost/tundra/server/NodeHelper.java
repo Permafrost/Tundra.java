@@ -34,7 +34,6 @@ import com.wm.lang.ns.NSName;
 import com.wm.lang.ns.NSNode;
 import com.wm.lang.ns.NSType;
 import permafrost.tundra.util.regex.PatternHelper;
-import java.util.Collections;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
