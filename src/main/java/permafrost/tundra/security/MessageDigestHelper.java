@@ -103,17 +103,22 @@ public final class MessageDigestHelper {
      * @throws IOException              If an I/O exception occurs reading from the stream.
      * @throws NoSuchAlgorithmException If there is no provider for the default algorithm.
      */
-    public static Map.Entry<? extends Object, byte[]> digest(MessageDigest algorithm, Object data, Charset charset) throws IOException, NoSuchAlgorithmException {
-        Map.Entry<? extends Object, byte[]> output = null;
+    @SuppressWarnings("unchecked")
+    public static <T> Map.Entry<T, byte[]> digest(MessageDigest algorithm, T data, Charset charset) throws IOException, NoSuchAlgorithmException {
+        Map.Entry<T, byte[]> output;
 
         if (data instanceof String) {
             byte[] digest = digest(algorithm, (String)data, charset);
-            output = new AbstractMap.SimpleImmutableEntry<String, byte[]>((String)data, digest);
+            output = new AbstractMap.SimpleImmutableEntry<T, byte[]>(data, digest);
         } else if (data instanceof byte[]) {
             byte[] digest = digest(algorithm, (byte[])data);
-            output = new AbstractMap.SimpleImmutableEntry<byte[], byte[]>((byte[])data, digest);
+            output = new AbstractMap.SimpleImmutableEntry<T, byte[]>(data, digest);
         } else if (data instanceof InputStream) {
-            output = digest(algorithm, (InputStream)data);
+            output = (Map.Entry<T, byte[]>)digest(algorithm, (InputStream)data);
+        } else if (data == null) {
+            throw new NullPointerException("data must not be null");
+        } else {
+            throw new IllegalArgumentException("data class not supported: " + data.getClass().getName() + " (only byte[], java.lang.String, or java.io.InputStream data is supported)");
         }
 
         return output;
@@ -128,7 +133,7 @@ public final class MessageDigestHelper {
      * @throws IOException              If an I/O exception occurs reading from the stream.
      * @throws NoSuchAlgorithmException If there is no provider for the default algorithm.
      */
-    public static Map.Entry<? extends InputStream, byte[]> digest(MessageDigest algorithm, InputStream data) throws IOException, NoSuchAlgorithmException {
+    public static Map.Entry<InputStream, byte[]> digest(MessageDigest algorithm, InputStream data) throws IOException, NoSuchAlgorithmException {
         if (data == null) return null;
 
         // wrap the data in a digest input stream
