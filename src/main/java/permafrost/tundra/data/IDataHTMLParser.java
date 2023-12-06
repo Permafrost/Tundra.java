@@ -135,7 +135,7 @@ public class IDataHTMLParser extends IDataParser {
      */
     @Override
     public void emit(OutputStream outputStream, IData document, Charset charset) throws IOException, ServiceException {
-        InputOutputHelper.copy(InputStreamHelper.normalize(document == null ? HTMLEntity.NULL.toString() : emit(new StringBuilder(), document, 0).toString(), charset), outputStream);
+        InputOutputHelper.copy(InputStreamHelper.normalize(document == null ? HTMLEntity.NULL.toString() : emit(new StringBuilder(), null, document, 0).toString(), charset), outputStream);
     }
 
     /**
@@ -148,24 +148,29 @@ public class IDataHTMLParser extends IDataParser {
      * @throws ServiceException If any other error occurs.
      */
     public void emit(OutputStream outputStream, IData[] documentList, Charset charset) throws IOException, ServiceException {
-        InputOutputHelper.copy(InputStreamHelper.normalize(documentList == null ? HTMLEntity.NULL.toString() : emit(new StringBuilder(), documentList, 0).toString(), charset), outputStream);
+        InputOutputHelper.copy(InputStreamHelper.normalize(documentList == null ? HTMLEntity.NULL.toString() : emit(new StringBuilder(), null, documentList, 0).toString(), charset), outputStream);
     }
 
     /**
      * Returns an HTML representation of the given IData object.
      *
      * @param appendable            The Appendable to append the HTML to.
+     * @param className             The class name used to style this element.
      * @param input                 The IData to convert to HTML.
      * @param currentDepth          The current width being encoded.
      * @return                      The given Appendable for method chaining convenience.
      * @throws IOException          If an IO error occurs.
      */
     @SuppressWarnings("deprecation")
-    protected Appendable emit(Appendable appendable, IData input, int currentDepth) throws IOException {
+    protected Appendable emit(Appendable appendable, String className, IData input, int currentDepth) throws IOException {
         if (currentDepth == 0 && !fragment) {
-            appendable.append("<html><head><style>")
-                    .append("*{font:11pt/1.2 sans-serif}body{background-color:white;color:black;margin:1em}table{border-collapse:collapse;margin:0}td,th{background-color:white;border:0.375em solid #F0F0F0;font-weight:normal;padding:0.5em;text-align:left;vertical-align:text-top}th{background-color:#F9F9F9;font-weight:bold}")
-                    .append("</style></head><body>");
+            appendable.append("<html>");
+            appendable.append("<head>");
+            appendable.append("<style>");
+            appendable.append("*{font:11pt/1.2 sans-serif}body{background-color:white;color:black;margin:1em}table{border-collapse:collapse;margin:0}td,th{background-color:white;border:0.375em solid #F0F0F0;font-weight:normal;padding:0.5em;text-align:left;vertical-align:text-top}th{background-color:#F9F9F9;font-weight:bold}");
+            appendable.append("</style>");
+            appendable.append("</head>");
+            appendable.append("<body>");
         }
 
         if (currentDepth < maxDepth) {
@@ -178,55 +183,77 @@ public class IDataHTMLParser extends IDataParser {
                     IData[] array = IDataUtil.getIDataArray(cursor, "recordWithNoID");
                     cursor.destroy();
                     if (array != null) {
-                        emit(appendable, array, currentDepth);
+                        emit(appendable, className, array, currentDepth);
                     } else {
                         cursor = input.getCursor();
                         if (portraitOrientation) {
-                            appendable.append("<table class=\"IData\"><tbody class=\"IData-Body\">");
+                            appendable.append("<table class=\"IData\">");
+                            appendable.append("<tbody class=\"IData-Body\">");
                             int i = 0;
                             while (cursor.next()) {
                                 if (i < maxLength) {
-                                    appendable.append("<tr><th>");
-                                    appendable.append(HTMLHelper.encode(cursor.getKey()));
-                                    appendable.append("</th><td>");
-                                    emit(appendable, cursor.getValue(), currentDepth);
+                                    String key = cursor.getKey();
+                                    String keyClassName = getClassName(className, key);
+                                    appendable.append("<tr>");
+                                    appendable.append("<th class=\"");
+                                    appendable.append(keyClassName);
+                                    appendable.append("\">");
+                                    appendable.append(HTMLHelper.encode(key));
+                                    appendable.append("</th><td class=\"");
+                                    appendable.append(keyClassName);
+                                    appendable.append("\">");
+                                    emit(appendable, keyClassName, cursor.getValue(), currentDepth);
                                     appendable.append("</td></tr>");
                                 } else {
-                                    appendable.append("<tr><th>")
-                                            .append(HTMLEntity.VERTICAL_ELLIPSIS.toString())
-                                            .append("</th><td>")
-                                            .append(HTMLEntity.VERTICAL_ELLIPSIS.toString())
-                                            .append("</td></tr>");
+                                    appendable.append("<tr><th>");
+                                    appendable.append(HTMLEntity.VERTICAL_ELLIPSIS.toString());
+                                    appendable.append("</th><td>");
+                                    appendable.append(HTMLEntity.VERTICAL_ELLIPSIS.toString());
+                                    appendable.append("</td></tr>");
                                     break;
                                 }
                                 i++;
                             }
                             appendable.append("</tbody></table>");
                         } else {
-                            appendable.append("<table class=\"IData\"><thead class=\"IData-Head\"><tr>");
+                            appendable.append("<table class=\"IData\">");
+                            appendable.append("<thead class=\"IData-Head\">");
+                            appendable.append("<tr>");
                             List<String> keys = IDataHelper.getKeyList(input);
                             for (int i = 0; i < keys.size(); i++) {
                                 if (i < maxWidth) {
-                                    appendable.append("<th>");
-                                    appendable.append(HTMLHelper.encode(keys.get(i)));
+                                    String key = keys.get(i);
+                                    appendable.append("<th class=\"");
+                                    appendable.append(getClassName(className, key));
+                                    appendable.append("\">");
+                                    appendable.append(HTMLHelper.encode(key));
                                     appendable.append("</th>");
                                 } else {
                                     appendable.append("<th>").append(HTMLEntity.HORIZONTAL_ELLIPSIS.toString()).append("</th>");
                                     break;
                                 }
                             }
-                            appendable.append("</tr></thead><tbody class=\"IData-Body\"><tr>");
+                            appendable.append("</tr>");
+                            appendable.append("</thead>");
+                            appendable.append("<tbody class=\"IData-Body\">");
+                            appendable.append("<tr>");
                             for (int i = 0; i < keys.size(); i++) {
                                 if (i < maxWidth) {
-                                    appendable.append("<td>");
-                                    emit(appendable, IDataHelper.get(cursor, keys.get(i)), currentDepth);
+                                    String key = keys.get(i);
+                                    String keyClassName = getClassName(className, key);
+                                    appendable.append("<td class=\"");
+                                    appendable.append(keyClassName);
+                                    appendable.append("\">");
+                                    emit(appendable, keyClassName, IDataHelper.get(cursor, key), currentDepth);
                                     appendable.append("</td>");
                                 } else {
                                     appendable.append("<td>").append(HTMLEntity.HORIZONTAL_ELLIPSIS.toString()).append("</td>");
                                     break;
                                 }
                             }
-                            appendable.append("</tr></tbody></table>");
+                            appendable.append("</tr>");
+                            appendable.append("</tbody>");
+                            appendable.append("</table>");
                         }
                     }
                 } finally {
@@ -238,7 +265,8 @@ public class IDataHTMLParser extends IDataParser {
         }
 
         if (currentDepth == 0 && !fragment) {
-            appendable.append("</body></html>");
+            appendable.append("</body>");
+            appendable.append("</html>");
         }
 
         return appendable;
@@ -253,22 +281,35 @@ public class IDataHTMLParser extends IDataParser {
      * @return                      The given Appendable for method chaining convenience.
      * @throws IOException          If an IO error occurs.
      */
-    protected Appendable emit(Appendable appendable, IData[] input, int currentDepth) throws IOException {
+    protected Appendable emit(Appendable appendable, String className, IData[] input, int currentDepth) throws IOException {
         if (currentDepth < maxDepth) {
             if (input.length == 0) {
                 appendable.append(HTMLEntity.EMPTY.toString());
             } else {
                 String[] keys = IDataHelper.getKeys(input);
-                appendable.append("<table class=\"IDataArray\"><thead class=\"IDataArray-Head\"><tr>");
+                appendable.append("<table class=\"IDataArray");
+                if (className != null) {
+                    className = className.trim();
+                    if (!className.isEmpty()) {
+                        appendable.append(" ");
+                        appendable.append(className);
+                    }
+                }
+                appendable.append("\">");
+                appendable.append("<thead class=\"IDataArray-Head\">");
+                appendable.append("<tr>");
                 for (int i = 0; i < keys.length; i++) {
                     if (i < maxWidth) {
-                        appendable.append("<th>").append(HTMLHelper.encode(keys[i])).append("</th>");
+                        String key = keys[i];
+                        appendable.append("<th class=\"").append(getClassName(className, key)).append("\">").append(HTMLHelper.encode(key)).append("</th>");
                     } else {
                         appendable.append("<th>").append(HTMLEntity.HORIZONTAL_ELLIPSIS.toString()).append("</th>");
                         break;
                     }
                 }
-                appendable.append("</tr></thead><tbody class=\"IDataArray-Body\">");
+                appendable.append("</tr>");
+                appendable.append("</thead>");
+                appendable.append("<tbody class=\"IDataArray-Body\">");
                 for (int i = 0; i < input.length; i++) {
                     if (i < maxLength) {
                         IData document = input[i];
@@ -277,8 +318,10 @@ public class IDataHTMLParser extends IDataParser {
                             appendable.append("<tr>");
                             for (int j = 0; j < keys.length; j++) {
                                 if (j < maxWidth) {
-                                    appendable.append("<td>");
-                                    emit(appendable, IDataHelper.get(cursor, keys[j]), currentDepth);
+                                    String key = keys[j];
+                                    String keyClassName = getClassName(className, key);
+                                    appendable.append("<td class=\"").append(keyClassName).append("\">");
+                                    emit(appendable, keyClassName, IDataHelper.get(cursor, keys[j]), currentDepth);
                                     appendable.append("</td>");
                                 } else {
                                     appendable.append("<td>").append(HTMLEntity.HORIZONTAL_ELLIPSIS.toString()).append("</td>");
@@ -298,7 +341,8 @@ public class IDataHTMLParser extends IDataParser {
                         break;
                     }
                 }
-                appendable.append("</tbody></table>");
+                appendable.append("</tbody>");
+                appendable.append("</table>");
             }
         } else {
             appendable.append(HTMLEntity.VERTICAL_ELLIPSIS.toString());
@@ -316,7 +360,7 @@ public class IDataHTMLParser extends IDataParser {
      * @return                      The given Appendable for method chaining convenience.
      * @throws IOException          If an IO error occurs.
      */
-    protected Appendable emit(Appendable appendable, Object[][] input, int currentDepth) throws IOException {
+    protected Appendable emit(Appendable appendable, String className, Object[][] input, int currentDepth) throws IOException {
         if (input.length == 0) {
             appendable.append(HTMLEntity.EMPTY.toString());
         } else {
@@ -337,7 +381,7 @@ public class IDataHTMLParser extends IDataParser {
                         for (int j = 0; j < input[i].length; j++) {
                             if (j < maxWidth) {
                                 appendable.append("<td>");
-                                emit(appendable, input[i][j], currentDepth);
+                                emit(appendable, className, input[i][j], currentDepth);
                                 appendable.append("</td>");
                             } else {
                                 appendable.append("<td>").append(HTMLEntity.HORIZONTAL_ELLIPSIS.toString()).append("</td>");
@@ -743,7 +787,7 @@ public class IDataHTMLParser extends IDataParser {
      * @return                      The given Appendable for method chaining convenience.
      * @throws IOException          If an IO error occurs.
      */
-    protected Appendable emit(Appendable appendable, Object[] input, int currentDepth) throws IOException {
+    protected Appendable emit(Appendable appendable, String className, Object[] input, int currentDepth) throws IOException {
         if (input.length == 0) {
             appendable.append(HTMLEntity.EMPTY.toString());
         } else {
@@ -751,7 +795,7 @@ public class IDataHTMLParser extends IDataParser {
             for (int i = 0; i < input.length; i++) {
                 if (i < maxLength) {
                     appendable.append("<tr><td>");
-                    emit(appendable, input[i], currentDepth);
+                    emit(appendable, className, input[i], currentDepth);
                     appendable.append("</td></tr>");
                 } else {
                     appendable.append("<tr><td>").append(HTMLEntity.VERTICAL_ELLIPSIS.toString()).append("</td></tr>");
@@ -968,7 +1012,7 @@ public class IDataHTMLParser extends IDataParser {
      * @return                      The given Appendable for method chaining convenience.
      * @throws IOException          If an IO error occurs.
      */
-    protected Appendable emit(Appendable appendable, Iterable[] input, int currentDepth) throws IOException {
+    protected Appendable emit(Appendable appendable, String className, Iterable[] input, int currentDepth) throws IOException {
         if (input.length == 0) {
             appendable.append(HTMLEntity.EMPTY.toString());
         } else {
@@ -982,7 +1026,7 @@ public class IDataHTMLParser extends IDataParser {
                         for (Object value : iterable) {
                             if (j < maxWidth) {
                                 appendable.append("<td>");
-                                emit(appendable, value, currentDepth);
+                                emit(appendable, className, value, currentDepth);
                                 appendable.append("</td>");
                             } else {
                                 appendable.append("<td>").append(HTMLEntity.HORIZONTAL_ELLIPSIS.toString()).append("</td>");
@@ -1013,7 +1057,7 @@ public class IDataHTMLParser extends IDataParser {
      * @return                      The given Appendable for method chaining convenience.
      * @throws IOException          If an IO error occurs.
      */
-    protected Appendable emit(Appendable appendable, Iterable input, int currentDepth) throws IOException {
+    protected Appendable emit(Appendable appendable, String className, Iterable input, int currentDepth) throws IOException {
         Set<String> keys = new LinkedHashSet<String>();
         boolean isIDataCollection = false;
         for (Object value : input) {
@@ -1048,7 +1092,7 @@ public class IDataHTMLParser extends IDataParser {
                             appendable.append("<tr>");
                             for (String key : keys) {
                                 appendable.append("<td>");
-                                emit(appendable, IDataHelper.get(cursor, key), currentDepth);
+                                emit(appendable, className, IDataHelper.get(cursor, key), currentDepth);
                                 appendable.append("</td>");
                             }
                             appendable.append("</tr>");
@@ -1085,7 +1129,7 @@ public class IDataHTMLParser extends IDataParser {
                     }
                     if (i < maxLength) {
                         appendable.append("<tr><td>");
-                        emit(appendable, value, currentDepth);
+                        emit(appendable, className, value, currentDepth);
                         appendable.append("</td></tr>");
                     } else {
                         appendable.append("<tr><td>").append(HTMLEntity.VERTICAL_ELLIPSIS.toString()).append("</td></tr>");
@@ -1114,26 +1158,26 @@ public class IDataHTMLParser extends IDataParser {
      * @throws IOException          If an IO error occurs.
      */
     @SuppressWarnings("deprecation")
-    protected Appendable emit(Appendable appendable, Object input, int currentDepth) throws IOException {
+    protected Appendable emit(Appendable appendable, String className, Object input, int currentDepth) throws IOException {
         if (currentDepth < maxDepth) {
             if (input == null) {
                 appendable.append(HTMLEntity.NULL.toString());
             } else if (input instanceof MBoolean[][]) {
-                emit(appendable, (Object[][])input, currentDepth + 1);
+                emit(appendable, className, (Object[][])input, currentDepth + 1);
             } else if (input instanceof MBoolean[]) {
-                emit(appendable, (Object[])input, currentDepth + 1);
+                emit(appendable, className, (Object[])input, currentDepth + 1);
             } else if (input instanceof MBoolean) {
                 appendable.append(HTMLHelper.encode(input.toString()));
             } else if (input instanceof IData[] || input instanceof Table || input instanceof IDataCodable[] || input instanceof IDataPortable[] || input instanceof ValuesCodable[]) {
-                emit(appendable, IDataHelper.toIDataArray(input), currentDepth + 1);
+                emit(appendable, className, IDataHelper.toIDataArray(input), currentDepth + 1);
             } else if (input instanceof IData || input instanceof IDataCodable || input instanceof IDataPortable || input instanceof ValuesCodable) {
-                emit(appendable, IDataHelper.toIData(input), currentDepth + 1);
+                emit(appendable, className, IDataHelper.toIData(input), currentDepth + 1);
             } else if (input instanceof Iterable[]) {
-                emit(appendable, (Iterable[])input, currentDepth + 1);
+                emit(appendable, className, (Iterable[])input, currentDepth + 1);
             } else if (input instanceof Iterable) {
-                emit(appendable, (Iterable)input,currentDepth + 1);
+                emit(appendable, className, (Iterable)input,currentDepth + 1);
             } else if (input instanceof Object[][]) {
-                emit(appendable, (Object[][])input, currentDepth + 1);
+                emit(appendable, className, (Object[][])input, currentDepth + 1);
             } else if (input instanceof double[][]) {
                 emit(appendable, (double[][])input);
             } else if (input instanceof float[][]) {
@@ -1151,7 +1195,7 @@ public class IDataHTMLParser extends IDataParser {
             } else if (input instanceof boolean[][]) {
                 emit(appendable, (boolean[][])input);
             } else if (input instanceof Object[]) {
-                emit(appendable, (Object[])input, currentDepth + 1);
+                emit(appendable, className, (Object[])input, currentDepth + 1);
             } else if (input instanceof double[]) {
                 emit(appendable, (double[])input);
             } else if (input instanceof float[]) {
@@ -1176,5 +1220,36 @@ public class IDataHTMLParser extends IDataParser {
         }
 
         return appendable;
+    }
+
+    /**
+     * Returns a new class name constructed from the given parent and child classes.
+     *
+     * @param parentClass   The parent class.
+     * @param childClass    The child class.
+     * @return              The hierarchical class name constructed from the parent and child.
+     */
+    private static String getClassName(String parentClass, String childClass) {
+        if (childClass == null) throw new NullPointerException("child class must not be null");
+
+        String className;
+        if (parentClass == null) {
+            className = "IDataKey-" + childClass;
+        } else {
+            className = parentClass + "-" + childClass;
+        }
+
+        return sanitizeClassName(className);
+    }
+
+    /**
+     * Sanitizes the given class name, removing all illegal characters.
+     *
+     * @param className The class name to sanitize.
+     * @return          The sanitized class name.
+     */
+    private static String sanitizeClassName(String className) {
+        if (className == null || className.isEmpty()) return null;
+        return className.replaceAll("[^A-Za-z0-9_-]", "");
     }
 }
