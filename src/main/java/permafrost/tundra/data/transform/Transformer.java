@@ -195,6 +195,16 @@ public abstract class Transformer<V, T> {
                     } else {
                         outputCursor.insertAfter(transformedKey, value);
                     }
+                } else if (recurse && (value instanceof IData[] || value instanceof Table || value instanceof IDataCodable[] || value instanceof IDataPortable[] || value instanceof ValuesCodable[])) {
+                    IData[] transformedArray = transformIDataArray(IDataHelper.toIDataArray(value));
+                    if (includeNulls || (transformedArray != null && (includeEmptyArrays || transformedArray.length > 0))) {
+                        outputCursor.insertAfter(transformedKey, transformedArray);
+                    }
+                } else if (recurse && (value instanceof IData || value instanceof IDataCodable || value instanceof IDataPortable || value instanceof ValuesCodable)) {
+                    IData transformedIData = transformIData(IDataHelper.toIData(value));
+                    if (includeNulls || (transformedIData != null && (includeEmptyDocuments || IDataHelper.size(transformedIData) > 0))) {
+                        outputCursor.insertAfter(transformedKey, transformedIData);
+                    }
                 } else {
                     outputCursor.insertAfter(transformedKey, value);
                 }
