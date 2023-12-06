@@ -110,14 +110,14 @@ public class IDataHTMLParser extends IDataParser {
     }
 
     /**
-     * This method has not implemented.
+     * This method has not been implemented.
      *
-     * @param inputStream The input stream to be decoded.
-     * @param charset     The character set to use.
-     * @return An IData representation of the given input stream data.
-     * @throws IOException                   If there is a problem reading from the stream.
-     * @throws ServiceException              If any other error occurs.
-     * @throws UnsupportedOperationException As this method has not been implemented.
+     * @param inputStream                       The input stream to be decoded.
+     * @param charset                           The character set to use.
+     * @return                                  An IData representation of the given input stream data.
+     * @throws IOException                      If there is a problem reading from the stream.
+     * @throws ServiceException                 If any other error occurs.
+     * @throws UnsupportedOperationException    As this method has not been implemented.
      */
     @Override
     public IData parse(InputStream inputStream, Charset charset) throws IOException, ServiceException {
