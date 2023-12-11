@@ -17,6 +17,8 @@ the following [webMethods Integration Server] [JAR] libraries, which
 are required to be included on the project's classpath:
 
 * `./common/lib/wm-isclient.jar`
+* `./common/lib/wm-scg-core.jar`
+* `./common/lib/wm-scg-security.jar`
 * `./IntegrationServer/lib/wm-isserver.jar`
 
 ## Contributions

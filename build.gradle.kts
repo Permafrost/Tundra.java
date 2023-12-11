@@ -36,8 +36,9 @@ repositories {
 }
 
 dependencies {
-    api("com.sun.activation:javax.activation:1.2.0")
     api("com.googlecode.htmlcompressor:htmlcompressor:1.5.2")
+    api("com.sun.activation:javax.activation:1.2.0")
+    api("com.sun.mail:javax.mail:1.6.2")
     api("com.sun.xml.bind:jaxb-impl:2.3.2")
     api("com.sun.xml.ws:jaxws-ri:2.3.2-1")
     api("javax.xml.bind:jaxb-api:2.3.1")
@@ -55,7 +56,7 @@ dependencies {
     api("org.unbescape:unbescape:1.1.6.RELEASE")
     api("org.yaml:snakeyaml:1.23")
     api("oro:oro:2.0.8")
-    api(files("libs/wm-isclient.jar", "libs/wm-isserver.jar"))
+    api(files("libs/wm-isclient.jar", "libs/wm-isserver.jar", "libs/wm-scg-security.jar", "libs/wm-scg-core.jar"))
 
     testImplementation("junit:junit:4.13.1")
     testImplementation("org.hamcrest:hamcrest-all:1.3")

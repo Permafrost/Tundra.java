@@ -26,7 +26,6 @@ package permafrost.tundra.lang;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.text.MessageFormat;
 
 /**
  * A collection of convenience methods for working with Enum objects.
@@ -52,8 +51,7 @@ public final class EnumHelper {
         if (klass != null && klass.isEnum() && object instanceof String) {
             try {
                 Method method = klass.getDeclaredMethod("valueOf", String.class);
-                String enumValue = ((String)object).trim().replace(' ', '_').replace('-', '_').toUpperCase();
-                value = (E)method.invoke(null, enumValue);
+                value = (E)method.invoke(null, normalize((String)object));
             } catch(NoSuchMethodException ex) {
                 throw new RuntimeException(ex);
             } catch(IllegalAccessException ex) {
@@ -64,5 +62,17 @@ public final class EnumHelper {
         }
 
         return value;
+    }
+
+    /**
+     * Normalizes the given String value such that it can be used to return an enumeration value using an enum's valueOf
+     * method. Trims the value of leading and trailing whitespace, and replaces any other whitespace or hyphen character
+     * with underscores, then converts to upper case.
+     *
+     * @param value The value to be normalized.
+     * @return      The normalized value.
+     */
+    public static String normalize(String value) {
+        return value.trim().replace(' ', '_').replace('-', '_').toUpperCase();
     }
 }

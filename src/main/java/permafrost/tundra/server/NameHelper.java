@@ -74,7 +74,7 @@ public final class NameHelper {
     /**
      * Convenience class for resolving domain names and converting to IData representations.
      */
-    static class InternetAddress implements IDataCodable {
+    public static class InternetAddress implements IDataCodable {
         /**
          * Cache localhost in volatile class member to optimize performance by avoiding the thread synchronization in
          * the java.net.InetAddress class.

@@ -26,6 +26,7 @@ package permafrost.tundra.io;
 
 import permafrost.tundra.lang.BytesHelper;
 import permafrost.tundra.lang.CharsetHelper;
+import javax.activation.MimeType;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -136,6 +137,18 @@ public final class InputStreamHelper {
      */
     public static InputStream normalize(Object object) {
         return normalize(object, (Charset)null);
+    }
+
+    /**
+     * Converts the given Object to an InputStream, if possible.
+     *
+     * @param object        A String, byte[], or InputStream object to be converted.
+     * @param contentType   The MIME type of the object containing the charset parameter set to the character encoding
+     *                      to use to encode the data as bytes if it is provided as a String.
+     * @return              An InputStream representation of the given object.
+     */
+    public static InputStream normalize(Object object, MimeType contentType) {
+        return normalize(object, CharsetHelper.of(contentType.getParameter("charset")));
     }
 
     /**
