@@ -38,12 +38,16 @@ import permafrost.tundra.html.HTMLHelper;
 import permafrost.tundra.io.InputOutputHelper;
 import permafrost.tundra.io.InputStreamHelper;
 import permafrost.tundra.lang.BytesHelper;
+import permafrost.tundra.lang.CharsetHelper;
+import permafrost.tundra.lang.ExceptionHelper;
 import permafrost.tundra.lang.ObjectHelper;
 import permafrost.tundra.lang.StringHelper;
+import permafrost.tundra.security.MessageDigestHelper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.security.NoSuchAlgorithmException;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -187,13 +191,13 @@ public class IDataHTMLParser extends IDataParser {
                     } else {
                         cursor = input.getCursor();
                         if (portraitOrientation) {
-                            appendable.append("<table class=\"IData\">");
+                            appendable.append("<table class=\"IData IData-Portrait\">");
                             appendable.append("<tbody class=\"IData-Body\">");
                             int i = 0;
                             while (cursor.next()) {
                                 if (i < maxLength) {
                                     String key = cursor.getKey();
-                                    String keyClassName = getClassName(className, key);
+                                    String keyClassName = toClassName(key);
                                     appendable.append("<tr>");
                                     appendable.append("<th class=\"");
                                     appendable.append(keyClassName);
@@ -216,7 +220,7 @@ public class IDataHTMLParser extends IDataParser {
                             }
                             appendable.append("</tbody></table>");
                         } else {
-                            appendable.append("<table class=\"IData\">");
+                            appendable.append("<table class=\"IData IData-Landscape\">");
                             appendable.append("<thead class=\"IData-Head\">");
                             appendable.append("<tr>");
                             List<String> keys = IDataHelper.getKeyList(input);
@@ -224,7 +228,7 @@ public class IDataHTMLParser extends IDataParser {
                                 if (i < maxWidth) {
                                     String key = keys.get(i);
                                     appendable.append("<th class=\"");
-                                    appendable.append(getClassName(className, key));
+                                    appendable.append(toClassName(key));
                                     appendable.append("\">");
                                     appendable.append(HTMLHelper.encode(key));
                                     appendable.append("</th>");
@@ -240,7 +244,7 @@ public class IDataHTMLParser extends IDataParser {
                             for (int i = 0; i < keys.size(); i++) {
                                 if (i < maxWidth) {
                                     String key = keys.get(i);
-                                    String keyClassName = getClassName(className, key);
+                                    String keyClassName = toClassName(key);
                                     appendable.append("<td class=\"");
                                     appendable.append(keyClassName);
                                     appendable.append("\">");
@@ -301,7 +305,7 @@ public class IDataHTMLParser extends IDataParser {
                 for (int i = 0; i < keys.length; i++) {
                     if (i < maxWidth) {
                         String key = keys[i];
-                        appendable.append("<th class=\"").append(getClassName(className, key)).append("\">").append(HTMLHelper.encode(key)).append("</th>");
+                        appendable.append("<th class=\"").append(toClassName(key)).append("\">").append(HTMLHelper.encode(key)).append("</th>");
                     } else {
                         appendable.append("<th>").append(HTMLEntity.HORIZONTAL_ELLIPSIS.toString()).append("</th>");
                         break;
@@ -319,7 +323,7 @@ public class IDataHTMLParser extends IDataParser {
                             for (int j = 0; j < keys.length; j++) {
                                 if (j < maxWidth) {
                                     String key = keys[j];
-                                    String keyClassName = getClassName(className, key);
+                                    String keyClassName = toClassName(key);
                                     appendable.append("<td class=\"").append(keyClassName).append("\">");
                                     emit(appendable, keyClassName, IDataHelper.get(cursor, keys[j]), currentDepth);
                                     appendable.append("</td>");
@@ -1223,23 +1227,25 @@ public class IDataHTMLParser extends IDataParser {
     }
 
     /**
-     * Returns a new class name constructed from the given parent and child classes.
+     * Returns a new class name constructed from the given key.
      *
-     * @param parentClass   The parent class.
-     * @param childClass    The child class.
-     * @return              The hierarchical class name constructed from the parent and child.
+     * @param key           The key to be converted to an HTML class name.
+     * @return              The HTML class name to use for the given key.
      */
-    private static String getClassName(String parentClass, String childClass) {
-        if (childClass == null) throw new NullPointerException("child class must not be null");
+    private static String toClassName(String key) {
+        if (key == null) throw new NullPointerException("key must not be null");
 
-        String className;
-        if (parentClass == null) {
-            className = "IDataKey-" + childClass;
-        } else {
-            className = parentClass + "-" + childClass;
+        String className = sanitizeClassName(key);
+
+        try {
+            if (className == null || className.trim().isEmpty()) {
+                className = BytesHelper.hexEncode(MessageDigestHelper.digest(MessageDigestHelper.normalize("SHA-1"), key, CharsetHelper.DEFAULT_CHARSET));
+            }
+        } catch(NoSuchAlgorithmException ex) {
+            ExceptionHelper.raiseUnchecked(ex);
         }
 
-        return sanitizeClassName(className);
+        return "IDataKey-" + className;
     }
 
     /**
@@ -1249,7 +1255,9 @@ public class IDataHTMLParser extends IDataParser {
      * @return          The sanitized class name.
      */
     private static String sanitizeClassName(String className) {
-        if (className == null || className.isEmpty()) return null;
-        return className.replaceAll("[^A-Za-z0-9_-]", "");
+        if (className != null) {
+            className = className.replaceAll("[^\\w\\-]", "");
+        }
+        return className;
     }
 }
