@@ -26,7 +26,6 @@ package permafrost.tundra.math;
 
 import com.wm.app.b2b.server.ServiceException;
 import com.wm.data.IData;
-import permafrost.tundra.data.IDataHelper;
 import permafrost.tundra.data.transform.Transformer;
 import permafrost.tundra.data.transform.math.BigDecimalFormatter;
 import permafrost.tundra.lang.ArrayHelper;
@@ -116,7 +115,6 @@ public final class BigDecimalHelper {
                 result = (BigDecimal)parser.parse(decimalString);
             } catch (ParseException ex) {
                 throw new IllegalArgumentException(MessageFormat.format("Unparseable number: {0} does not conform to the specified pattern {1}",  decimalString, decimalPattern), ex);
-
             }
         }
 

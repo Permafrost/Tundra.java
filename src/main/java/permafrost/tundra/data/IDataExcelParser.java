@@ -296,9 +296,9 @@ public class IDataExcelParser extends IDataParser {
                 } else {
                     try {
                         cell.setCellValue(BigDecimalHelper.parse(string).doubleValue());
-                    } catch(NumberFormatException ex) {
+                    } catch(Exception ex) {
                         if (string.equalsIgnoreCase("true") || string.equalsIgnoreCase("false")) {
-                            cell.setCellValue(Boolean.valueOf(string));
+                            cell.setCellValue(Boolean.parseBoolean(string));
                         } else {
                             if (!setDateTime(cell, string)) {
                                 cell.setCellValue(string);
