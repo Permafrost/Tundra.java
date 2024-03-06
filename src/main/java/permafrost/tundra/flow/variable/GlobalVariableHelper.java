@@ -25,6 +25,7 @@
 package permafrost.tundra.flow.variable;
 
 import com.wm.app.b2b.server.ServiceException;
+import com.wm.app.b2b.server.globalvariables.GlobalVariablesException;
 import com.wm.app.b2b.server.globalvariables.GlobalVariablesManager;
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;
@@ -39,10 +40,14 @@ import permafrost.tundra.lang.ExceptionHelper;
 import permafrost.tundra.lang.StringHelper;
 import permafrost.tundra.server.NodeHelper;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.SortedSet;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 /**
@@ -50,10 +55,21 @@ import java.util.TreeSet;
  */
 public final class GlobalVariableHelper {
     /**
-     * Whether the global variable feature is supported by this Integration
-     * Server.
+     * Whether the global variable feature is supported by this Integration Server.
      */
     private static final boolean isSupported = NodeHelper.exists("wm.server.globalvariables:getGlobalVariableValue");
+    /**
+     * Whether package-level global variables are supported by this Integration Server.
+     */
+    private static boolean isPackageLevelSupported = true;
+
+    static {
+        try {
+            Class.forName("com.wm.app.b2b.server.globalvariables.PackageVariablesManager");
+        } catch(Exception ex) {
+            isPackageLevelSupported = false;
+        }
+    }
 
     /**
      * Disallow instantiation of this class.
@@ -70,24 +86,45 @@ public final class GlobalVariableHelper {
     }
 
     /**
+     * Returns true if this Integration Server version supports package-level global variables.
+     *
+     * @return True if this Integration Server version supports package-level global variables.
+     */
+    public static boolean isPackageLevelSupported() {
+        return isPackageLevelSupported;
+    }
+
+    /**
+     * The GlobalVariablesManager.getGlobalVariableValue(String, String) reflected method, if it exists.
+     */
+    private static Method GLOBALVARIABLESMANAGER_GETGLOBALVARIABLEVALUE_METHOD;
+    static {
+        try {
+            GLOBALVARIABLESMANAGER_GETGLOBALVARIABLEVALUE_METHOD = GlobalVariablesManager.class.getDeclaredMethod("getGlobalVariableValue", String.class, String.class);
+        } catch(Throwable ex) {
+            GLOBALVARIABLESMANAGER_GETGLOBALVARIABLEVALUE_METHOD = null;
+        }
+    }
+
+    /**
      * Returns true if a global variable with given key exists.
      *
-     * @param key   The key to check existence of.
-     * @return      True if a global variable with the given key exists.
+     * @param key           The key to check existence of.
+     * @return              True if a global variable with the given key exists.
      */
     public static boolean exists(String key) {
-        boolean exists = false;
+        return exists(null, key);
+    }
 
-        if (isSupported() && key != null) {
-            try {
-                GlobalVariablesManager manager = GlobalVariablesManager.getInstance();
-                exists = manager.globalVariableExists(key);
-            } catch (Exception ex) {
-                ExceptionHelper.raiseUnchecked(ex);
-            }
-        }
-
-        return exists;
+    /**
+     * Returns true if a global variable with given key exists.
+     *
+     * @param packageName   The optional name of the package this global variable is scoped to.
+     * @param key           The key to check existence of.
+     * @return              True if a global variable with the given key exists.
+     */
+    public static boolean exists(String packageName, String key) {
+        return getVariable(packageName, key) != null;
     }
 
     /**
@@ -97,7 +134,18 @@ public final class GlobalVariableHelper {
      * @return                  The global variable value associated with the given key.
      */
     public static String get(String key) {
-        GlobalVariableElement variable = getVariable(key);
+        return get(null, key);
+    }
+
+    /**
+     * Returns the global variable value associated with the given key.
+     *
+     * @param packageName       Optional name of package in which the global variable key is scoped.
+     * @param key               The key for the value to be returned.
+     * @return                  The global variable value associated with the given key.
+     */
+    public static String get(String packageName, String key) {
+        GlobalVariableElement variable = getVariable(packageName, key);
         return variable == null ? null : variable.getValue();
     }
 
@@ -107,19 +155,36 @@ public final class GlobalVariableHelper {
      * @param key The key for the value to be returned.
      * @return    The global variable object associated with the given key.
      */
-    public static GlobalVariableElement getVariable(String key) {
+    public static GlobalVariableElement getVariable(String packageName, String key) {
         GlobalVariables.GlobalVariableValue variable = null;
         if (isSupported() && key != null) {
             try {
                 GlobalVariablesManager manager = GlobalVariablesManager.getInstance();
-                if (manager.globalVariableExists(key)) {
+                if (isPackageLevelSupported()) {
+                    variable = (GlobalVariables.GlobalVariableValue)GLOBALVARIABLESMANAGER_GETGLOBALVARIABLEVALUE_METHOD.invoke(manager, packageName, key);
+                } else {
                     variable = manager.getGlobalVariableValue(key);
                 }
-            } catch (Exception ex) {
+            } catch(InvocationTargetException ex) {
+                Throwable cause = ex.getCause();
+                if (cause instanceof GlobalVariablesException) {
+                    if (cause.getMessage().contains("ISS.0146.9004")) {
+                        // ignore exception for variables that do not exist
+                    } else {
+                        ExceptionHelper.raiseUnchecked(cause);
+                    }
+                }
+            } catch(GlobalVariablesException ex) {
+                if (ex.getMessage().contains("ISS.0146.9004")) {
+                    // ignore exception for variables that do not exist
+                } else {
+                    ExceptionHelper.raiseUnchecked(ex);
+                }
+            } catch(Exception ex) {
                 ExceptionHelper.raiseUnchecked(ex);
             }
         }
-        return variable == null ? null : new GlobalVariableElement(key, variable);
+        return variable == null ? null : new GlobalVariableElement(packageName, key, variable);
     }
 
     /**
@@ -128,26 +193,49 @@ public final class GlobalVariableHelper {
      * @return                  All global variables as an IData document.
      */
     public static IData list() {
-        IDataMap output = new IDataMap();
+        IData output = IDataFactory.create();
+        IDataCursor cursor = output.getCursor();
 
-        if (isSupported()) {
-            GlobalVariablesManager manager = GlobalVariablesManager.getInstance();
-            IData[] variables = manager.listGlobalVariables();
-            for (IDataMap variable : IDataMap.of(variables)) {
-                if (variable != null) {
-                    String key = (String)variable.get("key");
-                    String value = (String)variable.get("value");
-                    String isSecure = (String)variable.get("isSecure");
+        try {
+            if (isSupported()) {
+                Map<String, IDataCursor> packageVariables = new TreeMap<String, IDataCursor>();
 
-                    if (key != null) {
-                        if (isSecure != null && isSecure.equals("true")) {
-                            value = get(key);
+                GlobalVariablesManager manager = GlobalVariablesManager.getInstance();
+                IData[] variables = manager.listGlobalVariables();
+                for (IDataMap variable : IDataMap.of(variables)) {
+                    if (variable != null) {
+                        String packageName = (String)variable.get("packageName");
+                        String key = (String)variable.get("key");
+                        String value = (String)variable.get("value");
+                        String isSecure = (String)variable.get("isSecure");
+
+                        if (key != null) {
+                            if (isSecure != null && isSecure.equals("true")) {
+                                value = get(packageName, key);
+                            }
+
+                            if (packageName == null) {
+                                cursor.insertAfter(key, value);
+                            } else {
+                                IDataCursor packageCursor = packageVariables.get(packageName);
+                                if (packageCursor == null) {
+                                    IData packageVars = IDataFactory.create();
+                                    packageCursor = packageVars.getCursor();
+                                    packageVariables.put(packageName, packageCursor);
+                                    cursor.insertAfter(packageName, packageVars);
+                                }
+                                packageCursor.insertAfter(key, value);
+                            }
                         }
-
-                        output.put(key, value);
                     }
                 }
+
+                for (IDataCursor packageCursor : packageVariables.values()) {
+                    packageCursor.destroy();
+                }
             }
+        } finally {
+            cursor.destroy();
         }
 
         return output;
@@ -166,8 +254,9 @@ public final class GlobalVariableHelper {
             IData[] variables = manager.listGlobalVariables();
             for (IDataMap document : IDataMap.of(variables)) {
                 if (document != null) {
+                    String packageName = (String)document.get("packageName");
                     String key = (String)document.get("key");
-                    GlobalVariableElement variable = getVariable(key);
+                    GlobalVariableElement variable = getVariable(packageName, key);
                     if (variable != null) {
                         set.add(variable);
                     }
@@ -252,6 +341,9 @@ public final class GlobalVariableHelper {
                 try {
                     merge(document);
                 } catch(Throwable ex) {
+
+                    // TODO: remove the next line, it is temporary only
+                    ExceptionHelper.raiseUnchecked(ex);
                     exceptions.add(ex);
                 }
             }
@@ -273,11 +365,12 @@ public final class GlobalVariableHelper {
         if (document != null) {
             IDataCursor cursor = document.getCursor();
             try {
+                String packageName = IDataHelper.get(cursor, "package", String.class);
                 String key = IDataHelper.get(cursor, "key", String.class);
                 String value = IDataHelper.get(cursor, "value", String.class);
                 boolean secured = IDataHelper.getOrDefault(cursor, "secured", Boolean.class, false);
 
-                merge(key, value, secured);
+                merge(packageName, key, value, secured);
             } catch (Exception ex) {
                 ExceptionHelper.raise(ex);
             } finally {
@@ -295,7 +388,31 @@ public final class GlobalVariableHelper {
      */
     public static void merge(GlobalVariableElement variable) throws ServiceException {
         if (variable != null) {
-            merge(variable.getKey(), variable.getValue(), variable.isSecure());
+            merge(variable.getPackageName(), variable.getKey(), variable.getValue(), variable.isSecure());
+        }
+    }
+
+    /**
+     * The GlobalVariablesManager.addGlobalVariable(String, String, String, boolean) reflected method, if it exists.
+     */
+    private static Method GLOBALVARIABLESMANAGER_ADDGLOBALVARIABLE_METHOD;
+    static {
+        try {
+            GLOBALVARIABLESMANAGER_ADDGLOBALVARIABLE_METHOD = GlobalVariablesManager.class.getDeclaredMethod("addGlobalVariable", String.class, String.class, String.class, boolean.class);
+        } catch(Throwable ex) {
+            GLOBALVARIABLESMANAGER_ADDGLOBALVARIABLE_METHOD = null;
+        }
+    }
+
+    /**
+     * The GlobalVariablesManager.editGlobalVariable(String, String, String, boolean) reflected method, if it exists.
+     */
+    private static Method GLOBALVARIABLESMANAGER_EDITGLOBALVARIABLE_METHOD;
+    static {
+        try {
+            GLOBALVARIABLESMANAGER_EDITGLOBALVARIABLE_METHOD = GlobalVariablesManager.class.getDeclaredMethod("editGlobalVariable", String.class, String.class, String.class, boolean.class);
+        } catch(Throwable ex) {
+            GLOBALVARIABLESMANAGER_EDITGLOBALVARIABLE_METHOD = null;
         }
     }
 
@@ -304,20 +421,29 @@ public final class GlobalVariableHelper {
      * Server by creating it if it does not exist, otherwise updating the
      * existing global variable with the same key.
      *
+     * @param packageName       The optional name of the package this global variable is scoped to.
      * @param key               The global variable key.
      * @param value             The global variable value.
      * @param secured           Whether the global variable is secret and should
      *                          be secured.
      * @throws ServiceException If an error occurs.
      */
-    public static void merge(String key, String value, boolean secured) throws ServiceException {
+    public static void merge(String packageName, String key, String value, boolean secured) throws ServiceException {
         try {
             GlobalVariablesManager manager = GlobalVariablesManager.getInstance();
-            GlobalVariableElement existingVariable = GlobalVariableHelper.getVariable(key);
+            GlobalVariableElement existingVariable = getVariable(packageName, key);
             if (existingVariable == null) {
-                manager.addGlobalVariable(key, value, secured);
+                if (isPackageLevelSupported()) {
+                    GLOBALVARIABLESMANAGER_ADDGLOBALVARIABLE_METHOD.invoke(manager, packageName, key, value, secured);
+                } else {
+                    manager.addGlobalVariable(key, value, secured);
+                }
             } else {
-                manager.editGlobalVariable(key, value, secured);
+                if (isPackageLevelSupported()) {
+                    GLOBALVARIABLESMANAGER_EDITGLOBALVARIABLE_METHOD.invoke(manager, packageName, key, value, secured);
+                } else {
+                    manager.editGlobalVariable(key, value, secured);
+                }
             }
         } catch(Exception ex) {
             ExceptionHelper.raise(ex);

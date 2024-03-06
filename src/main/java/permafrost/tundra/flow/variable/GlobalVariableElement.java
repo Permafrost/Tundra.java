@@ -24,17 +24,21 @@
 
 package permafrost.tundra.flow.variable;
 
-import com.wm.app.b2b.server.globalvariables.GlobalVariablesManager;
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
 import com.wm.util.GlobalVariables;
-import permafrost.tundra.server.OutboundPasswordHelper;
+import permafrost.tundra.lang.ExceptionHelper;
+import java.lang.reflect.Method;
 
 /**
  * Wrapper for a Global Variable element.
  */
 public class GlobalVariableElement implements Comparable<GlobalVariableElement> {
+    /**
+     * The optional name of the package this global variable is scoped to.
+     */
+    protected String packageName;
     /**
      * The key this global variable is associated with.
      */
@@ -50,9 +54,19 @@ public class GlobalVariableElement implements Comparable<GlobalVariableElement> 
      * @param key       The key this global variable is associated with.
      * @param variable  The value this global variable is associated with.
      */
-    public GlobalVariableElement(String key, GlobalVariables.GlobalVariableValue variable) {
+    public GlobalVariableElement(String packageName, String key, GlobalVariables.GlobalVariableValue variable) {
+        this.packageName = packageName;
         this.key = key;
         this.variable = variable;
+    }
+
+    /**
+     * Returns the name of the package this global variable is scoped to.
+     *
+     * @return the name of the package this global variable is scoped to.
+     */
+    public String getPackageName() {
+        return packageName;
     }
 
     /**
@@ -65,6 +79,18 @@ public class GlobalVariableElement implements Comparable<GlobalVariableElement> 
     }
 
     /**
+     * The GlobalVariables.getDecryptedValue(String, String) reflected method, if it exists.
+     */
+    private static Method GLOBALVARIABLES_GETDECRYPTEDVALUE_METHOD;
+    static {
+        try {
+            GLOBALVARIABLES_GETDECRYPTEDVALUE_METHOD = GlobalVariables.class.getDeclaredMethod("getDecryptedValue", String.class, String.class);
+        } catch(Throwable ex) {
+            GLOBALVARIABLES_GETDECRYPTEDVALUE_METHOD = null;
+        }
+    }
+
+    /**
      * Returns this global variable's value, decrypted if necessary.
      *
      * @return this global variable's value, decrypted if necessary.
@@ -72,7 +98,16 @@ public class GlobalVariableElement implements Comparable<GlobalVariableElement> 
     public String getValue() {
         String value = variable.getValue();
         if (variable.isSecure()) {
-            value = OutboundPasswordHelper.getPassword(value);
+            GlobalVariables variables = GlobalVariables.getInstance();
+            if (GlobalVariableHelper.isPackageLevelSupported()) {
+                try {
+                    value = (String)GLOBALVARIABLES_GETDECRYPTEDVALUE_METHOD.invoke(variables, packageName, key);
+                } catch(Exception ex) {
+                    ExceptionHelper.raiseUnchecked(ex);
+                }
+            } else {
+                value = variables.getDecryptedValue(key);
+            }
         }
         return value;
     }
@@ -108,14 +143,38 @@ public class GlobalVariableElement implements Comparable<GlobalVariableElement> 
             comparison = 0;
         } else if (other == null) {
             comparison = 1;
-        } else if (this.key == null) {
-            if (other.key == null) {
+        } else if (this.packageName == null) {
+            if (other.packageName == null) {
+                comparison = compareKey(other.key);
+            } else {
+                comparison = 1;
+            }
+        } else if (other.packageName == null) {
+            comparison = 1;
+        } else if (this.packageName.equals(other.packageName)) {
+            comparison = compareKey(other.key);
+        } else {
+            comparison = this.packageName.compareTo(other.packageName);
+        }
+        return comparison;
+    }
+
+    /**
+     * Compares this object's key with another key.
+     *
+     * @param otherKey  The other key to compare to.
+     * @return          The result of the comparison.
+     */
+    private int compareKey(String otherKey) {
+        int comparison;
+        if (this.key == null) {
+            if (otherKey == null) {
                 comparison = 0;
             } else {
                 comparison = 1;
             }
         } else {
-            comparison = this.key.compareTo(other.key);
+            comparison = this.key.compareTo(otherKey);
         }
         return comparison;
     }
@@ -130,6 +189,7 @@ public class GlobalVariableElement implements Comparable<GlobalVariableElement> 
         IDataCursor cursor = document.getCursor();
 
         try {
+            if (packageName != null) cursor.insertAfter("package", getPackageName());
             cursor.insertAfter("key", getKey());
             cursor.insertAfter("value", getValue());
             cursor.insertAfter("secured", isSecure());
