@@ -40,9 +40,9 @@ public class SequencePriority implements Priority {
     protected long sequence = SEQUENCER.incrementAndGet();
 
     /**
-     * Compares this CallableRoutePriority with another CallableRoutePriority, in order to prioritize routes.
+     * Compares this Priority with another Priority, in order to prioritize objects by creation sequence.
      *
-     * @param other The other CallableRoutePriority to compare to.
+     * @param other The other Priority to compare to.
      * @return      The result of the comparison.
      */
     @Override
