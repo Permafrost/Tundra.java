@@ -99,7 +99,7 @@ public final class SystemHelper {
             output.add(new Element<String, Object>("localhost", getHost()));
             output.add(new Element<String, Object>("environment", getEnvironment()));
             output.add(new KeyAliasElement<String, Object>("property", getProperties(), "properties"));
-            if (GlobalVariableHelper.isSupported()) output.add(new Element<String, Object>("global", GlobalVariableHelper.list()));
+            if (hasGlobalVariableSupport()) output.add(new Element<String, Object>("global", GlobalVariableHelper.list()));
             output.add(new KeyAliasElement<String, Object>("directory", getDirectories(), "directories"));
 
             system = new ImmutableIData(output);
@@ -115,6 +115,20 @@ public final class SystemHelper {
         }
 
         return duplicate;
+    }
+
+    /**
+     * Whether the global variable feature is supported by this Integration Server.
+     */
+    private static final boolean GLOBAL_VARIABLES_SUPPORTED = NodeHelper.exists("wm.server.globalvariables:getGlobalVariableValue");
+
+    /**
+     * Returns true if this Integration Server version supports global variables.
+     *
+     * @return True if this Integration Server version supports global variables.
+     */
+    public static boolean hasGlobalVariableSupport() {
+        return GLOBAL_VARIABLES_SUPPORTED;
     }
 
     /**

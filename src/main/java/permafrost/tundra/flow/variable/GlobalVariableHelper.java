@@ -39,6 +39,7 @@ import permafrost.tundra.data.IDataParser;
 import permafrost.tundra.lang.ExceptionHelper;
 import permafrost.tundra.lang.StringHelper;
 import permafrost.tundra.server.NodeHelper;
+import permafrost.tundra.server.SystemHelper;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -54,10 +55,6 @@ import java.util.TreeSet;
  * A collection of convenience methods for dealing with global variables.
  */
 public final class GlobalVariableHelper {
-    /**
-     * Whether the global variable feature is supported by this Integration Server.
-     */
-    private static final boolean isSupported = NodeHelper.exists("wm.server.globalvariables:getGlobalVariableValue");
     /**
      * Whether package-level global variables are supported by this Integration Server.
      */
@@ -82,7 +79,7 @@ public final class GlobalVariableHelper {
      * @return True if this Integration Server version supports global variables.
      */
     public static boolean isSupported() {
-        return isSupported;
+        return SystemHelper.hasGlobalVariableSupport();
     }
 
     /**
