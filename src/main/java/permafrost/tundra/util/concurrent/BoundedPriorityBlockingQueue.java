@@ -10,9 +10,13 @@ import java.util.concurrent.PriorityBlockingQueue;
  */
 public class BoundedPriorityBlockingQueue<E> extends PriorityBlockingQueue<E> {
     /**
+     * The initial capacity used to construct the queue.
+     */
+    protected static final int DEFAULT_INITIAL_CAPACITY = 11;
+    /**
      * The maximum capacity of this queue.
      */
-    protected final int capacity;
+    protected final int CAPACITY;
 
     /**
      * Creates a new queue.
@@ -20,8 +24,8 @@ public class BoundedPriorityBlockingQueue<E> extends PriorityBlockingQueue<E> {
      * @param capacity  The maximum capacity of this queue.
      */
     public BoundedPriorityBlockingQueue(int capacity) {
-        super(capacity);
-        this.capacity = capacity;
+        super(DEFAULT_INITIAL_CAPACITY);
+        CAPACITY = capacity;
     }
 
     /**
@@ -31,8 +35,8 @@ public class BoundedPriorityBlockingQueue<E> extends PriorityBlockingQueue<E> {
      * @param comparator    The comparator used to compare items in this queue.
      */
     public BoundedPriorityBlockingQueue(int capacity, Comparator<? super E> comparator) {
-        super(capacity, comparator);
-        this.capacity = capacity;
+        super(DEFAULT_INITIAL_CAPACITY, comparator);
+        CAPACITY = capacity;
     }
 
     /**
@@ -43,7 +47,7 @@ public class BoundedPriorityBlockingQueue<E> extends PriorityBlockingQueue<E> {
      */
     @Override
     public boolean offer(E item) {
-        if (size() == capacity) return false;
+        if (size() >= CAPACITY) return false;
         return super.offer(item);
     }
 }
