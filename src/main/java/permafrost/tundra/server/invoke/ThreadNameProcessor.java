@@ -28,6 +28,7 @@ import com.wm.app.b2b.server.BaseService;
 import com.wm.app.b2b.server.invoke.ServiceStatus;
 import com.wm.data.IData;
 import com.wm.util.ServerException;
+import permafrost.tundra.server.UserHelper;
 import permafrost.tundra.time.DateTimeHelper;
 import java.text.MessageFormat;
 import java.util.Iterator;
@@ -74,7 +75,8 @@ public class ThreadNameProcessor extends AbstractInvokeChainProcessor {
     public void process(Iterator iterator, BaseService baseService, IData pipeline, ServiceStatus serviceStatus) throws ServerException {
         String originalThreadName = Thread.currentThread().getName();
         try {
-            Thread.currentThread().setName(MessageFormat.format("{0} ({1} @ {2})", originalThreadName, baseService.getNSName().getFullName(), DateTimeHelper.format(serviceStatus.getStartTime())));
+            String serviceName = baseService.getNSName().getFullName();
+            Thread.currentThread().setName(MessageFormat.format("{0} ({1} ► {2} @ {3})", originalThreadName.replace(" (" + serviceName + ")", ""), UserHelper.getCurrentName(), serviceName, DateTimeHelper.format(serviceStatus.getStartTime())));
             super.process(iterator, baseService, pipeline, serviceStatus);
         } finally {
             Thread.currentThread().setName(originalThreadName);
