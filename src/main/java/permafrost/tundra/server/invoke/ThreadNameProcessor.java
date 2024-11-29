@@ -28,6 +28,7 @@ import com.wm.app.b2b.server.BaseService;
 import com.wm.app.b2b.server.invoke.ServiceStatus;
 import com.wm.data.IData;
 import com.wm.util.ServerException;
+import permafrost.tundra.server.UserHelper;
 import permafrost.tundra.time.DateTimeHelper;
 import java.text.MessageFormat;
 import java.util.Iterator;
@@ -36,6 +37,10 @@ import java.util.Iterator;
  * A service invocation processor that sets more descriptive thread names on invocation threads.
  */
 public class ThreadNameProcessor extends AbstractInvokeChainProcessor {
+    /**
+     * The datetime pattern used to format service start time.
+     */
+    private static final String DATETIME_PATTERN = DateTimeHelper.DEFAULT_DATETIME_PATTERN;
     /**
      * Initialization on demand holder idiom.
      */
@@ -74,7 +79,9 @@ public class ThreadNameProcessor extends AbstractInvokeChainProcessor {
     public void process(Iterator iterator, BaseService baseService, IData pipeline, ServiceStatus serviceStatus) throws ServerException {
         String originalThreadName = Thread.currentThread().getName();
         try {
-            Thread.currentThread().setName(MessageFormat.format("{0} ({1} @ {2})", originalThreadName, baseService.getNSName().getFullName(), DateTimeHelper.format(serviceStatus.getStartTime())));
+            String serviceName = baseService.getNSName().getFullName();
+            long startTime = serviceStatus.getStartTime();
+            Thread.currentThread().setName(MessageFormat.format("{0} ({1} ► {2} @ {3})", originalThreadName.replace(" (" + serviceName + ")", ""), UserHelper.getCurrentName(), serviceName, startTime == 0L ? DateTimeHelper.now(DATETIME_PATTERN) : DateTimeHelper.format(startTime, DATETIME_PATTERN)));
             super.process(iterator, baseService, pipeline, serviceStatus);
         } finally {
             Thread.currentThread().setName(originalThreadName);
