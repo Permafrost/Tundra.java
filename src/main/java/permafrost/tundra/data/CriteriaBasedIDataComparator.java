@@ -30,6 +30,8 @@ import permafrost.tundra.math.BigDecimalHelper;
 import permafrost.tundra.math.BigIntegerHelper;
 import permafrost.tundra.time.DateTimeHelper;
 import permafrost.tundra.time.DurationHelper;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.List;
 
 /**
@@ -115,14 +117,46 @@ public class CriteriaBasedIDataComparator implements IDataComparator {
             } else if (secondValue == null) {
                 result = normalize(1, criterion.isDescending());
             } else {
+                boolean firstParse = true, secondParse = true;
+
                 switch (criterion.getType()) {
                     case INTEGER:
-                        firstValue = BigIntegerHelper.parse(firstValue.toString());
-                        secondValue = BigIntegerHelper.parse(secondValue.toString());
+                        try {
+                            firstValue = BigIntegerHelper.parse(firstValue.toString());
+                        } catch(NumberFormatException ex) {
+                            firstParse = false;
+                        }
+                        try {
+                            secondValue = BigIntegerHelper.parse(secondValue.toString());
+                        } catch(NumberFormatException ex) {
+                            secondParse = false;
+                        }
+
+                        // handle failed parses
+                        if (firstParse && !secondParse) {
+                            secondValue = BigInteger.valueOf(Long.MAX_VALUE);
+                        } else if (!firstParse && secondParse) {
+                            firstValue = BigInteger.valueOf(Long.MAX_VALUE);
+                        }
                         break;
                     case DECIMAL:
-                        firstValue = BigDecimalHelper.parse(firstValue.toString());
-                        secondValue = BigDecimalHelper.parse(secondValue.toString());
+                        try {
+                            firstValue = BigDecimalHelper.parse(firstValue.toString());
+                        } catch(NumberFormatException ex) {
+                            firstParse = false;
+                        }
+                        try {
+                            secondValue = BigDecimalHelper.parse(secondValue.toString());
+                        } catch(NumberFormatException ex) {
+                            secondParse = false;
+                        }
+
+                        // handle failed parses
+                        if (firstParse && !secondParse) {
+                            secondValue = BigDecimal.valueOf(Double.MAX_VALUE);
+                        } else if (!firstParse && secondParse) {
+                            firstValue = BigDecimal.valueOf(Double.MAX_VALUE);
+                        }
                         break;
                     case DATETIME:
                         firstValue = DateTimeHelper.parse(firstValue.toString(), criterion.getPattern());
