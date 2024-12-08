@@ -54,7 +54,7 @@ dependencies {
     api("org.hjson:hjson:2.1.1")
     api("org.jscience:jscience:4.3.1")
     api("org.unbescape:unbescape:1.1.6.RELEASE")
-    api("org.yaml:snakeyaml:1.23")
+    api("org.yaml:snakeyaml:2.3")
     api("oro:oro:2.0.8")
     api(files("libs/wm-isclient.jar", "libs/wm-isserver.jar", "libs/wm-scg-security.jar", "libs/wm-scg-core.jar"))
 

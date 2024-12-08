@@ -81,7 +81,7 @@ public class IDataYAMLParser extends IDataParser {
         try {
             DumperOptions options = new DumperOptions();
             options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
-            Yaml parser = new Yaml(new Representer(), options);
+            Yaml parser = new Yaml(new Representer(options), options);
             Object value = IDataUtil.get(cursor, "recordWithNoID");
 
             Object object;
@@ -158,7 +158,8 @@ public class IDataYAMLParser extends IDataParser {
         /**
          * Default constructor.
          */
-        public Representer() {
+        public Representer(DumperOptions options) {
+            super(options);
             this.multiRepresenters.put(ByteArrayInputStream.class, new RepresentInputStream());
             this.representers.put(null, new RepresentObject());
         }
