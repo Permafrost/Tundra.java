@@ -77,14 +77,20 @@ public class ThreadNameProcessor extends AbstractInvokeChainProcessor {
      */
     @Override
     public void process(Iterator iterator, BaseService baseService, IData pipeline, ServiceStatus serviceStatus) throws ServerException {
+        boolean isTopService = serviceStatus.isTopService();
         String originalThreadName = Thread.currentThread().getName();
+
         try {
-            String serviceName = baseService.getNSName().getFullName();
-            long startTime = serviceStatus.getStartTime();
-            Thread.currentThread().setName(MessageFormat.format("{0} ({1} ► {2} @ {3})", originalThreadName.replace(" (" + serviceName + ")", ""), UserHelper.getCurrentName(), serviceName, startTime == 0L ? DateTimeHelper.now(DATETIME_PATTERN) : DateTimeHelper.format(startTime, DATETIME_PATTERN)));
+            if (isTopService) {
+                String serviceName = baseService.getNSName().getFullName();
+                long startTime = serviceStatus.getStartTime();
+                Thread.currentThread().setName(MessageFormat.format("{0} {1} {2} ► {3}", originalThreadName.replace(" (" + serviceName + ")", ""), startTime == 0L ? DateTimeHelper.now(DATETIME_PATTERN) : DateTimeHelper.format(startTime, DATETIME_PATTERN), UserHelper.getCurrentName(), serviceName));
+            }
             super.process(iterator, baseService, pipeline, serviceStatus);
         } finally {
-            Thread.currentThread().setName(originalThreadName);
+            if (isTopService) {
+                Thread.currentThread().setName(originalThreadName);
+            }
         }
     }
 }
