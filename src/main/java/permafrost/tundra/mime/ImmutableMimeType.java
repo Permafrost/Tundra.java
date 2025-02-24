@@ -44,7 +44,7 @@ public class ImmutableMimeType extends MimeType implements Comparable<MimeType> 
     }
 
     /**
-     * Constructor that builds a nImmutableMimeType from a String.
+     * Constructor that builds an ImmutableMimeType from a String.
      *
      * @param rawData                 The MIME type string.
      * @throws MimeTypeParseException If the MIME type string is incorrectly formatted.
