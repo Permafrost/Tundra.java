@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Locale;
 import javax.activation.MimeType;
 import javax.activation.MimeTypeParseException;
 
@@ -35,7 +36,7 @@ import javax.activation.MimeTypeParseException;
  * A subclass of MimeType that is immutable and supports comparisons and equality checks based on MimeType.match, which
  * allows this class to be used as keys in a Map.
  */
-public class ImmutableMimeType extends MimeType implements Comparable<MimeType> {
+public class ImmutableMimeType extends CasePreservedMimeType implements Comparable<MimeType> {
     /**
      * Default constructor.
      */
@@ -46,18 +47,18 @@ public class ImmutableMimeType extends MimeType implements Comparable<MimeType> 
     /**
      * Constructor that builds an ImmutableMimeType from a String.
      *
-     * @param rawData                 The MIME type string.
+     * @param contentType             The MIME type string.
      * @throws MimeTypeParseException If the MIME type string is incorrectly formatted.
      */
-    public ImmutableMimeType(String rawData) throws MimeTypeParseException {
-        super(rawData);
+    public ImmutableMimeType(String contentType) throws MimeTypeParseException {
+        super(contentType);
     }
 
     /**
      * Constructor that builds an ImmutableMimeType with the given primary and sub type but has an empty parameter list.
      *
      * @param primary                   The primary MIME type.
-     * @param sub                       The MIME sub-type.
+     * @param sub                       The MIME subtype.
      * @throws MimeTypeParseException   If the primary type or subtype is not a valid token.
      */
     public ImmutableMimeType(String primary, String sub) throws MimeTypeParseException {
@@ -84,11 +85,17 @@ public class ImmutableMimeType extends MimeType implements Comparable<MimeType> 
     public int compareTo(MimeType other) {
         if (other == null) return 1;
 
-        int result = this.getPrimaryType().compareTo(other.getPrimaryType());
+        String primaryType = this.getPrimaryType().toLowerCase(Locale.ENGLISH);
+        String otherPrimaryType = other.getPrimaryType().toLowerCase(Locale.ENGLISH);
+
+        int result = primaryType.compareTo(otherPrimaryType);
 
         if (result == 0) {
-            if (!(this.getSubType().equals("*") || other.getSubType().equals("*") || this.getSubType().equals(other.getSubType()))) {
-                result = this.getSubType().compareTo(other.getSubType());
+            String subType = this.getSubType().toLowerCase(Locale.ENGLISH);
+            String otherSubType = other.getSubType().toLowerCase(Locale.ENGLISH);
+
+            if (!(subType.equals("*") || otherSubType.equals("*") || subType.equals(otherSubType))) {
+                result = subType.compareTo(otherSubType);
             }
         }
 

@@ -89,4 +89,16 @@ public class MIMETypeHelperTest {
         assertEquals(true, MIMETypeHelper.validate("foo/bar", true));
         assertEquals(true, MIMETypeHelper.validate("foo/bar", false));
     }
+
+    @Test
+    public void testParsingMalformedMIMETypes() throws Exception {
+        assertEquals("FoO", MIMETypeHelper.of("FoO").toString());
+        assertEquals("FoO", MIMETypeHelper.of("FoO/").toString());
+        assertEquals("FoO/BaR", MIMETypeHelper.of("FoO/BaR").toString());
+        assertEquals("FoO; param=value", MIMETypeHelper.of("FoO;param=value").toString());
+        assertEquals("FoO/BaR; param=value", MIMETypeHelper.of("FoO/BaR;param=value").toString());
+        assertEquals("/BaR", MIMETypeHelper.of("/BaR").toString());
+        assertEquals("/BaR; param=value", MIMETypeHelper.of("/BaR;param=value").toString());
+        assertEquals("; param=value", MIMETypeHelper.of(";param=value").toString());
+    }
 }

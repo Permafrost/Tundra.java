@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2025 Lachlan Dowding
+ * Copyright (c) 2015 Lachlan Dowding
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,28 +25,48 @@
 package permafrost.tundra.mime;
 
 import javax.activation.MimeType;
+import javax.activation.MimeTypeParameterList;
 import javax.activation.MimeTypeParseException;
+import java.util.Locale;
 
 /**
  * A subclass of MimeType that preserves the specified case of the primary and sub types. Comparisons with other MIME
  * types continues to be performed as case-insensitive, however when converting this object to a string the case
- * used in the primary and sub types will be the original case specified when the object was constructed.
+ * used in the primary and sub types will be the original case specified when the object was constructed. Further, the
+ * parsing of MIME types has been relaxed to accept empty or missing primary or sub types to support malformed MIME
+ * types that are unfortunately used in the wild.
  */
 public class CasePreservedMimeType extends MimeType {
     /**
      * The primary type with case preserved.
      */
-    protected String casePreservedPrimaryType;
+    protected String primaryType;
     /**
-     * The sub type with case preserved.
+     * The subtype with case preserved.
      */
-    protected String casePreservedSubType;
+    protected String subType;
+    /**
+     * The list of parameters.
+     */
+    protected MimeTypeParameterList parameters;
 
     /**
      * Default constructor.
      */
     public CasePreservedMimeType() {
-        super();
+        this("", "");
+    }
+
+    /**
+     * Constructor that builds a CasePreservedMimeType with the given primary and sub type with an empty parameter list.
+     *
+     * @param primary                   The primary MIME type.
+     * @param sub                       The MIME subtype.
+     */
+    public CasePreservedMimeType(String primary, String sub) {
+        primaryType = primary;
+        subType = sub;
+        parameters = new MimeTypeParameterList();
     }
 
     /**
@@ -56,39 +76,50 @@ public class CasePreservedMimeType extends MimeType {
      * @throws MimeTypeParseException If the MIME type string is incorrectly formatted.
      */
     public CasePreservedMimeType(String contentType) throws MimeTypeParseException {
-        super(contentType);
-        casePreservedParse(contentType);
+        parse(contentType);
     }
 
     /**
-     * Constructor that builds a CasePreservedMimeType with the given primary and sub type but has an empty parameter list.
+     * Parses the given MIME type string, using relaxed parsing that allows for missing or empty primary and sub types.
      *
-     * @param primary                   The primary MIME type.
-     * @param sub                       The MIME sub-type.
-     * @throws MimeTypeParseException   If the primary type or subtype is not a valid token.
+     * @param data                    The MIME type string.
+     * @throws MimeTypeParseException If the MIME type string is incorrectly formatted.
      */
-    public CasePreservedMimeType(String primary, String sub) throws MimeTypeParseException {
-        super(primary, sub);
-        casePreservedPrimaryType = primary;
-        casePreservedSubType = sub;
-    }
+    protected void parse(String data) throws MimeTypeParseException {
+        primaryType = "";
+        subType = "";
+        parameters = null;
 
-    /**
-     * Parses the primary and sub types while preserving their case.
-     */
-    private void casePreservedParse(String data) throws MimeTypeParseException {
-        int slashIndex = data.indexOf('/');
-        int semicolonIndex = data.indexOf(';');
-        if ((slashIndex < 0) || (semicolonIndex >= 0 && slashIndex > semicolonIndex)) {
-            throw new MimeTypeParseException("Invalid MIME type: " + data);
-        } else {
-            casePreservedPrimaryType = data.substring(0, slashIndex).trim();
-            if (semicolonIndex < 0) {
-                casePreservedSubType = data.substring(slashIndex + 1).trim();
+        if (data != null) {
+            int indexSlash = data.indexOf('/');
+            int indexSemicolon = data.indexOf(';');
+
+            if (indexSlash < 0 && indexSemicolon < 0) {
+                // "FoO"
+                primaryType = data;
+            } else if (indexSlash < 0) {
+                // "FoO;BaZ=value" or ";BaZ=value"
+                primaryType = data.substring(0, indexSemicolon);
+                parameters = new MimeTypeParameterList(data.substring(indexSemicolon));
+            } else if (indexSemicolon < 0) {
+                // "FoO/BaR" or "/BaR"
+                primaryType = data.substring(0, indexSlash);
+                subType = data.substring(indexSlash + 1);
+            } else if (indexSlash < indexSemicolon) {
+                // "FoO/BaR;BaZ=value"
+                primaryType = data.substring(0, indexSlash);
+                subType = data.substring(indexSlash + 1, indexSemicolon);
+                parameters = new MimeTypeParameterList(data.substring(indexSemicolon));
             } else {
-                casePreservedSubType = data.substring(slashIndex + 1, semicolonIndex).trim();
+                // "FoO;BaZ=a/b" or ";BaZ=a/b"
+                primaryType = data.substring(0, indexSemicolon);
+                parameters = new MimeTypeParameterList(data.substring(indexSemicolon));
             }
         }
+
+        if (parameters == null) parameters = new MimeTypeParameterList();
+        primaryType = primaryType.trim();
+        subType = subType.trim();
     }
 
     /**
@@ -97,19 +128,17 @@ public class CasePreservedMimeType extends MimeType {
      */
     @Override
     public String getPrimaryType() {
-        return casePreservedPrimaryType;
+        return primaryType;
     }
 
     /**
      * Set the primary type for this object to the given String.
      *
      * @param     primary                The primary type.
-     * @exception MimeTypeParseException If the primary type is invalid.
      */
     @Override
-    public void setPrimaryType(String primary) throws MimeTypeParseException {
-        super.setPrimaryType(primary);
-        casePreservedPrimaryType = primary;
+    public void setPrimaryType(String primary) {
+        primaryType = primary == null ? "" : primary;
     }
 
     /**
@@ -118,19 +147,67 @@ public class CasePreservedMimeType extends MimeType {
      */
     @Override
     public String getSubType() {
-        return casePreservedSubType;
+        return subType;
     }
 
     /**
      * Set the subtype for this MIME type to the give string.
      *
      * @param     sub                    The subtype value to set.
-     * @exception MimeTypeParseException If the subtype is invalid.
      */
     @Override
-    public void setSubType(String sub) throws MimeTypeParseException {
-        super.setSubType(sub);
-        casePreservedSubType = sub;
+    public void setSubType(String sub) {
+        subType = sub == null ? "" : sub;
+    }
+
+    /**
+     * Returns the list of parameters.
+     * @return The list of parameters.
+     */
+    @Override
+    public MimeTypeParameterList getParameters() {
+        return parameters;
+    }
+
+    /**
+     * Returns the value of the parameter with the given name.
+     *
+     * @param name	The name of the parameter to return the value of.
+     * @return      The value of the parameter with the given name.
+     */
+    @Override
+    public String getParameter(String name) {
+        return parameters.get(name);
+    }
+
+    /**
+     * Sets the parameter with the given name to the given value.
+     *
+     * @param name	The name of the parameter to be set.
+     * @param value	The value to set the parameter to.
+     */
+    @Override
+    public void setParameter(String name, String value) {
+        parameters.set(name, value);
+    }
+
+    /**
+     * Removes the parameter with the given name from the parameter list.
+     *
+     * @param name	The name of the parameter to be removed.
+     */
+    @Override
+    public void removeParameter(String name) {
+        parameters.remove(name);
+    }
+
+    /**
+     * Returns the MIME type as a string.
+     * @return the MIME type as a string.
+     */
+    @Override
+    public String toString() {
+        return getBaseType() + parameters.toString();
     }
 
     /**
@@ -139,7 +216,8 @@ public class CasePreservedMimeType extends MimeType {
      */
     @Override
     public String getBaseType() {
-        return casePreservedPrimaryType + "/" + casePreservedSubType;
+        String separator = subType.isEmpty() ? "" : "/";
+        return primaryType + separator + subType;
     }
 
     /**
@@ -151,6 +229,35 @@ public class CasePreservedMimeType extends MimeType {
      */
     @Override
     public boolean match(MimeType type) {
-        return getPrimaryType().equalsIgnoreCase(type.getPrimaryType()) && (getSubType().equals("*") || type.getSubType().equals("*") || (getSubType().equalsIgnoreCase(type.getSubType())));
+        return equalsIgnoreCase(primaryType, type.getPrimaryType()) && ("*".equals(subType) || "*".equals(type.getSubType()) || (equalsIgnoreCase(subType, type.getSubType())));
+    }
+
+    /**
+     * Returns true if this MIME type matches the primary and sub type of the given MIME type, with string comparisons
+     * performed case-insensitively.
+     *
+     * @param data	The MIME type string to compare to.
+     * @return		True if the given type matches, otherwise false.
+     */
+    @Override
+    public boolean match(String data) throws MimeTypeParseException {
+        return match(new CasePreservedMimeType(data));
+    }
+
+    /**
+     * Performs a case-insensitive match for equality between two strings using the english locale.
+     *
+     * @param string1   The first string.
+     * @param string2   The second string.
+     * @return          True if both strings are equal ignoring case differences.
+     */
+    protected boolean equalsIgnoreCase(String string1, String string2) {
+        boolean equals;
+        if (string1 == null || string2 == null) {
+            equals = string1 == null && string2 == null;
+        } else {
+            equals = string1.toLowerCase(Locale.ENGLISH).equals(string2.toLowerCase(Locale.ENGLISH));
+        }
+        return equals;
     }
 }

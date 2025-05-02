@@ -42,6 +42,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -105,14 +106,14 @@ public final class MIMETypeHelper {
     /**
      * Returns a new MimeType object given a MIME media type string.
      *
-     * @param  string   A MIME media type string.
-     * @return          A MimeType object representing the given string.
+     * @param string A MIME media type string.
+     * @return       A MimeType object representing the given string.
      */
     public static MimeType of(String string) {
         if (string == null) return null;
 
         try {
-            return new MimeType(string);
+            return new CasePreservedMimeType(string);
         } catch(MimeTypeParseException ex) {
             throw new IllegalArgumentException("Unparseable mime type: \"" + string + "\"", ex);
         }
@@ -200,8 +201,9 @@ public final class MIMETypeHelper {
      */
     public static MimeType duplicate(MimeType type) {
         if (type == null) return null;
+
         try {
-            return new MimeType(type.toString());
+            return new CasePreservedMimeType(type.toString());
         } catch(MimeTypeParseException ex) {
             throw new IllegalArgumentException(ex);
         }
@@ -231,8 +233,9 @@ public final class MIMETypeHelper {
         if (contentSchema != null && NodeHelper.exists(contentSchema) && "Flat File Schema".equals(NodeHelper.getNodeType(contentSchema).toString())) {
             classification = MIMEClassification.PLAIN;
         } else if (type != null) {
-            String subType = type.getSubType();
-            if ("text".equals(type.getPrimaryType()) && "plain".equals(subType)) {
+            String primaryType = type.getPrimaryType().toLowerCase(Locale.ENGLISH);
+            String subType = type.getSubType().toLowerCase(Locale.ENGLISH);
+            if ("text".equals(primaryType) && "plain".equals(subType)) {
                 classification = MIMEClassification.PLAIN;
             } else if (subType.equals("xml") || subType.endsWith("+xml")) {
                 classification = MIMEClassification.XML;
@@ -304,7 +307,7 @@ public final class MIMETypeHelper {
      */
     public static Set<String> getFileExtensions(MimeType mimeType) {
         if (mimeType == null) return null;
-        Set<String> extensions = FILE_EXTENSIONS_BY_MIME_TYPE.get(mimeType.getBaseType().toLowerCase());
+        Set<String> extensions = FILE_EXTENSIONS_BY_MIME_TYPE.get(mimeType.getBaseType().toLowerCase(Locale.ENGLISH));
         if (extensions == null || extensions.size() == 0) {
             extensions = Collections.singleton(classify(mimeType).getDefaultFileExtension());
         }
@@ -366,7 +369,7 @@ public final class MIMETypeHelper {
         if (type == null) throw new IllegalArgumentException("type must not be null");
         if (subtype == null) throw new IllegalArgumentException("subtype must not be null");
 
-        MimeType mimeType = new MimeType(type, subtype);
+        MimeType mimeType = new CasePreservedMimeType(type, subtype);
 
         if (parameters != null) {
             parameters = IDataHelper.sort(parameters, false, true);
@@ -400,7 +403,7 @@ public final class MIMETypeHelper {
      * Returns true if the given MIME type strings are considered equivalent because their types and subtypes match
      * (parameters are not considered in the comparison).
      *
-     * @param string1                   The first MIME type string to be compare.
+     * @param string1                   The first MIME type string to be compared.
      * @param string2                   The second MIME type string to be compared.
      * @return                          True if the two MIME type strings are considered equal, otherwise false.
      * @throws MimeTypeParseException   If either of the MIME type strings are malformed.
@@ -465,7 +468,7 @@ public final class MIMETypeHelper {
         output.put("subtype", mimeType.getSubType());
 
         MimeTypeParameterList mimeTypeParameterList = mimeType.getParameters();
-        if (mimeTypeParameterList.size() > 0) output.put("parameters", toIData(mimeTypeParameterList));
+        if (!mimeTypeParameterList.isEmpty()) output.put("parameters", toIData(mimeTypeParameterList));
 
         return output;
     }
