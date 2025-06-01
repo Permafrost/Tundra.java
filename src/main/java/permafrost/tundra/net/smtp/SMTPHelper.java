@@ -589,10 +589,10 @@ public class SMTPHelper {
                 if (transport != null) {
                     IDataCursor transportCursor = transport.getCursor();
                     try {
-                        host = IDataHelper.get(cursor, "host", String.class);
-                        port = IDataHelper.get(cursor, "port", String.class);
+                        host = IDataHelper.get(transportCursor, "host", String.class);
+                        port = IDataHelper.get(transportCursor, "port", String.class);
 
-                        IData auth = IDataHelper.get(cursor, "auth", IData.class);
+                        IData auth = IDataHelper.get(transportCursor, "auth", IData.class);
                         if (auth != null) {
                             IDataCursor authCursor = auth.getCursor();
                             try {
@@ -607,7 +607,7 @@ public class SMTPHelper {
                             }
                         }
 
-                        IData secure = IDataHelper.get(cursor, "secure", IData.class);
+                        IData secure = IDataHelper.get(transportCursor, "secure", IData.class);
                         if (secure != null) {
                             IDataCursor secureCursor = secure.getCursor();
                             try {
