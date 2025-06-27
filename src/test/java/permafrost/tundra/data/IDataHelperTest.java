@@ -14,6 +14,9 @@ import permafrost.tundra.io.InputStreamHelper;
 import permafrost.tundra.lang.Sanitization;
 import permafrost.tundra.xml.dom.DocumentHelper;
 import permafrost.tundra.xml.sax.InputSourceHelper;
+
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 public class IDataHelperTest {
@@ -1598,5 +1601,24 @@ public class IDataHelperTest {
         assertEquals(true, IDataHelper.get(cursor, "g", Boolean.class, true));
 
         cursor.destroy();
+    }
+
+    @Test
+    public void testGroupNoSort() throws Exception {
+        IDataJSONParser parser = new IDataJSONParser();
+        IData[] array = new IData[6];
+        array[0] = parser.parse("{ \"a\": \"rec002\", \"b\": \"b0021\" }");
+        array[1] = parser.parse("{ \"a\": \"rec003\", \"b\": \"b0031\" }");
+        array[2] = parser.parse("{ \"a\": \"rec001\", \"b\": \"b0012\" }");
+        array[3] = parser.parse("{ \"a\": \"rec003\", \"b\": \"b0032\" }");
+        array[4] = parser.parse("{ \"a\": \"rec001\", \"b\": \"b0011\" }");
+        array[5] = parser.parse("{ \"a\": \"rec002\", \"b\": \"b0022\" }");
+
+        IDataComparisonCriterion[] criteria = new IDataComparisonCriterion[1];
+        criteria[0] = new IDataComparisonCriterion("a");
+
+        Map<IDataHelper.CompoundKey, List<IData>> groups = IDataHelper.group(array, criteria, IDataHelper.IDataArrayGroupSortType.NONE);
+
+        assertEquals(3, groups.size());
     }
 }

@@ -44,6 +44,7 @@ import permafrost.tundra.flow.ConditionEvaluator;
 import permafrost.tundra.flow.variable.SubstitutionHelper;
 import permafrost.tundra.lang.ArrayHelper;
 import permafrost.tundra.lang.ObjectHelper;
+import permafrost.tundra.lang.ReverseNaturalComparator;
 import permafrost.tundra.lang.Sanitization;
 import permafrost.tundra.lang.TableHelper;
 import permafrost.tundra.server.ServiceHelper;
@@ -61,6 +62,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -4323,10 +4325,22 @@ public final class IDataHelper {
      * @return      The grouped IData[].
      */
     public static IData[] group(IData[] array, String... keys) {
-        Map<CompoundKey, List<IData>> groups = group(array, IDataComparisonCriterion.of(keys));
+        return group(array, null, keys);
+    }
+
+    /**
+     * Groups the given IData[] by the given keys.
+     *
+     * @param array    The IData[] to be grouped.
+     * @param keys     The keys to group items by.
+     * @param sortType The type or sorting to apply to the results, defaults to ascending order if null.
+     * @return         The grouped IData[].
+     */
+    public static IData[] group(IData[] array, IDataArrayGroupSortType sortType, String... keys) {
+        Map<CompoundKey, List<IData>> groups = group(array, IDataComparisonCriterion.of(keys), sortType);
         List<IData> result;
 
-        if (groups.size() == 0) {
+        if (groups.isEmpty()) {
             result = new ArrayList<IData>(1);
 
             IData document = IDataFactory.create();
@@ -4359,11 +4373,12 @@ public final class IDataHelper {
     /**
      * Performs a multi-level grouping of the given IData[] by the given criteria.
      *
-     * @param array     The IData[] to be grouped.
-     * @param criteria  The multi-level grouping criteria.
-     * @return          The grouped IData[].
+     * @param array    The IData[] to be grouped.
+     * @param criteria The multi-level grouping criteria.
+     * @param sortType The type or sorting to apply to the results, defaults to ascending order if null.
+     * @return         The grouped IData[].
      */
-    public static IData[] group(IData[] array, IData criteria) {
+    public static IData[] group(IData[] array, IData criteria, IDataArrayGroupSortType sortType) {
         if (array == null) return null;
 
         List<IData> result;
@@ -4385,7 +4400,7 @@ public final class IDataHelper {
             IData then = get(criteriaCursor, "then", IData.class);
             criteriaCursor.destroy();
 
-            Map<CompoundKey, List<IData>> groups = group(array, IDataComparisonCriterion.of(by));
+            Map<CompoundKey, List<IData>> groups = group(array, IDataComparisonCriterion.of(by), sortType);
             result = new ArrayList<IData>(groups.size());
 
             for (Map.Entry<CompoundKey, List<IData>> entry : groups.entrySet()) {
@@ -4399,7 +4414,7 @@ public final class IDataHelper {
                 put(cursor, "items", items);
                 put(cursor, "items.length", items.length, String.class);
                 if (then != null) {
-                    IData[] thenGroup = group(items, then);
+                    IData[] thenGroup = group(items, then, sortType);
                     put(cursor, "then", thenGroup);
                     put(cursor, "then.length", thenGroup.length, String.class);
                 } else {
@@ -4420,12 +4435,20 @@ public final class IDataHelper {
      *
      * @param array    The IData[] to be grouped.
      * @param criteria The criteria to group items by.
+     * @param sortType The type or sorting to apply to the results, defaults to ascending order if null.
      * @return         A Map containing the groups and their items.
      */
-    public static Map<CompoundKey, List<IData>> group(IData[] array, IDataComparisonCriterion[] criteria) {
-        Map<CompoundKey, List<IData>> groups = new TreeMap<CompoundKey, List<IData>>();
+    public static Map<CompoundKey, List<IData>> group(IData[] array, IDataComparisonCriterion[] criteria, IDataArrayGroupSortType sortType) {
+        Map<CompoundKey, List<IData>> groups;
+        if (sortType == null || sortType == IDataArrayGroupSortType.ASCENDING) {
+            groups = new TreeMap<CompoundKey, List<IData>>();
+        } else if (sortType == IDataArrayGroupSortType.DESCENDING) {
+            groups = new TreeMap<CompoundKey, List<IData>>(new ReverseNaturalComparator<CompoundKey>());
+        } else {
+            groups = new LinkedHashMap<CompoundKey, List<IData>>();
+        }
 
-        if (array != null && criteria != null || criteria.length == 0) {
+        if (array != null && criteria != null && criteria.length > 0) {
             for (IData item : array) {
                 if (item != null) {
                     CompoundKey key = new CompoundKey(criteria, item);
@@ -4440,6 +4463,13 @@ public final class IDataHelper {
         }
 
         return groups;
+    }
+
+    /**
+     * The types or sorting that can be used when grouping IData arrays using group(IData[], IDataComparisonCriterion[])
+     */
+    public static enum IDataArrayGroupSortType {
+        ASCENDING, DESCENDING, NONE
     }
 
     /**
@@ -4663,7 +4693,7 @@ public final class IDataHelper {
     /**
      * Represents a compound key which can be used for grouping IData documents together.
      */
-    private static class CompoundKey implements Comparable<CompoundKey>, IDataCodable {
+    public static class CompoundKey implements Comparable<CompoundKey>, IDataCodable {
         /**
          * The comparator used for comparison with other compound keys.
          */
@@ -4806,6 +4836,23 @@ public final class IDataHelper {
             }
 
             return result;
+        }
+
+        /**
+         * Returns a hash code value for the object.
+         *
+         * @return A hash code value for the object.
+         */
+        @Override
+        public int hashCode() {
+            int hash;
+            IDataJSONParser parser = new IDataJSONParser(false);
+            try {
+                hash = parser.emit(getIData(), String.class).hashCode();
+            } catch(Exception ex) {
+                throw new RuntimeException(ex);
+            }
+            return hash;
         }
     }
 }
