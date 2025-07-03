@@ -786,31 +786,35 @@ public final class IDataHelper {
      */
     private static int size(IData document, IDataKey key) {
         int size = 0;
-        if (document != null && key != null && key.size() > 0) {
+        if (document != null && key != null && !key.isEmpty()) {
             IDataCursor cursor = document.getCursor();
-            IDataKey.Part keyPart = key.remove();
-
-            if (key.size() > 0) {
-                if (keyPart.hasArrayIndex()) {
-                    size = size(ArrayHelper.get(toIDataArray(IDataUtil.get(cursor, keyPart.getKey())), keyPart.getIndex()), key);
-                } else if (keyPart.hasKeyIndex()) {
-                    size = size(toIData(get(document, keyPart.getKey(), keyPart.getIndex())), key);
-                } else {
-                    size = size(toIData(IDataUtil.get(cursor, keyPart.getKey())), key);
-                }
-            } else {
-                if (keyPart.hasArrayIndex()) {
-                    Object[] array = IDataUtil.getObjectArray(cursor, keyPart.getKey());
-                    if (array != null && array.length > keyPart.getIndex()) {
-                        size = 1;
+            try {
+                IDataKey.Part keyPart = key.remove();
+                if (key.isEmpty()) {
+                    if (keyPart.hasArrayIndex()) {
+                        Object[] array = IDataUtil.getObjectArray(cursor, keyPart.getKey());
+                        if (array != null && array.length > keyPart.getIndex()) {
+                            size = 1;
+                        }
+                    } else if (keyPart.hasKeyIndex()) {
+                        size = size(document, keyPart.getKey(), keyPart.getIndex());
+                    } else {
+                        while(cursor.next(keyPart.getKey())) {
+                            size++;
+                        }
                     }
-                } else if (keyPart.hasKeyIndex()) {
-                    size = size(document, keyPart.getKey(), keyPart.getIndex());
                 } else {
-                    while (cursor.next(keyPart.getKey())) size++;
+                    if (keyPart.hasArrayIndex()) {
+                        size = size(ArrayHelper.get(toIDataArray(IDataUtil.get(cursor, keyPart.getKey())), keyPart.getIndex()), key);
+                    } else if (keyPart.hasKeyIndex()) {
+                        size = size(toIData(get(document, keyPart.getKey(), keyPart.getIndex())), key);
+                    } else {
+                        size = size(toIData(IDataUtil.get(cursor, keyPart.getKey())), key);
+                    }
                 }
+            } finally {
+                cursor.destroy();
             }
-            cursor.destroy();
         }
         return size;
     }
@@ -824,17 +828,7 @@ public final class IDataHelper {
      * @return          The number of occurrences of the given nth key in the given IData document.
      */
     private static int size(IData document, String key, int n) {
-        int size = 0;
-
-        if (document != null && key != null && n >= 0) {
-            int i = 0;
-            IDataCursor cursor = document.getCursor();
-            while (cursor.next(key) && i++ < n) ;
-            if (i > n) size = 1;
-            cursor.destroy();
-        }
-
-        return size;
+        return exists(document, key, n) ? 1 : 0;
     }
 
     /**
@@ -858,7 +852,90 @@ public final class IDataHelper {
      * @return          True if the given key exists in the given IData document.
      */
     public static boolean exists(IData document, String key, boolean literal) {
-        return size(document, key, literal) > 0;
+        boolean exists = false;
+        if (document != null && key != null) {
+            IDataCursor cursor = document.getCursor();
+            try {
+                if (cursor.first(key)) {
+                    exists = true;
+                } else if (IDataKey.isFullyQualified(key, literal)) {
+                    exists = exists(document, IDataKey.of(key, literal));
+                }
+            } finally {
+                cursor.destroy();
+            }
+        }
+        return exists;
+    }
+
+    /**
+     * Returns true if the given fully-qualified key exists in the given IData document.
+     *
+     * @param document  An IData document.
+     * @param key       The parsed fully-qualified key to check the existence of.
+     * @return          True if the given key exists in the given IData document.
+     */
+    private static boolean exists(IData document, IDataKey key) {
+        boolean exists = false;
+        if (document != null && key != null && !key.isEmpty()) {
+            IDataCursor cursor = document.getCursor();
+            try {
+                IDataKey.Part keyPart = key.remove();
+                if (key.isEmpty()) {
+                    if (keyPart.hasArrayIndex()) {
+                        Object[] array = IDataUtil.getObjectArray(cursor, keyPart.getKey());
+                        if (array != null && array.length > keyPart.getIndex()) {
+                            exists = true;
+                        }
+                    } else {
+                        exists = exists(document, keyPart.getKey(), keyPart.hasKeyIndex() ? keyPart.getIndex() : 0);
+                    }
+                } else {
+                    if (keyPart.hasArrayIndex()) {
+                        exists = exists(ArrayHelper.get(toIDataArray(IDataUtil.get(cursor, keyPart.getKey())), keyPart.getIndex()), key);
+                    } else if (keyPart.hasKeyIndex()) {
+                        exists = exists(toIData(get(document, keyPart.getKey(), keyPart.getIndex())), key);
+                    } else {
+                        exists = exists(toIData(IDataUtil.get(cursor, keyPart.getKey())), key);
+                    }
+                }
+            } finally {
+                cursor.destroy();
+            }
+        }
+        return exists;
+    }
+
+    /**
+     * Returns true if the given nth key exists in the given IData document.
+     *
+     * @param document  An IData document.
+     * @param key       The key to check the existence of.
+     * @param n         The nth occurrence of the key to be checked.
+     * @return          True if the given nth key exists in the given IData document.
+     */
+    private static boolean exists(IData document, String key, int n) {
+        boolean exists = false;
+        if (document != null && key != null && n >= 0) {
+            IDataCursor cursor = document.getCursor();
+            try {
+                if (n == 0) {
+                    exists = cursor.first(key);
+                } else {
+                    for (int i = 0; i < (n + 1); i++) {
+                        boolean found = cursor.next(key);
+                        if (i == n) {
+                            exists = found;
+                        } else if (!found) {
+                            break;
+                        }
+                    }
+                }
+            } finally {
+                cursor.destroy();
+            }
+        }
+        return exists;
     }
 
     /**

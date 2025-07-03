@@ -4,20 +4,22 @@ import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
 import com.wm.data.IDataUtil;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 import permafrost.tundra.io.InputStreamHelper;
 import permafrost.tundra.lang.Sanitization;
+import permafrost.tundra.server.SystemHelper;
 import permafrost.tundra.xml.dom.DocumentHelper;
 import permafrost.tundra.xml.sax.InputSourceHelper;
-
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class IDataHelperTest {
     IData document = IDataFactory.create();
@@ -1620,5 +1622,145 @@ public class IDataHelperTest {
         Map<IDataHelper.CompoundKey, List<IData>> groups = IDataHelper.group(array, criteria, IDataHelper.IDataArrayGroupSortType.NONE);
 
         assertEquals(3, groups.size());
+    }
+
+    @Test
+    public void testExistsWithIData() throws Exception {
+        String[] keys = { "a", "b", "c" };
+        for (String key : keys) {
+            boolean exists = IDataHelper.exists(document, key);
+            assertTrue("key `" + key + "` exists in document", exists);
+        }
+    }
+
+    @Test
+    public void testNotExistsWithIData() throws Exception {
+        String[] keys = { "d", "e", "f" };
+        for (String key : keys) {
+            boolean exists = IDataHelper.exists(document, key);
+            assertFalse("key `" + key + "` does not exist in document", exists);
+        }
+    }
+
+    @Test
+    public void testExistsWithNthKey() throws Exception {
+        IDataCursor cursor = document.getCursor();
+        cursor.insertAfter("c", "4");
+        cursor.insertAfter("b", "5");
+        cursor.insertAfter("a", "6");
+        cursor.insertAfter("b", "7");
+        cursor.insertAfter("a", "8");
+        cursor.insertAfter("c", "9");
+        cursor.destroy();
+
+        String[] keys = { "a(0)", "a(1)", "a(2)", "b(0)", "b(1)", "b(2)", "c(0)", "c(1)", "c(2)" };
+        for (String key : keys) {
+            boolean exists = IDataHelper.exists(document, key);
+            assertTrue("key `" + key + "` exists in document", exists);
+        }
+    }
+
+    @Test
+    public void testNotExistsWithNthKey() throws Exception {
+        IDataCursor cursor = document.getCursor();
+        cursor.insertAfter("c", "4");
+        cursor.insertAfter("b", "5");
+        cursor.insertAfter("a", "6");
+        cursor.insertAfter("b", "7");
+        cursor.insertAfter("a", "8");
+        cursor.insertAfter("c", "9");
+        cursor.destroy();
+
+        String[] keys = { "a(3)", "a(4)", "b(3)", "b(4)", "c(3)", "c(4)" };
+        for (String key : keys) {
+            boolean exists = IDataHelper.exists(document, key);
+            assertFalse("key `" + key + "` does not exist in document", exists);
+        }
+    }
+
+    @Test
+    public void testExistsWithFullyQualifiedKey() throws Exception {
+        IData grandchild = IDataFactory.create();
+        IDataCursor grandchildCursor = grandchild.getCursor();
+        grandchildCursor.insertAfter("h", "7");
+        grandchildCursor.destroy();
+
+        IData child = IDataFactory.create();
+        IDataCursor childCursor = child.getCursor();
+        childCursor.insertAfter("e", "4");
+        childCursor.insertAfter("f", "5");
+        childCursor.insertAfter("g", grandchild);
+        childCursor.destroy();
+
+        IDataCursor cursor = document.getCursor();
+        cursor.insertAfter("d", child);
+        cursor.destroy();
+
+        String[] keys = { "d/e", "d/f", "d/g", "d/g/h" };
+        for (String key : keys) {
+            boolean exists = IDataHelper.exists(document, key);
+            assertTrue("key `" + key + "` exists in document", exists);
+        }
+    }
+
+    @Test
+    public void testNotExistsWithFullyQualifiedKey() throws Exception {
+        IData grandchild = IDataFactory.create();
+        IDataCursor grandchildCursor = grandchild.getCursor();
+        grandchildCursor.insertAfter("h", "7");
+        grandchildCursor.destroy();
+
+        IData child = IDataFactory.create();
+        IDataCursor childCursor = child.getCursor();
+        childCursor.insertAfter("e", "4");
+        childCursor.insertAfter("f", "5");
+        childCursor.insertAfter("g", grandchild);
+        childCursor.destroy();
+
+        IDataCursor cursor = document.getCursor();
+        cursor.insertAfter("d", child);
+        cursor.destroy();
+
+        String[] keys = { "d/h", "d/g/h/i" };
+        for (String key : keys) {
+            boolean exists = IDataHelper.exists(document, key);
+            assertFalse("key `" + key + "` does not exist in document", exists);
+        }
+    }
+
+    @Test
+    public void testExistsWithArray() throws Exception {
+        String[] value = { "1", "2", "3"};
+
+        IDataCursor cursor = document.getCursor();
+        cursor.insertAfter("array", value);
+        cursor.destroy();
+
+        String key = "array[1]";
+        boolean exists = IDataHelper.exists(document, key);
+        assertTrue("key `" + key + "` exists in document", exists);
+    }
+
+    @Test
+    public void testNotExistsWithArray() throws Exception {
+        String[] value = { "1", "2", "3"};
+
+        IDataCursor cursor = document.getCursor();
+        cursor.insertAfter("array", value);
+        cursor.destroy();
+
+        String key = "array[3]";
+        boolean exists = IDataHelper.exists(document, key);
+        assertFalse("key `" + key + "` does not exist in document", exists);
+    }
+
+    @Test
+    public void testExistsWithSystemReference() throws Exception {
+        IData document = SystemHelper.getReference();
+        String[] keys = { "uuid", "datetime/local/yyyy", "datetime/utc/mmm" };
+        for (String key : keys) {
+            boolean exists = IDataHelper.exists(document, key);
+            assertTrue("key `" + key + "` exists in document", exists);
+        }
     }
 }

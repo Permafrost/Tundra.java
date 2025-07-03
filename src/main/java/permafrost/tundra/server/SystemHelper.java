@@ -136,7 +136,7 @@ public final class SystemHelper {
      *
      * @return an IData that can be used as a reference with a random uuid and the current datetime.
      */
-    private static IData getReference() {
+    public static IData getReference() {
         IData reference = IDataFactory.create();
         IDataCursor cursor = reference.getCursor();
 
