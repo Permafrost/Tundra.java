@@ -28,7 +28,6 @@ import org.xml.sax.InputSource;
 import permafrost.tundra.io.ReaderHelper;
 import permafrost.tundra.lang.CharsetHelper;
 import java.io.InputStream;
-import java.io.Reader;
 import java.nio.charset.Charset;
 
 /**
