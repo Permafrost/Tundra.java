@@ -135,8 +135,10 @@ public class ServiceStatisticsProcessor extends AbstractInvokeChainProcessor imp
 
         IDataUtil.put(cursor, "sampling.started?", started);
         if (started) {
+            long endTime = System.currentTimeMillis();
             IDataUtil.put(cursor, "sampling.start", DateTimeHelper.format(startTime));
-            IDataUtil.put(cursor, "sampling.duration", DurationHelper.format(System.currentTimeMillis() - startTime, DurationPattern.XML));
+            IDataUtil.put(cursor, "sampling.end", DateTimeHelper.format(endTime));
+            IDataUtil.put(cursor, "sampling.duration", DurationHelper.format(endTime - startTime, DurationPattern.XML));
         }
 
         cursor.insertAfter("statistics", services.toArray(new IData[0]));
