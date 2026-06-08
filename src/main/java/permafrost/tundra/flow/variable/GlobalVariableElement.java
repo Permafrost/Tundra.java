@@ -97,7 +97,9 @@ public class GlobalVariableElement implements Comparable<GlobalVariableElement> 
      */
     public String getValue() {
         String value = variable.getValue();
-        if (variable.isSecure()) {
+        // if the global variable is secure, the value is the password manager handle for retrieving the secret,
+        // so only attempt to decrypt the secret if the value/handle is not null
+        if (value != null && variable.isSecure()) {
             GlobalVariables variables = GlobalVariables.getInstance();
             if (GlobalVariableHelper.isPackageLevelSupported()) {
                 try {
