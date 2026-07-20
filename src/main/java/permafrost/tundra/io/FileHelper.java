@@ -149,7 +149,6 @@ public final class FileHelper {
         }
         return file;
     }
-
     /**
      * Opens a file for reading, appending, or writing, and processes it by calling the given service with the resulting
      * stream.
@@ -165,18 +164,37 @@ public final class FileHelper {
      * @throws ServiceException If any errors occur during processing.
      */
     public static IData process(File file, String mode, String service, String input, IData pipeline, boolean raise, boolean logError) throws ServiceException {
+        return process(file, mode, service, input, pipeline, raise, logError, -1);
+    }
+
+    /**
+     * Opens a file for reading, appending, or writing, and processes it by calling the given service with the resulting
+     * stream.
+     *
+     * @param file              The file to be processed.
+     * @param mode              The mode to use when opening the file.
+     * @param service           The service to be invoked to process the opened stream
+     * @param input             The input variable name to use for the opened stream.
+     * @param pipeline          The input pipeline.
+     * @param raise             Whether to rethrow any errors that occur.
+     * @param logError          Whether to log any errors that occur when raise is false.
+     * @param bufferSize        The size in bytes of the memory-backed buffer when reading or writing the file.
+     * @return                  The output pipeline.
+     * @throws ServiceException If any errors occur during processing.
+     */
+    public static IData process(File file, String mode, String service, String input, IData pipeline, boolean raise, boolean logError, int bufferSize) throws ServiceException {
         if (file != null) {
             if (input == null) input = "$stream";
             Closeable stream = null;
 
             try {
                 if (mode == null || mode.equalsIgnoreCase("read")) {
-                    stream = InputStreamHelper.normalize(new FileInputStream(file));
+                    stream = InputStreamHelper.normalize(new FileInputStream(file), bufferSize);
                 } else if (mode.equalsIgnoreCase("create") && FileHelper.exists(file)) {
                     throw new IOException("file already exists and will not be overwritten or appended to: " + file);
                 } else {
                     if (!FileHelper.exists(file)) FileHelper.create(file);
-                    stream = OutputStreamHelper.normalize(new FileOutputStream(file, mode.equalsIgnoreCase("append")));
+                    stream = OutputStreamHelper.normalize(new FileOutputStream(file, mode.equalsIgnoreCase("append")), bufferSize);
                 }
 
                 IDataCursor cursor = pipeline.getCursor();
@@ -522,6 +540,21 @@ public final class FileHelper {
      * @throws IOException  If an IO error occurs.
      */
     public static File gzip(File source, File target, boolean replace) throws IOException {
+        return gzip(source, target, replace, -1);
+    }
+
+    /**
+     * Gzips the given file as a new file with the given target name.
+     *
+     * @param source        The file to be gzipped.
+     * @param target        The file to write the gzipped content to.
+     * @param replace       Whether the source file should be deleted once compressed.
+     * @param bufferSize    The size in bytes of the memory-backed buffer used to read and write the source and target
+     *                      files.
+     * @return              The resulting gzipped file.
+     * @throws IOException  If an IO error occurs.
+     */
+    public static File gzip(File source, File target, boolean replace, int bufferSize) throws IOException {
         if (source == null) throw new NullPointerException("source must not be null");
 
         if (source.exists()) {
@@ -543,7 +576,7 @@ public final class FileHelper {
                     if (target.exists()) {
                         throw new IOException("Unable to create file because it already exists: " + normalize(target));
                     } else {
-                        InputOutputHelper.copy(new FileInputStream(source), new GZIPOutputStream(new BufferedOutputStream(new FileOutputStream(target), InputOutputHelper.DEFAULT_BUFFER_SIZE)));
+                        InputOutputHelper.copy(new FileInputStream(source), new GZIPOutputStream(new BufferedOutputStream(new FileOutputStream(target), InputOutputHelper.normalizeBufferSize(bufferSize))), true, bufferSize);
                         target.setLastModified(source.lastModified());
                         if (replace) source.delete();
                         return target;
@@ -628,6 +661,22 @@ public final class FileHelper {
      * @throws IOException  If an IO error occurs.
      */
     public static File zip(File source, File target, boolean replace) throws IOException {
+        return zip(source, target, replace, -1);
+    }
+
+    /**
+     * Zips the given file as a new file with the given target name.
+     *
+     * @param source        The file to be zipped.
+     * @param target        The file to write the zipped content to. If not specified, defaults to a file with
+     *                      the same name as source suffixed with ".zip".
+     * @param replace       Whether the source file should be deleted once compressed.
+     * @param bufferSize    The size in bytes of the memory-backed buffer used when reading and writing the source and
+     *                      target files.
+     * @return              The resulting zipped file.
+     * @throws IOException  If an IO error occurs.
+     */
+    public static File zip(File source, File target, boolean replace, int bufferSize) throws IOException {
         if (source == null) throw new NullPointerException("source must not be null");
         if (target == null) target = new File(source.getParentFile(), source.getName() + ".zip");
 
@@ -641,8 +690,8 @@ public final class FileHelper {
                         ZipOutputStream outputStream = null;
 
                         try {
-                            inputStream = new BufferedInputStream(new FileInputStream(source), InputOutputHelper.DEFAULT_BUFFER_SIZE);
-                            outputStream = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(target), InputOutputHelper.DEFAULT_BUFFER_SIZE));
+                            inputStream = new BufferedInputStream(new FileInputStream(source), InputOutputHelper.normalizeBufferSize(bufferSize));
+                            outputStream = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(target), InputOutputHelper.normalizeBufferSize(bufferSize)));
 
                             outputStream.putNextEntry(new ZipEntry(source.getName()));
 
