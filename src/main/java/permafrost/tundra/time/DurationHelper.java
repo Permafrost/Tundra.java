@@ -85,6 +85,21 @@ public final class DurationHelper {
     private DurationHelper() {}
 
     /**
+     * Duration representing zero.
+     */
+    private static final Duration DURATION_ZERO = DATATYPE_FACTORY.newDuration(0);
+
+    /**
+     * Returns true if the given duration is greater than zero.
+     *
+     * @param duration The given duration.
+     * @return         True if the given duration is greater than zero.
+     */
+    public static boolean isGreaterThanZero(Duration duration) {
+        return duration != null && duration.isLongerThan(DURATION_ZERO);
+    }
+
+    /**
      * Formats a duration string to the desired pattern.
      *
      * @param duration      The duration string to be formatted.
