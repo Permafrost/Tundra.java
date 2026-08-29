@@ -307,24 +307,6 @@ public abstract class MimeTypeUtils {
     }
 
     /**
-     * Parse the given, comma-separated string into a list of {@code MimeType} objects.
-     * @param mimeTypes the string to parse
-     * @return the list of mime types
-     * @throws IllegalArgumentException if the string cannot be parsed
-     */
-    public static List<MimeType> parseMimeTypes(String mimeTypes) {
-        if (!StringUtils.hasLength(mimeTypes)) {
-            return Collections.emptyList();
-        }
-        String[] tokens = StringUtils.tokenizeToStringArray(mimeTypes, ",");
-        List<MimeType> result = new ArrayList<MimeType>(tokens.length);
-        for (String token : tokens) {
-            result.add(parseMimeType(token));
-        }
-        return result;
-    }
-
-    /**
      * Return a string representation of the given list of {@code MimeType} objects.
      * @param mimeTypes the string to parse
      * @return the list of mime types
@@ -373,23 +355,4 @@ public abstract class MimeTypeUtils {
             Collections.sort(mimeTypes, SPECIFICITY_COMPARATOR);
         }
     }
-
-    /**
-     * Generate a random MIME boundary as bytes, often used in multipart mime types.
-     */
-    public static byte[] generateMultipartBoundary() {
-        byte[] boundary = new byte[RND.nextInt(11) + 30];
-        for (int i = 0; i < boundary.length; i++) {
-            boundary[i] = BOUNDARY_CHARS[RND.nextInt(BOUNDARY_CHARS.length)];
-        }
-        return boundary;
-    }
-
-    /**
-     * Generate a random MIME boundary as String, often used in multipart mime types.
-     */
-    public static String generateMultipartBoundaryString() {
-        return new String(generateMultipartBoundary(), US_ASCII);
-    }
-
 }

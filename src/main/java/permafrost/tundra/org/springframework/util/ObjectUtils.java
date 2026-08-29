@@ -51,41 +51,6 @@ public abstract class ObjectUtils {
     private static final String EMPTY_ARRAY = ARRAY_START + ARRAY_END;
     private static final String ARRAY_ELEMENT_SEPARATOR = ", ";
 
-
-    /**
-     * Return whether the given throwable is a checked exception:
-     * that is, neither a RuntimeException nor an Error.
-     * @param ex the throwable to check
-     * @return whether the throwable is a checked exception
-     * @see java.lang.Exception
-     * @see java.lang.RuntimeException
-     * @see java.lang.Error
-     */
-    public static boolean isCheckedException(Throwable ex) {
-        return !(ex instanceof RuntimeException || ex instanceof Error);
-    }
-
-    /**
-     * Check whether the given exception is compatible with the specified
-     * exception types, as declared in a throws clause.
-     * @param ex the exception to check
-     * @param declaredExceptions the exception types declared in the throws clause
-     * @return whether the given exception is compatible
-     */
-    public static boolean isCompatibleWithThrowsClause(Throwable ex, Class<?>... declaredExceptions) {
-        if (!isCheckedException(ex)) {
-            return true;
-        }
-        if (declaredExceptions != null) {
-            for (Class<?> declaredException : declaredExceptions) {
-                if (declaredException.isInstance(ex)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
     /**
      * Determine whether the given object is an array:
      * either an Object array or a primitive array.
@@ -146,98 +111,6 @@ public abstract class ObjectUtils {
 
         // else
         return false;
-    }
-
-    /**
-     * Check whether the given array contains the given element.
-     * @param array the array to check (may be {@code null},
-     * in which case the return value will always be {@code false})
-     * @param element the element to check for
-     * @return whether the element has been found in the given array
-     */
-    public static boolean containsElement(Object[] array, Object element) {
-        if (array == null) {
-            return false;
-        }
-        for (Object arrayEle : array) {
-            if (nullSafeEquals(arrayEle, element)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Check whether the given array of enum constants contains a constant with the given name,
-     * ignoring case when determining a match.
-     * @param enumValues the enum values to check, typically the product of a call to MyEnum.values()
-     * @param constant the constant name to find (must not be null or empty string)
-     * @return whether the constant has been found in the given array
-     */
-    public static boolean containsConstant(Enum<?>[] enumValues, String constant) {
-        return containsConstant(enumValues, constant, false);
-    }
-
-    /**
-     * Check whether the given array of enum constants contains a constant with the given name.
-     * @param enumValues the enum values to check, typically the product of a call to MyEnum.values()
-     * @param constant the constant name to find (must not be null or empty string)
-     * @param caseSensitive whether case is significant in determining a match
-     * @return whether the constant has been found in the given array
-     */
-    public static boolean containsConstant(Enum<?>[] enumValues, String constant, boolean caseSensitive) {
-        for (Enum<?> candidate : enumValues) {
-            if (caseSensitive ?
-                    candidate.toString().equals(constant) :
-                    candidate.toString().equalsIgnoreCase(constant)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Case insensitive alternative to {@link Enum#valueOf(Class, String)}.
-     * @param <E> the concrete Enum type
-     * @param enumValues the array of all Enum constants in question, usually per Enum.values()
-     * @param constant the constant to get the enum value of
-     * @throws IllegalArgumentException if the given constant is not found in the given array
-     * of enum values. Use {@link #containsConstant(Enum[], String)} as a guard to avoid this exception.
-     */
-    public static <E extends Enum<?>> E caseInsensitiveValueOf(E[] enumValues, String constant) {
-        for (E candidate : enumValues) {
-            if (candidate.toString().equalsIgnoreCase(constant)) {
-                return candidate;
-            }
-        }
-        throw new IllegalArgumentException(
-                String.format("constant [%s] does not exist in enum type %s",
-                        constant, enumValues.getClass().getComponentType().getName()));
-    }
-
-    /**
-     * Append the given object to the given array, returning a new array
-     * consisting of the input array contents plus the given object.
-     * @param array the array to append to (can be {@code null})
-     * @param obj the object to append
-     * @return the new array (of the same component type; never {@code null})
-     */
-    public static <A, O extends A> A[] addObjectToArray(A[] array, O obj) {
-        Class<?> compType = Object.class;
-        if (array != null) {
-            compType = array.getClass().getComponentType();
-        }
-        else if (obj != null) {
-            compType = obj.getClass();
-        }
-        int newArrLength = (array != null ? array.length + 1 : 1);
-        @SuppressWarnings("unchecked")
-        A[] newArr = (A[]) Array.newInstance(compType, newArrLength);
-        if (array != null) {
-            System.arraycopy(array, 0, newArr, 0, array.length);
-        }
-        newArr[newArr.length - 1] = obj;
-        return newArr;
     }
 
     /**
@@ -563,58 +436,9 @@ public abstract class ObjectUtils {
         return (int) (lng ^ (lng >>> 32));
     }
 
-
     //---------------------------------------------------------------------
     // Convenience methods for toString output
     //---------------------------------------------------------------------
-
-    /**
-     * Return a String representation of an object's overall identity.
-     * @param obj the object (may be {@code null})
-     * @return the object's identity as String representation,
-     * or an empty String if the object was {@code null}
-     */
-    public static String identityToString(Object obj) {
-        if (obj == null) {
-            return EMPTY_STRING;
-        }
-        return obj.getClass().getName() + "@" + getIdentityHexString(obj);
-    }
-
-    /**
-     * Return a hex String form of an object's identity hash code.
-     * @param obj the object
-     * @return the object's identity code in hex notation
-     */
-    public static String getIdentityHexString(Object obj) {
-        return Integer.toHexString(System.identityHashCode(obj));
-    }
-
-    /**
-     * Return a content-based String representation if {@code obj} is
-     * not {@code null}; otherwise returns an empty String.
-     * <p>Differs from {@link #nullSafeToString(Object)} in that it returns
-     * an empty String rather than "null" for a {@code null} value.
-     * @param obj the object to build a display String for
-     * @return a display String representation of {@code obj}
-     * @see #nullSafeToString(Object)
-     */
-    public static String getDisplayString(Object obj) {
-        if (obj == null) {
-            return EMPTY_STRING;
-        }
-        return nullSafeToString(obj);
-    }
-
-    /**
-     * Determine the class name for the given object.
-     * <p>Returns {@code "null"} if {@code obj} is {@code null}.
-     * @param obj the object to introspect (may be {@code null})
-     * @return the corresponding class name
-     */
-    public static String nullSafeClassName(Object obj) {
-        return (obj != null ? obj.getClass().getName() : NULL_STRING);
-    }
 
     /**
      * Return a String representation of the specified Object.

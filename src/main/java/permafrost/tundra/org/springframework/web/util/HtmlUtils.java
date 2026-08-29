@@ -51,7 +51,6 @@ public abstract class HtmlUtils {
     private static final HtmlCharacterEntityReferences characterEntityReferences =
             new HtmlCharacterEntityReferences();
 
-
     /**
      * Turn special characters into HTML character references.
      * Handles complete character set defined in HTML 4.01 recommendation.
@@ -101,74 +100,6 @@ public abstract class HtmlUtils {
             }
         }
         return escaped.toString();
-    }
-
-    /**
-     * Turn special characters into HTML character references.
-     * Handles complete character set defined in HTML 4.01 recommendation.
-     * <p>Escapes all special characters to their corresponding numeric
-     * reference in decimal format (&#<i>Decimal</i>;).
-     * <p>Reference:
-     * <a href="http://www.w3.org/TR/html4/sgml/entities.html">
-     * http://www.w3.org/TR/html4/sgml/entities.html
-     * </a>
-     * @param input the (unescaped) input string
-     * @return the escaped string
-     */
-    public static String htmlEscapeDecimal(String input) {
-        return htmlEscapeDecimal(input, DEFAULT_CHARACTER_ENCODING);
-    }
-
-    /**
-     * Turn special characters into HTML character references.
-     * Handles complete character set defined in HTML 4.01 recommendation.
-     * <p>Escapes all special characters to their corresponding numeric
-     * reference in decimal format (&#<i>Decimal</i>;) at least as required by the
-     * specified encoding. In other words, if a special character does
-     * not have to be escaped for the given encoding, it may not be.
-     * <p>Reference:
-     * <a href="http://www.w3.org/TR/html4/sgml/entities.html">
-     * http://www.w3.org/TR/html4/sgml/entities.html
-     * </a>
-     * @param input the (unescaped) input string
-     * @param encoding the name of a supported {@link java.nio.charset.Charset charset}
-     * @return the escaped string
-     * @since 4.1.2
-     */
-    public static String htmlEscapeDecimal(String input, String encoding) {
-        Assert.notNull(encoding, "Encoding is required");
-        if (input == null) {
-            return null;
-        }
-        StringBuilder escaped = new StringBuilder(input.length() * 2);
-        for (int i = 0; i < input.length(); i++) {
-            char character = input.charAt(i);
-            if (characterEntityReferences.isMappedToReference(character, encoding)) {
-                escaped.append(HtmlCharacterEntityReferences.DECIMAL_REFERENCE_START);
-                escaped.append((int) character);
-                escaped.append(HtmlCharacterEntityReferences.REFERENCE_END);
-            }
-            else {
-                escaped.append(character);
-            }
-        }
-        return escaped.toString();
-    }
-
-    /**
-     * Turn special characters into HTML character references.
-     * Handles complete character set defined in HTML 4.01 recommendation.
-     * <p>Escapes all special characters to their corresponding numeric
-     * reference in hex format (&#x<i>Hex</i>;).
-     * <p>Reference:
-     * <a href="http://www.w3.org/TR/html4/sgml/entities.html">
-     * http://www.w3.org/TR/html4/sgml/entities.html
-     * </a>
-     * @param input the (unescaped) input string
-     * @return the escaped string
-     */
-    public static String htmlEscapeHex(String input) {
-        return htmlEscapeHex(input, DEFAULT_CHARACTER_ENCODING);
     }
 
     /**
